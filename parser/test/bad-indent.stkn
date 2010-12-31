@@ -1,0 +1,3 @@
+ func m(x, y, z)
+     write(x + y)
+   write(y + z)
