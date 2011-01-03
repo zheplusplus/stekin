@@ -31,8 +31,8 @@
 %type <expr_node> term
 %type <expr_node> unary_factor
 %type <expr_node> factor
-%type <expr_node> var
-%type <expr_node> func_call
+%type <expr_node> ref
+%type <expr_node> call
 
 %type <op_type> add_op
 %type <op_type> mul_op
@@ -187,10 +187,10 @@ while_clue:
     }
 ;
 
-var:
+ref:
     ident
     {
-        $$ = new grammar::variable($1->pos, $1->id);
+        $$ = new grammar::reference($1->pos, $1->id);
         delete $1;
     }
 ;
@@ -291,7 +291,7 @@ unary_factor:
 ;
 
 factor:
-    var
+    ref
     {
         $$ = $1;
     }
@@ -311,7 +311,7 @@ factor:
         $$ = $2;
     }
     |
-    func_call
+    call
     {
         $$ = $1;
     }
@@ -390,10 +390,10 @@ pm_sign:
     }
 ;
 
-func_call:
+call:
     ident '(' actual_param_list ')'
     {
-        $$ = new grammar::func_call($1->pos, $1->id, $3->begin(), $3->end());
+        $$ = new grammar::call($1->pos, $1->id, $3->begin(), $3->end());
         delete $1;
         delete $3;
     }

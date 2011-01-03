@@ -1,5 +1,5 @@
-#ifndef __STAKCENING_GRAMMAR_EXPRESSION_NODES_H__
-#define __STAKCENING_GRAMMAR_EXPRESSION_NODES_H__
+#ifndef _STAKCENING_GRAMMAR_EXPRESSION_NODES_H__
+#define _STAKCENING_GRAMMAR_EXPRESSION_NODES_H__
 
 #include <string>
 
@@ -11,89 +11,89 @@ namespace grammar {
     struct pre_unary_oper
         : public expr_base
     {
-        pre_unary_oper(misc::pos_type const& pos, std::string const& op_img, expr_base const* rhs)
+        pre_unary_oper(misc::pos_type const& pos, std::string const& op, expr_base const* r)
             : expr_base(pos)
-            , _op_img(op_img)
-            , _rhs(rhs)
+            , op_img(op)
+            , rhs(r)
         {}
 
         proto::expr_prototype const* compile(proto::prototype_scope const* scope) const;
-    protected:
-        std::string const _op_img;
-        util::sptr<expr_base const> const _rhs;
+
+        std::string const op_img;
+        util::sptr<expr_base const> const rhs;
     };
 
     struct binary_oper
         : public expr_base
     {
-        binary_oper(misc::pos_type const& pos, expr_base const* lhs, std::string const& op_img, expr_base const* rhs)
+        binary_oper(misc::pos_type const& pos, expr_base const* l, std::string const& op, expr_base const* r)
             : expr_base(pos)
-            , _lhs(lhs)
-            , _op_img(op_img)
-            , _rhs(rhs)
+            , lhs(l)
+            , op_img(op)
+            , rhs(r)
         {}
 
         proto::expr_prototype const* compile(proto::prototype_scope const* scope) const;
-    protected:
-        util::sptr<expr_base const> const _lhs;
-        std::string const _op_img;
-        util::sptr<expr_base const> const _rhs;
+
+        util::sptr<expr_base const> const lhs;
+        std::string const op_img;
+        util::sptr<expr_base const> const rhs;
     };
 
     struct conjunction
         : public expr_base
     {
-        conjunction(misc::pos_type const& pos, expr_base const* lhs, expr_base const* rhs)
+        conjunction(misc::pos_type const& pos, expr_base const* l, expr_base const* r)
             : expr_base(pos)
-            , _lhs(lhs)
-            , _rhs(rhs)
+            , lhs(l)
+            , rhs(r)
         {}
 
         proto::expr_prototype const* compile(proto::prototype_scope const* scope) const;
-    protected:
-        util::sptr<expr_base const> const _lhs;
-        util::sptr<expr_base const> const _rhs;
+
+        util::sptr<expr_base const> const lhs;
+        util::sptr<expr_base const> const rhs;
     };
 
     struct disjunction
         : public expr_base
     {
-        disjunction(misc::pos_type const& pos, expr_base const* lhs, expr_base const* rhs)
+        disjunction(misc::pos_type const& pos, expr_base const* l, expr_base const* r)
             : expr_base(pos)
-            , _lhs(lhs)
-            , _rhs(rhs)
+            , lhs(l)
+            , rhs(r)
         {}
 
         proto::expr_prototype const* compile(proto::prototype_scope const* scope) const;
-    protected:
-        util::sptr<expr_base const> const _lhs;
-        util::sptr<expr_base const> const _rhs;
+
+        util::sptr<expr_base const> const lhs;
+        util::sptr<expr_base const> const rhs;
     };
 
     struct negation
         : public expr_base
     {
-        negation(misc::pos_type const& pos, expr_base const* rhs)
+        negation(misc::pos_type const& pos, expr_base const* r)
             : expr_base(pos)
-            , _rhs(rhs)
+            , rhs(r)
         {}
 
         proto::expr_prototype const* compile(proto::prototype_scope const* scope) const;
-    protected:
-        util::sptr<expr_base const> const _rhs;
+
+        util::sptr<expr_base const> const rhs;
     };
 
-    struct variable
+    struct reference
         : public expr_base
     {
-        variable(misc::pos_type const& pos, std::string const& name)
+        reference(misc::pos_type const& pos, std::string const& name)
             : expr_base(pos)
-            , _name(name)
+            , name(name)
         {}
 
         proto::expr_prototype const* compile(proto::prototype_scope const* scope) const;
-    protected:
-        std::string const _name;
+
+        std::string const name;
     };
 
     struct int_literal
@@ -101,12 +101,12 @@ namespace grammar {
     {
         int_literal(misc::pos_type const& pos, char const* val)
             : expr_base(pos)
-            , _val(val)
+            , value(val)
         {}
 
         proto::expr_prototype const* compile(proto::prototype_scope const* scope) const;
-    protected:
-        std::string const _val;
+
+        std::string const value;
     };
 
     struct float_literal
@@ -114,33 +114,30 @@ namespace grammar {
     {
         float_literal(misc::pos_type const& pos, char const* val)
             : expr_base(pos)
-            , _val(val)
+            , value(val)
         {}
 
         proto::expr_prototype const* compile(proto::prototype_scope const* scope) const;
-    protected:
-        std::string const _val;
+
+        std::string const value;
     };
 
-    struct func_call
+    struct call
         : public expr_base
     {
-        template <typename _ArgIterator>
-        func_call(misc::pos_type const& pos
-                , std::string const& name
-                , _ArgIterator arg_begin
-                , _ArgIterator arg_end)
+        template <typename ArgIterator>
+        call(misc::pos_type const& pos, std::string const& name, ArgIterator arg_begin, ArgIterator arg_end)
             : expr_base(pos)
-            , _name(name)
-            , _args(arg_begin, arg_end)
+            , name(name)
+            , args(arg_begin, arg_end)
         {}
 
         proto::expr_prototype const* compile(proto::prototype_scope const* scope) const;
-    protected:
-        std::string const _name;
-        std::vector<util::sptr<expr_base const>> const _args;
+
+        std::string const name;
+        std::vector<util::sptr<expr_base const>> const args;
     };
 
 }
 
-#endif /* __STAKCENING_GRAMMAR_EXPRESSION_NODES_H__ */
+#endif /* _STAKCENING_GRAMMAR_EXPRESSION_NODES_H__ */
