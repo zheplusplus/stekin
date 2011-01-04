@@ -23,36 +23,36 @@ void data_tree::verify()
     auto expect_iter = expect_one()._nodes.begin();
     auto actual_iter = actual_one()._nodes.begin();
     for (; expect_one()._nodes.end() != expect_iter; ++expect_iter, ++actual_iter) {
-        EXPECT_EQ(*expect_iter, *actual_iter);
+        EXPECT_EQ(**expect_iter, **actual_iter);
     }
 }
 
 data_tree& data_tree::operator()(misc::pos_type const& pos
-                               , data_node_base::node_type type
+                               , data_node_base::node_type const& type
                                , std::string const& data)
 {
-    _nodes.push_back(std::move(util::sptr<data_node_base const>(new string_node(pos, type, data))));
+    _nodes.push_back(std::move(util::mkptr(new string_node(pos, type, data))));
     return *this;
 }
 
 data_tree& data_tree::operator()(misc::pos_type const& pos
                                , int indent
-                               , data_node_base::node_type type
+                               , data_node_base::node_type const& type
                                , std::string const& data)
 {
-    _nodes.push_back(std::move(util::sptr<data_node_base const>(new string_node(pos, indent, type, data))));
+    _nodes.push_back(std::move(util::mkptr(new string_node(pos, indent, type, data))));
     return *this;
 }
 
-data_tree& data_tree::operator()(misc::pos_type const& pos, data_node_base::node_type type)
+data_tree& data_tree::operator()(misc::pos_type const& pos, data_node_base::node_type const& type)
 {
-    _nodes.push_back(std::move(util::sptr<data_node_base const>(new nothing_node(pos, type))));
+    _nodes.push_back(std::move(util::mkptr(new nothing_node(pos, type))));
     return *this;
 }
 
-data_tree& data_tree::operator()(misc::pos_type const& pos, int indent, data_node_base::node_type type)
+data_tree& data_tree::operator()(misc::pos_type const& pos, int indent, data_node_base::node_type const& type)
 {
-    _nodes.push_back(std::move(util::sptr<data_node_base const>(new nothing_node(pos, indent, type))));
+    _nodes.push_back(std::move(util::mkptr(new nothing_node(pos, indent, type))));
     return *this;
 }
 

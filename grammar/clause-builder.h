@@ -4,7 +4,8 @@
 #include <vector>
 #include <string>
 
-#include "expr-nodes.h"
+#include "node-base.h"
+#include "acceptor.h"
 #include "../util/pointer.h"
 #include "../misc/pos-type.h"
 
@@ -26,6 +27,8 @@ namespace grammar {
         void add_while(int indent_len, util::sptr<expr_base const>&& condition);
 
         void build_and_clear();
+    private:
+        acceptor_stack _stack;
     };
 
 }

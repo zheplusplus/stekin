@@ -9,7 +9,7 @@ namespace grammar {
     struct stmt_base {
         misc::pos_type const pos;
 
-        virtual void compile(proto::prototype_scope const* scope) const = 0;
+        virtual void compile(proto::scope const* scope) const = 0;
 
         virtual ~stmt_base() {}
     protected:
@@ -23,7 +23,7 @@ namespace grammar {
     struct expr_base {
         misc::pos_type const pos;
 
-        virtual proto::expr_prototype const* compile(proto::prototype_scope const* scope) const = 0;
+        virtual proto::expr_prototype const* compile(proto::scope const* scope) const = 0;
 
         virtual ~expr_base() {}
     protected:

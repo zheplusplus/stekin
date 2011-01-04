@@ -12,14 +12,14 @@ namespace test {
 
     struct data_tree {
         data_tree& operator()(misc::pos_type const& pos
-                            , data_node_base::node_type type
+                            , data_node_base::node_type const& type
                             , std::string const& data);
         data_tree& operator()(misc::pos_type const& pos
                             , int indent
-                            , data_node_base::node_type type
+                            , data_node_base::node_type const& type
                             , std::string const& data);
-        data_tree& operator()(misc::pos_type const& pos, data_node_base::node_type type);
-        data_tree& operator()(misc::pos_type const& pos, int indent, data_node_base::node_type type);
+        data_tree& operator()(misc::pos_type const& pos, data_node_base::node_type const& type);
+        data_tree& operator()(misc::pos_type const& pos, int indent, data_node_base::node_type const& type);
     private:
         data_tree() {}
     public:

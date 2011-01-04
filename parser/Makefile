@@ -1,16 +1,16 @@
 WORKDIR=parser
-AWK=gawk -f
+AWK=gawk
 
 include misc/mf-template.mk
 
 parser:yy-misc.d lexical syntactically err-report.d
 
 syntactically:
-	$(RESOLVE_DEP) $(WORKDIR)/syn-include.h | $(AWK) $(WORKDIR)/syn-script > $(MKTMP)
+	$(RESOLVE_DEP) $(WORKDIR)/syn-include.h | $(AWK) -f $(WORKDIR)/syn-script > $(MKTMP)
 	make -f $(MKTMP)
 
 lexical:syntactically
-	$(RESOLVE_DEP) $(WORKDIR)/lex-include.h | $(AWK) $(WORKDIR)/lex-script > $(MKTMP)
+	$(RESOLVE_DEP) $(WORKDIR)/lex-include.h | $(AWK) -f $(WORKDIR)/lex-script > $(MKTMP)
 	make -f $(MKTMP)
 
 clean:

@@ -4,6 +4,7 @@
 
 %union {
     int indent_type;
+    int line_num_type;
 
     parser::op_img* op_type;
     parser::identifier* ident_type;
@@ -14,6 +15,8 @@
 }
 
 %type <indent_type> indent
+
+%type <line_num_type> eol
 
 %type <ident_type> ident
 
@@ -59,12 +62,20 @@ stackening:
 indent:
     INDENT
     {
-        $$ = yyleng / parser::SPACES_PER_INDENT;
+        $$ = parser::last_indent;
     }
     |
     {
         $$ = 0;
     }
+;
+
+eol:
+   EOL
+   {
+        $$ = yylineno;
+        ++yylineno;
+   }
 ;
 
 stmt_list:
@@ -76,9 +87,9 @@ stmt_list:
 ;
 
 stmt:
-    INDENT EOL {}
+    INDENT eol {}
     |
-    EOL {}
+    eol {}
     |
     var_def {}
     |
@@ -100,37 +111,37 @@ clue:
 ;
 
 var_def:
-    indent ident ':' cond EOL
+    indent ident ':' cond eol
     {
-        parser::builder.add_var_def($1, $2->id, std::move(util::sptr<grammar::expr_base const>($4)));
+        parser::builder.add_var_def($1, $2->id, std::move(util::mkptr($4)));
         delete $2;
     }
 ;
 
 arithmetics:
-    indent cond EOL
+    indent cond eol
     {
-        parser::builder.add_arith($1, std::move(util::sptr<grammar::expr_base const>($2)));
+        parser::builder.add_arith($1, std::move(util::mkptr($2)));
     }
 ;
 
 func_return:
-    indent KW_RETURN cond EOL
+    indent KW_RETURN cond eol
     {
-        parser::builder.add_return($1, std::move(util::sptr<grammar::expr_base const>($3)));
+        parser::builder.add_return($1, std::move(util::mkptr($3)));
     }
     |
-    indent KW_RETURN EOL
+    indent KW_RETURN eol
     {
-        parser::builder.add_void_return($1, parser::here());
+        parser::builder.add_void_return($1, parser::here($3));
     }
 ;
 
 func_clue:
-    indent KW_FUNC ident '(' param_list ')' EOL
+    indent KW_FUNC ident '(' param_list ')' eol
     {
         parser::builder
-                  .add_func_def($1, parser::here(), $3->id, std::vector<std::string>($5->begin(), $5->end()));
+                  .add_func_def($1, parser::here($7), $3->id, std::vector<std::string>($5->begin(), $5->end()));
         delete $3;
         delete $5;
     }
@@ -160,30 +171,30 @@ additional_param:
 ;
 
 if_clue:
-    indent KW_IF cond EOL
+    indent KW_IF cond eol
     {
-        parser::builder.add_if($1, std::move(util::sptr<grammar::expr_base const>($3)));
+        parser::builder.add_if($1, std::move(util::mkptr($3)));
     }
 ;
 
 if_not_clue:
-    indent KW_IFNOT cond EOL
+    indent KW_IFNOT cond eol
     {
-        parser::builder.add_if_not($1, std::move(util::sptr<grammar::expr_base const>($3)));
+        parser::builder.add_if_not($1, std::move(util::mkptr($3)));
     }
 ;
 
 else_clue:
-    indent KW_ELSE EOL
+    indent KW_ELSE eol
     {
-        parser::builder.add_else($1, parser::here());
+        parser::builder.add_else($1, parser::here($3));
     }
 ;
 
 while_clue:
-    indent KW_WHILE cond EOL
+    indent KW_WHILE cond eol
     {
-        parser::builder.add_while($1, std::move(util::sptr<grammar::expr_base const>($3)));
+        parser::builder.add_while($1, std::move(util::mkptr($3)));
     }
 ;
 

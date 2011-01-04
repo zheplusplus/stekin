@@ -1,0 +1,17 @@
+n: 10
+
+func fib(n)
+    func add()
+        return fib(n) + fib(n - 1)
+    ifnot n < 2
+        return add()
+    return 1
+
+if n > 5
+    write(fib(10))
+else
+    write(false)
+    
+func print_10()
+    while true
+        write(+10.0)

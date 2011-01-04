@@ -19,13 +19,32 @@ namespace util {
             : base_type(p)
         {}
 
-        sptr(sptr&& rhs) 
+        template <typename _ConvertableType>
+        sptr(sptr<_ConvertableType>&& rhs)
             : base_type(std::move(rhs))
         {}
 
-        sptr& operator=(sptr&& rhs) = delete;
+        template <typename _ConvertableType>
+        sptr& operator=(sptr<_ConvertableType>&& rhs)
+        {
+            base_type::operator=(std::move(rhs));
+            return *this;
+        }
+
         pointer get() const = delete;
     };
+
+    template <typename _RawType>
+    sptr<_RawType> mkmptr(_RawType* ptr)
+    {
+        return sptr<_RawType>(ptr);
+    }
+
+    template <typename _RawType>
+    sptr<_RawType const> mkptr(_RawType* ptr)
+    {
+        return sptr<_RawType const>(ptr);
+    }
 
 }
 

@@ -6,17 +6,14 @@
 
 %%
 \r\n {
-    ++yylineno;
     return EOL;
 }
 
 \r {
-    ++yylineno;
     return EOL;
 }
 
 \n {
-    ++yylineno;
     return EOL;
 }
 
@@ -24,6 +21,7 @@
     if (0 != yyleng % parser::SPACES_PER_INDENT) {
         parser::bad_indent(parser::here());
     }
+    parser::last_indent = yyleng / parser::SPACES_PER_INDENT;
     return INDENT;
 }
 

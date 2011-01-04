@@ -20,8 +20,10 @@ namespace parser {
     int const SPACES_PER_INDENT = 4;
 
     extern grammar::clause_builder builder;
+    extern int last_indent;
 
     misc::pos_type here();
+    misc::pos_type here(int lineno);
 
 }
 

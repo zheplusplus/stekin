@@ -17,7 +17,7 @@ TEST_SRC_CODE=$(TESTDIR)/empty.stkn \
               $(TESTDIR)/bad-indent.stkn \
               $(TESTDIR)/mix.stkn
 
-test:test-empty test-err-tab-as-ind test-err-inv-chars test-err-bad-indent $(TEST_SRC_CODE)
+test:test-empty test-err-tab-as-ind test-err-inv-chars test-err-bad-indent test-mix $(TEST_SRC_CODE)
 
 test-empty:$(TESTDIR)/test-empty.out
 	$(TESTDIR)/test-empty.out < $(TESTDIR)/empty.stkn
@@ -42,6 +42,12 @@ test-err-bad-indent:$(TESTDIR)/test-err-bad-indent.out
 
 $(TESTDIR)/test-err-bad-indent.out:$(TEST_DEP) test-err-bad-indent.dt
 	$(LINK) $(TEST_OBJ) $(TESTDIR)/test-err-bad-indent.o $(TEST_LIBS) -o $(TESTDIR)/test-err-bad-indent.out
+
+test-mix:$(TESTDIR)/test-mix.out
+	$(TESTDIR)/test-mix.out < $(TESTDIR)/mix.stkn
+
+$(TESTDIR)/test-mix.out:$(TEST_DEP) test-mix.dt
+	$(LINK) $(TEST_OBJ) $(TESTDIR)/test-mix.o $(TEST_LIBS) -o $(TESTDIR)/test-mix.out
 
 include $(WORKDIR)/Makefile
 
