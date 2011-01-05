@@ -8,7 +8,7 @@
 using namespace grammar;
 using test::data_node_base;
 
-proto::expr_prototype const* pre_unary_oper::compile(proto::scope const*) const
+proto::expr_base const* pre_unary_oper::compile(proto::scope const*) const
 {
     test::data_tree::actual_one()(pos, data_node_base::PRE_UNARY_OP_BEGIN, op_img)
                                  (pos, data_node_base::OPERAND);
@@ -17,7 +17,7 @@ proto::expr_prototype const* pre_unary_oper::compile(proto::scope const*) const
     return NULL;
 }
 
-proto::expr_prototype const* binary_oper::compile(proto::scope const*) const
+proto::expr_base const* binary_oper::compile(proto::scope const*) const
 {
     test::data_tree::actual_one()(pos, data_node_base::BINARY_OP_BEGIN, op_img)(pos, data_node_base::OPERAND);
     lhs->compile(NULL);
@@ -27,7 +27,7 @@ proto::expr_prototype const* binary_oper::compile(proto::scope const*) const
     return NULL;
 }
 
-proto::expr_prototype const* conjunction::compile(proto::scope const*) const
+proto::expr_base const* conjunction::compile(proto::scope const*) const
 {
     test::data_tree::actual_one()(pos, data_node_base::BINARY_OP_BEGIN, "&&")(pos, data_node_base::OPERAND);
     lhs->compile(NULL);
@@ -37,7 +37,7 @@ proto::expr_prototype const* conjunction::compile(proto::scope const*) const
     return NULL;
 }
 
-proto::expr_prototype const* disjunction::compile(proto::scope const*) const
+proto::expr_base const* disjunction::compile(proto::scope const*) const
 {
     test::data_tree::actual_one()(pos, data_node_base::BINARY_OP_BEGIN, "||")(pos, data_node_base::OPERAND);
     lhs->compile(NULL);
@@ -47,7 +47,7 @@ proto::expr_prototype const* disjunction::compile(proto::scope const*) const
     return NULL;
 }
 
-proto::expr_prototype const* negation::compile(proto::scope const*) const
+proto::expr_base const* negation::compile(proto::scope const*) const
 {
     test::data_tree::actual_one()(pos, data_node_base::PRE_UNARY_OP_BEGIN, "!")(pos, data_node_base::OPERAND);
     rhs->compile(NULL);
@@ -55,25 +55,31 @@ proto::expr_prototype const* negation::compile(proto::scope const*) const
     return NULL;
 }
 
-proto::expr_prototype const* reference::compile(proto::scope const*) const
+proto::expr_base const* reference::compile(proto::scope const*) const
 {
     test::data_tree::actual_one()(pos, data_node_base::IDENTIFIER, name);
     return NULL;
 }
 
-proto::expr_prototype const* int_literal::compile(proto::scope const*) const
+proto::expr_base const* bool_literal::compile(proto::scope const*) const
+{
+    test::data_tree::actual_one()(pos, data_node_base::BOOLEAN, value ? "true" : "false");
+    return NULL;
+}
+
+proto::expr_base const* int_literal::compile(proto::scope const*) const
 {
     test::data_tree::actual_one()(pos, data_node_base::INTEGER, value);
     return NULL;
 }
 
-proto::expr_prototype const* float_literal::compile(proto::scope const*) const
+proto::expr_base const* float_literal::compile(proto::scope const*) const
 {
     test::data_tree::actual_one()(pos, data_node_base::FLOATING, value);
     return NULL;
 }
 
-proto::expr_prototype const* call::compile(proto::scope const*) const
+proto::expr_base const* call::compile(proto::scope const*) const
 {
     test::data_tree::actual_one()(pos, data_node_base::FUNC_CALL_BEGIN, name);
     std::for_each(args.begin()

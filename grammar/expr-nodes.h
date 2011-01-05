@@ -17,7 +17,7 @@ namespace grammar {
             , rhs(r)
         {}
 
-        proto::expr_prototype const* compile(proto::scope const* scope) const;
+        proto::expr_base const* compile(proto::scope const* scope) const;
 
         std::string const op_img;
         util::sptr<expr_base const> const rhs;
@@ -33,7 +33,7 @@ namespace grammar {
             , rhs(r)
         {}
 
-        proto::expr_prototype const* compile(proto::scope const* scope) const;
+        proto::expr_base const* compile(proto::scope const* scope) const;
 
         util::sptr<expr_base const> const lhs;
         std::string const op_img;
@@ -49,7 +49,7 @@ namespace grammar {
             , rhs(r)
         {}
 
-        proto::expr_prototype const* compile(proto::scope const* scope) const;
+        proto::expr_base const* compile(proto::scope const* scope) const;
 
         util::sptr<expr_base const> const lhs;
         util::sptr<expr_base const> const rhs;
@@ -64,7 +64,7 @@ namespace grammar {
             , rhs(r)
         {}
 
-        proto::expr_prototype const* compile(proto::scope const* scope) const;
+        proto::expr_base const* compile(proto::scope const* scope) const;
 
         util::sptr<expr_base const> const lhs;
         util::sptr<expr_base const> const rhs;
@@ -78,7 +78,7 @@ namespace grammar {
             , rhs(r)
         {}
 
-        proto::expr_prototype const* compile(proto::scope const* scope) const;
+        proto::expr_base const* compile(proto::scope const* scope) const;
 
         util::sptr<expr_base const> const rhs;
     };
@@ -91,9 +91,22 @@ namespace grammar {
             , name(name)
         {}
 
-        proto::expr_prototype const* compile(proto::scope const* scope) const;
+        proto::expr_base const* compile(proto::scope const* scope) const;
 
         std::string const name;
+    };
+
+    struct bool_literal
+        : public expr_base
+    {
+        bool_literal(misc::pos_type const& pos, bool val)
+            : expr_base(pos)
+            , value(val)
+        {}
+
+        proto::expr_base const* compile(proto::scope const* scope) const;
+
+        bool const value;
     };
 
     struct int_literal
@@ -104,7 +117,7 @@ namespace grammar {
             , value(val)
         {}
 
-        proto::expr_prototype const* compile(proto::scope const* scope) const;
+        proto::expr_base const* compile(proto::scope const* scope) const;
 
         std::string const value;
     };
@@ -117,7 +130,7 @@ namespace grammar {
             , value(val)
         {}
 
-        proto::expr_prototype const* compile(proto::scope const* scope) const;
+        proto::expr_base const* compile(proto::scope const* scope) const;
 
         std::string const value;
     };
@@ -132,7 +145,7 @@ namespace grammar {
             , args(arg_begin, arg_end)
         {}
 
-        proto::expr_prototype const* compile(proto::scope const* scope) const;
+        proto::expr_base const* compile(proto::scope const* scope) const;
 
         std::string const name;
         std::vector<util::sptr<expr_base const>> const args;

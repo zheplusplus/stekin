@@ -57,6 +57,14 @@ return {
     return KW_RETURN;
 }
 
+true {
+    return BOOL_TRUE;
+}
+
+false {
+    return BOOL_FALSE;
+}
+
 [0-9]+ {
     return INT_LITERAL;
 }

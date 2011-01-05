@@ -47,6 +47,7 @@
 %token KW_TRUE KW_FALSE
 %token LE GE NE AND OR
 %token COMMA COLON
+%token BOOL_TRUE BOOL_FALSE
 %token INT_LITERAL DOUBLE_LITERAL
 %token IDENT
 
@@ -305,6 +306,16 @@ factor:
     ref
     {
         $$ = $1;
+    }
+    |
+    BOOL_TRUE
+    {
+        $$ = new grammar::bool_literal(parser::here(), true);
+    }
+    |
+    BOOL_FALSE
+    {
+        $$ = new grammar::bool_literal(parser::here(), false);
     }
     |
     INT_LITERAL

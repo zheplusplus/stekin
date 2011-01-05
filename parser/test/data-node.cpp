@@ -54,6 +54,7 @@ std::ostream& operator<<(std::ostream& os, data_node_base const& node)
                         << " node type: " << node.type_img.type_img);
 }
 
+data_node_base::node_type const data_node_base::BOOLEAN("boolean");
 data_node_base::node_type const data_node_base::INTEGER("integer");
 data_node_base::node_type const data_node_base::FLOATING("floating");
 data_node_base::node_type const data_node_base::IDENTIFIER("identifier");

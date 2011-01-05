@@ -30,6 +30,7 @@ namespace test {
 
         node_type const type_img;
 
+        static node_type const BOOLEAN;
         static node_type const INTEGER;
         static node_type const FLOATING;
         static node_type const IDENTIFIER;
