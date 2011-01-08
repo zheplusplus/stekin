@@ -1,39 +1,46 @@
-#ifndef __STACKENING_INSTNACE_INSTANCE_SCOPE_H__
-#define __STACKENING_INSTNACE_INSTANCE_SCOPE_H__
+#ifndef __STACKENING_INSTNACE_SCOPE_H__
+#define __STACKENING_INSTNACE_SCOPE_H__
 
 #include <string>
 
+#include "type.h"
+#include "node-base.h"
+#include "operation.h"
+#include "symbol-table.h"
+#include "function.h"
+#include "variable.h"
+#include "block.h"
+#include "../util/pointer.h"
+#include "../misc/pos-type.h"
+
 namespace inst {
 
-    struct type;
-    struct variable;
-    struct operation;
-    struct symbol_table;
-    struct function;
-
     struct scope {
-        scope(function* func, symbol_table* symbols)
+        scope(util::sref<function> func, util::sref<symbol_table> symbols)
             : _func(func)
             , _symbols(symbols)
         {}
     public:
-        void set_return_type(int lineno, type const* type) const;
+        void set_return_type(misc::pos_type const& pos, type const* type) const;
 
-        variable def_var(int lineno, type const* vtype, std::string const& name) const;
-        variable query_var(int lineno, std::string const& name) const;
+        variable def_var(misc::pos_type const& pos, type const* vtype, std::string const& name) const;
+        variable query_var(misc::pos_type const& pos, std::string const& name) const;
 
-        operation const* query_binary(int lineno
+        operation const* query_binary(misc::pos_type const& pos
                                     , std::string const& op
                                     , type const* lhs
                                     , type const* rhs) const;
-        operation const* query_pre_unary(int lineno, std::string const& op, type const* rhs) const;
-    public:
-        symbol_table* get_symbols() const;
+        operation const* query_pre_unary(misc::pos_type const& pos
+                                       , std::string const& op
+                                       , type const* rhs) const;
+
+        void add_stmt(util::sptr<stmt_base const>&& stmt);
     private:
-        function* const _func;
-        symbol_table* const _symbols;
+        util::sref<function> _func;
+        util::sref<symbol_table> _symbols;
+        block _block;
     };
 
 }
 
-#endif /* __STACKENING_INSTNACE_INSTANCE_SCOPE_H__ */
+#endif /* __STACKENING_INSTNACE_SCOPE_H__ */

@@ -2,7 +2,7 @@ WORKDIR=instance
 
 include misc/mf-template.mk
 
-instance:type.d
+instance:type.d operation.d function.d symbol-table.d scope.d expr-nodes.d block.d err-report.d
 
 clean:
 	rm -f $(WORKDIR)/*.o

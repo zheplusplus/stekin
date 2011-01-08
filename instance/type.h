@@ -3,6 +3,8 @@
 
 #include <string>
 
+#include "../misc/pos-type.h"
+
 namespace inst {
 
     struct type {
@@ -20,6 +22,8 @@ namespace inst {
         static type const* const BIT_INT;
         static type const* const BIT_FLOAT;
     };
+
+    void check_condition_type(misc::pos_type const& pos, type const* t);
 
 }
 
