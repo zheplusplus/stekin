@@ -33,6 +33,4 @@ namespace test {
 
 }
 
-std::ostream& operator<<(std::ostream& os, util::sptr<test::data_node_base const> const& node);
-
 #endif /* __STACKENING_PARSER_TEST_DATA_TREES_H__ */

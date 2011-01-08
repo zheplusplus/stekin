@@ -55,8 +55,3 @@ data_tree& data_tree::operator()(misc::pos_type const& pos, int indent, data_nod
     _nodes.push_back(std::move(util::mkptr(new nothing_node(pos, indent, type))));
     return *this;
 }
-
-std::ostream& operator<<(std::ostream& os, util::sptr<data_node_base const> const& node)
-{
-    return os << *node;
-}
