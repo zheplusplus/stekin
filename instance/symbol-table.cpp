@@ -8,10 +8,10 @@ using namespace inst;
 
 static variable const BAD_REF(misc::pos_type(0), type::BIT_VOID, 0, 0);
 
-symbol_table::symbol_table(symbol_table const* ext_space
-                         , std::vector<arg_name_type_pair> const& args
+symbol_table::symbol_table(int ext_lvl
+                         , std::list<arg_name_type_pair> const& args
                          , std::map<std::string, variable const> ext_vars)
-    : level(ext_space->level + 1)
+    : level(ext_lvl + 1)
     , _ss_used(0)
     , _external_defs(ext_vars)
 {

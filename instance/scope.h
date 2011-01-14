@@ -35,6 +35,8 @@ namespace inst {
                                        , type const* rhs) const;
 
         void add_stmt(util::sptr<stmt_base const>&& stmt);
+
+        int level() const;
     private:
         util::sref<function> _func;
         util::sref<symbol_table> _symbols;

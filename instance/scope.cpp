@@ -39,3 +39,8 @@ void scope::add_stmt(util::sptr<stmt_base const>&& stmt)
 {
     _block.add_stmt(std::move(stmt));
 }
+
+int scope::level() const
+{
+    return _symbols->level;
+}

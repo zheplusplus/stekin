@@ -194,7 +194,7 @@ TEST_F(SymbolTableTest, NestedOnCorrect)
     inst::variable david(ext_st.def_var(misc::pos_type(3), &WORD, "david"));
     ASSERT_FALSE(inst::has_error());
 
-    std::vector<inst::arg_name_type_pair> args_info_a = {};
+    std::list<inst::arg_name_type_pair> args_info_a = {};
     std::map<std::string, inst::variable const> ext_vars = {
         { "alice", alice },
         { "bob", bob },
@@ -203,7 +203,7 @@ TEST_F(SymbolTableTest, NestedOnCorrect)
     };
 
     int func_word_used = 0;
-    inst::symbol_table sta(&ext_st, args_info_a, ext_vars);
+    inst::symbol_table sta(ext_st.level, args_info_a, ext_vars);
     ASSERT_EQ(1, sta.level);
 
     ASSERT_EQ(sta.query_var(misc::pos_type(10000), "alice"), alice);
@@ -236,7 +236,7 @@ TEST_F(SymbolTableTest, NestedOnCorrect)
     func_word_used += 2;
     ASSERT_FALSE(inst::has_error());
 
-    std::vector<inst::arg_name_type_pair> args_info_b = {
+    std::list<inst::arg_name_type_pair> args_info_b = {
         inst::arg_name_type_pair("x", &HALFWORD),
         inst::arg_name_type_pair("y", &HALFWORD),
         inst::arg_name_type_pair("z", &HALFWORD),
@@ -248,7 +248,7 @@ TEST_F(SymbolTableTest, NestedOnCorrect)
         { "david", david },
     };
 
-    inst::symbol_table stb(&sta, args_info_b, ext_vars);
+    inst::symbol_table stb(sta.level, args_info_b, ext_vars);
     ASSERT_EQ(2, stb.level);
     ASSERT_EQ(stb.query_var(misc::pos_type(11000), "alice"), alicef);
     ASSERT_EQ(stb.query_var(misc::pos_type(11001), "bob"), bobf);

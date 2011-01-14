@@ -3,7 +3,7 @@
 
 #include <string>
 #include <map>
-#include <vector>
+#include <list>
 
 #include "variable.h"
 #include "type.h"
@@ -22,8 +22,8 @@ namespace inst {
     };
 
     struct symbol_table {
-        symbol_table(symbol_table const* ext_space
-                   , std::vector<arg_name_type_pair> const& args
+        symbol_table(int ext_lvl
+                   , std::list<arg_name_type_pair> const& args
                    , std::map<std::string, variable const> ext_vars);
 
         symbol_table()

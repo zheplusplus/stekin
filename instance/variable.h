@@ -1,5 +1,5 @@
-#ifndef __STACKENING_SYMBOL_TABLE_VARIABLE_H__ 
-#define __STACKENING_SYMBOL_TABLE_VARIABLE_H__ 
+#ifndef __STACKENING_INSTANCE_VARIABLE_H__ 
+#define __STACKENING_INSTANCE_VARIABLE_H__ 
 
 #include "type.h"
 #include "../misc/pos-type.h"
@@ -43,4 +43,4 @@ namespace inst {
 
 }
 
-#endif /* __STACKENING_SYMBOL_TABLE_VARIABLE_H__ */
+#endif /* __STACKENING_INSTANCE_VARIABLE_H__ */

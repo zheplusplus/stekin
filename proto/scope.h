@@ -12,10 +12,12 @@ namespace proto {
     struct symbol_table;
     struct func_templ;
     struct block;
+    struct node_factory;
 
     struct scope {
-        scope(block* b, symbol_table* s)
-            : _block(b)
+        scope(node_factory* f, block* b, symbol_table* s)
+            : _factory(f)
+            , _block(b)
             , _symbols(s)
         {}
     public:
@@ -53,15 +55,16 @@ namespace proto {
         scope const* create_loop_scope() const;
     public:
         func_templ* decl_func(misc::pos_type const& pos
-                            , std::string const& func_name
+                            , std::string const& name
                             , std::vector<std::string> const& param_names) const;
     public:
         stmt_base const* as_stmt() const;
     public:
-        symbol_table* get_space() const;
+        symbol_table* get_symbols() const;
     public:
         static scope const* global_scope();
     protected:
+        node_factory* const _factory;
         block* const _block;
         symbol_table* const _symbols;
     };

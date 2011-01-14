@@ -3,6 +3,7 @@ include misc/mf-template.mk
 all:
 	make -f parser/Makefile
 	make -f grammar/Makefile
+	make -f proto/Makefile
 	make -f instance/Makefile
 
 test:
@@ -12,6 +13,7 @@ test:
 clean:
 	make -f parser/Makefile clean
 	make -f grammar/Makefile clean
+	make -f proto/Makefile clean
 	make -f instance/Makefile clean
 	rm -f $(MKTMP)
 
