@@ -35,7 +35,7 @@ operation const* scope::query_pre_unary(misc::pos_type const& pos, std::string c
     return operation::query_pre_unary(pos, op, rhs);
 }
 
-void scope::add_stmt(util::sptr<stmt_base const>&& stmt)
+void scope::add_stmt(util::sptr<stmt_base const> stmt)
 {
     _block.add_stmt(std::move(stmt));
 }

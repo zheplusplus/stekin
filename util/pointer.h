@@ -143,6 +143,12 @@ namespace util {
         return sptr<_RawType const>(ptr);
     }
 
+    template <typename _RawType>
+    sref<_RawType> mkref(_RawType& obj)
+    {
+        return sref<_RawType>(&obj);
+    }
+
 }
 
 template <typename _OS>

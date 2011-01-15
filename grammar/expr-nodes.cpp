@@ -4,54 +4,54 @@
 
 using namespace grammar;
 
-proto::expr_base const* pre_unary_oper::compile(proto::scope const* scope) const
+util::sptr<proto::expr_base const> pre_unary_oper::compile(util::sref<proto::scope> scope) const
 {
-    return scope->make_pre_unary(pos, op_img, rhs->compile(scope));
+    return std::move(scope->make_pre_unary(pos, op_img, rhs->compile(scope)));
 }
 
-proto::expr_base const* binary_oper::compile(proto::scope const* scope) const
+util::sptr<proto::expr_base const> binary_oper::compile(util::sref<proto::scope> scope) const
 {
-    return scope->make_binary(pos, lhs->compile(scope), op_img, rhs->compile(scope));
+    return std::move(scope->make_binary(pos, lhs->compile(scope), op_img, rhs->compile(scope)));
 }
 
-proto::expr_base const* conjunction::compile(proto::scope const* scope) const
+util::sptr<proto::expr_base const> conjunction::compile(util::sref<proto::scope> scope) const
 {
-    return scope->make_conj(pos, lhs->compile(scope), rhs->compile(scope));
+    return std::move(scope->make_conj(pos, lhs->compile(scope), rhs->compile(scope)));
 }
 
-proto::expr_base const* disjunction::compile(proto::scope const* scope) const
+util::sptr<proto::expr_base const> disjunction::compile(util::sref<proto::scope> scope) const
 {
-    return scope->make_disj(pos, lhs->compile(scope), rhs->compile(scope));
+    return std::move(scope->make_disj(pos, lhs->compile(scope), rhs->compile(scope)));
 }
 
-proto::expr_base const* negation::compile(proto::scope const* scope) const
+util::sptr<proto::expr_base const> negation::compile(util::sref<proto::scope> scope) const
 {
-    return scope->make_nega(pos, rhs->compile(scope));
+    return std::move(scope->make_nega(pos, rhs->compile(scope)));
 }
 
-proto::expr_base const* reference::compile(proto::scope const* scope) const
+util::sptr<proto::expr_base const> reference::compile(util::sref<proto::scope> scope) const
 {
-    return scope->make_ref(pos, name);
+    return std::move(scope->make_ref(pos, name));
 }
 
-proto::expr_base const* bool_literal::compile(proto::scope const* scope) const
+util::sptr<proto::expr_base const> bool_literal::compile(util::sref<proto::scope> scope) const
 {
-    return scope->make_bool(pos, value);
+    return std::move(scope->make_bool(pos, value));
 }
 
-proto::expr_base const* int_literal::compile(proto::scope const* scope) const
+util::sptr<proto::expr_base const> int_literal::compile(util::sref<proto::scope> scope) const
 {
-    return scope->make_int(pos, value);
+    return std::move(scope->make_int(pos, value));
 }
 
-proto::expr_base const* float_literal::compile(proto::scope const* scope) const
+util::sptr<proto::expr_base const> float_literal::compile(util::sref<proto::scope> scope) const
 {
-    return scope->make_float(pos, value);
+    return std::move(scope->make_float(pos, value));
 }
 
-proto::expr_base const* call::compile(proto::scope const* scope) const
+util::sptr<proto::expr_base const> call::compile(util::sref<proto::scope> scope) const
 {
-    std::vector<proto::expr_base const*> arguments;
+    std::vector<util::sptr<proto::expr_base const>> arguments;
     arguments.reserve(args.size());
     std::for_each(args.begin()
                 , args.end()
@@ -59,5 +59,5 @@ proto::expr_base const* call::compile(proto::scope const* scope) const
                   {
                       arguments.push_back(expr->compile(scope));
                   });
-    return scope->make_call(pos, name, arguments);
+    return std::move(scope->make_call(pos, name, std::move(arguments)));
 }

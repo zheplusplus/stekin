@@ -10,7 +10,7 @@ namespace inst {
     struct arithmetics
         : public stmt_base
     {
-        explicit arithmetics(util::sptr<expr_base const>&& e)
+        explicit arithmetics(util::sptr<expr_base const> e)
             : expr(std::move(e))
         {}
 
@@ -20,12 +20,10 @@ namespace inst {
     struct branch
         : public stmt_base
     {
-        branch(util::sptr<expr_base const>&& c
-             , util::sptr<stmt_base const>&& v
-             , util::sptr<stmt_base const>&& i)
-                : condition(std::move(c))
-                , valid(std::move(v))
-                , invalid(std::move(i))
+        branch(util::sptr<expr_base const> c, util::sptr<stmt_base const> v, util::sptr<stmt_base const> i)
+            : condition(std::move(c))
+            , valid(std::move(v))
+            , invalid(std::move(i))
         {}
 
         util::sptr<expr_base const> const condition;
@@ -36,7 +34,7 @@ namespace inst {
     struct loop
         : public stmt_base
     {
-        loop(util::sptr<expr_base const>&& c, util::sptr<stmt_base const>&& b)
+        loop(util::sptr<expr_base const> c, util::sptr<stmt_base const> b)
             : condition(std::move(c))
             , body(std::move(b))
         {}
@@ -48,7 +46,7 @@ namespace inst {
     struct initialization
         : public stmt_base
     {
-        initialization(int o, util::sptr<expr_base const>&& i)
+        initialization(int o, util::sptr<expr_base const> i)
             : offset(o)
             , init(std::move(i))
         {}

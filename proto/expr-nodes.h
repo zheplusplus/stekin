@@ -12,6 +12,20 @@ namespace proto {
 
     struct func_templ;
 
+    struct bool_literal
+        : public expr_base
+    {
+        bool_literal(misc::pos_type const& ps, bool v)
+            : pos(ps)
+            , value(v)
+        {}
+
+        util::sptr<inst::expr_base const> inst(util::sref<inst::scope const>) const; 
+
+        misc::pos_type const pos;
+        bool const value;
+    };
+
     struct int_literal
         : public expr_base
     {
@@ -20,7 +34,7 @@ namespace proto {
             , value(image)
         {}
 
-        inst::int_literal const* inst(inst::scope const* scope) const; 
+        util::sptr<inst::expr_base const> inst(util::sref<inst::scope const>) const; 
 
         misc::pos_type const pos;
         mpz_class value;
@@ -34,7 +48,7 @@ namespace proto {
             , value(image)
         {}
 
-        inst::float_literal const* inst(inst::scope const* scope) const; 
+        util::sptr<inst::expr_base const> inst(util::sref<inst::scope const>) const; 
 
         misc::pos_type const pos;
         mpf_class value;
@@ -48,7 +62,7 @@ namespace proto {
             , name(n)
         {}
 
-        inst::reference const* inst(inst::scope const* scope) const;
+        util::sptr<inst::expr_base const> inst(util::sref<inst::scope const> scope) const;
 
         misc::pos_type const pos;
         std::string const name;
@@ -57,97 +71,100 @@ namespace proto {
     struct call
         : public expr_base
     {
-        call(misc::pos_type const& ps, func_templ* f, std::vector<expr_base const*> const& a)
+        call(misc::pos_type const& ps, util::sref<func_templ> f, std::vector<util::sptr<expr_base const>> a)
             : pos(ps)
             , func(f)
-            , args(a)
+            , args(std::move(a))
         {}
 
-        inst::call const* inst(inst::scope const* scope) const;
+        util::sptr<inst::expr_base const> inst(util::sref<inst::scope const> scope) const;
 
         misc::pos_type const pos;
-        func_templ* const func;
-        std::vector<expr_base const*> const args;
+        util::sref<func_templ> const func;
+        std::vector<util::sptr<expr_base const>> const args;
     };
 
     struct binary_op
         : public expr_base
     {
-        binary_op(misc::pos_type const& ps, expr_base const* l, std::string const& o, expr_base const* r)
+        binary_op(misc::pos_type const& ps
+                , util::sptr<expr_base const> l
+                , std::string const& o
+                , util::sptr<expr_base const> r)
             : pos(ps)
-            , lhs(l)
+            , lhs(std::move(l))
             , op(o)
-            , rhs(r)
+            , rhs(std::move(r))
         {}
 
-        inst::binary_op const* inst(inst::scope const* scope) const;
+        util::sptr<inst::expr_base const> inst(util::sref<inst::scope const> scope) const;
 
         misc::pos_type const pos;
-        expr_base const* const lhs;
+        util::sptr<expr_base const> const lhs;
         std::string const op;
-        expr_base const* const rhs;
+        util::sptr<expr_base const> const rhs;
     };
 
     struct pre_unary_op
         : public expr_base
     {
-        pre_unary_op(misc::pos_type const& ps, std::string const& o, expr_base const* r)
+        pre_unary_op(misc::pos_type const& ps, std::string const& o, util::sptr<expr_base const> r)
             : pos(ps)
             , op(o)
-            , rhs(r)
+            , rhs(std::move(r))
         {}
 
-        inst::pre_unary_op const* inst(inst::scope const* scope) const;
+        util::sptr<inst::expr_base const> inst(util::sref<inst::scope const> scope) const;
 
         misc::pos_type const pos;
         std::string const op;
-        expr_base const* const rhs;
+        util::sptr<expr_base const> const rhs;
     };
 
     struct conjunction
         : public expr_base
     {
-        conjunction(misc::pos_type const& ps, expr_base const* l, expr_base const* r)
+        conjunction(misc::pos_type const& ps, util::sptr<expr_base const> l, util::sptr<expr_base const> r)
             : pos(ps)
-            , lhs(l)
-            , rhs(r)
+            , lhs(std::move(l))
+            , rhs(std::move(r))
         {}
 
-        inst::conjunction const* inst(inst::scope const* scope) const;
+        util::sptr<inst::expr_base const> inst(util::sref<inst::scope const> scope) const;
 
         misc::pos_type const pos;
-        expr_base const* const lhs;
-        expr_base const* const rhs;
+        util::sptr<expr_base const> const lhs;
+        util::sptr<expr_base const> const rhs;
     };
 
     struct disjunction
         : public expr_base
     {
-        disjunction(misc::pos_type const& ps, expr_base const* l, expr_base const* r)
+        disjunction(misc::pos_type const& ps, util::sptr<expr_base const> l, util::sptr<expr_base const> r)
             : pos(ps)
-            , lhs(l)
-            , rhs(r)
+            , lhs(std::move(l))
+            , rhs(std::move(r))
         {}
 
-        inst::disjunction const* inst(inst::scope const* scope) const;
+        util::sptr<inst::expr_base const> inst(util::sref<inst::scope const> scope) const;
 
         misc::pos_type const pos;
-        expr_base const* const lhs;
-        expr_base const* const rhs;
+        util::sptr<expr_base const> const lhs;
+        util::sptr<expr_base const> const rhs;
     };
 
     struct negation
         : public expr_base
     {
-        negation(misc::pos_type const& ps, expr_base const* r)
+        negation(misc::pos_type const& ps, util::sptr<expr_base const> r)
             : pos(ps)
-            , rhs(r)
+            , rhs(std::move(r))
         {}
 
-        inst::negation const* inst(inst::scope const* scope) const;
+        util::sptr<inst::expr_base const> inst(util::sref<inst::scope const> scope) const;
 
         misc::pos_type const pos;
-        expr_base const* const rhs;
+        util::sptr<expr_base const> const rhs;
     };
 
 }

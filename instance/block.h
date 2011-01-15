@@ -11,7 +11,7 @@ namespace inst {
     struct block
         : public stmt_base
     {
-        void add_stmt(util::sptr<stmt_base const>&& stmt);
+        void add_stmt(util::sptr<stmt_base const> stmt);
 
         block() = default;
 

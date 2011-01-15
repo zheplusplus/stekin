@@ -10,6 +10,7 @@ namespace grammar {
     void else_not_match_if(misc::pos_type const& else_pos);
     void if_already_match_else(misc::pos_type const& prev_else_pos, misc::pos_type const& this_else_pos);
     void excessive_indent(misc::pos_type const& pos);
+    void forbid_def_func(misc::pos_type const& pos, std::string const& name);
 
 }
 

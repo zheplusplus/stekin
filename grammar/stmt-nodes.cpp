@@ -4,17 +4,17 @@
 
 using namespace grammar;
 
-void block::add(util::sptr<stmt_base const>&& stmt)
+void block::add(util::sptr<stmt_base const> stmt)
 {
     _flow.push_back(std::move(stmt));
 }
 
-void block::add(util::sptr<struct func_def const>&& func_def)
+void block::add(util::sptr<struct func_def const> func_def)
 {
     _func_defs.push_back(std::move(func_def));
 }
 
-void block::compile(proto::scope const* scope) const 
+void block::compile(util::sref<proto::scope> scope) const 
 {
     std::for_each(_func_defs.begin()
                 , _func_defs.end()
@@ -30,38 +30,41 @@ void block::compile(proto::scope const* scope) const
                   });
 }
 
-void arithmetics::compile(proto::scope const* scope) const 
+void arithmetics::compile(util::sref<proto::scope> scope) const 
 {
-    scope->make_arith(pos, expr->compile(scope));
+    scope->add_arith(pos, expr->compile(scope));
 }
 
-void branch::compile(proto::scope const* scope) const 
+void branch::compile(util::sref<proto::scope> scope) const 
 {
-    proto::scope const* valid_scope = scope->create_branch_scope();
-    valid.compile(valid_scope);
-    proto::scope const* invalid_scope = scope->create_branch_scope();
-    invalid.compile(invalid_scope);
-    scope->branch(pos, condition->compile(scope), valid_scope->as_stmt(), invalid_scope->as_stmt());
+    util::sptr<proto::scope> valid_scope = scope->create_branch_scope();
+    valid.compile(*valid_scope);
+    util::sptr<proto::scope> invalid_scope = scope->create_branch_scope();
+    invalid.compile(*invalid_scope);
+    scope->add_branch(pos
+                    , condition->compile(scope)
+                    , valid_scope->extract_stmts()
+                    , invalid_scope->extract_stmts());
 }
 
-void loop::compile(proto::scope const* scope) const 
+void loop::compile(util::sref<proto::scope> scope) const 
 {
-    proto::scope const* loop_scope = scope->create_loop_scope();
-    body.compile(loop_scope);
-    scope->loop(pos, condition->compile(scope), loop_scope->as_stmt());
+    util::sptr<proto::scope> loop_scope = scope->create_loop_scope();
+    body.compile(*loop_scope);
+    scope->add_loop(pos, condition->compile(scope), loop_scope->extract_stmts());
 }
 
-void func_ret::compile(proto::scope const* scope) const 
+void func_ret::compile(util::sref<proto::scope> scope) const 
 {
-    scope->func_ret(pos, ret_val->compile(scope));
+    scope->add_func_ret(pos, ret_val->compile(scope));
 }
 
-void var_def::compile(proto::scope const* scope) const 
+void var_def::compile(util::sref<proto::scope> scope) const 
 {
     scope->def_var(pos, name, init->compile(scope));
 }
 
-void func_ret_nothing::compile(proto::scope const* scope) const
+void func_ret_nothing::compile(util::sref<proto::scope> scope) const
 {
-    scope->func_ret_nothing(pos);
+    scope->add_func_ret_nothing(pos);
 }

@@ -5,16 +5,16 @@
 
 using namespace proto;
 
-inst::block const* block::inst(inst::scope const* scope) const
+util::sptr<inst::stmt_base const> block::inst(util::sref<inst::scope const> scope) const
 {
-    inst::block* b = new inst::block;
+    util::sptr<inst::block> b(new inst::block);
     std::for_each(_stmts.begin()
                 , _stmts.end()
-                , [&](stmt_base const* stmt)
+                , [&](util::sptr<stmt_base const> const& stmt)
                   {
-                      b->add_stmt(std::move(util::mkptr(stmt->inst(scope))));
+                      b->add_stmt(std::move(stmt->inst(scope)));
                   });
-    return b;
+    return std::move(b);
 }
 
 void block::_set_term_status(termination_status status)
@@ -26,32 +26,24 @@ void block::_set_term_status(termination_status status)
     }
 }
 
-void block::add_stmt(stmt_base const* stmt)
+util::sptr<inst::stmt_base const> arithmetics::inst(util::sref<inst::scope const> scope) const
 {
-    if (NULL == stmt) {
-        return;
-    }
-    _set_term_status(stmt->termination());
-    _stmts.push_back(stmt);
+    return std::move(util::mkptr(new inst::arithmetics(std::move(expr->inst(scope)))));
 }
 
-inst::arithmetics const* arithmetics::inst(inst::scope const* scope) const
+util::sptr<inst::stmt_base const> var_def::inst(util::sref<inst::scope const> scope) const
 {
-    return new inst::arithmetics(std::move(util::mkptr(expr->inst(scope))));
+    util::sptr<inst::expr_base const> init_val = init->inst(scope);
+    return std::move(util::mkptr(
+                new inst::initialization(scope->def_var(pos, init_val->typeof(), name).stack_offset
+                                       , std::move(init_val))));
 }
 
-inst::initialization const* var_def::inst(inst::scope const* scope) const
+util::sptr<inst::stmt_base const> branch::inst(util::sref<inst::scope const> scope) const
 {
-    inst::expr_base const* init_val = init->inst(scope);
-    return new inst::initialization(scope->def_var(pos, init_val->typeof(), name).stack_offset
-                                  , std::move(util::mkptr(init_val)));
-}
-
-inst::branch const* branch::inst(inst::scope const* scope) const
-{
-    return new inst::branch(std::move(util::mkptr(condition->inst(scope)))
-                          , std::move(util::mkptr(valid->inst(scope)))
-                          , std::move(util::mkptr(invalid->inst(scope))));
+    return std::move(util::mkptr(new inst::branch(std::move(condition->inst(scope))
+                                                , std::move(valid->inst(scope))
+                                                , std::move(invalid->inst(scope)))));
 }
 
 termination_status branch::termination() const
@@ -65,21 +57,21 @@ termination_status branch::termination() const
     return RETURN_NO_VOID;
 }
 
-inst::loop const* loop::inst(inst::scope const* scope) const
+util::sptr<inst::stmt_base const> loop::inst(util::sref<inst::scope const> scope) const
 {
-    return new inst::loop(std::move(util::mkptr(condition->inst(scope)))
-                        , std::move(util::mkptr(body->inst(scope))));
+    return std::move(util::mkptr(new inst::loop(std::move(condition->inst(scope))
+                                              , std::move(body->inst(scope)))));
 }
 
-inst::func_ret const* func_ret::inst(inst::scope const* scope) const
+util::sptr<inst::stmt_base const> func_ret::inst(util::sref<inst::scope const> scope) const
 {
-    inst::expr_base const* e = ret_val->inst(scope);
+    util::sptr<inst::expr_base const> e = ret_val->inst(scope);
     scope->set_return_type(pos, e->typeof());
-    return new inst::func_ret(std::move(util::mkptr(e)));
+    return std::move(util::mkptr(new inst::func_ret(std::move(e))));
 }
 
-inst::func_ret_nothing const* func_ret_nothing::inst(inst::scope const* scope) const
+util::sptr<inst::stmt_base const> func_ret_nothing::inst(util::sref<inst::scope const> scope) const
 {
     scope->set_return_type(pos, inst::type::BIT_VOID);
-    return new inst::func_ret_nothing;
+    return std::move(util::mkptr(new inst::func_ret_nothing));
 }

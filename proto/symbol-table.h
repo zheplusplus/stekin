@@ -9,6 +9,7 @@
 
 #include "../instance/scope.h"
 #include "../instance/variable.h"
+#include "../util/pointer.h"
 
 namespace proto {
 
@@ -32,7 +33,7 @@ namespace proto {
     struct symbol_table {
         int const level;
 
-        explicit symbol_table(symbol_table const* ext_symbols)
+        explicit symbol_table(util::sref<symbol_table const> ext_symbols)
             : level(ext_symbols->level + 1)
             , _external_or_null_on_global(ext_symbols)
         {}
@@ -50,24 +51,24 @@ namespace proto {
 
         void ref_var(misc::pos_type const& pos, std::string const& name);
         void def_var(misc::pos_type const& pos, std::string const& name);
-        func_templ* def_func(misc::pos_type const& pos
-                           , std::string const& name
-                           , std::vector<std::string> const& param_names);
-        func_templ* query_func(misc::pos_type const& pos, std::string const& name, int param_count) const;
+        util::sref<func_templ> def_func(misc::pos_type const& pos
+                                      , std::string const& name
+                                      , std::vector<std::string> const& param_names);
+        util::sref<func_templ> query_func(misc::pos_type const& pos
+                                        , std::string const& name
+                                        , int param_count) const;
         std::map<std::string, inst::variable const>
-            bind_external_var_refs(misc::pos_type const& pos, inst::scope const* ext_scope) const;
+            bind_external_var_refs(misc::pos_type const& pos, util::sref<inst::scope const> ext_scope) const;
     private:
         std::map<std::string, std::list<misc::pos_type>> _external_var_refs;
         std::map<std::string, misc::pos_type> _var_defs;
-        std::map<func_signature, func_templ* const> _funcs;
+        std::map<func_signature, util::sref<func_templ> const> _funcs;
         std::list<func_templ> _func_entities;
-        symbol_table const* const _external_or_null_on_global;
+        util::sref<symbol_table const> const _external_or_null_on_global;
 
-        func_templ _make_func(misc::pos_type const& pos
-                            , std::string const& name
-                            , std::vector<std::string> const& params);
-        func_templ* _query_func_or_null_if_nonexist(std::string const& name, int param_count) const;
-        func_templ* _query_func_in_external_or_null_if_nonexist(std::string const& name, int param_count) const;
+        util::sref<func_templ> _query_func_or_null_if_nonexist(std::string const& name, int param_count) const;
+        util::sref<func_templ> _query_func_in_external_or_null_if_nonexist(std::string const& name
+                                                                         , int param_count) const;
 
         symbol_table(symbol_table const&) = delete;
 

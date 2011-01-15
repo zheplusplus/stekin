@@ -8,12 +8,17 @@ void acceptor::accept_else(misc::pos_type const& else_pos)
     else_not_match_if(else_pos);
 }
 
-void if_acceptor::accept_stmt(util::sptr<stmt_base const>&& stmt)
+void func_def_forbid_acceptor::accept_func(util::sptr<func_def const> func)
+{
+    forbid_def_func(func->pos, func->name);
+}
+
+void if_acceptor::accept_stmt(util::sptr<stmt_base const> stmt)
 {
     _current_branch->add(std::move(stmt));
 }
 
-void if_acceptor::accept_func(util::sptr<func_def const>&& func)
+void if_acceptor::accept_func(util::sptr<func_def const> func)
 {
     _current_branch->add(std::move(func));
 }
@@ -39,12 +44,12 @@ bool if_acceptor::_else_matched() const
     return bool(_last_else_pos);
 }
 
-void ifnot_acceptor::accept_stmt(util::sptr<stmt_base const>&& stmt)
+void ifnot_acceptor::accept_stmt(util::sptr<stmt_base const> stmt)
 {
     _invalid.add(std::move(stmt));
 }
 
-void ifnot_acceptor::accept_func(util::sptr<func_def const>&& func)
+void ifnot_acceptor::accept_func(util::sptr<func_def const> func)
 {
     _invalid.add(std::move(func));
 }
@@ -55,12 +60,12 @@ void ifnot_acceptor::deliver_to(util::sptr<acceptor>& acc)
                             new branch(pos, std::move(_condition), std::move(block()), std::move(_invalid)))));
 }
 
-void while_acceptor::accept_stmt(util::sptr<stmt_base const>&& stmt)
+void while_acceptor::accept_stmt(util::sptr<stmt_base const> stmt)
 {
     _body.add(std::move(stmt));
 }
 
-void while_acceptor::accept_func(util::sptr<func_def const>&& func)
+void while_acceptor::accept_func(util::sptr<func_def const> func)
 {
     _body.add(std::move(func));
 }
@@ -70,12 +75,12 @@ void while_acceptor::deliver_to(util::sptr<acceptor>& acc)
     acc->accept_stmt(std::move(util::mkptr(new loop(pos, std::move(_condition), std::move(_body)))));
 }
 
-void func_def_acceptor::accept_stmt(util::sptr<stmt_base const>&& stmt)
+void func_def_acceptor::accept_stmt(util::sptr<stmt_base const> stmt)
 {
     _body.add(std::move(stmt));
 }
 
-void func_def_acceptor::accept_func(util::sptr<func_def const>&& func)
+void func_def_acceptor::accept_func(util::sptr<func_def const> func)
 {
     _body.add(std::move(func));
 }
@@ -94,27 +99,27 @@ namespace {
             : acceptor(misc::pos_type(-1))
         {}
 
-        void accept_stmt(util::sptr<stmt_base const>&&) {}
-        void accept_func(util::sptr<func_def const>&&) {}
+        void accept_stmt(util::sptr<stmt_base const>) {}
+        void accept_func(util::sptr<func_def const>) {}
         void deliver_to(util::sptr<acceptor>&) {}
         void accept_else(misc::pos_type const& else_pos) {}
     };
 
 }
 
-void acceptor_stack::add(int level, util::sptr<acceptor>&& acc)
+void acceptor_stack::add(int level, util::sptr<acceptor> acc)
 {
     _prepare_level(level, acc->pos);
     _acceptors.push_back(std::move(acc));
 }
 
-void acceptor_stack::next_stmt(int level, util::sptr<stmt_base const>&& stmt)
+void acceptor_stack::next_stmt(int level, util::sptr<stmt_base const> stmt)
 {
     _prepare_level(level, stmt->pos);
     _acceptors[level]->accept_stmt(std::move(stmt));
 }
 
-void acceptor_stack::next_func(int level, util::sptr<func_def const>&& func)
+void acceptor_stack::next_func(int level, util::sptr<func_def const> func)
 {
     _prepare_level(level, func->pos);
     _acceptors[level]->accept_func(std::move(func));
@@ -168,11 +173,11 @@ util::sptr<func_def const> acceptor_stack::pack_all()
             , func(f)
         {}
 
-        void accept_stmt(util::sptr<stmt_base const>&&) {}
+        void accept_stmt(util::sptr<stmt_base const>) {}
         void deliver_to(util::sptr<acceptor>&) {}
         void accept_else(misc::pos_type const& else_pos) {}
 
-        void accept_func(util::sptr<func_def const>&& func)
+        void accept_func(util::sptr<func_def const> func)
         {
             func = std::move(func);
         }

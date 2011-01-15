@@ -17,7 +17,7 @@ namespace grammar {
             , rhs(r)
         {}
 
-        proto::expr_base const* compile(proto::scope const* scope) const;
+        util::sptr<proto::expr_base const> compile(util::sref<proto::scope> scope) const;
 
         std::string const op_img;
         util::sptr<expr_base const> const rhs;
@@ -33,7 +33,7 @@ namespace grammar {
             , rhs(r)
         {}
 
-        proto::expr_base const* compile(proto::scope const* scope) const;
+        util::sptr<proto::expr_base const> compile(util::sref<proto::scope> scope) const;
 
         util::sptr<expr_base const> const lhs;
         std::string const op_img;
@@ -49,7 +49,7 @@ namespace grammar {
             , rhs(r)
         {}
 
-        proto::expr_base const* compile(proto::scope const* scope) const;
+        util::sptr<proto::expr_base const> compile(util::sref<proto::scope> scope) const;
 
         util::sptr<expr_base const> const lhs;
         util::sptr<expr_base const> const rhs;
@@ -64,7 +64,7 @@ namespace grammar {
             , rhs(r)
         {}
 
-        proto::expr_base const* compile(proto::scope const* scope) const;
+        util::sptr<proto::expr_base const> compile(util::sref<proto::scope> scope) const;
 
         util::sptr<expr_base const> const lhs;
         util::sptr<expr_base const> const rhs;
@@ -78,7 +78,7 @@ namespace grammar {
             , rhs(r)
         {}
 
-        proto::expr_base const* compile(proto::scope const* scope) const;
+        util::sptr<proto::expr_base const> compile(util::sref<proto::scope> scope) const;
 
         util::sptr<expr_base const> const rhs;
     };
@@ -91,7 +91,7 @@ namespace grammar {
             , name(name)
         {}
 
-        proto::expr_base const* compile(proto::scope const* scope) const;
+        util::sptr<proto::expr_base const> compile(util::sref<proto::scope> scope) const;
 
         std::string const name;
     };
@@ -104,7 +104,7 @@ namespace grammar {
             , value(val)
         {}
 
-        proto::expr_base const* compile(proto::scope const* scope) const;
+        util::sptr<proto::expr_base const> compile(util::sref<proto::scope> scope) const;
 
         bool const value;
     };
@@ -117,7 +117,7 @@ namespace grammar {
             , value(val)
         {}
 
-        proto::expr_base const* compile(proto::scope const* scope) const;
+        util::sptr<proto::expr_base const> compile(util::sref<proto::scope> scope) const;
 
         std::string const value;
     };
@@ -130,7 +130,7 @@ namespace grammar {
             , value(val)
         {}
 
-        proto::expr_base const* compile(proto::scope const* scope) const;
+        util::sptr<proto::expr_base const> compile(util::sref<proto::scope> scope) const;
 
         std::string const value;
     };
@@ -145,7 +145,7 @@ namespace grammar {
             , args(arg_begin, arg_end)
         {}
 
-        proto::expr_base const* compile(proto::scope const* scope) const;
+        util::sptr<proto::expr_base const> compile(util::sref<proto::scope> scope) const;
 
         std::string const name;
         std::vector<util::sptr<expr_base const>> const args;

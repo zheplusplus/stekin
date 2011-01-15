@@ -73,7 +73,7 @@ namespace {
     struct func_inst_recs
         : protected std::list<std::unique_ptr<function const>>
     {
-        void add(util::sptr<function const>&& func)
+        void add(util::sptr<function const> func)
         {
             push_back(std::move(func));
         }

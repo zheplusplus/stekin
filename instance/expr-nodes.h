@@ -62,7 +62,7 @@ namespace inst {
     struct call
         : public expr_base
     {
-        call(util::sref<function const> f, std::vector<util::sptr<expr_base const>>&& a)
+        call(util::sref<function const> f, std::vector<util::sptr<expr_base const>> a)
             : func(f)
             , args(std::move(a))
         {}
@@ -76,7 +76,7 @@ namespace inst {
     struct binary_op
         : public expr_base
     {
-        binary_op(util::sptr<expr_base const>&& l, operation const* o, util::sptr<expr_base const>&& r)
+        binary_op(util::sptr<expr_base const> l, operation const* o, util::sptr<expr_base const> r)
             : lhs(std::move(l))
             , op(o)
             , rhs(std::move(r))
@@ -92,7 +92,7 @@ namespace inst {
     struct pre_unary_op
         : public expr_base
     {
-        pre_unary_op(operation const* o, util::sptr<expr_base const>&& r)
+        pre_unary_op(operation const* o, util::sptr<expr_base const> r)
             : op(o)
             , rhs(std::move(r))
         {}
@@ -106,7 +106,7 @@ namespace inst {
     struct conjunction
         : public expr_base
     {
-        conjunction(util::sptr<expr_base const>&& l, util::sptr<expr_base const>&& r)
+        conjunction(util::sptr<expr_base const> l, util::sptr<expr_base const> r)
             : lhs(std::move(l))
             , rhs(std::move(r))
         {}
@@ -120,7 +120,7 @@ namespace inst {
     struct disjunction
         : public expr_base
     {
-        disjunction(util::sptr<expr_base const>&& l, util::sptr<expr_base const>&& r)
+        disjunction(util::sptr<expr_base const> l, util::sptr<expr_base const> r)
             : lhs(std::move(l))
             , rhs(std::move(r))
         {}
@@ -134,7 +134,7 @@ namespace inst {
     struct negation
         : public expr_base
     {
-        explicit negation(util::sptr<expr_base const>&& r)
+        explicit negation(util::sptr<expr_base const> r)
             : rhs(std::move(r))
         {}
 

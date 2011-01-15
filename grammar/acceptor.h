@@ -9,8 +9,8 @@
 namespace grammar {
 
     struct acceptor {
-        virtual void accept_stmt(util::sptr<stmt_base const>&& stmt) = 0;
-        virtual void accept_func(util::sptr<func_def const>&& func) = 0;
+        virtual void accept_stmt(util::sptr<stmt_base const> stmt) = 0;
+        virtual void accept_func(util::sptr<func_def const> func) = 0;
 
         virtual void deliver_to(util::sptr<acceptor>& acc) = 0;
 
@@ -27,18 +27,28 @@ namespace grammar {
         acceptor(acceptor const&) = delete;
     };
 
-    struct if_acceptor
+    struct func_def_forbid_acceptor
         : public acceptor
     {
-        void accept_stmt(util::sptr<stmt_base const>&& stmt);
-        void accept_func(util::sptr<func_def const>&& func);
+        void accept_func(util::sptr<func_def const> func) = 0;
+    protected:
+        explicit func_def_forbid_acceptor(misc::pos_type const& pos)
+            : acceptor(pos)
+        {}
+    };
+
+    struct if_acceptor
+        : public func_def_forbid_acceptor
+    {
+        void accept_stmt(util::sptr<stmt_base const> stmt);
+        void accept_func(util::sptr<func_def const> func);
 
         void deliver_to(util::sptr<acceptor>& acc);
 
         void accept_else(misc::pos_type const& else_pos);
 
-        if_acceptor(misc::pos_type const& pos, util::sptr<expr_base const>&& condition)
-            : acceptor(pos)
+        if_acceptor(misc::pos_type const& pos, util::sptr<expr_base const> condition)
+            : func_def_forbid_acceptor(pos)
             , _condition(std::move(condition))
             , _current_branch(&_valid)
         {}
@@ -55,15 +65,15 @@ namespace grammar {
     };
 
     struct ifnot_acceptor
-        : public acceptor
+        : public func_def_forbid_acceptor
     {
-        void accept_stmt(util::sptr<stmt_base const>&& stmt);
-        void accept_func(util::sptr<func_def const>&& func);
+        void accept_stmt(util::sptr<stmt_base const> stmt);
+        void accept_func(util::sptr<func_def const> func);
 
         void deliver_to(util::sptr<acceptor>& acc);
 
-        ifnot_acceptor(misc::pos_type const& pos, util::sptr<expr_base const>&& condition)
-            : acceptor(pos)
+        ifnot_acceptor(misc::pos_type const& pos, util::sptr<expr_base const> condition)
+            : func_def_forbid_acceptor(pos)
             , _condition(std::move(condition))
         {}
     private:
@@ -73,15 +83,15 @@ namespace grammar {
     };
 
     struct while_acceptor
-        : public acceptor
+        : public func_def_forbid_acceptor
     {
-        void accept_stmt(util::sptr<stmt_base const>&& stmt);
-        void accept_func(util::sptr<func_def const>&& func);
+        void accept_stmt(util::sptr<stmt_base const> stmt);
+        void accept_func(util::sptr<func_def const> func);
 
         void deliver_to(util::sptr<acceptor>& acc);
 
-        while_acceptor(misc::pos_type const& pos, util::sptr<expr_base const>&& condition)
-            : acceptor(pos)
+        while_acceptor(misc::pos_type const& pos, util::sptr<expr_base const> condition)
+            : func_def_forbid_acceptor(pos)
             , _condition(std::move(condition))
         {}
     private:
@@ -93,8 +103,8 @@ namespace grammar {
     struct func_def_acceptor
         : public acceptor
     {
-        void accept_stmt(util::sptr<stmt_base const>&& stmt);
-        void accept_func(util::sptr<func_def const>&& func);
+        void accept_stmt(util::sptr<stmt_base const> stmt);
+        void accept_func(util::sptr<func_def const> func);
 
         void deliver_to(util::sptr<acceptor>& acc);
 
@@ -113,10 +123,10 @@ namespace grammar {
     };
 
     struct acceptor_stack {
-        void add(int level, util::sptr<acceptor>&& acc);
+        void add(int level, util::sptr<acceptor> acc);
 
-        void next_stmt(int level, util::sptr<stmt_base const>&& stmt);
-        void next_func(int level, util::sptr<func_def const>&& func);
+        void next_stmt(int level, util::sptr<stmt_base const> stmt);
+        void next_func(int level, util::sptr<func_def const> func);
 
         void match_else(int level, misc::pos_type const& pos);
 

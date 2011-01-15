@@ -1,126 +1,145 @@
 #include "scope.h"
+#include "expr-nodes.h"
 #include "stmt-nodes.h"
 #include "func-templ.h"
-#include "node-factory.h"
+#include "err-report.h"
 
 using namespace proto;
 
-expr_base const* scope::make_int(misc::pos_type const& pos, std::string const& value) const
+util::sptr<expr_base const> scope::make_bool(misc::pos_type const& pos, bool value) const
 {
-    return _factory->make_int(pos, value);
+    return std::move(util::mkptr(new bool_literal(pos, value)));
 }
 
-expr_base const* scope::make_float(misc::pos_type const& pos, std::string const& value) const
+util::sptr<expr_base const> scope::make_int(misc::pos_type const& pos, std::string const& value) const
 {
-    return _factory->make_float(pos, value);
+    return std::move(util::mkptr(new int_literal(pos, value)));
 }
 
-expr_base const* scope::make_ref(misc::pos_type const& pos, std::string const& name) const
+util::sptr<expr_base const> scope::make_float(misc::pos_type const& pos, std::string const& value) const
+{
+    return std::move(util::mkptr(new float_literal(pos, value)));
+}
+
+util::sptr<expr_base const> scope::make_ref(misc::pos_type const& pos, std::string const& name) const
 {
     _symbols->ref_var(pos, name);
-    return _factory->make_ref(pos, name);
+    return std::move(util::mkptr(new reference(pos, name)));
 }
 
-expr_base const* scope::make_call(misc::pos_type const& pos
-                                , std::string const& name
-                                , std::vector<expr_base const*> const& args) const
+util::sptr<expr_base const> scope::make_call(misc::pos_type const& pos
+                                           , std::string const& name
+                                           , std::vector<util::sptr<expr_base const>> args) const
 {
-    return _factory->call_func(pos, _symbols->query_func(pos, name, args.size()), args);
+    return std::move(util::mkptr(new call(pos, _symbols->query_func(pos, name, args.size()), std::move(args))));
 }
 
-expr_base const* scope::make_binary(misc::pos_type const& pos
-                                  , expr_base const* lhs
-                                  , std::string const& op
-                                  , expr_base const* rhs) const
+util::sptr<expr_base const> scope::make_binary(misc::pos_type const& pos
+                                             , util::sptr<expr_base const> lhs
+                                             , std::string const& op
+                                             , util::sptr<expr_base const> rhs) const
 {
-    return _factory->make_binary(pos, lhs, op, rhs);
+    return std::move(util::mkptr(new binary_op(pos, std::move(lhs), op, std::move(rhs))));
 }
 
-expr_base const* scope::make_pre_unary(misc::pos_type const& pos
-                                     , std::string const& op
-                                     , expr_base const* rhs) const
+util::sptr<expr_base const> scope::make_pre_unary(misc::pos_type const& pos
+                                                , std::string const& op
+                                                , util::sptr<expr_base const> rhs) const
 {
-    return _factory->make_pre_unary(pos, op, rhs);
+    return std::move(util::mkptr(new pre_unary_op(pos, op, std::move(rhs))));
 }
 
-expr_base const* scope::make_conj(misc::pos_type const& pos, expr_base const* lhs, expr_base const* rhs) const
+util::sptr<expr_base const> scope::make_conj(misc::pos_type const& pos
+                                           , util::sptr<expr_base const> lhs
+                                           , util::sptr<expr_base const> rhs) const
 {
-    return _factory->make_conj(pos, lhs, rhs);
+    return std::move(util::mkptr(new conjunction(pos, std::move(lhs), std::move(rhs))));
 }
 
-expr_base const* scope::make_disj(misc::pos_type const& pos, expr_base const* lhs, expr_base const* rhs) const
+util::sptr<expr_base const> scope::make_disj(misc::pos_type const& pos
+                                           , util::sptr<expr_base const> lhs
+                                           , util::sptr<expr_base const> rhs) const
 {
-    return _factory->make_disj(pos, lhs, rhs);
+    return std::move(util::mkptr(new disjunction(pos, std::move(lhs), std::move(rhs))));
 }
 
-expr_base const* scope::make_nega(misc::pos_type const& pos, expr_base const* rhs) const
+util::sptr<expr_base const> scope::make_nega(misc::pos_type const& pos, util::sptr<expr_base const> rhs) const
 {
-    return _factory->make_nega(pos, rhs);
+    return std::move(util::mkptr(new negation(pos, std::move(rhs))));
 }
 
-void scope::func_ret(misc::pos_type const& pos, expr_base const* ret_val) const
+void scope::add_func_ret(misc::pos_type const& pos, util::sptr<expr_base const> ret_val)
 {
-    _block->add_stmt(_factory->make_ret(pos, ret_val));
+    _flow_mgr->add_stmt(std::move(util::mkptr(new func_ret(pos, std::move(ret_val)))));
+    _flow_mgr.reset(new teminated_flow(RETURN_NO_VOID, _flow_mgr));
 }
 
-void scope::func_ret_nothing(misc::pos_type const& pos) const
+void scope::add_func_ret_nothing(misc::pos_type const& pos)
 {
-    _block->add_stmt(_factory->make_ret_nothing(pos));
+    _flow_mgr->add_stmt(std::move(util::mkptr(new func_ret_nothing(pos))));
+    _flow_mgr.reset(new teminated_flow(RETURN_VOID, _flow_mgr));
 }
 
-void scope::make_arith(misc::pos_type const& pos, expr_base const* expr) const
+void scope::add_arith(misc::pos_type const& pos, util::sptr<expr_base const> expr)
 {
-    _block->add_stmt(_factory->make_arith(pos, expr));
+    _flow_mgr->add_stmt(std::move(util::mkptr(new arithmetics(pos, std::move(expr)))));
 }
 
-void scope::branch(misc::pos_type const& pos
-                 , expr_base const* condition
-                 , stmt_base const* valid
-                 , stmt_base const* invalid) const
+void scope::add_branch(misc::pos_type const& pos
+                     , util::sptr<expr_base const> condition
+                     , util::sptr<stmt_base const> valid
+                     , util::sptr<stmt_base const> invalid)
 {
-    _block->add_stmt(_factory->make_branch(pos, condition, valid, invalid));
+    _flow_mgr->add_stmt(std::move(util::mkptr(
+                        new branch(pos, std::move(condition), std::move(valid), std::move(invalid)))));
 }
 
-void scope::loop(misc::pos_type const& pos, expr_base const* condition, stmt_base const* body) const
+void scope::add_loop(misc::pos_type const& pos
+                   , util::sptr<expr_base const> condition
+                   , util::sptr<stmt_base const> body)
 {
-    _block->add_stmt(_factory->make_loop(pos, condition, body));
+    _flow_mgr->add_stmt(std::move(util::mkptr(new loop(pos, std::move(condition), std::move(body)))));
 }
 
-void scope::def_var(misc::pos_type const& pos, std::string const& name, expr_base const* init) const
+void scope::def_var(misc::pos_type const& pos, std::string const& name, util::sptr<expr_base const> init)
 {
     _symbols->def_var(pos, name);
-    _block->add_stmt(_factory->def_var(pos, name, init));
+    _flow_mgr->add_stmt(std::move(util::mkptr(new var_def(pos, name, std::move(init)))));
 }
 
-scope const* scope::create_branch_scope() const
+util::sptr<scope> scope::create_branch_scope()
 {
-    return _factory->create_branch_scope();
+    return std::move(util::mkmptr(new sub_scope(_symbols)));
 }
 
-scope const* scope::create_loop_scope() const
+util::sptr<scope> scope::create_loop_scope()
 {
-    return _factory->create_loop_scope();
+    return std::move(util::mkmptr(new sub_scope(_symbols)));
 }
 
-func_templ* scope::decl_func(misc::pos_type const& pos
-                           , std::string const& name
-                           , std::vector<std::string> const& param_names) const
+util::sref<func_templ> scope::decl_func(misc::pos_type const& pos
+                                      , std::string const& name
+                                      , std::vector<std::string> const& param_names)
 {
     return _symbols->def_func(pos, name, param_names);
 }
 
-stmt_base const* scope::as_stmt() const
+util::sptr<stmt_base const> scope::extract_stmts()
 {
-    return _block;
+    return std::move(util::mkptr(new block(std::move(_stmts))));
 }
 
-symbol_table* scope::get_symbols() const
+util::sref<symbol_table> scope::get_symbols() const
 {
     return _symbols;
 }
 
-scope const* scope::global_scope()
+util::sptr<scope const> scope::global_scope()
 {
-    static func_templ gscope(misc::pos_type(0), "", std::vector<std::string>());
-    return &gscope.body_scope;
+    return util::sptr<scope const>(0);
+}
+
+void sub_scope::def_var(misc::pos_type const& pos, std::string const& name, util::sptr<expr_base const>)
+{
+    forbid_def_var(pos, name);
 }

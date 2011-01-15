@@ -104,7 +104,7 @@ clue:
     |
     if_clue {}
     |
-    if_not_clue {}
+    ifnot_clue {}
     |
     else_clue {}
     |
@@ -178,10 +178,10 @@ if_clue:
     }
 ;
 
-if_not_clue:
+ifnot_clue:
     indent KW_IFNOT cond eol
     {
-        parser::builder.add_if_not($1, std::move(util::mkptr($3)));
+        parser::builder.add_ifnot($1, std::move(util::mkptr($3)));
     }
 ;
 

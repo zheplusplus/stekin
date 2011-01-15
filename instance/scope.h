@@ -34,7 +34,7 @@ namespace inst {
                                        , std::string const& op
                                        , type const* rhs) const;
 
-        void add_stmt(util::sptr<stmt_base const>&& stmt);
+        void add_stmt(util::sptr<stmt_base const> stmt);
 
         int level() const;
     private:
