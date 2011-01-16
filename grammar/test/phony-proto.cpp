@@ -1,412 +1,181 @@
 #include <algorithm>
 #include <cassert>
 
+#include "test-common.h"
+#include "../../proto/scope.h"
 #include "../../proto/func-templ.h"
-#include "../../proto/symbol-table.h"
 
 using namespace test;
 using namespace proto;
 
 namespace {
 
-    struct func_adaptor
-        : public stmt_base
+    struct phony_scope
+        : public scope
     {
-        func_adaptor(func_prototype* f)
-            : func(f)
-        {}
-
-        stmt_instance const* inst(instance_scope const*) const
+        phony_scope()
+            : scope(util::sref<symbol_table>(0))
         {
-            func->inst(0, NULL, std::vector<symtab::type const*>());
-            return NULL;
+            data_tree::actual_one()(SCOPE);
         }
-
-        func_prototype* const func;
     };
 
-    struct phony_call
-        : public call_prototype
+    static util::sptr<expr_base const> nullptr()
     {
-        phony_call(int lineno, std::string const& n, std::vector<expr_base const*> const& a)
-            : call_prototype(lineno, NULL, a)
-            , name(n)
-        {}
+        return std::move(util::sptr<expr_base const>(0));
+    }
 
-        call_instance const* inst(instance_scope const*) const;
-
-        std::string const name;
-    };
-
-    struct phony_int_literal
-        : public int_literal_prototype
+    static util::sptr<scope> mkscope()
     {
-        phony_int_literal(int lineno, std::string const& i)
-            : int_literal_prototype(lineno, i)
-            , image(i)
-        {}
-
-        int_literal_instance const* inst(instance_scope const*) const;
-
-        std::string const image;
-    };
-
-    struct phony_float_literal
-        : public float_literal_prototype
-    {
-        phony_float_literal(int lineno, std::string const& i)
-            : float_literal_prototype(lineno, i)
-            , image(i)
-        {}
-
-        float_literal_instance const* inst(instance_scope const*) const;
-
-        std::string const image;
-    };
+        return std::move(util::mkmptr(new phony_scope));
+    }
 
 }
 
-static std::list<phony_int_literal> int_literals;
-static std::list<phony_float_literal> float_literals;
-static std::list<phony_call> calls;
-static std::list<ref_prototype> var_refs;
-static std::list<binary_prototype> binary_ops;
-static std::list<pre_unary_prototype> pre_unary_ops;
-static std::list<conj_prototype> conjs;
-static std::list<disj_prototype> disjs;
-static std::list<nega_prototype> negas;
-
-static std::list<block_prototype> blocks;
-static std::list<arith_prototype> ariths;
-static std::list<branch_prototype> branches;
-static std::list<loop_prototype> loops;
-static std::list<var_def_prototype> var_defs;
-static std::list<return_prototype> returnings;
-static std::list<void_return_prototype> void_returnings;
-
-static std::list<prototype_scope> scopes;
-static std::list<func_adaptor> funcs;
-static std::list<func_prototype> func_defs;
-
-static prototype_scope* create_scope()
+util::sptr<expr_base const> scope::make_bool(misc::pos_type const& pos, bool value) const
 {
-    blocks.push_back(block_prototype());
-    scopes.push_back(prototype_scope(NULL, &blocks.back(), NULL));
-    return &scopes.back();
+    data_tree::actual_one()(pos, BOOLEAN, value ? "true" : "false");
+    return std::move(nullptr());
 }
 
-expr_base const* prototype_scope::make_int(int lineno, std::string const& value) const
+util::sptr<expr_base const> scope::make_int(misc::pos_type const& pos, std::string const& value) const
 {
-    int_literals.push_back(phony_int_literal(lineno, value));
-    return &int_literals.back();
+    data_tree::actual_one()(pos, INTEGER, value);
+    return std::move(nullptr());
 }
 
-expr_base const* prototype_scope::make_float(int lineno, std::string const& value) const
+util::sptr<expr_base const> scope::make_float(misc::pos_type const& pos, std::string const& value) const
 {
-    float_literals.push_back(phony_float_literal(lineno, value));
-    return &float_literals.back();
+    data_tree::actual_one()(pos, FLOATING, value);
+    return std::move(nullptr());
 }
 
-expr_base const* prototype_scope::reference(int lineno, std::string const& var_name) const
+util::sptr<expr_base const> scope::make_ref(misc::pos_type const& pos, std::string const& var_name) const
 {
-    var_refs.push_back(ref_prototype(lineno, var_name));
-    return &var_refs.back();
+    data_tree::actual_one()(pos, REFERENCE, var_name);
+    return std::move(nullptr());
 }
 
-expr_base const* prototype_scope::call_func(int lineno
-                                               , std::string const& name
-                                               , std::vector<expr_base const*> const& args) const
+util::sptr<expr_base const> scope::make_call(misc::pos_type const& pos
+                                           , std::string const& func_name
+                                           , std::vector<util::sptr<expr_base const>> args) const
 {
-    calls.push_back(phony_call(lineno, name, args));
-    return &calls.back();
+    data_tree::actual_one()(pos, CALL, func_name, args.size());
+    return std::move(nullptr());
 }
 
-expr_base const* prototype_scope::make_binary(int lineno
-                                                 , expr_base const* lhs
-                                                 , std::string const& op
-                                                 , expr_base const* rhs) const
+util::sptr<expr_base const> scope::make_binary(misc::pos_type const& pos
+                                             , util::sptr<expr_base const>
+                                             , std::string const& op
+                                             , util::sptr<expr_base const>) const
 {
-    binary_ops.push_back(binary_prototype(lineno, lhs, op, rhs));
-    return &binary_ops.back();
+    data_tree::actual_one()(pos, BINARY_OP, op);
+    return std::move(nullptr());
 }
 
-expr_base const*
-    prototype_scope::make_pre_unary(int lineno, std::string const& op, expr_base const* rhs) const
+util::sptr<expr_base const> scope::make_pre_unary(misc::pos_type const& pos
+                                                , std::string const& op
+                                                , util::sptr<expr_base const>) const
 {
-    pre_unary_ops.push_back(pre_unary_prototype(lineno, op, rhs));
-    return &pre_unary_ops.back();
+    data_tree::actual_one()(pos, PRE_UNARY_OP, op);
+    return std::move(nullptr());
 }
 
-expr_base const* prototype_scope::make_conj(int lineno
-                                               , expr_base const* lhs
-                                               , expr_base const* rhs) const
+util::sptr<expr_base const> scope::make_conj(misc::pos_type const& pos
+                                           , util::sptr<expr_base const>
+                                           , util::sptr<expr_base const>) const
 {
-    conjs.push_back(conj_prototype(lineno, lhs, rhs));
-    return &conjs.back();
+    data_tree::actual_one()(pos, BINARY_OP, "&&");
+    return std::move(nullptr());
 }
 
-expr_base const* prototype_scope::make_disj(int lineno
-                                               , expr_base const* lhs
-                                               , expr_base const* rhs) const
+util::sptr<expr_base const> scope::make_disj(misc::pos_type const& pos
+                                           , util::sptr<expr_base const>
+                                           , util::sptr<expr_base const>) const
 {
-    disjs.push_back(disj_prototype(lineno, lhs, rhs));
-    return &disjs.back();
+    data_tree::actual_one()(pos, BINARY_OP, "||");
+    return std::move(nullptr());
 }
 
-expr_base const* prototype_scope::make_nega(int lineno, expr_base const* rhs) const
+util::sptr<expr_base const> scope::make_nega(misc::pos_type const& pos, util::sptr<expr_base const> rhs) const
 {
-    negas.push_back(nega_prototype(lineno, rhs));
-    return &negas.back();
+    data_tree::actual_one()(pos, PRE_UNARY_OP, "!");
+    return std::move(nullptr());
 }
 
-
-void prototype_scope::func_ret(int lineno, expr_base const* ret_val) const
+void scope::add_func_ret(misc::pos_type const& pos, util::sptr<expr_base const>)
 {
-    returnings.push_back(return_prototype(lineno, ret_val));
-    _block->add_stmt(&returnings.back());
+    data_tree::actual_one()(pos, RETURN);
 }
 
-void prototype_scope::func_ret_nothing(int lineno) const
+void scope::add_func_ret_nothing(misc::pos_type const& pos)
 {
-    void_returnings.push_back(void_return_prototype(lineno));
-    _block->add_stmt(&void_returnings.back());
+    data_tree::actual_one()(pos, RETURN_NOTHING);
 }
 
-void prototype_scope::make_arith(int lineno, expr_base const* expr) const
+void scope::add_arith(misc::pos_type const& pos, util::sptr<expr_base const>)
 {
-    ariths.push_back(arith_prototype(lineno, expr));
-    _block->add_stmt(&ariths.back());
+    data_tree::actual_one()(pos, ARITHMETICS);
 }
 
-termination_status branch_prototype::termination() const
+void scope::add_branch(misc::pos_type const& pos
+                     , util::sptr<expr_base const>
+                     , util::sptr<stmt_base const>
+                     , util::sptr<stmt_base const>)
+{
+    data_tree::actual_one()(pos, BRANCH);
+}
+
+void scope::add_loop(misc::pos_type const& pos, util::sptr<expr_base const>, util::sptr<stmt_base const>)
+{
+    data_tree::actual_one()(pos, LOOP);
+}
+
+void scope::def_var(misc::pos_type const& pos, std::string const& name, util::sptr<expr_base const> init)
+{
+    data_tree::actual_one()(pos, VAR_DEF, name);
+}
+
+util::sptr<scope> scope::create_branch_scope()
+{
+    return std::move(mkscope());
+}
+
+util::sptr<scope> scope::create_loop_scope()
+{
+    return std::move(mkscope());
+}
+
+util::sref<func_templ> scope::decl_func(misc::pos_type const& pos
+                                      , std::string const& name
+                                      , std::vector<std::string> const& param_names)
+{
+    return util::sref<func_templ>(0);
+}
+
+util::sptr<stmt_base const> scope::extract_stmts()
+{
+    return util::sptr<stmt_base const>(0);
+}
+
+util::sref<symbol_table> scope::get_symbols() const
+{
+    return _symbols;
+}
+
+util::sptr<scope> scope::global_scope()
+{
+    return std::move(mkscope());
+}
+
+util::sref<scope> func_templ::get_scope()
+{
+    return util::mkref(_body_scope);
+}
+
+void flow_mgr::add_stmt(util::sptr<stmt_base const>) {}
+
+termination_status flow_mgr::termination() const
 {
     return NO_EXPLICIT_TERMINATION;
 }
-
-void prototype_scope::branch(int lineno
-                           , expr_base const* condition
-                           , stmt_base const* valid
-                           , stmt_base const* invalid) const
-{
-    branches.push_back(branch_prototype(lineno, condition, valid, invalid));
-    _block->add_stmt(&branches.back());
-}
-
-void prototype_scope::loop(int lineno, expr_base const* condition, stmt_base const* body) const
-{
-    loops.push_back(loop_prototype(lineno, condition, body));
-    _block->add_stmt(&loops.back());
-}
-
-void prototype_scope::def_var(int lineno, std::string const& var_name, expr_base const* var_init) const
-{
-    var_defs.push_back(var_def_prototype(lineno, var_name, var_init));
-    _block->add_stmt(&var_defs.back());
-}
-
-func_prototype* prototype_scope::def_func(int lineno
-                                        , std::string const& func_name
-                                        , std::vector<std::string> const& param_names) const
-{
-    func_defs.push_back(std::move(func_prototype(lineno, func_name, param_names)));
-    funcs.push_back(func_adaptor(&func_defs.back()));
-    _block->add_stmt(&funcs.back());
-    return funcs.back().func;
-}
-
-prototype_scope const* prototype_scope::create_branch_scope() const
-{
-    return create_scope();
-}
-
-prototype_scope const* prototype_scope::create_loop_scope() const
-{
-    return create_scope();
-}
-
-stmt_base const* prototype_scope::as_stmt() const
-{
-    return _block;
-}
-
-prototype_scope const* prototype_scope::global_scope()
-{
-    static block_prototype block;
-    static prototype_scope ins(NULL, &block, NULL);
-    return &ins;
-}
-
-int_literal_instance const* int_literal_prototype::inst(instance_scope const*) const
-{
-    assert(!"this func shall be shadowed.");
-    return NULL;
-}
-
-float_literal_instance const* float_literal_prototype::inst(instance_scope const*) const
-{
-    assert(!"this func shall be shadowed.");
-    return NULL;
-}
-
-call_instance const* call_prototype::inst(instance_scope const*) const
-{
-    assert(!"this func shall be shadowed.");
-    return NULL;
-}
-
-int_literal_instance const* phony_int_literal::inst(instance_scope const*) const
-{
-    node_verifier::syntax_gen()(line_num, INT_LITERAL, image);
-    return NULL;
-}
-
-float_literal_instance const* phony_float_literal::inst(instance_scope const*) const
-{
-    node_verifier::syntax_gen()(line_num, FLOAT_LITERAL, image);
-    return NULL;
-}
-
-call_instance const* phony_call::inst(instance_scope const*) const
-{
-    node_verifier::syntax_gen()(line_num, FUNC_CALL_BEGIN, name);
-    std::for_each(args.begin()
-                , args.end()
-                , [&](expr_base const* expr)
-                  {
-                      node_verifier::syntax_gen()(line_num, ARGUMENT);
-                      expr->inst(NULL);
-                  });
-    node_verifier::syntax_gen()(line_num, FUNC_CALL_END);
-    return NULL;
-}
-
-pre_unary_instance const* pre_unary_prototype::inst(instance_scope const*) const
-{
-    node_verifier::syntax_gen()(line_num, PRE_UNARY_OP_BEGIN, op)(line_num, OPERAND);
-    rhs->inst(NULL);
-    node_verifier::syntax_gen()(line_num, PRE_UNARY_OP_END);
-    return NULL;
-}
-
-binary_instance const* binary_prototype::inst(instance_scope const*) const
-{
-    node_verifier::syntax_gen()(line_num, BINARY_OP_BEGIN, op)(line_num, OPERAND);
-    lhs->inst(NULL);
-    node_verifier::syntax_gen()(line_num, OPERAND);
-    rhs->inst(NULL);
-    node_verifier::syntax_gen()(line_num, BINARY_OP_END);
-    return NULL;
-}
-
-conj_instance const* conj_prototype::inst(instance_scope const*) const
-{
-    node_verifier::syntax_gen()(line_num, BINARY_OP_BEGIN, "&&")(line_num, OPERAND);
-    lhs->inst(NULL);
-    node_verifier::syntax_gen()(line_num, OPERAND);
-    rhs->inst(NULL);
-    node_verifier::syntax_gen()(line_num, BINARY_OP_END);
-    return NULL;
-}
-
-disj_instance const* disj_prototype::inst(instance_scope const*) const
-{
-    node_verifier::syntax_gen()(line_num, BINARY_OP_BEGIN, "||")(line_num, OPERAND);
-    lhs->inst(NULL);
-    node_verifier::syntax_gen()(line_num, OPERAND);
-    rhs->inst(NULL);
-    node_verifier::syntax_gen()(line_num, BINARY_OP_END);
-    return NULL;
-}
-
-nega_instance const* nega_prototype::inst(instance_scope const*) const
-{
-    node_verifier::syntax_gen()(line_num, PRE_UNARY_OP_BEGIN, "!")(line_num, OPERAND);
-    rhs->inst(NULL);
-    node_verifier::syntax_gen()(line_num, PRE_UNARY_OP_END);
-    return NULL;
-}
-
-ref_instance const* ref_prototype::inst(instance_scope const*) const
-{
-    node_verifier::syntax_gen()(line_num, VARIABLE, name);
-    return NULL;
-}
-
-void block_prototype::add_stmt(stmt_base const* stmt)
-{
-    _stmts.push_back(stmt);
-}
-
-block_instance const* block_prototype::inst(instance_scope const*) const 
-{
-    node_verifier::syntax_gen()(0, BLOCK_BEGIN);
-    std::for_each(_stmts.begin()
-                , _stmts.end()
-                , [&](stmt_base const* stmt)
-                  {
-                      stmt->inst(NULL);
-                  });
-    node_verifier::syntax_gen()(0, BLOCK_END);
-    return NULL;
-}
-
-arith_instance const* arith_prototype::inst(instance_scope const*) const
-{
-    expr->inst(NULL);
-    return NULL;
-}
-
-branch_instance const* branch_prototype::inst(instance_scope const*) const
-{
-    node_verifier::syntax_gen()(line_num, BRANCH_BEGIN);
-    condition->inst(NULL);
-    valid->inst(NULL);
-    invalid->inst(NULL);
-    node_verifier::syntax_gen()(line_num, BRANCH_END);
-    return NULL;
-}
-
-loop_instance const* loop_prototype::inst(instance_scope const*) const
-{
-    node_verifier::syntax_gen()(line_num, LOOP_BEGIN);
-    condition->inst(NULL);
-    body->inst(NULL);
-    node_verifier::syntax_gen()(line_num, LOOP_END);
-    return NULL;
-}
-
-return_instance const* return_prototype::inst(instance_scope const*) const
-{
-    node_verifier::syntax_gen()(line_num, RETURN);
-    ret_val->inst(NULL);
-    return NULL;
-}
-
-void_return_instance const* void_return_prototype::inst(instance_scope const*) const
-{
-    node_verifier::syntax_gen()(line_num, RETURN, "");
-    return NULL;
-}
-
-obj_ctor_instance const* var_def_prototype::inst(instance_scope const*) const
-{
-    node_verifier::syntax_gen()(line_num, VAR_DEF, name);
-    init->inst(NULL);
-    return NULL;
-}
-
-func_prototype::func_prototype(int lineno, std::string const& func_name, std::vector<std::string> const& ps)
-    : line_num(lineno)
-    , name(func_name)
-    , params(ps)
-    , _factory(&_space)
-    , scope(*create_scope())
-{}
-
-func_prototype::func_prototype(func_prototype&& rhs)
-    : line_num(rhs.line_num)
-    , name(rhs.name)
-    , params(rhs.params)
-    , _factory(&_space)
-    , scope(rhs.scope)
-{}

@@ -4,12 +4,12 @@
 
 using namespace grammar;
 
-util::sptr<proto::expr_base const> pre_unary_oper::compile(util::sref<proto::scope> scope) const
+util::sptr<proto::expr_base const> pre_unary_op::compile(util::sref<proto::scope> scope) const
 {
     return std::move(scope->make_pre_unary(pos, op_img, rhs->compile(scope)));
 }
 
-util::sptr<proto::expr_base const> binary_oper::compile(util::sref<proto::scope> scope) const
+util::sptr<proto::expr_base const> binary_op::compile(util::sref<proto::scope> scope) const
 {
     return std::move(scope->make_binary(pos, lhs->compile(scope), op_img, rhs->compile(scope)));
 }

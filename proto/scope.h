@@ -13,7 +13,6 @@ namespace proto {
 
     struct symbol_table;
     struct func_templ;
-    struct block;
 
     struct scope {
         explicit scope(util::sref<symbol_table> s)
@@ -70,7 +69,7 @@ namespace proto {
     public:
         util::sref<symbol_table> get_symbols() const;
     public:
-        static util::sptr<scope const> global_scope();
+        static util::sptr<scope> global_scope();
     protected:
         std::list<util::sptr<stmt_base const>> _stmts;
         util::sptr<flow_mgr_base> _flow_mgr;

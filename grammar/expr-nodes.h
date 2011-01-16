@@ -8,10 +8,10 @@
 
 namespace grammar {
 
-    struct pre_unary_oper
+    struct pre_unary_op
         : public expr_base
     {
-        pre_unary_oper(misc::pos_type const& pos, std::string const& op, expr_base const* r)
+        pre_unary_op(misc::pos_type const& pos, std::string const& op, expr_base const* r)
             : expr_base(pos)
             , op_img(op)
             , rhs(r)
@@ -23,10 +23,10 @@ namespace grammar {
         util::sptr<expr_base const> const rhs;
     };
 
-    struct binary_oper
+    struct binary_op
         : public expr_base
     {
-        binary_oper(misc::pos_type const& pos, expr_base const* l, std::string const& op, expr_base const* r)
+        binary_op(misc::pos_type const& pos, expr_base const* l, std::string const& op, expr_base const* r)
             : expr_base(pos)
             , lhs(l)
             , op_img(op)
@@ -138,17 +138,16 @@ namespace grammar {
     struct call
         : public expr_base
     {
-        template <typename ArgIterator>
-        call(misc::pos_type const& pos, std::string const& name, ArgIterator arg_begin, ArgIterator arg_end)
+        call(misc::pos_type const& pos, std::string const& name, std::list<util::sptr<expr_base const>> a)
             : expr_base(pos)
             , name(name)
-            , args(arg_begin, arg_end)
+            , args(std::move(a))
         {}
 
         util::sptr<proto::expr_base const> compile(util::sref<proto::scope> scope) const;
 
         std::string const name;
-        std::vector<util::sptr<expr_base const>> const args;
+        std::list<util::sptr<expr_base const>> const args;
     };
 
 }

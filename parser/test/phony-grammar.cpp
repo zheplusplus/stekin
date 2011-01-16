@@ -1,7 +1,7 @@
 #include <algorithm>
 
-#include "data-trees.h"
-
+#include "test-common.h"
+#include "../../test/data-trees.h"
 #include "../../grammar/expr-nodes.h"
 #include "../../grammar/clause-builder.h"
 
@@ -18,112 +18,111 @@ static util::sref<proto::scope> nullref()
     return util::sref<proto::scope>(0);
 }
 
-util::sptr<proto::expr_base const> pre_unary_oper::compile(util::sref<proto::scope>) const
+util::sptr<proto::expr_base const> pre_unary_op::compile(util::sref<proto::scope>) const
 {
-    test::data_tree::actual_one()(pos, data_node_base::PRE_UNARY_OP_BEGIN, op_img)
-                                 (pos, data_node_base::OPERAND);
+    data_tree::actual_one()(pos, PRE_UNARY_OP_BEGIN, op_img)(pos, OPERAND);
     rhs->compile(nullref());
-    test::data_tree::actual_one()(pos, data_node_base::PRE_UNARY_OP_END);
+    data_tree::actual_one()(pos, PRE_UNARY_OP_END);
     return std::move(nullptr());
 }
 
-util::sptr<proto::expr_base const> binary_oper::compile(util::sref<proto::scope>) const
+util::sptr<proto::expr_base const> binary_op::compile(util::sref<proto::scope>) const
 {
-    test::data_tree::actual_one()(pos, data_node_base::BINARY_OP_BEGIN, op_img)(pos, data_node_base::OPERAND);
+    data_tree::actual_one()(pos, BINARY_OP_BEGIN, op_img)(pos, OPERAND);
     lhs->compile(nullref());
-    test::data_tree::actual_one()(pos, data_node_base::OPERAND);
+    data_tree::actual_one()(pos, OPERAND);
     rhs->compile(nullref());
-    test::data_tree::actual_one()(pos, data_node_base::BINARY_OP_END);
+    data_tree::actual_one()(pos, BINARY_OP_END);
     return std::move(nullptr());;
 }
 
 util::sptr<proto::expr_base const> conjunction::compile(util::sref<proto::scope>) const
 {
-    test::data_tree::actual_one()(pos, data_node_base::BINARY_OP_BEGIN, "&&")(pos, data_node_base::OPERAND);
+    data_tree::actual_one()(pos, BINARY_OP_BEGIN, "&&")(pos, OPERAND);
     lhs->compile(nullref());
-    test::data_tree::actual_one()(pos, data_node_base::OPERAND);
+    data_tree::actual_one()(pos, OPERAND);
     rhs->compile(nullref());
-    test::data_tree::actual_one()(pos, data_node_base::BINARY_OP_END);
+    data_tree::actual_one()(pos, BINARY_OP_END);
     return std::move(nullptr());;
 }
 
 util::sptr<proto::expr_base const> disjunction::compile(util::sref<proto::scope>) const
 {
-    test::data_tree::actual_one()(pos, data_node_base::BINARY_OP_BEGIN, "||")(pos, data_node_base::OPERAND);
+    data_tree::actual_one()(pos, BINARY_OP_BEGIN, "||")(pos, OPERAND);
     lhs->compile(nullref());
-    test::data_tree::actual_one()(pos, data_node_base::OPERAND);
+    data_tree::actual_one()(pos, OPERAND);
     rhs->compile(nullref());
-    test::data_tree::actual_one()(pos, data_node_base::BINARY_OP_END);
+    data_tree::actual_one()(pos, BINARY_OP_END);
     return std::move(nullptr());;
 }
 
 util::sptr<proto::expr_base const> negation::compile(util::sref<proto::scope>) const
 {
-    test::data_tree::actual_one()(pos, data_node_base::PRE_UNARY_OP_BEGIN, "!")(pos, data_node_base::OPERAND);
+    data_tree::actual_one()(pos, PRE_UNARY_OP_BEGIN, "!")(pos, OPERAND);
     rhs->compile(nullref());
-    test::data_tree::actual_one()(pos, data_node_base::PRE_UNARY_OP_END);
+    data_tree::actual_one()(pos, PRE_UNARY_OP_END);
     return std::move(nullptr());;
 }
 
 util::sptr<proto::expr_base const> reference::compile(util::sref<proto::scope>) const
 {
-    test::data_tree::actual_one()(pos, data_node_base::IDENTIFIER, name);
+    data_tree::actual_one()(pos, IDENTIFIER, name);
     return std::move(nullptr());;
 }
 
 util::sptr<proto::expr_base const> bool_literal::compile(util::sref<proto::scope>) const
 {
-    test::data_tree::actual_one()(pos, data_node_base::BOOLEAN, value ? "true" : "false");
+    data_tree::actual_one()(pos, BOOLEAN, value ? "true" : "false");
     return std::move(nullptr());;
 }
 
 util::sptr<proto::expr_base const> int_literal::compile(util::sref<proto::scope>) const
 {
-    test::data_tree::actual_one()(pos, data_node_base::INTEGER, value);
+    data_tree::actual_one()(pos, INTEGER, value);
     return std::move(nullptr());;
 }
 
 util::sptr<proto::expr_base const> float_literal::compile(util::sref<proto::scope>) const
 {
-    test::data_tree::actual_one()(pos, data_node_base::FLOATING, value);
+    data_tree::actual_one()(pos, FLOATING, value);
     return std::move(nullptr());;
 }
 
 util::sptr<proto::expr_base const> call::compile(util::sref<proto::scope>) const
 {
-    test::data_tree::actual_one()(pos, data_node_base::FUNC_CALL_BEGIN, name);
+    data_tree::actual_one()(pos, FUNC_CALL_BEGIN, name);
     std::for_each(args.begin()
                 , args.end()
                 , [&](util::sptr<expr_base const> const& expr)
                   {
-                      test::data_tree::actual_one()(pos, data_node_base::ARGUMENT);
+                      data_tree::actual_one()(pos, ARGUMENT);
                       expr->compile(nullref());
                   });
-    test::data_tree::actual_one()(pos, data_node_base::FUNC_CALL_END);
+    data_tree::actual_one()(pos, FUNC_CALL_END);
     return std::move(nullptr());;
 }
 
 void clause_builder::add_arith(int indent_level, util::sptr<expr_base const> arith)
 {
-    test::data_tree::actual_one()(arith->pos, indent_level, data_node_base::ARITHMETICS);
+    data_tree::actual_one()(arith->pos, indent_level, ARITHMETICS);
     util::sptr<expr_base const>(std::move(arith))->compile(nullref());
 }
 
 void clause_builder::add_var_def(int indent_level, std::string const& name, util::sptr<expr_base const> init)
 {
-    test::data_tree::actual_one()(init->pos, indent_level, data_node_base::VAR_DEF, name);
+    data_tree::actual_one()(init->pos, indent_level, VAR_DEF, name);
     util::sptr<expr_base const>(std::move(init))->compile(nullref());
 }
 
 void clause_builder::add_return(int indent_level, util::sptr<expr_base const> ret_val)
 {
-    test::data_tree::actual_one()(ret_val->pos, indent_level, data_node_base::RETURN);
+    data_tree::actual_one()(ret_val->pos, indent_level, RETURN);
     util::sptr<expr_base const>(std::move(ret_val))->compile(nullref());
 }
 
 void clause_builder::add_void_return(int indent_level, misc::pos_type const& pos)
 {
-    test::data_tree::actual_one()(pos, indent_level, data_node_base::RETURN, "");
+    data_tree::actual_one()(pos, indent_level, RETURN, "");
 }
 
 void clause_builder::add_func_def(int indent_level
@@ -131,46 +130,43 @@ void clause_builder::add_func_def(int indent_level
                                 , std::string const& name
                                 , std::vector<std::string> const& params)
 {
-    test::data_tree::actual_one()(pos, indent_level, data_node_base::FUNC_DEF_HEAD_BEGIN, name);
+    data_tree::actual_one()(pos, indent_level, FUNC_DEF_HEAD_BEGIN, name);
     std::for_each(params.begin()
                 , params.end()
                 , [&](std::string const& param)
                   {
-                      test::data_tree::actual_one()(pos, indent_level, data_node_base::IDENTIFIER, param);
+                      data_tree::actual_one()(pos, indent_level, IDENTIFIER, param);
                   });
-    test::data_tree::actual_one()(pos, indent_level, data_node_base::FUNC_DEF_HEAD_END);
+    data_tree::actual_one()(pos, indent_level, FUNC_DEF_HEAD_END);
 }
 
 void clause_builder::add_if(int indent_level, util::sptr<expr_base const> condition)
 {
     misc::pos_type pos(condition->pos);
-    test::data_tree::actual_one()(pos, indent_level, data_node_base::BRANCH_IF)
-                                 (pos, indent_level, data_node_base::CONDITION_BEGIN);
+    data_tree::actual_one()(pos, indent_level, BRANCH_IF)(pos, indent_level, CONDITION_BEGIN);
     util::sptr<expr_base const>(std::move(condition))->compile(nullref());
-    test::data_tree::actual_one()(pos, indent_level, data_node_base::CONDITION_END);
+    data_tree::actual_one()(pos, indent_level, CONDITION_END);
 }
 
 void clause_builder::add_ifnot(int indent_level, util::sptr<expr_base const> condition)
 {
     misc::pos_type pos(condition->pos);
-    test::data_tree::actual_one()(pos, indent_level, data_node_base::BRANCH_IFNOT)
-                                 (pos, indent_level, data_node_base::CONDITION_BEGIN);
+    data_tree::actual_one()(pos, indent_level, BRANCH_IFNOT)(pos, indent_level, CONDITION_BEGIN);
     util::sptr<expr_base const>(std::move(condition))->compile(nullref());
-    test::data_tree::actual_one()(pos, indent_level, data_node_base::CONDITION_END);
+    data_tree::actual_one()(pos, indent_level, CONDITION_END);
 }
 
 void clause_builder::add_else(int indent_level, misc::pos_type const& pos)
 {
-    test::data_tree::actual_one()(pos, indent_level, data_node_base::BRANCH_ELSE);
+    data_tree::actual_one()(pos, indent_level, BRANCH_ELSE);
 }
 
 void clause_builder::add_while(int indent_level, util::sptr<expr_base const> condition)
 {
     misc::pos_type pos(condition->pos);
-    test::data_tree::actual_one()(pos, indent_level, data_node_base::LOOP_WHILE)
-                                 (pos, indent_level, data_node_base::CONDITION_BEGIN);
+    data_tree::actual_one()(pos, indent_level, LOOP_WHILE)(pos, indent_level, CONDITION_BEGIN);
     util::sptr<expr_base const>(std::move(condition))->compile(nullref());
-    test::data_tree::actual_one()(pos, indent_level, data_node_base::CONDITION_END);
+    data_tree::actual_one()(pos, indent_level, CONDITION_END);
 }
 
 void clause_builder::build_and_clear() {}

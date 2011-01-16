@@ -4,12 +4,8 @@ TESTDIR=$(WORKDIR)/test
 WORK_DEP=parser
 WORK_OBJ=$(WORKDIR)/yy-misc.o $(WORKDIR)/lex.o $(WORKDIR)/syn.o
 
-TEST_DEP=$(WORK_DEP) phony-err-report.dt phony-grammar.dt data-node.dt data-trees.dt
-TEST_OBJ=$(WORK_OBJ) \
-         $(TESTDIR)/phony-err-report.o \
-         $(TESTDIR)/phony-grammar.o \
-         $(TESTDIR)/data-node.o \
-         $(TESTDIR)/data-trees.o
+TEST_DEP=$(WORK_DEP) phony-err-report.dt phony-grammar.dt test-common.dt
+TEST_OBJ=$(WORK_OBJ) $(TESTDIR)/phony-err-report.o $(TESTDIR)/phony-grammar.o $(TESTDIR)/test-common.o
 
 TEST_SRC_CODE=$(TESTDIR)/empty.stkn \
               $(TESTDIR)/inv-chars.stkn \

@@ -32,6 +32,8 @@ namespace proto {
         misc::pos_type const pos;
         std::string const name;
         std::vector<std::string> const param_names;
+
+        util::sref<scope> get_scope();
     private:
         void _fill_param_names();
 

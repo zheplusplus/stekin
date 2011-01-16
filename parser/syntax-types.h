@@ -52,21 +52,16 @@ namespace parser {
     struct arg_list {
         arg_list* add(grammar::expr_base const* expr)
         {
-            _params.push_back(expr);
+            _params.push_back(std::move(util::mkptr(expr)));
             return this;
         }
 
-        std::list<grammar::expr_base const*>::const_iterator begin() const
+        std::list<util::sptr<grammar::expr_base const>> deliver_args()
         {
-            return _params.begin();
-        }
-
-        std::list<grammar::expr_base const*>::const_iterator end() const
-        {
-            return _params.end();
+            return std::move(_params);
         }
     private:
-        std::list<grammar::expr_base const*> _params;
+        std::list<util::sptr<grammar::expr_base const>> _params;
     };
 
 }

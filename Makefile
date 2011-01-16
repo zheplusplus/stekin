@@ -6,8 +6,9 @@ all:
 	make -f proto/Makefile
 	make -f instance/Makefile
 
-test:
+runtest:
 	make -f parser/test/Makefile
+	make -f grammar/test/Makefile
 	make -f instance/test/Makefile
 
 clean:
@@ -19,4 +20,5 @@ clean:
 
 cleant:clean
 	make -f parser/test/Makefile cleant
+	make -f grammar/test/Makefile cleant
 	make -f instance/test/Makefile cleant

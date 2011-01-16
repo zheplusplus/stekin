@@ -10,6 +10,7 @@ namespace {
         std::list<else_not_match_rec> else_not_matches_recs;
         std::list<if_matched_rec> if_matcheds_recs;
         std::list<excess_ind_rec> excess_ind_recs;
+        std::list<func_forbidden_rec> forbidden_func_recs;
 
         bool has_err;
 
@@ -22,6 +23,7 @@ namespace {
             else_not_matches_recs.clear();
             if_matcheds_recs.clear();
             excess_ind_recs.clear();
+            forbidden_func_recs.clear();
 
             has_err = false;
         }
@@ -54,6 +56,12 @@ void grammar::excessive_indent(misc::pos_type const& pos)
     records.excess_ind_recs.push_back(excess_ind_rec(pos));
 }
 
+void grammar::forbid_def_func(misc::pos_type const& pos, std::string const& name)
+{
+    records.has_err = true;
+    records.forbidden_func_recs.push_back(func_forbidden_rec(pos, name));
+}
+
 void test::clear_err()
 {
     records.clear();
@@ -73,4 +81,10 @@ std::vector<if_matched_rec> test::get_if_matcheds()
 std::vector<excess_ind_rec> test::get_excess_inds()
 {
     return std::vector<excess_ind_rec>(records.excess_ind_recs.begin(), records.excess_ind_recs.end());
+}
+
+std::vector<func_forbidden_rec> test::get_forbidden_funcs()
+{
+    return std::vector<func_forbidden_rec>(records.forbidden_func_recs.begin()
+                                         , records.forbidden_func_recs.end());
 }

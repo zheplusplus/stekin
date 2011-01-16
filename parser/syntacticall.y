@@ -253,7 +253,7 @@ nega_cond:
 comp:
     comp cmp_op expr
     {
-        $$ = new grammar::binary_oper($1->pos, $1, $2->img, $3);
+        $$ = new grammar::binary_op($1->pos, $1, $2->img, $3);
         delete $2;
     }
     |
@@ -266,7 +266,7 @@ comp:
 expr:
     expr add_op term
     {
-        $$ = new grammar::binary_oper($1->pos, $1, $2->img, $3);
+        $$ = new grammar::binary_op($1->pos, $1, $2->img, $3);
         delete $2;
     }
     |
@@ -279,7 +279,7 @@ expr:
 term:
     term mul_op unary_factor
     {
-        $$ = new grammar::binary_oper($1->pos, $1, $2->img, $3);
+        $$ = new grammar::binary_op($1->pos, $1, $2->img, $3);
         delete $2;
     }
     |
@@ -292,7 +292,7 @@ term:
 unary_factor:
     pm_sign factor
     {
-        $$ = new grammar::pre_unary_oper($2->pos, $1->img, $2);
+        $$ = new grammar::pre_unary_op($2->pos, $1->img, $2);
         delete $1;
     }
     |
@@ -415,7 +415,7 @@ pm_sign:
 call:
     ident '(' actual_param_list ')'
     {
-        $$ = new grammar::call($1->pos, $1->id, $3->begin(), $3->end());
+        $$ = new grammar::call($1->pos, $1->id, $3->deliver_args());
         delete $1;
         delete $3;
     }

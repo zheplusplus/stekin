@@ -51,6 +51,11 @@ void func_templ::_fill_param_names()
                   });
 }
 
+util::sref<scope> func_templ::get_scope()
+{
+    return util::mkref(_body_scope);
+}
+
 util::sref<inst::function> func_templ::inst(misc::pos_type const& pos
                                           , util::sref<inst::scope const> ext_scope
                                           , std::vector<inst::type const*> const& arg_types)

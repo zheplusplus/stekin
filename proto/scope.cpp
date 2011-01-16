@@ -134,9 +134,9 @@ util::sref<symbol_table> scope::get_symbols() const
     return _symbols;
 }
 
-util::sptr<scope const> scope::global_scope()
+util::sptr<scope> scope::global_scope()
 {
-    return util::sptr<scope const>(0);
+    return util::sptr<scope>(0);
 }
 
 void sub_scope::def_var(misc::pos_type const& pos, std::string const& name, util::sptr<expr_base const>)

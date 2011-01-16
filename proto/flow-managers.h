@@ -20,8 +20,8 @@ namespace proto {
             : _stmts_ref(stmts_ref)
         {}
 
-        virtual void add_stmt(util::sptr<stmt_base const> stmt);
-        virtual termination_status termination() const;
+        void add_stmt(util::sptr<stmt_base const> stmt);
+        termination_status termination() const;
     private:
         std::list<util::sptr<stmt_base const>>& _stmts_ref;
     };
