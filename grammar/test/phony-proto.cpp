@@ -1,5 +1,6 @@
 #include <algorithm>
-#include <cassert>
+#include <vector>
+#include <map>
 
 #include "test-common.h"
 #include "../../proto/scope.h"
@@ -10,25 +11,50 @@ using namespace proto;
 
 namespace {
 
+    util::sref<symbol_table> nullsymbols()
+    {
+        return util::sref<symbol_table>(0);
+    }
+
     struct phony_scope
         : public scope
     {
         phony_scope()
-            : scope(util::sref<symbol_table>(0))
+            : scope(nullsymbols())
         {
             data_tree::actual_one()(SCOPE);
         }
+
     };
 
-    static util::sptr<expr_base const> nullptr()
+    std::list<util::sptr<func_templ>> func_entities;
+
+    util::sptr<expr_base const> nullptr()
     {
         return std::move(util::sptr<expr_base const>(0));
     }
 
-    static util::sptr<scope> mkscope()
+    util::sptr<scope> mkscope()
     {
         return std::move(util::mkmptr(new phony_scope));
     }
+
+    struct dummy_stmt
+        : public stmt_base
+    {
+        util::sptr<inst::stmt_base const> inst(util::sref<inst::scope const> scope) const
+        {
+            return util::sptr<inst::stmt_base const>(0);
+        }
+
+        termination_status termination() const
+        {
+            return NO_EXPLICIT_TERMINATION;
+        }
+    };
+
+    std::vector<util::sptr<scope>> func_scope_entities;
+    std::map<func_templ const*, std::vector<util::sptr<scope>>::size_type> map_func_to_index;
 
 }
 
@@ -150,12 +176,20 @@ util::sref<func_templ> scope::decl_func(misc::pos_type const& pos
                                       , std::string const& name
                                       , std::vector<std::string> const& param_names)
 {
-    return util::sref<func_templ>(0);
+    data_tree::actual_one()(pos, FUNC_DECL, name);
+    std::for_each(param_names.begin()
+                , param_names.end()
+                , [&](std::string const& param)
+                  {
+                      data_tree::actual_one()(pos, PARAMETER, param);
+                  });
+    func_entities.push_back(std::move(util::mkmptr(new func_templ(pos, name, param_names))));
+    return *func_entities.back();
 }
 
 util::sptr<stmt_base const> scope::extract_stmts()
 {
-    return util::sptr<stmt_base const>(0);
+    return std::move(util::mkptr(new dummy_stmt));
 }
 
 util::sref<symbol_table> scope::get_symbols() const
@@ -168,9 +202,17 @@ util::sptr<scope> scope::global_scope()
     return std::move(mkscope());
 }
 
+func_templ::func_templ(misc::pos_type const& p, std::string const&, std::vector<std::string> const&)
+    : pos(p)
+    , _body_scope(nullsymbols())
+{
+    map_func_to_index[this] = func_scope_entities.size();
+    func_scope_entities.push_back(std::move(mkscope()));
+}
+
 util::sref<scope> func_templ::get_scope()
 {
-    return util::mkref(_body_scope);
+    return *func_scope_entities[map_func_to_index[this]];
 }
 
 void flow_mgr::add_stmt(util::sptr<stmt_base const>) {}

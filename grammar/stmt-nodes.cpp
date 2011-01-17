@@ -4,12 +4,12 @@
 
 using namespace grammar;
 
-void block::add(util::sptr<stmt_base const> stmt)
+void block::add_stmt(util::sptr<stmt_base const> stmt)
 {
     _flow.push_back(std::move(stmt));
 }
 
-void block::add(util::sptr<struct func_def const> func_def)
+void block::add_func(util::sptr<struct func_def const> func_def)
 {
     _func_defs.push_back(std::move(func_def));
 }

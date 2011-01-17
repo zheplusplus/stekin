@@ -15,12 +15,12 @@ void func_def_forbid_acceptor::accept_func(util::sptr<func_def const> func)
 
 void if_acceptor::accept_stmt(util::sptr<stmt_base const> stmt)
 {
-    _current_branch->add(std::move(stmt));
+    _current_branch->add_stmt(std::move(stmt));
 }
 
 void if_acceptor::accept_func(util::sptr<func_def const> func)
 {
-    _current_branch->add(std::move(func));
+    _current_branch->add_func(std::move(func));
 }
 
 void if_acceptor::deliver_to(util::sptr<acceptor>& acc)
@@ -46,12 +46,12 @@ bool if_acceptor::_else_matched() const
 
 void ifnot_acceptor::accept_stmt(util::sptr<stmt_base const> stmt)
 {
-    _invalid.add(std::move(stmt));
+    _invalid.add_stmt(std::move(stmt));
 }
 
 void ifnot_acceptor::accept_func(util::sptr<func_def const> func)
 {
-    _invalid.add(std::move(func));
+    _invalid.add_func(std::move(func));
 }
 
 void ifnot_acceptor::deliver_to(util::sptr<acceptor>& acc)
@@ -62,12 +62,12 @@ void ifnot_acceptor::deliver_to(util::sptr<acceptor>& acc)
 
 void while_acceptor::accept_stmt(util::sptr<stmt_base const> stmt)
 {
-    _body.add(std::move(stmt));
+    _body.add_stmt(std::move(stmt));
 }
 
 void while_acceptor::accept_func(util::sptr<func_def const> func)
 {
-    _body.add(std::move(func));
+    _body.add_func(std::move(func));
 }
 
 void while_acceptor::deliver_to(util::sptr<acceptor>& acc)
@@ -77,12 +77,12 @@ void while_acceptor::deliver_to(util::sptr<acceptor>& acc)
 
 void func_def_acceptor::accept_stmt(util::sptr<stmt_base const> stmt)
 {
-    _body.add(std::move(stmt));
+    _body.add_stmt(std::move(stmt));
 }
 
 void func_def_acceptor::accept_func(util::sptr<func_def const> func)
 {
-    _body.add(std::move(func));
+    _body.add_func(std::move(func));
 }
 
 void func_def_acceptor::deliver_to(util::sptr<acceptor>& acc)

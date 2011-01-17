@@ -10,11 +10,13 @@
 
 namespace grammar {
 
+    struct func_def;
+
     struct block {
         void compile(util::sref<proto::scope> scope) const;
 
-        void add(util::sptr<stmt_base const> stmt);
-        void add(util::sptr<struct func_def const> func_def);
+        void add_stmt(util::sptr<stmt_base const> stmt);
+        void add_func(util::sptr<func_def const> func_def);
 
         block() = default;
 
@@ -26,7 +28,7 @@ namespace grammar {
         {}
     private:
         std::list<util::sptr<stmt_base const>> _flow;
-        std::list<util::sptr<struct func_def const>> _func_defs;
+        std::list<util::sptr<func_def const>> _func_defs;
     };
 
     struct arithmetics

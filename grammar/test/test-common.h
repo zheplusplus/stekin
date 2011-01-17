@@ -83,8 +83,10 @@ namespace test {
     extern node_type const RETURN;
     extern node_type const RETURN_NOTHING;
 
+    extern node_type const FUNC_DECL;
+    extern node_type const PARAMETER;
+
     extern node_type const SCOPE;
-    extern node_type const FUNC_DEF;
     extern node_type const BRANCH;
     extern node_type const LOOP;
 

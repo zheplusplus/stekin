@@ -65,7 +65,9 @@ node_type const test::ARITHMETICS("arithmetics");
 node_type const test::RETURN("return");
 node_type const test::RETURN_NOTHING("return nothing");
 
+node_type const test::FUNC_DECL("func decl");
+node_type const test::PARAMETER("parameter");
+
 node_type const test::SCOPE("scope");
-node_type const test::FUNC_DEF("func def");
 node_type const test::BRANCH("branch");
 node_type const test::LOOP("loop");

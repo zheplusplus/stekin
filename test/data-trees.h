@@ -42,16 +42,21 @@ namespace test {
 
         static void verify()
         {
+            _verify();
+            expect_one()._nodes.clear();
+            actual_one()._nodes.clear();
+        }
+    private:
+        static void _verify()
+        {
             ASSERT_EQ(expect_one()._nodes.size(), actual_one()._nodes.size());
             auto expect_iter = expect_one()._nodes.begin();
             auto actual_iter = actual_one()._nodes.begin();
             for (; expect_one()._nodes.end() != expect_iter; ++expect_iter, ++actual_iter) {
                 EXPECT_EQ(**expect_iter, **actual_iter);
             }
-            expect_one()._nodes.clear();
-            actual_one()._nodes.clear();
         }
-    private:
+
         std::list<util::sptr<data_node_templ<_NodeData> const>> _nodes;
     };
 
