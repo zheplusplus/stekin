@@ -12,7 +12,7 @@ namespace grammar {
         virtual void accept_stmt(util::sptr<stmt_base const> stmt) = 0;
         virtual void accept_func(util::sptr<func_def const> func) = 0;
 
-        virtual void deliver_to(util::sptr<acceptor>& acc) = 0;
+        virtual void deliver_to(util::sref<acceptor> acc) = 0;
 
         virtual void accept_else(misc::pos_type const& else_pos);
 
@@ -30,7 +30,7 @@ namespace grammar {
     struct func_def_forbid_acceptor
         : public acceptor
     {
-        void accept_func(util::sptr<func_def const> func) = 0;
+        void accept_func(util::sptr<func_def const> func);
     protected:
         explicit func_def_forbid_acceptor(misc::pos_type const& pos)
             : acceptor(pos)
@@ -41,9 +41,8 @@ namespace grammar {
         : public func_def_forbid_acceptor
     {
         void accept_stmt(util::sptr<stmt_base const> stmt);
-        void accept_func(util::sptr<func_def const> func);
 
-        void deliver_to(util::sptr<acceptor>& acc);
+        void deliver_to(util::sref<acceptor> acc);
 
         void accept_else(misc::pos_type const& else_pos);
 
@@ -68,9 +67,8 @@ namespace grammar {
         : public func_def_forbid_acceptor
     {
         void accept_stmt(util::sptr<stmt_base const> stmt);
-        void accept_func(util::sptr<func_def const> func);
 
-        void deliver_to(util::sptr<acceptor>& acc);
+        void deliver_to(util::sref<acceptor> acc);
 
         ifnot_acceptor(misc::pos_type const& pos, util::sptr<expr_base const> condition)
             : func_def_forbid_acceptor(pos)
@@ -86,9 +84,8 @@ namespace grammar {
         : public func_def_forbid_acceptor
     {
         void accept_stmt(util::sptr<stmt_base const> stmt);
-        void accept_func(util::sptr<func_def const> func);
 
-        void deliver_to(util::sptr<acceptor>& acc);
+        void deliver_to(util::sref<acceptor> acc);
 
         while_acceptor(misc::pos_type const& pos, util::sptr<expr_base const> condition)
             : func_def_forbid_acceptor(pos)
@@ -106,7 +103,7 @@ namespace grammar {
         void accept_stmt(util::sptr<stmt_base const> stmt);
         void accept_func(util::sptr<func_def const> func);
 
-        void deliver_to(util::sptr<acceptor>& acc);
+        void deliver_to(util::sref<acceptor> acc);
 
         func_def_acceptor(misc::pos_type const& pos
                         , std::string const& func_name
@@ -120,25 +117,6 @@ namespace grammar {
         std::vector<std::string> const param_names;
     private:
         block _body;
-    };
-
-    struct acceptor_stack {
-        void add(int level, util::sptr<acceptor> acc);
-
-        void next_stmt(int level, util::sptr<stmt_base const> stmt);
-        void next_func(int level, util::sptr<func_def const> func);
-
-        void match_else(int level, misc::pos_type const& pos);
-
-        util::sptr<func_def const> pack_all();
-
-        acceptor_stack();
-    private:
-        void _fill_to(int level, misc::pos_type const& pos);
-        void _shrink_to(int level);
-        void _prepare_level(int level, misc::pos_type const& pos);
-    private:
-        std::vector<util::sptr<acceptor>> _acceptors;
     };
 
 }

@@ -90,6 +90,13 @@ namespace test {
     extern node_type const BRANCH;
     extern node_type const LOOP;
 
+    struct grammar_test
+        : public testing::Test
+    {
+        void SetUp();
+        void TearDown();
+    };
+
 }
 
 std::ostream& operator<<(std::ostream& os, test::grammar_data const& data);

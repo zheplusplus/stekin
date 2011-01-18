@@ -8,19 +8,7 @@
 
 using namespace test;
 
-struct StmtNodesTest
-    : public testing::Test
-{
-    void SetUp()
-    {
-        clear_err();
-    }
-
-    void TearDown()
-    {
-        data_tree::verify();
-    }
-};
+typedef grammar_test StmtNodesTest;
 
 TEST_F(StmtNodesTest, Arithmetics)
 {
@@ -80,8 +68,8 @@ TEST_F(StmtNodesTest, Block)
     misc::pos_type pos(4);
     util::sptr<proto::scope> scope(std::move(proto::scope::global_scope()));
     grammar::block block;
-    block.add_stmt(std::move(util::mkptr(
-                new grammar::var_def(pos, "Misato", std::move(
+    block.add_stmt(std::move(
+                util::mkptr(new grammar::var_def(pos, "Misato", std::move(
                             util::mkptr(new grammar::reference(pos, "Katsuragi")))))));
     block.add_stmt(std::move(util::mkptr(new grammar::func_ret_nothing(pos))));
     block.compile(*scope);
@@ -99,8 +87,8 @@ TEST_F(StmtNodesTest, BlockMove)
     misc::pos_type pos(5);
     util::sptr<proto::scope> scope_a(std::move(proto::scope::global_scope()));
     grammar::block block0;
-    block0.add_stmt(std::move(util::mkptr(
-                new grammar::var_def(pos, "Akagi", std::move(
+    block0.add_stmt(std::move(
+                util::mkptr(new grammar::var_def(pos, "Akagi", std::move(
                             util::mkptr(new grammar::reference(pos, "Ibuki")))))));
     block0.add_stmt(std::move(util::mkptr(new grammar::func_ret_nothing(pos))));
     block0.compile(*scope_a);
@@ -150,8 +138,9 @@ TEST_F(StmtNodesTest, Branch)
         .compile(*scope);
 
     grammar::block block1;
-    block1.add_stmt(std::move(util::mkptr(
-                new grammar::arithmetics(pos, std::move(util::mkptr(new grammar::reference(pos, "Ryoji")))))));
+    block1.add_stmt(std::move(
+                util::mkptr(new grammar::arithmetics(pos, std::move(
+                            util::mkptr(new grammar::reference(pos, "Ryoji")))))));
     block1.add_stmt(std::move(util::mkptr(new grammar::func_ret_nothing(pos))));
     grammar::branch(pos
                   , std::move(util::mkptr(new grammar::bool_literal(pos, true)))
@@ -160,12 +149,14 @@ TEST_F(StmtNodesTest, Branch)
         .compile(*scope);
 
     grammar::block block2;
-    block2.add_stmt(std::move(util::mkptr(
-                new grammar::arithmetics(pos, std::move(util::mkptr(new grammar::int_literal(pos, "7")))))));
+    block2.add_stmt(std::move(
+                util::mkptr(new grammar::arithmetics(pos, std::move(
+                            util::mkptr(new grammar::int_literal(pos, "7")))))));
     block2.add_stmt(std::move(util::mkptr(new grammar::func_ret_nothing(pos))));
     grammar::block block3;
-    block3.add_stmt(std::move(util::mkptr(
-                new grammar::func_ret(pos, std::move(util::mkptr(new grammar::reference(pos, "betsuni")))))));
+    block3.add_stmt(std::move(
+                util::mkptr(new grammar::func_ret(pos, std::move(
+                            util::mkptr(new grammar::reference(pos, "betsuni")))))));
     grammar::branch(pos
                   , std::move(util::mkptr(new grammar::bool_literal(pos, false)))
                   , std::move(block2)
@@ -217,10 +208,11 @@ TEST_F(StmtNodesTest, Loop)
         .compile(*scope);
 
     grammar::block block;
-    block.add_stmt(std::move(util::mkptr(
-                new grammar::arithmetics(pos, std::move(util::mkptr(new grammar::int_literal(pos, "8")))))));
-    block.add_stmt(std::move(util::mkptr(
-                new grammar::var_def(pos, "Toji", std::move(
+    block.add_stmt(std::move(
+                util::mkptr(new grammar::arithmetics(pos, std::move(
+                            util::mkptr(new grammar::int_literal(pos, "8")))))));
+    block.add_stmt(std::move(
+                util::mkptr(new grammar::var_def(pos, "Toji", std::move(
                             util::mkptr(new grammar::bool_literal(pos, true)))))));
     grammar::loop(pos, std::move(util::mkptr(new grammar::bool_literal(pos, false))), std::move(block))
         .compile(*scope);
@@ -250,8 +242,9 @@ TEST_F(StmtNodesTest, FuncDefs)
     func0.compile(templ0);
 
     grammar::block body;
-    body.add_stmt(std::move(util::mkptr(
-                new grammar::arithmetics(pos, std::move(util::mkptr(new grammar::reference(pos, "Kuroi")))))));
+    body.add_stmt(std::move(
+                util::mkptr(new grammar::arithmetics(pos, std::move(
+                            util::mkptr(new grammar::reference(pos, "Kuroi")))))));
     body.add_stmt(std::move(util::mkptr(new grammar::func_ret_nothing(pos))));
     grammar::func_def func1(pos
                           , "func1"
@@ -283,16 +276,18 @@ TEST_F(StmtNodesTest, Mixed)
     util::sptr<proto::scope> scope(std::move(proto::scope::global_scope()));
 
     grammar::block block_nested;
-    block_nested.add_stmt(std::move(util::mkptr(
-                new grammar::arithmetics(pos, std::move(util::mkptr(new grammar::int_literal(pos, "9")))))));
+    block_nested.add_stmt(std::move(
+                util::mkptr(new grammar::arithmetics(pos, std::move(
+                            util::mkptr(new grammar::int_literal(pos, "9")))))));
     util::sptr<grammar::func_def> func_nested0(
             new grammar::func_def(pos, "funcn", std::vector<std::string>({ "SOS" }), std::move(block_nested)));
     util::sptr<grammar::func_def> func_nested1(
             new grammar::func_def(pos, "funcn", std::vector<std::string>(), std::move(grammar::block())));
 
     grammar::block body;
-    body.add_stmt(std::move(util::mkptr(
-                new grammar::arithmetics(pos, std::move(util::mkptr(new grammar::reference(pos, "Kyon")))))));
+    body.add_stmt(std::move(
+                util::mkptr(new grammar::arithmetics(pos, std::move(
+                            util::mkptr(new grammar::reference(pos, "Kyon")))))));
     body.add_func(std::move(func_nested0));
     body.add_func(std::move(func_nested1));
     body.add_stmt(std::move(util::mkptr(new grammar::func_ret_nothing(pos))));

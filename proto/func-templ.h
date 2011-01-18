@@ -38,7 +38,7 @@ namespace proto {
         void _fill_param_names();
 
         symbol_table _symbols;
-        scope _body_scope;
+        func_scope _body_scope;
     private:
         struct instance_info {
             std::map<std::string, inst::variable const> const ext_vars;

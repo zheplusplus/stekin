@@ -17,10 +17,10 @@ namespace {
     }
 
     struct phony_scope
-        : public scope
+        : public func_scope
     {
         phony_scope()
-            : scope(nullsymbols())
+            : func_scope(nullsymbols())
         {
             data_tree::actual_one()(SCOPE);
         }
@@ -129,35 +129,35 @@ util::sptr<expr_base const> scope::make_nega(misc::pos_type const& pos, util::sp
     return std::move(nullptr());
 }
 
-void scope::add_func_ret(misc::pos_type const& pos, util::sptr<expr_base const>)
+void func_scope::add_func_ret(misc::pos_type const& pos, util::sptr<expr_base const>)
 {
     data_tree::actual_one()(pos, RETURN);
 }
 
-void scope::add_func_ret_nothing(misc::pos_type const& pos)
+void func_scope::add_func_ret_nothing(misc::pos_type const& pos)
 {
     data_tree::actual_one()(pos, RETURN_NOTHING);
 }
 
-void scope::add_arith(misc::pos_type const& pos, util::sptr<expr_base const>)
+void func_scope::add_arith(misc::pos_type const& pos, util::sptr<expr_base const>)
 {
     data_tree::actual_one()(pos, ARITHMETICS);
 }
 
-void scope::add_branch(misc::pos_type const& pos
-                     , util::sptr<expr_base const>
-                     , util::sptr<stmt_base const>
-                     , util::sptr<stmt_base const>)
+void func_scope::add_branch(misc::pos_type const& pos
+                          , util::sptr<expr_base const>
+                          , util::sptr<stmt_base const>
+                          , util::sptr<stmt_base const>)
 {
     data_tree::actual_one()(pos, BRANCH);
 }
 
-void scope::add_loop(misc::pos_type const& pos, util::sptr<expr_base const>, util::sptr<stmt_base const>)
+void func_scope::add_loop(misc::pos_type const& pos, util::sptr<expr_base const>, util::sptr<stmt_base const>)
 {
     data_tree::actual_one()(pos, LOOP);
 }
 
-void scope::def_var(misc::pos_type const& pos, std::string const& name, util::sptr<expr_base const> init)
+void func_scope::def_var(misc::pos_type const& pos, std::string const& name, util::sptr<expr_base const> init)
 {
     data_tree::actual_one()(pos, VAR_DEF, name);
 }

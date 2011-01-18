@@ -23,28 +23,27 @@ namespace util {
     template <typename _RawType>
     struct sref {
         typedef typename std::unique_ptr<_RawType>::pointer pointer;
-        typedef sref<_RawType> this_type;
 
         explicit sref(pointer ptr)
             : _ptr(ptr)
         {}
 
         template <typename _ConvertableType>
-        explicit operator sref<_ConvertableType>() const
-        {
-            return sref<_ConvertableType>(_ptr);
-        }
-
-        template <typename _ConvertableType>
         sref(sref<_ConvertableType> rhs)
-            : _ptr(this_type(rhs)._ptr)
+            : _ptr(rhs.convert<_RawType>()._ptr)
         {}
 
         template <typename _ConvertableType>
         sref operator=(sref<_ConvertableType> rhs)
         {
-            _ptr = this_type(rhs)._ptr;
+            _ptr = rhs.convert<_RawType>()._ptr;
             return *this;
+        }
+
+        template <typename _TargetType>
+        sref<_TargetType> convert() const
+        {
+            return sref<_TargetType>(_ptr);
         }
 
         bool operator==(sref rhs) const

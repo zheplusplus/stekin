@@ -68,40 +68,40 @@ util::sptr<expr_base const> scope::make_nega(misc::pos_type const& pos, util::sp
     return std::move(util::mkptr(new negation(pos, std::move(rhs))));
 }
 
-void scope::add_func_ret(misc::pos_type const& pos, util::sptr<expr_base const> ret_val)
+void func_scope::add_func_ret(misc::pos_type const& pos, util::sptr<expr_base const> ret_val)
 {
     _flow_mgr->add_stmt(std::move(util::mkptr(new func_ret(pos, std::move(ret_val)))));
     _flow_mgr.reset(new teminated_flow(RETURN_NO_VOID, _flow_mgr));
 }
 
-void scope::add_func_ret_nothing(misc::pos_type const& pos)
+void func_scope::add_func_ret_nothing(misc::pos_type const& pos)
 {
     _flow_mgr->add_stmt(std::move(util::mkptr(new func_ret_nothing(pos))));
     _flow_mgr.reset(new teminated_flow(RETURN_VOID, _flow_mgr));
 }
 
-void scope::add_arith(misc::pos_type const& pos, util::sptr<expr_base const> expr)
+void func_scope::add_arith(misc::pos_type const& pos, util::sptr<expr_base const> expr)
 {
     _flow_mgr->add_stmt(std::move(util::mkptr(new arithmetics(pos, std::move(expr)))));
 }
 
-void scope::add_branch(misc::pos_type const& pos
-                     , util::sptr<expr_base const> condition
-                     , util::sptr<stmt_base const> valid
-                     , util::sptr<stmt_base const> invalid)
+void func_scope::add_branch(misc::pos_type const& pos
+                          , util::sptr<expr_base const> condition
+                          , util::sptr<stmt_base const> valid
+                          , util::sptr<stmt_base const> invalid)
 {
     _flow_mgr->add_stmt(std::move(util::mkptr(
                         new branch(pos, std::move(condition), std::move(valid), std::move(invalid)))));
 }
 
-void scope::add_loop(misc::pos_type const& pos
-                   , util::sptr<expr_base const> condition
-                   , util::sptr<stmt_base const> body)
+void func_scope::add_loop(misc::pos_type const& pos
+                        , util::sptr<expr_base const> condition
+                        , util::sptr<stmt_base const> body)
 {
     _flow_mgr->add_stmt(std::move(util::mkptr(new loop(pos, std::move(condition), std::move(body)))));
 }
 
-void scope::def_var(misc::pos_type const& pos, std::string const& name, util::sptr<expr_base const> init)
+void func_scope::def_var(misc::pos_type const& pos, std::string const& name, util::sptr<expr_base const> init)
 {
     _symbols->def_var(pos, name);
     _flow_mgr->add_stmt(std::move(util::mkptr(new var_def(pos, name, std::move(init)))));

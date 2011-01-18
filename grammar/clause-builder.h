@@ -11,6 +11,25 @@
 
 namespace grammar {
 
+    struct acceptor_stack {
+        void add(int level, util::sptr<acceptor> acc);
+
+        void next_stmt(int level, util::sptr<stmt_base const> stmt);
+        void next_func(int level, util::sptr<func_def const> func);
+
+        void match_else(int level, misc::pos_type const& pos);
+
+        util::sptr<func_def const> pack_all();
+
+        acceptor_stack();
+    private:
+        void _fill_to(int level, misc::pos_type const& pos);
+        void _shrink_to(int level);
+        void _prepare_level(int level, misc::pos_type const& pos);
+    private:
+        std::vector<util::sptr<acceptor>> _acceptors;
+    };
+
     struct clause_builder {
         void add_arith(int indent_len, util::sptr<expr_base const> arith);
         void add_var_def(int indent_len, std::string const& name, util::sptr<expr_base const> init);
@@ -26,7 +45,7 @@ namespace grammar {
         void add_else(int indent_len, misc::pos_type const& pos);
         void add_while(int indent_len, util::sptr<expr_base const> condition);
 
-        void build_and_clear();
+        util::sptr<proto::scope const> build_and_clear();
     private:
         acceptor_stack _stack;
     };

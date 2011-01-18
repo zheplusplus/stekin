@@ -1,0 +1,6 @@
+parser/lex.cpp
+parser/syn.cpp
+parser/syn.hpp
+*.o
+*.out
+tmp.mk

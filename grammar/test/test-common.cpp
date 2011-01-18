@@ -1,4 +1,5 @@
 #include "test-common.h"
+#include "phony-err-report.h"
 
 using namespace test;
 
@@ -71,3 +72,13 @@ node_type const test::PARAMETER("parameter");
 node_type const test::SCOPE("scope");
 node_type const test::BRANCH("branch");
 node_type const test::LOOP("loop");
+
+void grammar_test::SetUp()
+{
+    clear_err();
+}
+
+void grammar_test::TearDown()
+{
+    data_tree::verify();
+}

@@ -7,19 +7,7 @@
 
 using namespace test;
 
-struct ExprNodesTest
-    : public testing::Test
-{
-    void SetUp()
-    {
-        clear_err();
-    }
-
-    void TearDown()
-    {
-        data_tree::verify();
-    }
-};
+typedef grammar_test ExprNodesTest;
 
 TEST_F(ExprNodesTest, Literals)
 {

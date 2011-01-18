@@ -169,6 +169,9 @@ void clause_builder::add_while(int indent_level, util::sptr<expr_base const> con
     data_tree::actual_one()(pos, indent_level, CONDITION_END);
 }
 
-void clause_builder::build_and_clear() {}
+util::sptr<proto::scope const> clause_builder::build_and_clear()
+{
+    return util::sptr<proto::scope const>(0);
+}
 
 acceptor_stack::acceptor_stack() = default;
