@@ -143,6 +143,7 @@ TEST_F(AcceptorTest, IfAcceptorError)
     ASSERT_FALSE(grammar::has_error());
     acceptor_a.accept_else(pos_else);
     ASSERT_TRUE(grammar::has_error());
+    ASSERT_EQ(1, get_if_matcheds().size());
     ASSERT_EQ(pos, get_if_matcheds()[0].prev_pos);
     ASSERT_EQ(pos_else, get_if_matcheds()[0].this_pos);
 
@@ -156,6 +157,7 @@ TEST_F(AcceptorTest, IfAcceptorError)
                                                                      , std::vector<std::string>({ "Nexus" })
                                                                      , std::move(grammar::block())))));
     ASSERT_TRUE(grammar::has_error());
+    ASSERT_EQ(1, get_forbidden_funcs().size());
     ASSERT_EQ(pos_func, get_forbidden_funcs()[0].pos);
     ASSERT_EQ("_null_", get_forbidden_funcs()[0].name);
 }
@@ -196,6 +198,7 @@ TEST_F(AcceptorTest, IfNotAcceptor)
     grammar::ifnot_acceptor ifnot_acc1(pos, std::move(util::mkptr(new grammar::bool_literal(pos, true))));
     ifnot_acc1.accept_else(pos_else);
     ASSERT_TRUE(grammar::has_error());
+    ASSERT_EQ(1, get_else_not_matches().size());
     ASSERT_EQ(pos_else, get_else_not_matches()[0].pos);
 
     clear_err();
@@ -206,6 +209,7 @@ TEST_F(AcceptorTest, IfNotAcceptor)
                                                                       , std::vector<std::string>({ "zealot" })
                                                                       , std::move(grammar::block())))));
     ASSERT_TRUE(grammar::has_error());
+    ASSERT_EQ(1, get_forbidden_funcs().size());
     ASSERT_EQ(pos_func, get_forbidden_funcs()[0].pos);
     ASSERT_EQ("pylon", get_forbidden_funcs()[0].name);
 }
@@ -255,6 +259,7 @@ TEST_F(AcceptorTest, WhileAcceptor)
                                                                       , std::vector<std::string>({ "zealot" })
                                                                       , std::move(grammar::block())))));
     ASSERT_TRUE(grammar::has_error());
+    ASSERT_EQ(1, get_forbidden_funcs().size());
     ASSERT_EQ(pos_func, get_forbidden_funcs()[0].pos);
     ASSERT_EQ("pylon", get_forbidden_funcs()[0].name);
 }
@@ -295,6 +300,7 @@ TEST_F(AcceptorTest, FuncAcceptor)
     grammar::func_def_acceptor func_acc1(pos, "func2", std::vector<std::string>({ "Mengsk" }));
     func_acc1.accept_else(pos_else);
     ASSERT_TRUE(grammar::has_error());
+    ASSERT_EQ(1, get_else_not_matches().size());
     ASSERT_EQ(pos_else, get_else_not_matches()[0].pos);
 }
 

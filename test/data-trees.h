@@ -53,7 +53,9 @@ namespace test {
             auto expect_iter = expect_one()._nodes.begin();
             auto actual_iter = actual_one()._nodes.begin();
             for (; expect_one()._nodes.end() != expect_iter; ++expect_iter, ++actual_iter) {
-                EXPECT_EQ(**expect_iter, **actual_iter);
+                EXPECT_EQ(**expect_iter, **actual_iter)
+                        << "------------- [" << std::distance(expect_one()._nodes.begin(), expect_iter) << "]"
+                        << std::endl;
             }
         }
 

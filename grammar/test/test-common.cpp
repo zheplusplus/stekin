@@ -9,15 +9,6 @@ data_tree& data_tree::operator()(misc::pos_type const& pos, node_type const& typ
     return *this;
 }
 
-data_tree& data_tree::operator()(misc::pos_type const& pos
-                               , int indent
-                               , node_type const& type
-                               , std::string const& str)
-{
-    base_type::operator()(type, grammar_data(indent, pos), str);
-    return *this;
-}
-
 data_tree& data_tree::operator()(misc::pos_type const& pos, node_type const& type)
 {
     base_type::operator()(type, grammar_data(pos));
@@ -39,16 +30,9 @@ data_tree& data_tree::operator()(node_type const& type)
     return *this;
 }
 
-data_tree& data_tree::operator()(misc::pos_type const& pos, int indent, node_type const& type)
-{
-    base_type::operator()(type, grammar_data(indent, pos));
-    return *this;
-}
-
 std::ostream& operator<<(std::ostream& os, grammar_data const& data)
 {
-    return (-1 == data.indent_level ? os << "no indent " : os << "indent level: " << data.indent_level << " ")
-                        << data.pos;
+    return os << data.pos;
 }
 
 node_type const test::BOOLEAN("boolean");

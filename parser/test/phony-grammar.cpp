@@ -120,7 +120,7 @@ void clause_builder::add_return(int indent_level, util::sptr<expr_base const> re
     util::sptr<expr_base const>(std::move(ret_val))->compile(nullref());
 }
 
-void clause_builder::add_void_return(int indent_level, misc::pos_type const& pos)
+void clause_builder::add_return_nothing(int indent_level, misc::pos_type const& pos)
 {
     data_tree::actual_one()(pos, indent_level, RETURN, "");
 }
@@ -171,7 +171,9 @@ void clause_builder::add_while(int indent_level, util::sptr<expr_base const> con
 
 util::sptr<proto::scope const> clause_builder::build_and_clear()
 {
-    return util::sptr<proto::scope const>(0);
+    return util::sptr<proto::scope const>(NULL);
 }
 
-acceptor_stack::acceptor_stack() = default;
+acceptor_stack::acceptor_stack()
+    : _packer(NULL)
+{}

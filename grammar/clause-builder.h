@@ -1,7 +1,7 @@
 #ifndef __STACKENING_GRAMMAR_CLAUSE_BUILDER_H__
 #define __STACKENING_GRAMMAR_CLAUSE_BUILDER_H__
 
-#include <vector>
+#include <list>
 #include <string>
 
 #include "node-base.h"
@@ -19,7 +19,7 @@ namespace grammar {
 
         void match_else(int level, misc::pos_type const& pos);
 
-        util::sptr<func_def const> pack_all();
+        block pack_all();
 
         acceptor_stack();
     private:
@@ -27,14 +27,34 @@ namespace grammar {
         void _shrink_to(int level);
         void _prepare_level(int level, misc::pos_type const& pos);
     private:
-        std::vector<util::sptr<acceptor>> _acceptors;
+        struct acceptor_of_pack
+            : public acceptor
+        {
+            acceptor_of_pack()
+                : acceptor(misc::pos_type(-1))
+            {}
+
+            void accept_stmt(util::sptr<stmt_base const> stmt);
+            void accept_func(util::sptr<func_def const> func);
+
+            void deliver_to(util::sref<acceptor>) {}
+
+            block pack();
+        private:
+            block _pack;
+        };
+
+        std::list<util::sptr<acceptor>> _acceptors;
+        util::sref<acceptor_of_pack> const _packer;
+
+        util::sref<acceptor_of_pack> _prepare_first_acceptor();
     };
 
     struct clause_builder {
         void add_arith(int indent_len, util::sptr<expr_base const> arith);
         void add_var_def(int indent_len, std::string const& name, util::sptr<expr_base const> init);
         void add_return(int indent_len, util::sptr<expr_base const> ret_val);
-        void add_void_return(int indent_len, misc::pos_type const& pos);
+        void add_return_nothing(int indent_len, misc::pos_type const& pos);
 
         void add_func_def(int indent_len
                         , misc::pos_type const& pos

@@ -134,7 +134,7 @@ func_return:
     |
     indent KW_RETURN eol
     {
-        parser::builder.add_void_return($1, parser::here($3));
+        parser::builder.add_return_nothing($1, parser::here($3));
     }
 ;
 

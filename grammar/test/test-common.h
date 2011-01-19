@@ -8,37 +8,27 @@
 namespace test {
 
     struct grammar_data {
-        int const indent_level;
         misc::pos_type const pos;
         int const func_arg_size;
 
         grammar_data(misc::pos_type const& ps, int arg_size)
-            : indent_level(-1)
-            , pos(ps)
+            : pos(ps)
             , func_arg_size(arg_size)
         {}
 
-        grammar_data(int level, misc::pos_type const& ps)
-            : indent_level(level)
-            , pos(ps)
-            , func_arg_size(-1)
-        {}
-
         explicit grammar_data(misc::pos_type const ps)
-            : indent_level(-1)
-            , pos(ps)
+            : pos(ps)
             , func_arg_size(-1)
         {}
 
         grammar_data()
-            : indent_level(-1)
-            , pos(-1)
+            : pos(-1)
             , func_arg_size(-1)
         {}
 
         bool operator==(grammar_data const& rhs) const
         {
-            return indent_level == rhs.indent_level && pos == rhs.pos && func_arg_size == rhs.func_arg_size;
+            return pos == rhs.pos && func_arg_size == rhs.func_arg_size;
         }
     };
 
@@ -53,19 +43,11 @@ namespace test {
 
         data_tree& operator()(misc::pos_type const& pos, node_type const& type, std::string const& str);
         data_tree& operator()(misc::pos_type const& pos
-                            , int indent
-                            , node_type const& type
-                            , std::string const& str);
-
-        data_tree& operator()(misc::pos_type const& pos
                             , node_type const& type
                             , std::string const& str
                             , int func_arg_size);
-
         data_tree& operator()(node_type const& type);
-
         data_tree& operator()(misc::pos_type const& pos, node_type const& type);
-        data_tree& operator()(misc::pos_type const& pos, int indent, node_type const& type);
     };
 
     extern node_type const BOOLEAN;

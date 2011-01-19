@@ -24,7 +24,6 @@ namespace {
         {
             data_tree::actual_one()(SCOPE);
         }
-
     };
 
     std::list<util::sptr<func_templ>> func_entities;
