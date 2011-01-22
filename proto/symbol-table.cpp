@@ -80,8 +80,8 @@ util::sref<func_templ>
     symbol_table::_query_func_in_external_or_null_if_nonexist(std::string const& name, int param_count) const
 {
     return bool(_external_or_null_on_global)
-                 ? util::sref<func_templ>(0)
-                 : _external_or_null_on_global->_query_func_or_null_if_nonexist(name, param_count);
+                 ? _external_or_null_on_global->_query_func_or_null_if_nonexist(name, param_count)
+                 : util::sref<func_templ>(0);
 }
 
 func_templ symbol_table::_fake_prototype(misc::pos_type(0), "", std::vector<std::string>());

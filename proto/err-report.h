@@ -3,6 +3,7 @@
 
 #include <list>
 #include <string>
+#include "../misc/pos-type.h"
 
 namespace proto {
 
@@ -12,13 +13,11 @@ namespace proto {
     void var_already_in_local(misc::pos_type const& prev_def_pos
                             , misc::pos_type const& this_def_pos
                             , std::string const& var_name);
-    void var_already_in_parent(misc::pos_type const& prev_def_pos
-                             , misc::pos_type const& this_def_pos
-                             , std::string const& name);
     void var_ref_before_def(misc::pos_type const& def_pos
                           , std::list<misc::pos_type> const& ref_positions
                           , std::string const& var_name);
 
+    void forbid_def_func(misc::pos_type const& pos, std::string const& name);
     void func_already_in_local(misc::pos_type const& prev_def_pos
                              , misc::pos_type const& this_def_pos
                              , std::string const& name

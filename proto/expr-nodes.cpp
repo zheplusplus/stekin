@@ -46,18 +46,19 @@ util::sptr<inst::expr_base const> binary_op::inst(util::sref<inst::scope const> 
 {
     util::sptr<inst::expr_base const> left = lhs->inst(scope);
     util::sptr<inst::expr_base const> right = rhs->inst(scope);
-    return std::move(util::mkptr(
-                new inst::binary_op(std::move(left)
-                                  , inst::operation::query_binary(pos, op, left->typeof(), right->typeof())
-                                  , std::move(right))));
+    inst::type const* ltype = left->typeof();
+    inst::type const* rtype = right->typeof();
+    return std::move(util::mkptr(new inst::binary_op(std::move(left)
+                                                   , scope->query_binary(pos, op, ltype, rtype)
+                                                   , std::move(right))));
 }
 
 util::sptr<inst::expr_base const> pre_unary_op::inst(util::sref<inst::scope const> scope) const
 {
     util::sptr<inst::expr_base const> right = rhs->inst(scope);
+    inst::type const* rtype = right->typeof();
     return std::move(util::mkptr(
-                new inst::pre_unary_op(inst::operation::query_pre_unary(pos, op, right->typeof())
-                                     , std::move(right))));
+                new inst::pre_unary_op(scope->query_pre_unary(pos, op, rtype), std::move(right))));
 }
 
 util::sptr<inst::expr_base const> conjunction::inst(util::sref<inst::scope const> scope) const

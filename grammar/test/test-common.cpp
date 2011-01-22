@@ -32,7 +32,7 @@ data_tree& data_tree::operator()(node_type const& type)
 
 std::ostream& operator<<(std::ostream& os, grammar_data const& data)
 {
-    return os << data.pos;
+    return -1 == data.func_arg_size ? (os << data.pos) : (os << data.pos << " arg size=" << data.func_arg_size);
 }
 
 node_type const test::BOOLEAN("boolean");

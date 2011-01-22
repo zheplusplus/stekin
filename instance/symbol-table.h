@@ -24,7 +24,7 @@ namespace inst {
     struct symbol_table {
         symbol_table(int ext_lvl
                    , std::list<arg_name_type_pair> const& args
-                   , std::map<std::string, variable const> ext_vars);
+                   , std::map<std::string, variable const> const& ext_vars);
 
         symbol_table()
             : level(0)
