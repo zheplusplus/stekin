@@ -41,9 +41,9 @@ namespace {
     struct dummy_stmt
         : public stmt_base
     {
-        util::sptr<inst::stmt_base const> inst(util::sref<inst::scope const> scope) const
+        util::sptr<inst::mediate_base> inst(util::sref<inst::scope const> scope) const
         {
-            return util::sptr<inst::stmt_base const>(0);
+            return std::move(util::sptr<inst::mediate_base>(NULL));
         }
 
         termination_status termination() const
@@ -59,9 +59,9 @@ namespace {
 
 void block::add_stmt(util::sptr<stmt_base const>) {}
 
-util::sptr<inst::stmt_base const> block::inst(util::sref<inst::scope const>) const
+util::sptr<inst::mediate_base> block::inst(util::sref<inst::scope const>) const
 {
-    return std::move(util::sptr<inst::stmt_base const>(NULL));
+    return std::move(util::sptr<inst::mediate_base>(NULL));
 }
 
 util::sptr<expr_base const> scope::make_bool(misc::pos_type const& pos, bool value) const

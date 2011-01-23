@@ -13,6 +13,7 @@ WORK_OBJ=$(WORKDIR)/scope.o \
          $(WORKDIR)/func-templ.o \
          $(WORKDIR)/expr-nodes.o \
          $(WORKDIR)/stmt-nodes.o \
+         $(WORKDIR)/inst-mediates.o \
          $(WORKDIR)/symbol-table.o
 
 UTIL_OBJ=$(UTILDIR)/string.o

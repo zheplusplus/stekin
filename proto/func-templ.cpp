@@ -5,6 +5,7 @@
 #include "expr-nodes.h"
 #include "stmt-nodes.h"
 #include "err-report.h"
+#include "inst-mediates.h"
 #include "../util/map-compare.h"
 
 using namespace proto;
@@ -64,6 +65,7 @@ util::sref<inst::function> func_templ::inst(misc::pos_type const& pos
     auto find_result = _instance_cache.find(instance_info(ext_vars, arg_types));
     if (_instance_cache.end() != find_result) {
         util::sref<inst::function> instance = find_result->second;
+        instance->inst_next_path(ext_scope);
         if (!instance->is_return_type_resolved()) {
             func_ret_type_unresolvable(name, arg_types.size());
         }
@@ -72,16 +74,18 @@ util::sref<inst::function> func_templ::inst(misc::pos_type const& pos
 
     util::sref<inst::function> instance = inst::function
                 ::create_instance(arg_types, ext_vars, RETURN_NO_VOID != _body_scope.termination());
-
     std::list<inst::arg_name_type_pair> args;
     for (unsigned i = 0; i < arg_types.size(); ++i) {
         args.push_back(inst::arg_name_type_pair(param_names[i], arg_types[i]));
     }
-
     _instance_cache.insert(std::make_pair(instance_info(ext_vars, arg_types), instance));
+
     inst::symbol_table sub_sym(ext_scope->level(), args, ext_vars);
     inst::scope sub_scope(instance, util::mkref(sub_sym));
-    sub_scope.add_stmt(std::move(_body_scope.inst(util::mkref(sub_scope))));
+
+    block_mediate body_mediate(_body_scope.get_stmts(), util::mkref(sub_scope));
+    body_mediate.mediate_inst(util::mkref(sub_scope));
+    sub_scope.add_stmt(std::move(body_mediate.inst(util::mkref(sub_scope))));
     return instance;
 }
 

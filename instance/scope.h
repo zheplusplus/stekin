@@ -35,6 +35,8 @@ namespace inst {
                                        , type const* rhs) const;
 
         void add_stmt(util::sptr<stmt_base const> stmt);
+        void add_path(util::sref<mediate_base> path) const;
+        void inst_next_path(util::sref<scope const> sc) const;
 
         int level() const;
     private:

@@ -69,8 +69,8 @@ namespace proto {
                                        , std::vector<std::string> const& param_names);
     public:
         util::sref<symbol_table> get_symbols() const;
+        std::list<util::sptr<stmt_base const>> const& get_stmts() const;
     public:
-        util::sptr<inst::stmt_base const> inst(util::sref<inst::scope const> sc) const;
         termination_status termination() const;
     public:
         static util::sptr<scope> global_scope();

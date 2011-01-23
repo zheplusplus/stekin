@@ -7,7 +7,19 @@ using namespace inst;
 
 type const* const type::BIT_VOID = &test::PROTO_TEST_TYPE;
 
+void function::inst_next_path(util::sref<scope const> sc)
+{
+}
+
 void scope::set_return_type(misc::pos_type const& pos, type const* type) const
+{
+}
+
+void scope::inst_next_path(util::sref<scope const> sc) const
+{
+}
+
+void scope::add_path(util::sref<mediate_base> path) const
 {
 }
 

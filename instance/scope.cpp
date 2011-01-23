@@ -40,6 +40,16 @@ void scope::add_stmt(util::sptr<stmt_base const> stmt)
     _block.add_stmt(std::move(stmt));
 }
 
+void scope::add_path(util::sref<mediate_base> path) const
+{
+    _func->add_path(path);
+}
+
+void scope::inst_next_path(util::sref<scope const> sc) const
+{
+    _func->inst_next_path(sc);
+}
+
 int scope::level() const
 {
     return _symbols->level;

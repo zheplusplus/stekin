@@ -8,6 +8,7 @@ proto:symbol-table.d \
       flow-managers.d \
       stmt-nodes.d \
       expr-nodes.d \
+      inst-mediates.d \
       func-templ.d
 
 clean:

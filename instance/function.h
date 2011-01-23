@@ -8,6 +8,7 @@
 
 #include "stmt-nodes.h"
 #include "type.h"
+#include "inst-mediate.h"
 #include "../misc/pos-type.h"
 
 namespace inst {
@@ -35,6 +36,11 @@ namespace inst {
         {}
     protected:
         function(function const&) = delete;
+    public:
+        void add_path(util::sref<mediate_base> path);
+        void inst_next_path(util::sref<scope const> sc);
+    private:
+        std::list<util::sref<mediate_base>> _candidate_paths;
     };
 
 }

@@ -125,11 +125,6 @@ util::sref<func_templ> scope::decl_func(misc::pos_type const& pos
     return _symbols->def_func(pos, name, param_names);
 }
 
-util::sptr<inst::stmt_base const> scope::inst(util::sref<inst::scope const> sc) const
-{
-    return std::move(_block.inst(sc));
-}
-
 termination_status scope::termination() const
 {
     return _flow_mgr->termination();
@@ -138,6 +133,11 @@ termination_status scope::termination() const
 util::sref<symbol_table> scope::get_symbols() const
 {
     return _symbols;
+}
+
+std::list<util::sptr<stmt_base const>> const& scope::get_stmts() const
+{
+    return _block.get_stmts();
 }
 
 util::sptr<scope> scope::global_scope()

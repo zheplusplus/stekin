@@ -2,6 +2,7 @@
 #define __STAKCENING_PROTO_NODE_BASE_H__
 
 #include "../instance/node-base.h"
+#include "../instance/inst-mediate.h"
 #include "../instance/scope.h"
 
 namespace proto {
@@ -17,7 +18,7 @@ namespace proto {
     struct stmt_base {
         virtual ~stmt_base() {}
 
-        virtual util::sptr<inst::stmt_base const> inst(util::sref<inst::scope const> sc) const = 0;
+        virtual util::sptr<inst::mediate_base> inst(util::sref<inst::scope const> sc) const = 0;
     protected:
         stmt_base() {}
     };

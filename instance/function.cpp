@@ -98,3 +98,18 @@ util::sref<function> function::create_instance(std::vector<type const*> const& a
     func_inst_recs::instance.add(std::move(func));
     return fref;
 }
+
+void function::add_path(util::sref<mediate_base> path)
+{
+    _candidate_paths.push_back(path);
+}
+
+void function::inst_next_path(util::sref<scope const> sc)
+{
+    if (_candidate_paths.empty()) {
+        return;
+    }
+    util::sref<mediate_base> next_path = _candidate_paths.front();
+    _candidate_paths.pop_front();
+    next_path->mediate_inst(sc);
+}
