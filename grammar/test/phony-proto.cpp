@@ -17,10 +17,10 @@ namespace {
     }
 
     struct phony_scope
-        : public func_scope
+        : public scope
     {
         phony_scope()
-            : func_scope(nullsymbols())
+            : scope(nullsymbols())
         {
             data_tree::actual_one()(SCOPE);
         }
@@ -55,6 +55,13 @@ namespace {
     std::vector<util::sptr<scope>> func_scope_entities;
     std::map<func_templ const*, std::vector<util::sptr<scope>>::size_type> map_func_to_index;
 
+}
+
+void block::add_stmt(util::sptr<stmt_base const>) {}
+
+util::sptr<inst::stmt_base const> block::inst(util::sref<inst::scope const>) const
+{
+    return std::move(util::sptr<inst::stmt_base const>(NULL));
 }
 
 util::sptr<expr_base const> scope::make_bool(misc::pos_type const& pos, bool value) const
@@ -128,35 +135,35 @@ util::sptr<expr_base const> scope::make_nega(misc::pos_type const& pos, util::sp
     return std::move(nullptr());
 }
 
-void func_scope::add_func_ret(misc::pos_type const& pos, util::sptr<expr_base const>)
+void scope::add_func_ret(misc::pos_type const& pos, util::sptr<expr_base const>)
 {
     data_tree::actual_one()(pos, RETURN);
 }
 
-void func_scope::add_func_ret_nothing(misc::pos_type const& pos)
+void scope::add_func_ret_nothing(misc::pos_type const& pos)
 {
     data_tree::actual_one()(pos, RETURN_NOTHING);
 }
 
-void func_scope::add_arith(misc::pos_type const& pos, util::sptr<expr_base const>)
+void scope::add_arith(misc::pos_type const& pos, util::sptr<expr_base const>)
 {
     data_tree::actual_one()(pos, ARITHMETICS);
 }
 
-void func_scope::add_branch(misc::pos_type const& pos
-                          , util::sptr<expr_base const>
-                          , util::sptr<stmt_base const>
-                          , util::sptr<stmt_base const>)
+void scope::add_branch(misc::pos_type const& pos
+                     , util::sptr<expr_base const>
+                     , util::sptr<scope>
+                     , util::sptr<scope>)
 {
     data_tree::actual_one()(pos, BRANCH);
 }
 
-void func_scope::add_loop(misc::pos_type const& pos, util::sptr<expr_base const>, util::sptr<stmt_base const>)
+void scope::add_loop(misc::pos_type const& pos, util::sptr<expr_base const>, util::sptr<scope>)
 {
     data_tree::actual_one()(pos, LOOP);
 }
 
-void func_scope::def_var(misc::pos_type const& pos, std::string const& name, util::sptr<expr_base const> init)
+void scope::def_var(misc::pos_type const& pos, std::string const& name, util::sptr<expr_base const> init)
 {
     data_tree::actual_one()(pos, VAR_DEF, name);
 }
@@ -184,11 +191,6 @@ util::sref<func_templ> scope::decl_func(misc::pos_type const& pos
                   });
     func_entities.push_back(std::move(util::mkmptr(new func_templ(pos, name, param_names))));
     return *func_entities.back();
-}
-
-util::sptr<stmt_base const> scope::extract_stmts()
-{
-    return std::move(util::mkptr(new dummy_stmt));
 }
 
 util::sref<symbol_table> scope::get_symbols() const

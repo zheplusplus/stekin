@@ -6,6 +6,7 @@
 #include <list>
 
 #include "node-base.h"
+#include "block.h"
 #include "flow-managers.h"
 #include "../misc/pos-type.h"
 
@@ -16,7 +17,7 @@ namespace proto {
 
     struct scope {
         explicit scope(util::sref<symbol_table> s)
-            : _flow_mgr(new flow_mgr(_stmts))
+            : _flow_mgr(new flow_mgr(_block))
             , _symbols(s)
         {}
 
@@ -44,21 +45,21 @@ namespace proto {
                                             , util::sptr<expr_base const> rhs) const;
         util::sptr<expr_base const> make_nega(misc::pos_type const& pos, util::sptr<expr_base const> rhs) const;
     public:
-        virtual void add_func_ret(misc::pos_type const& pos, util::sptr<expr_base const> ret_val) = 0;
-        virtual void add_func_ret_nothing(misc::pos_type const& pos) = 0;
-        virtual void add_arith(misc::pos_type const& pos, util::sptr<expr_base const> expr) = 0;
+        virtual void add_func_ret(misc::pos_type const& pos, util::sptr<expr_base const> ret_val);
+        virtual void add_func_ret_nothing(misc::pos_type const& pos);
+        virtual void add_arith(misc::pos_type const& pos, util::sptr<expr_base const> expr);
 
         virtual void add_branch(misc::pos_type const& pos
                               , util::sptr<expr_base const> condition
-                              , util::sptr<stmt_base const> valid
-                              , util::sptr<stmt_base const> invalid) = 0;
+                              , util::sptr<scope> valid
+                              , util::sptr<scope> invalid);
         virtual void add_loop(misc::pos_type const& pos
                             , util::sptr<expr_base const> condition
-                            , util::sptr<stmt_base const> body) = 0;
+                            , util::sptr<scope> body);
 
         virtual void def_var(misc::pos_type const& pos
                            , std::string const& name
-                           , util::sptr<expr_base const> init) = 0;
+                           , util::sptr<expr_base const> init);
     public:
         util::sptr<scope> create_branch_scope();
         util::sptr<scope> create_loop_scope();
@@ -67,13 +68,14 @@ namespace proto {
                                        , std::string const& name
                                        , std::vector<std::string> const& param_names);
     public:
-        util::sptr<stmt_base const> extract_stmts();
-    public:
         util::sref<symbol_table> get_symbols() const;
+    public:
+        util::sptr<inst::stmt_base const> inst(util::sref<inst::scope const> sc) const;
+        termination_status termination() const;
     public:
         static util::sptr<scope> global_scope();
     protected:
-        std::list<util::sptr<stmt_base const>> _stmts;
+        block _block;
         util::sptr<flow_mgr_base> _flow_mgr;
         util::sref<symbol_table> const _symbols;
     };
@@ -84,20 +86,6 @@ namespace proto {
         explicit func_scope(util::sref<symbol_table> symbols)
             : scope(symbols)
         {}
-    public:
-        void add_func_ret(misc::pos_type const& pos, util::sptr<expr_base const> ret_val);
-        void add_func_ret_nothing(misc::pos_type const& pos);
-        void add_arith(misc::pos_type const& pos, util::sptr<expr_base const> expr);
-
-        void add_branch(misc::pos_type const& pos
-                      , util::sptr<expr_base const> condition
-                      , util::sptr<stmt_base const> valid
-                      , util::sptr<stmt_base const> invalid);
-        void add_loop(misc::pos_type const& pos
-                    , util::sptr<expr_base const> condition
-                    , util::sptr<stmt_base const> body);
-
-        void def_var(misc::pos_type const& pos, std::string const& name, util::sptr<expr_base const> init);
     };
 
     struct sub_scope

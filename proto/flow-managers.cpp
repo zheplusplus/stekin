@@ -4,7 +4,7 @@ using namespace proto;
 
 void flow_mgr::add_stmt(util::sptr<stmt_base const> stmt)
 {
-    _stmts_ref.push_back(std::move(stmt));
+    _block_ref.add_stmt(std::move(stmt));
 }
 
 termination_status flow_mgr::termination() const

@@ -4,9 +4,16 @@
 #include <list>
 
 #include "node-base.h"
+#include "block.h"
 #include "../util/pointer.h"
 
 namespace proto {
+
+    enum termination_status {
+        NO_EXPLICIT_TERMINATION,
+        RETURN_VOID,
+        RETURN_NO_VOID,
+    };
 
     struct flow_mgr_base {
         virtual void add_stmt(util::sptr<stmt_base const> stmt) = 0;
@@ -16,14 +23,14 @@ namespace proto {
     struct flow_mgr
         : public flow_mgr_base
     {
-        explicit flow_mgr(std::list<util::sptr<stmt_base const>>& stmts_ref)
-            : _stmts_ref(stmts_ref)
+        explicit flow_mgr(block& block_ref)
+            : _block_ref(block_ref)
         {}
 
         void add_stmt(util::sptr<stmt_base const> stmt);
         termination_status termination() const;
     private:
-        std::list<util::sptr<stmt_base const>>& _stmts_ref;
+        block& _block_ref;
     };
 
     struct teminated_flow

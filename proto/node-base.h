@@ -14,21 +14,10 @@ namespace proto {
         expr_base() {}
     };
 
-    enum termination_status {
-        NO_EXPLICIT_TERMINATION,
-        RETURN_VOID,
-        RETURN_NO_VOID,
-    };
-
     struct stmt_base {
         virtual ~stmt_base() {}
 
         virtual util::sptr<inst::stmt_base const> inst(util::sref<inst::scope const> sc) const = 0;
-
-        virtual termination_status termination() const
-        {
-            return NO_EXPLICIT_TERMINATION;
-        }
     protected:
         stmt_base() {}
     };

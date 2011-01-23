@@ -52,17 +52,14 @@ void branch::compile(util::sref<proto::scope> scope) const
     valid.compile(*valid_scope);
     util::sptr<proto::scope> invalid_scope = scope->create_branch_scope();
     invalid.compile(*invalid_scope);
-    scope->add_branch(pos
-                    , condition->compile(scope)
-                    , valid_scope->extract_stmts()
-                    , invalid_scope->extract_stmts());
+    scope->add_branch(pos, condition->compile(scope), std::move(valid_scope), std::move(invalid_scope));
 }
 
 void loop::compile(util::sref<proto::scope> scope) const 
 {
     util::sptr<proto::scope> loop_scope = scope->create_loop_scope();
     body.compile(*loop_scope);
-    scope->add_loop(pos, condition->compile(scope), loop_scope->extract_stmts());
+    scope->add_loop(pos, condition->compile(scope), std::move(loop_scope));
 }
 
 void func_ret::compile(util::sref<proto::scope> scope) const 

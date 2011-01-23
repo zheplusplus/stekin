@@ -70,9 +70,8 @@ util::sref<inst::function> func_templ::inst(misc::pos_type const& pos
         return instance;
     }
 
-    util::sptr<stmt_base const> body_stmts(std::move(_body_scope.extract_stmts()));
     util::sref<inst::function> instance = inst::function
-                ::create_instance(arg_types, ext_vars, RETURN_NO_VOID != body_stmts->termination());
+                ::create_instance(arg_types, ext_vars, RETURN_NO_VOID != _body_scope.termination());
 
     std::list<inst::arg_name_type_pair> args;
     for (unsigned i = 0; i < arg_types.size(); ++i) {
@@ -82,7 +81,7 @@ util::sref<inst::function> func_templ::inst(misc::pos_type const& pos
     _instance_cache.insert(std::make_pair(instance_info(ext_vars, arg_types), instance));
     inst::symbol_table sub_sym(ext_scope->level(), args, ext_vars);
     inst::scope sub_scope(instance, util::mkref(sub_sym));
-    sub_scope.add_stmt(std::move(body_stmts->inst(util::mkref(sub_scope))));
+    sub_scope.add_stmt(std::move(_body_scope.inst(util::mkref(sub_scope))));
     return instance;
 }
 
