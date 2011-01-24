@@ -215,10 +215,3 @@ util::sref<scope> func_templ::get_scope()
 {
     return *func_scope_entities[map_func_to_index[this]];
 }
-
-void flow_mgr::add_stmt(util::sptr<stmt_base const>) {}
-
-termination_status flow_mgr::termination() const
-{
-    return NO_EXPLICIT_TERMINATION;
-}

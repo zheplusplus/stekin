@@ -70,19 +70,19 @@ util::sptr<expr_base const> scope::make_nega(misc::pos_type const& pos, util::sp
 
 void scope::add_func_ret(misc::pos_type const& pos, util::sptr<expr_base const> ret_val)
 {
-    _flow_mgr->add_stmt(std::move(util::mkptr(new func_ret(pos, std::move(ret_val)))));
-    _flow_mgr.reset(new teminated_flow(RETURN_NO_VOID, _flow_mgr));
+    _status_changed_by_return(RETURN_NO_VOID);
+    _block.add_stmt(std::move(util::mkptr(new func_ret(pos, std::move(ret_val)))));
 }
 
 void scope::add_func_ret_nothing(misc::pos_type const& pos)
 {
-    _flow_mgr->add_stmt(std::move(util::mkptr(new func_ret_nothing(pos))));
-    _flow_mgr.reset(new teminated_flow(RETURN_VOID, _flow_mgr));
+    _status_changed_by_return(RETURN_VOID);
+    _block.add_stmt(std::move(util::mkptr(new func_ret_nothing(pos))));
 }
 
 void scope::add_arith(misc::pos_type const& pos, util::sptr<expr_base const> expr)
 {
-    _flow_mgr->add_stmt(std::move(util::mkptr(new arithmetics(pos, std::move(expr)))));
+    _block.add_stmt(std::move(util::mkptr(new arithmetics(pos, std::move(expr)))));
 }
 
 void scope::add_branch(misc::pos_type const& pos
@@ -90,22 +90,25 @@ void scope::add_branch(misc::pos_type const& pos
                      , util::sptr<scope> valid
                      , util::sptr<scope> invalid)
 {
+    _status_changed_by_sub_scope_status(valid->_status);
+    _status_changed_by_sub_scope_status(invalid->_status);
     util::sptr<block const> valid_block(new block(std::move(valid->_block)));
     util::sptr<block const> invalid_block(new block(std::move(invalid->_block)));
-    _flow_mgr->add_stmt(std::move(util::mkptr(
+    _block.add_stmt(std::move(util::mkptr(
                 new branch(pos, std::move(condition), std::move(valid_block), std::move(invalid_block)))));
 }
 
 void scope::add_loop(misc::pos_type const& pos, util::sptr<expr_base const> condition, util::sptr<scope> body)
 {
+    _status_changed_by_sub_scope_status(body->_status);
     util::sptr<block const> body_block(new block(std::move(body->_block)));
-    _flow_mgr->add_stmt(std::move(util::mkptr(new loop(pos, std::move(condition), std::move(body_block)))));
+    _block.add_stmt(std::move(util::mkptr(new loop(pos, std::move(condition), std::move(body_block)))));
 }
 
 void scope::def_var(misc::pos_type const& pos, std::string const& name, util::sptr<expr_base const> init)
 {
     _symbols->def_var(pos, name);
-    _flow_mgr->add_stmt(std::move(util::mkptr(new var_def(pos, name, std::move(init)))));
+    _block.add_stmt(std::move(util::mkptr(new var_def(pos, name, std::move(init)))));
 }
 
 util::sptr<scope> scope::create_branch_scope()
@@ -127,7 +130,75 @@ util::sref<func_templ> scope::decl_func(misc::pos_type const& pos
 
 termination_status scope::termination() const
 {
-    return _flow_mgr->termination();
+    return _status;
+}
+
+void scope::_status_changed_by_sub_scope_status(termination_status sub_status)
+{
+    switch (_status) {
+    case RETURN_VOID:
+       return;
+    case RETURN_NO_VOID:
+       {
+           switch (sub_status) {
+           case RETURN_VOID:
+           case PARTIAL_RETURN_VOID:
+               _status = PARTIAL_RETURN_VOID;
+               return;
+           default:
+               return;
+           }
+       }
+    case PARTIAL_RETURN_VOID:
+       return;
+    case PARTIAL_RETURN_NO_VOID:
+       {
+           switch (sub_status) {
+           case RETURN_VOID:
+           case PARTIAL_RETURN_VOID:
+               _status = PARTIAL_RETURN_VOID;
+               return;
+           default:
+               return;
+           }
+       }
+    default:
+       {
+           switch (sub_status) {
+           case RETURN_VOID:
+           case PARTIAL_RETURN_VOID:
+               _status = PARTIAL_RETURN_VOID;
+               return;
+           case RETURN_NO_VOID:
+           case PARTIAL_RETURN_NO_VOID:
+               _status = PARTIAL_RETURN_NO_VOID;
+               return;
+           default:
+               return;
+           }
+       }
+    }
+}
+
+void scope::_status_changed_by_return(termination_status status)
+{
+    switch (status) {
+    case RETURN_VOID:
+        _status = RETURN_VOID;
+        return;
+    case RETURN_NO_VOID:
+        {
+            switch (_status) {
+            case PARTIAL_RETURN_NO_VOID:
+                _status = RETURN_NO_VOID;
+                return;
+            default:
+                return;
+            }
+        }
+    default:
+        return;
+    }
 }
 
 util::sref<symbol_table> scope::get_symbols() const

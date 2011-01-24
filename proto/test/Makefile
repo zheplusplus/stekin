@@ -18,7 +18,7 @@ WORK_OBJ=$(WORKDIR)/scope.o \
 
 UTIL_OBJ=$(UTILDIR)/string.o
 
-TEST_DEP=proto string.du phony-err-report.dt phony-instance.dt test-common.dt
+TEST_DEP=proto string.du phony-err-report.dt phony-instance.dt test-common.dt test-scope.dt
 TEST_OBJ=$(WORK_OBJ) \
          $(UTILDIR)/string.o \
          $(TESTDIR)/phony-err-report.o \
@@ -31,6 +31,7 @@ $(TESTDIR)/test-proto.out:$(TEST_DEP) \
 	$(LINK) $(TEST_LIBS) $(TEST_OBJ) \
 	        $(TESTDIR)/test-symbol-table.o \
 	        $(TESTDIR)/test-expr-nodes.o \
+	        $(TESTDIR)/test-scope.o \
 	     -o $(TESTDIR)/test-proto.out
 
 cleant:clean

@@ -7,7 +7,6 @@
 
 #include "node-base.h"
 #include "block.h"
-#include "flow-managers.h"
 #include "../misc/pos-type.h"
 
 namespace proto {
@@ -15,10 +14,18 @@ namespace proto {
     struct symbol_table;
     struct func_templ;
 
+    enum termination_status {
+        NO_EXPLICIT_TERMINATION,
+        RETURN_VOID,
+        RETURN_NO_VOID,
+        PARTIAL_RETURN_VOID,
+        PARTIAL_RETURN_NO_VOID,
+    };
+
     struct scope {
         explicit scope(util::sref<symbol_table> s)
-            : _flow_mgr(new flow_mgr(_block))
-            , _symbols(s)
+            : _symbols(s)
+            , _status(NO_EXPLICIT_TERMINATION)
         {}
 
         virtual ~scope() {}
@@ -76,8 +83,11 @@ namespace proto {
         static util::sptr<scope> global_scope();
     protected:
         block _block;
-        util::sptr<flow_mgr_base> _flow_mgr;
         util::sref<symbol_table> const _symbols;
+        termination_status _status;
+    protected:
+        void _status_changed_by_sub_scope_status(termination_status sub_status);
+        void _status_changed_by_return(termination_status status);
     };
 
     struct func_scope
