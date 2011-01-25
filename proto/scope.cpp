@@ -190,6 +190,7 @@ void scope::_status_changed_by_return(termination_status status)
         {
             switch (_status) {
             case PARTIAL_RETURN_NO_VOID:
+            case NO_EXPLICIT_TERMINATION:
                 _status = RETURN_NO_VOID;
                 return;
             default:

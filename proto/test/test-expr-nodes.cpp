@@ -35,6 +35,7 @@ TEST_F(ExprNodesTest, Literals)
     int1.inst(*inst_scope)->typeof();
     float0.inst(*inst_scope)->typeof();
     float1.inst(*inst_scope)->typeof();
+    ASSERT_FALSE(proto::has_error());
 
     data_tree::expect_one()
         (BOOLEAN, "true")
@@ -53,6 +54,7 @@ TEST_F(ExprNodesTest, Reference)
     proto::reference ref1(pos, "moji");
     ref0.inst(*inst_scope)->typeof();
     ref1.inst(*inst_scope)->typeof();
+    ASSERT_FALSE(proto::has_error());
 
     data_tree::expect_one()
         (pos, QUERY_VAR, "ushiro")
@@ -75,6 +77,7 @@ TEST_F(ExprNodesTest, Operations)
 
     bin.inst(*inst_scope)->typeof();
     preu.inst(*inst_scope)->typeof();
+    ASSERT_FALSE(proto::has_error());
 
     data_tree::expect_one()
             (pos, QUERY_VAR, "littleBird")
@@ -109,6 +112,7 @@ TEST_F(ExprNodesTest, Logic)
     conj.inst(*inst_scope)->typeof();
     disj.inst(*inst_scope)->typeof();
     nega.inst(*inst_scope)->typeof();
+    ASSERT_FALSE(proto::has_error());
 
     data_tree::expect_one()
         (CONJUNCTION)
