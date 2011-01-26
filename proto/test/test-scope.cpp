@@ -21,8 +21,7 @@ struct ScopeTest
     {
         symbols.reset(new proto::symbol_table);
         scope.reset(new proto::scope(*symbols));
-        inst_scope.reset(new inst::scope(util::sref<inst::function>(NULL)
-                                       , util::sref<inst::symbol_table>(NULL)));
+        inst_scope.reset(new phony_func);
     }
 
     util::sptr<proto::symbol_table> symbols;

@@ -2,6 +2,7 @@
 #define __STACKENING_PROTO_EXPRESSION_NODES_H__
 
 #include <string>
+#include <vector>
 #include <gmpxx.h>
 
 #include "node-base.h"
@@ -20,7 +21,7 @@ namespace proto {
             , value(v)
         {}
 
-        util::sptr<inst::expr_base const> inst(util::sref<inst::scope const>) const; 
+        util::sptr<inst::expr_base const> inst(util::sref<inst::scope>) const; 
 
         misc::pos_type const pos;
         bool const value;
@@ -34,7 +35,7 @@ namespace proto {
             , value(image)
         {}
 
-        util::sptr<inst::expr_base const> inst(util::sref<inst::scope const>) const; 
+        util::sptr<inst::expr_base const> inst(util::sref<inst::scope>) const; 
 
         misc::pos_type const pos;
         mpz_class value;
@@ -48,7 +49,7 @@ namespace proto {
             , value(image)
         {}
 
-        util::sptr<inst::expr_base const> inst(util::sref<inst::scope const>) const; 
+        util::sptr<inst::expr_base const> inst(util::sref<inst::scope>) const; 
 
         misc::pos_type const pos;
         mpf_class value;
@@ -62,7 +63,7 @@ namespace proto {
             , name(n)
         {}
 
-        util::sptr<inst::expr_base const> inst(util::sref<inst::scope const> scope) const;
+        util::sptr<inst::expr_base const> inst(util::sref<inst::scope> scope) const;
 
         misc::pos_type const pos;
         std::string const name;
@@ -77,7 +78,7 @@ namespace proto {
             , args(std::move(a))
         {}
 
-        util::sptr<inst::expr_base const> inst(util::sref<inst::scope const> scope) const;
+        util::sptr<inst::expr_base const> inst(util::sref<inst::scope> scope) const;
 
         misc::pos_type const pos;
         util::sref<func_templ> const func;
@@ -97,7 +98,7 @@ namespace proto {
             , rhs(std::move(r))
         {}
 
-        util::sptr<inst::expr_base const> inst(util::sref<inst::scope const> scope) const;
+        util::sptr<inst::expr_base const> inst(util::sref<inst::scope> scope) const;
 
         misc::pos_type const pos;
         util::sptr<expr_base const> const lhs;
@@ -114,7 +115,7 @@ namespace proto {
             , rhs(std::move(r))
         {}
 
-        util::sptr<inst::expr_base const> inst(util::sref<inst::scope const> scope) const;
+        util::sptr<inst::expr_base const> inst(util::sref<inst::scope> scope) const;
 
         misc::pos_type const pos;
         std::string const op;
@@ -130,7 +131,7 @@ namespace proto {
             , rhs(std::move(r))
         {}
 
-        util::sptr<inst::expr_base const> inst(util::sref<inst::scope const> scope) const;
+        util::sptr<inst::expr_base const> inst(util::sref<inst::scope> scope) const;
 
         misc::pos_type const pos;
         util::sptr<expr_base const> const lhs;
@@ -146,7 +147,7 @@ namespace proto {
             , rhs(std::move(r))
         {}
 
-        util::sptr<inst::expr_base const> inst(util::sref<inst::scope const> scope) const;
+        util::sptr<inst::expr_base const> inst(util::sref<inst::scope> scope) const;
 
         misc::pos_type const pos;
         util::sptr<expr_base const> const lhs;
@@ -161,7 +162,7 @@ namespace proto {
             , rhs(std::move(r))
         {}
 
-        util::sptr<inst::expr_base const> inst(util::sref<inst::scope const> scope) const;
+        util::sptr<inst::expr_base const> inst(util::sref<inst::scope> scope) const;
 
         misc::pos_type const pos;
         util::sptr<expr_base const> const rhs;

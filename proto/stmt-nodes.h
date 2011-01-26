@@ -17,7 +17,7 @@ namespace proto {
             , expr(std::move(e))
         {}
 
-        util::sptr<inst::mediate_base> inst(util::sref<inst::scope const> scope) const;
+        util::sptr<inst::mediate_base> inst(util::sref<inst::scope> scope) const;
 
         misc::pos_type const pos;
         util::sptr<expr_base const> const expr;
@@ -36,7 +36,7 @@ namespace proto {
                 , invalid(std::move(i))
         {}
 
-        util::sptr<inst::mediate_base> inst(util::sref<inst::scope const> scope) const;
+        util::sptr<inst::mediate_base> inst(util::sref<inst::scope> scope) const;
 
         misc::pos_type const pos;
         util::sptr<expr_base const> const condition;
@@ -53,7 +53,7 @@ namespace proto {
             , body(std::move(b))
         {}
 
-        util::sptr<inst::mediate_base> inst(util::sref<inst::scope const> scope) const;
+        util::sptr<inst::mediate_base> inst(util::sref<inst::scope> scope) const;
 
         misc::pos_type const pos;
         util::sptr<expr_base const> const condition;
@@ -69,7 +69,7 @@ namespace proto {
             , init(std::move(i))
         {}
 
-        util::sptr<inst::mediate_base> inst(util::sref<inst::scope const> scope) const;
+        util::sptr<inst::mediate_base> inst(util::sref<inst::scope> scope) const;
 
         misc::pos_type const pos;
         std::string const name;
@@ -84,7 +84,7 @@ namespace proto {
             , ret_val(std::move(r))
         {}
 
-        util::sptr<inst::mediate_base> inst(util::sref<inst::scope const> scope) const;
+        util::sptr<inst::mediate_base> inst(util::sref<inst::scope> scope) const;
 
         misc::pos_type const pos;
         util::sptr<expr_base const> const ret_val;
@@ -97,7 +97,7 @@ namespace proto {
             : pos(ps)
         {}
 
-        util::sptr<inst::mediate_base> inst(util::sref<inst::scope const> scope) const;
+        util::sptr<inst::mediate_base> inst(util::sref<inst::scope> scope) const;
 
         misc::pos_type const pos;
     };

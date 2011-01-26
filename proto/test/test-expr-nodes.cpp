@@ -12,8 +12,7 @@ struct ExprNodesTest
     void SetUp()
     {
         proto_test::SetUp();
-        inst_scope.reset(new inst::scope(util::sref<inst::function>(NULL)
-                                       , util::sref<inst::symbol_table>(NULL)));
+        inst_scope.reset(new phony_func);
     }
 
     util::sptr<inst::scope> inst_scope;

@@ -1,6 +1,8 @@
 #ifndef __STACKENING_INSTANCE_EXPRESSION_NODES_H__
 #define __STACKENING_INSTANCE_EXPRESSION_NODES_H__
 
+#include <vector>
+
 #include "node-base.h"
 #include "operation.h"
 #include "variable.h"

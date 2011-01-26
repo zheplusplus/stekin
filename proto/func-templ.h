@@ -15,7 +15,7 @@ namespace proto {
 
     struct func_templ {
         util::sref<inst::function> inst(misc::pos_type const& pos
-                                      , util::sref<inst::scope const> ext_scope
+                                      , util::sref<inst::scope> ext_scope
                                       , std::vector<inst::type const*> const& arg_types);
 
         func_templ(misc::pos_type const& ps, std::string const& name, std::vector<std::string> const& params);

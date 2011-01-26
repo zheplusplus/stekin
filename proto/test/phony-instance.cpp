@@ -1,34 +1,46 @@
 #include "test-common.h"
-#include "../../instance/scope.h"
+#include "../../instance/function.h"
+#include "../../instance/expr-nodes.h"
 #include "../../util/string.h"
 
 using namespace test;
 using namespace inst;
 
-type const* const type::BIT_VOID = &test::PROTO_TEST_TYPE;
+type const* const type::BIT_VOID = &test::PROTO_TEST_VOID;
 
-void function::inst_next_path(util::sref<scope const> sc)
+void function::inst_next_path()
 {
+    data_tree::actual_one()(NEXT_PATH);
 }
 
-void scope::set_return_type(misc::pos_type const& pos, type const* type) const
+void function::set_return_type(misc::pos_type const& pos, type const* t)
 {
+    data_tree::actual_one()(pos, t == type::BIT_VOID ? SET_RETURN_TYPE_VOID : SET_RETURN_TYPE);
 }
 
-void scope::inst_next_path(util::sref<scope const> sc) const
+type const* function::get_return_type() const
 {
+    data_tree::actual_one()(GET_RETURN_TYPE);
+    return &PROTO_TEST_TYPE;
 }
 
-void scope::add_path(util::sref<mediate_base> path) const
+bool function::is_return_type_resolved() const
 {
+    data_tree::actual_one()(QUERY_RETURN_TYPE_RESOLVE_STATUS);
+    return true;
 }
 
-variable scope::def_var(misc::pos_type const& pos, type const* vtype, std::string const&) const
+void function::add_path(util::sref<mediate_base>)
+{
+    data_tree::actual_one()(ADD_PATH);
+}
+
+variable function::def_var(misc::pos_type const& pos, type const* vtype, std::string const&)
 {
     return variable(pos, vtype, 0, 0);
 }
 
-variable scope::query_var(misc::pos_type const& pos, std::string const& name) const
+variable function::query_var(misc::pos_type const& pos, std::string const& name) const
 {
     data_tree::actual_one()(pos, QUERY_VAR, name);
     return variable(misc::pos_type(0), &test::PROTO_TEST_TYPE, 0, 0);
@@ -54,7 +66,7 @@ void scope::add_stmt(util::sptr<stmt_base const> stmt)
     data_tree::actual_one()(ADD_STMT);
 }
 
-int scope::level() const
+int function::level() const
 {
     return 0;
 }
@@ -65,11 +77,16 @@ symbol_table::symbol_table(
     , _ss_used(0)
 {}
 
-util::sref<function> function::create_instance(std::vector<type const*> const&
-                                             , std::map<std::string, variable const> const&
-                                             , bool)
+util::sref<function> function::create_instance(int ext_level
+                                             , std::list<arg_name_type_pair> const& args
+                                             , std::map<std::string, variable const> const& extvars
+                                             , bool has_void_returns)
 {
-    return util::sref<function>(NULL);
+    static phony_func func;
+    if (has_void_returns) {
+        data_tree::actual_one()(INIT_AS_VOID_RET);
+    }
+    return util::mkref(func);
 }
 
 void block::add_stmt(util::sptr<stmt_base const>)

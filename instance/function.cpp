@@ -9,13 +9,14 @@
 
 using namespace inst;
 
-bool function::operator<(function const& rhs) const
+variable function::def_var(misc::pos_type const& pos, type const* vtype, std::string const& name)
 {
-    if (arg_types != rhs.arg_types) {
-        return arg_types < rhs.arg_types;
-    }
+    return _symbols.def_var(pos, vtype, name);
+}
 
-    return util::map_less(external_vars, rhs.external_vars);
+variable function::query_var(misc::pos_type const& pos, std::string const& name) const
+{
+    return _symbols.query_var(pos, name);
 }
 
 type const* function::get_return_type() const
@@ -40,9 +41,10 @@ namespace {
     struct function_unresolved
         : public function
     {
-        function_unresolved(std::vector<type const*> const& arg_types
+        function_unresolved(int ext_level
+                          , std::list<arg_name_type_pair> const& args
                           , std::map<std::string, variable const> const& extvars)
-            : function(arg_types, extvars)
+            : function(ext_level, args, extvars)
             , _return_type(type::BAD_TYPE)
         {}
 
@@ -87,13 +89,13 @@ namespace {
 
 }
 
-util::sref<function> function::create_instance(std::vector<type const*> const& arg_types
+util::sref<function> function::create_instance(int ext_level
+                                             , std::list<arg_name_type_pair> const& arg_types
                                              , std::map<std::string, variable const> const& extvars
                                              , bool has_void_returns)
 {
-    util::sptr<function> func(
-            has_void_returns ? new function(arg_types, extvars) : new function_unresolved(arg_types, extvars)
-                             );
+    util::sptr<function> func(has_void_returns ? new function(ext_level, arg_types, extvars)
+                                               : new function_unresolved(ext_level, arg_types, extvars));
     util::sref<function> fref = *func;
     func_inst_recs::instance.add(std::move(func));
     return fref;
@@ -104,12 +106,17 @@ void function::add_path(util::sref<mediate_base> path)
     _candidate_paths.push_back(path);
 }
 
-void function::inst_next_path(util::sref<scope const> sc)
+void function::inst_next_path()
 {
     if (_candidate_paths.empty()) {
         return;
     }
     util::sref<mediate_base> next_path = _candidate_paths.front();
     _candidate_paths.pop_front();
-    next_path->mediate_inst(sc);
+    next_path->mediate_inst(util::mkref(*this));
+}
+
+int function::level() const
+{
+    return _symbols.level;
 }

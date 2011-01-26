@@ -6,25 +6,26 @@
 #include "type.h"
 #include "node-base.h"
 #include "operation.h"
-#include "symbol-table.h"
-#include "function.h"
 #include "variable.h"
 #include "block.h"
+#include "inst-mediate.h"
 #include "../util/pointer.h"
 #include "../misc/pos-type.h"
 
 namespace inst {
 
     struct scope {
-        scope(util::sref<function> func, util::sref<symbol_table> symbols)
-            : _func(func)
-            , _symbols(symbols)
-        {}
+        virtual ~scope() {}
     public:
-        void set_return_type(misc::pos_type const& pos, type const* type) const;
+        virtual void set_return_type(misc::pos_type const& pos, type const* type) = 0;
 
-        variable def_var(misc::pos_type const& pos, type const* vtype, std::string const& name) const;
-        variable query_var(misc::pos_type const& pos, std::string const& name) const;
+        virtual variable def_var(misc::pos_type const& pos, type const* vtype, std::string const& name) = 0;
+        virtual variable query_var(misc::pos_type const& pos, std::string const& name) const = 0;
+
+        virtual void add_path(util::sref<mediate_base> path) = 0;
+        virtual void inst_next_path() = 0;
+
+        virtual int level() const = 0;
 
         operation const* query_binary(misc::pos_type const& pos
                                     , std::string const& op
@@ -35,13 +36,9 @@ namespace inst {
                                        , type const* rhs) const;
 
         void add_stmt(util::sptr<stmt_base const> stmt);
-        void add_path(util::sref<mediate_base> path) const;
-        void inst_next_path(util::sref<scope const> sc) const;
+    protected:
+        scope() {}
 
-        int level() const;
-    private:
-        util::sref<function> _func;
-        util::sref<symbol_table> _symbols;
         block _block;
     };
 

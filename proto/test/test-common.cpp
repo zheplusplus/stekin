@@ -4,6 +4,7 @@
 using namespace test;
 
 inst::type const test::PROTO_TEST_TYPE("proto_test_type", 1);
+inst::type const test::PROTO_TEST_VOID("proto_test_void", 0);
 
 data_tree& data_tree::operator()(misc::pos_type const& pos, node_type const& type, std::string const& str)
 {
@@ -59,6 +60,15 @@ node_type const test::CALL("call");
 node_type const test::CONJUNCTION("conjunction");
 node_type const test::DISJUNCTION("disjunction");
 node_type const test::NEGATION("negation");
+
+node_type const test::INIT_AS_VOID_RET("init as void return");
+node_type const test::SET_RETURN_TYPE_VOID("set return type void");
+node_type const test::SET_RETURN_TYPE("set return type");
+node_type const test::GET_RETURN_TYPE("get return type");
+node_type const test::QUERY_RETURN_TYPE_RESOLVE_STATUS("is return type resolved");
+
+node_type const test::NEXT_PATH("inst next path");
+node_type const test::ADD_PATH("add path");
 
 void proto_test::SetUp()
 {

@@ -14,8 +14,7 @@ struct SymbolTableTest
     {
         proto_test::SetUp();
         symbols.reset(new proto::symbol_table);
-        inst_scope.reset(new inst::scope(util::sref<inst::function>(NULL)
-                                       , util::sref<inst::symbol_table>(NULL)));
+        inst_scope.reset(new phony_func);
     }
 
     util::sref<proto::symbol_table const> ref_sym()

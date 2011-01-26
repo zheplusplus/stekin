@@ -7,21 +7,6 @@
 
 using namespace inst;
 
-void scope::set_return_type(misc::pos_type const& pos, type const* type) const
-{
-    _func->set_return_type(pos, type);
-}
-
-variable scope::def_var(misc::pos_type const& pos, type const* vtype, std::string const& name) const
-{
-    return _symbols->def_var(pos, vtype, name);
-}
-
-variable scope::query_var(misc::pos_type const& pos, std::string const& name) const
-{
-    return _symbols->query_var(pos, name);
-}
-
 operation const* scope::query_binary(misc::pos_type const& pos
                                    , std::string const& op
                                    , type const* lhs
@@ -38,19 +23,4 @@ operation const* scope::query_pre_unary(misc::pos_type const& pos, std::string c
 void scope::add_stmt(util::sptr<stmt_base const> stmt)
 {
     _block.add_stmt(std::move(stmt));
-}
-
-void scope::add_path(util::sref<mediate_base> path) const
-{
-    _func->add_path(path);
-}
-
-void scope::inst_next_path(util::sref<scope const> sc) const
-{
-    _func->inst_next_path(sc);
-}
-
-int scope::level() const
-{
-    return _symbols->level;
 }

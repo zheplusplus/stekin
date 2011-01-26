@@ -10,7 +10,7 @@ namespace proto {
     struct expr_base {
         virtual ~expr_base() {}
 
-        virtual util::sptr<inst::expr_base const> inst(util::sref<inst::scope const> sc) const = 0;
+        virtual util::sptr<inst::expr_base const> inst(util::sref<inst::scope> sc) const = 0;
     protected:
         expr_base() {}
     };
@@ -18,7 +18,7 @@ namespace proto {
     struct stmt_base {
         virtual ~stmt_base() {}
 
-        virtual util::sptr<inst::mediate_base> inst(util::sref<inst::scope const> sc) const = 0;
+        virtual util::sptr<inst::mediate_base> inst(util::sref<inst::scope> sc) const = 0;
     protected:
         stmt_base() {}
     };

@@ -20,12 +20,10 @@ inst::type const TEST_T("test_t", 1);
 TEST_F(FunctionTest, Resolved)
 {
     std::vector<ret_type_conflict_rec> ret_type_conflicts;
-    std::vector<inst::type const*> arg_types;
+    std::list<inst::arg_name_type_pair> args;
     std::map<std::string, inst::variable const> extvars;
-    util::sref<inst::function> func = inst::function::create_instance(arg_types, extvars, true);
+    util::sref<inst::function> func = inst::function::create_instance(0, args, extvars, true);
     ASSERT_TRUE(bool(func));
-    ASSERT_EQ(0, func->arg_types.size());
-    ASSERT_EQ(0, func->external_vars.size());
     ASSERT_FALSE(inst::has_error());
 
     ASSERT_TRUE(func->is_return_type_resolved());
@@ -49,12 +47,10 @@ TEST_F(FunctionTest, Resolved)
 TEST_F(FunctionTest, Unresolved)
 {
     std::vector<ret_type_conflict_rec> ret_type_conflicts;
-    std::vector<inst::type const*> arg_types;
+    std::list<inst::arg_name_type_pair> args;
     std::map<std::string, inst::variable const> extvars;
-    util::sref<inst::function> func = inst::function::create_instance(arg_types, extvars, false);
+    util::sref<inst::function> func = inst::function::create_instance(0, args, extvars, false);
     ASSERT_TRUE(bool(func));
-    ASSERT_EQ(0, func->arg_types.size());
-    ASSERT_EQ(0, func->external_vars.size());
     ASSERT_FALSE(inst::has_error());
     ASSERT_FALSE(func->is_return_type_resolved());
 

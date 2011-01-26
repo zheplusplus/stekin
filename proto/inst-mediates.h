@@ -13,10 +13,10 @@ namespace proto {
     struct block_mediate
         : public inst::mediate_base
     {
-        block_mediate(std::list<util::sptr<stmt_base const>> const& stmts, util::sref<inst::scope const> sc);
+        block_mediate(std::list<util::sptr<stmt_base const>> const& stmts, util::sref<inst::scope> sc);
 
-        util::sptr<inst::stmt_base const> inst(util::sref<inst::scope const> sc);
-        void mediate_inst(util::sref<inst::scope const> sc);
+        util::sptr<inst::stmt_base const> inst(util::sref<inst::scope> sc);
+        void mediate_inst(util::sref<inst::scope> sc);
     private:
         std::list<util::sptr<stmt_base const>> const& _stmts;
         util::sptr<std::list<util::sptr<inst::mediate_base>>> _mediates;
@@ -30,8 +30,8 @@ namespace proto {
             : _stmt(std::move(stmt))
         {}
 
-        util::sptr<inst::stmt_base const> inst(util::sref<inst::scope const>);
-        void mediate_inst(util::sref<inst::scope const>);
+        util::sptr<inst::stmt_base const> inst(util::sref<inst::scope>);
+        void mediate_inst(util::sref<inst::scope>);
     private:
         util::sptr<inst::stmt_base const> _stmt;
     };
@@ -42,14 +42,14 @@ namespace proto {
         branch_mediate(util::sptr<inst::expr_base const> condition
                      , std::list<util::sptr<stmt_base const>> const& valid_stmts
                      , std::list<util::sptr<stmt_base const>> const& invalid_stmts
-                     , util::sref<inst::scope const> sc)
+                     , util::sref<inst::scope> sc)
             : _condition(std::move(condition))
             , _valid_mediate(valid_stmts, sc)
             , _invalid_mediate(invalid_stmts, sc)
         {}
 
-        util::sptr<inst::stmt_base const> inst(util::sref<inst::scope const> sc);
-        void mediate_inst(util::sref<inst::scope const> sc);
+        util::sptr<inst::stmt_base const> inst(util::sref<inst::scope> sc);
+        void mediate_inst(util::sref<inst::scope> sc);
     private:
         util::sptr<inst::expr_base const> _condition;
         block_mediate _valid_mediate;
@@ -61,13 +61,13 @@ namespace proto {
     {
         loop_mediate(util::sptr<inst::expr_base const> condition
                    , std::list<util::sptr<stmt_base const>> const& body_stmts
-                   , util::sref<inst::scope const> sc)
+                   , util::sref<inst::scope> sc)
             : _condition(std::move(condition))
             , _body_mediate(body_stmts, sc)
         {}
 
-        util::sptr<inst::stmt_base const> inst(util::sref<inst::scope const> sc);
-        void mediate_inst(util::sref<inst::scope const> sc);
+        util::sptr<inst::stmt_base const> inst(util::sref<inst::scope> sc);
+        void mediate_inst(util::sref<inst::scope> sc);
     private:
         util::sptr<inst::expr_base const> _condition;
         block_mediate _body_mediate;

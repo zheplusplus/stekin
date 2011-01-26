@@ -41,7 +41,7 @@ namespace {
     struct dummy_stmt
         : public stmt_base
     {
-        util::sptr<inst::mediate_base> inst(util::sref<inst::scope const> scope) const
+        util::sptr<inst::mediate_base> inst(util::sref<inst::scope> scope) const
         {
             return std::move(util::sptr<inst::mediate_base>(NULL));
         }
@@ -59,7 +59,7 @@ namespace {
 
 void block::add_stmt(util::sptr<stmt_base const>) {}
 
-util::sptr<inst::mediate_base> block::inst(util::sref<inst::scope const>) const
+util::sptr<inst::mediate_base> block::inst(util::sref<inst::scope>) const
 {
     return std::move(util::sptr<inst::mediate_base>(NULL));
 }
