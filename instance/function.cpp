@@ -108,12 +108,17 @@ void function::add_path(util::sref<mediate_base> path)
 
 void function::inst_next_path()
 {
-    if (_candidate_paths.empty()) {
+    if (!has_more_path()) {
         return;
     }
     util::sref<mediate_base> next_path = _candidate_paths.front();
     _candidate_paths.pop_front();
     next_path->mediate_inst(util::mkref(*this));
+}
+
+bool function::has_more_path() const
+{
+    return !_candidate_paths.empty();
 }
 
 int function::level() const

@@ -65,7 +65,9 @@ util::sref<inst::function> func_templ::inst(misc::pos_type const& pos
     auto find_result = _instance_cache.find(instance_info(ext_vars, arg_types));
     if (_instance_cache.end() != find_result) {
         util::sref<inst::function> instance = find_result->second;
-        instance->inst_next_path();
+        while (!instance->is_return_type_resolved() && instance->has_more_path()) {
+            instance->inst_next_path();
+        }
         if (!instance->is_return_type_resolved()) {
             func_ret_type_unresolvable(name, arg_types.size());
         }

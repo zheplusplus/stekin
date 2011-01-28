@@ -8,7 +8,6 @@ test:$(TESTDIR)/test-proto.out
 include $(WORKDIR)/Makefile
 
 WORK_OBJ=$(WORKDIR)/scope.o \
-         $(WORKDIR)/flow-managers.o \
          $(WORKDIR)/block.o \
          $(WORKDIR)/func-templ.o \
          $(WORKDIR)/expr-nodes.o \

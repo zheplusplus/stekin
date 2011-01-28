@@ -22,8 +22,8 @@ block_mediate::block_mediate(std::list<util::sptr<stmt_base const>> const& stmts
 
 util::sptr<inst::stmt_base const> block_mediate::inst(util::sref<inst::scope> sc)
 {
+    mediate_inst(sc);
     if (!bool(_inst_block)) {
-        mediate_inst(sc);
         _inst_block.reset(new inst::block);
         std::for_each(_mediates->begin()
                     , _mediates->end()

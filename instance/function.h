@@ -25,6 +25,10 @@ namespace inst {
         virtual type const* get_return_type() const;
         virtual bool is_return_type_resolved() const;
 
+        void add_path(util::sref<mediate_base> path);
+        void inst_next_path();
+        bool has_more_path() const;
+
         int level() const;
     public:
         static util::sref<function> create_instance(int ext_level
@@ -39,9 +43,6 @@ namespace inst {
         {}
     protected:
         function(function const&) = delete;
-    public:
-        void add_path(util::sref<mediate_base> path);
-        void inst_next_path();
     private:
         std::list<util::sref<mediate_base>> _candidate_paths;
         symbol_table _symbols;

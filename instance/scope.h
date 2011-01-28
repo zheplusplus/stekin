@@ -24,6 +24,7 @@ namespace inst {
 
         virtual void add_path(util::sref<mediate_base> path) = 0;
         virtual void inst_next_path() = 0;
+        virtual bool has_more_path() const = 0;
 
         virtual int level() const = 0;
 

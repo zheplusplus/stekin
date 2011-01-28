@@ -65,7 +65,8 @@ namespace test {
         data_tree& operator()(node_type const& type, std::string const& str);
     };
 
-    extern node_type const ADD_STMT;
+    extern node_type const ADD_STMT_TO_SCOPE;
+    extern node_type const ADD_STMT_TO_BLOCK;
 
     extern node_type const QUERY_VAR;
     extern node_type const QUERY_BINARY_OP;
