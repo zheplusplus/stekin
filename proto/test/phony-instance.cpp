@@ -19,7 +19,6 @@ void function::set_return_type(misc::pos_type const& pos, type const* t)
 
 type const* function::get_return_type() const
 {
-    data_tree::actual_one()(GET_RETURN_TYPE);
     return &PROTO_TEST_TYPE;
 }
 

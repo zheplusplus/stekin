@@ -86,7 +86,6 @@ namespace test {
     extern node_type const INIT_AS_VOID_RET;
     extern node_type const SET_RETURN_TYPE_VOID;
     extern node_type const SET_RETURN_TYPE;
-    extern node_type const GET_RETURN_TYPE;
     extern node_type const QUERY_RETURN_TYPE_RESOLVE_STATUS;
 
     extern node_type const NEXT_PATH;

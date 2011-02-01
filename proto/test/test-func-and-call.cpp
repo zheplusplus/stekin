@@ -22,12 +22,7 @@ struct FuncNCallTest
     void reset_func()
     {
         misc::pos_type pos(65535);
-        reset_func(pos, "f", std::vector<std::string>());
-    }
-
-    void reset_func(misc::pos_type const& pos, std::string const& name, std::vector<std::string> const& params)
-    {
-        func.reset(new proto::func_templ(pos, name, params));
+        func.reset(new proto::func_templ(pos, "f", std::vector<std::string>()));
     }
 
     util::sptr<proto::func_templ> func;

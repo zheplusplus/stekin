@@ -82,7 +82,9 @@ util::sref<inst::function> func_templ::inst(misc::pos_type const& pos
                 = inst::function::create_instance(ext_scope->level()
                                                 , args
                                                 , ext_vars
-                                                , RETURN_NO_VOID != _body_scope.termination());
+                                                , RETURN_VOID == _body_scope.termination()
+                                               || PARTIAL_RETURN_VOID == _body_scope.termination()
+                                               || NO_EXPLICIT_TERMINATION == _body_scope.termination());
     _instance_cache.insert(std::make_pair(instance_info(ext_vars, arg_types), instance));
 
     block_mediate body_mediate(_body_scope.get_stmts(), instance);

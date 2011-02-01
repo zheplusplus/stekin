@@ -65,7 +65,6 @@ node_type const test::NEGATION("negation");
 node_type const test::INIT_AS_VOID_RET("init as void return");
 node_type const test::SET_RETURN_TYPE_VOID("set return type void");
 node_type const test::SET_RETURN_TYPE("set return type");
-node_type const test::GET_RETURN_TYPE("get return type");
 node_type const test::QUERY_RETURN_TYPE_RESOLVE_STATUS("is return type resolved");
 
 node_type const test::NEXT_PATH("inst next path");
