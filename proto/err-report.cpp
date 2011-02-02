@@ -17,13 +17,6 @@ void proto::forbid_def_var(misc::pos_type const& pos, std::string const& name)
     std::cerr << "    " << "attempt define variable `" << name << "' but forbidden here." << std::endl;
 }
 
-void proto::forbid_def_func(misc::pos_type const& pos, std::string const& name)
-{
-    _has_error = true;
-    std::cerr << pos << std::endl;
-    std::cerr << "    " << "attempt define function `" << name << "' but forbidden here." << std::endl;
-}
-
 void proto::func_ret_type_unresolvable(std::string const& name, int arg_count)
 {
     _has_error = true;

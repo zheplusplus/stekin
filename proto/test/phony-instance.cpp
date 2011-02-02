@@ -174,6 +174,34 @@ type const* negation::typeof() const
     return &PROTO_TEST_TYPE;
 }
 
+conjunction::conjunction(misc::pos_type const&, util::sptr<expr_base const> l, util::sptr<expr_base const> r)
+    : lhs(std::move(l))
+    , rhs(std::move(r))
+{}
+
+disjunction::disjunction(misc::pos_type const&, util::sptr<expr_base const> l, util::sptr<expr_base const> r)
+    : lhs(std::move(l))
+    , rhs(std::move(r))
+{}
+
+negation::negation(misc::pos_type const&, util::sptr<expr_base const> r)
+    : rhs(std::move(r))
+{}
+
+branch::branch(misc::pos_type const&
+             , util::sptr<expr_base const> c
+             , util::sptr<stmt_base const> v
+             , util::sptr<stmt_base const> i)
+    : condition(std::move(c))
+    , valid(std::move(v))
+    , invalid(std::move(i))
+{}
+
+loop::loop(misc::pos_type const&, util::sptr<expr_base const> c, util::sptr<stmt_base const> b)
+    : condition(std::move(c))
+    , body(std::move(b))
+{}
+
 void int_literal::write() const {}
 void float_literal::write() const {}
 void bool_literal::write() const {}

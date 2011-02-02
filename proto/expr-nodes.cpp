@@ -36,8 +36,8 @@ util::sptr<inst::expr_base const> call::inst(util::sref<inst::scope> scope) cons
                 , [&](util::sptr<expr_base const> const& expr)
                   {
                       util::sptr<inst::expr_base const> arg(std::move(expr->inst(scope)));
-                      arg_instances.push_back(std::move(arg));
                       arg_types.push_back(arg->typeof());
+                      arg_instances.push_back(std::move(arg));
                   });
     return std::move(util::mkptr(new inst::call(func->inst(pos, scope, arg_types), std::move(arg_instances))));
 }
@@ -63,17 +63,19 @@ util::sptr<inst::expr_base const> pre_unary_op::inst(util::sref<inst::scope> sco
 
 util::sptr<inst::expr_base const> conjunction::inst(util::sref<inst::scope> scope) const
 {
-    return std::move(util::mkptr(new inst::conjunction(std::move(lhs->inst(scope))
+    return std::move(util::mkptr(new inst::conjunction(pos
+                                                     , std::move(lhs->inst(scope))
                                                      , std::move(rhs->inst(scope)))));
 }
 
 util::sptr<inst::expr_base const> disjunction::inst(util::sref<inst::scope> scope) const
 {
-    return std::move(util::mkptr(new inst::disjunction(std::move(lhs->inst(scope))
+    return std::move(util::mkptr(new inst::disjunction(pos
+                                                     , std::move(lhs->inst(scope))
                                                      , std::move(rhs->inst(scope)))));
 }
 
 util::sptr<inst::expr_base const> negation::inst(util::sref<inst::scope> scope) const
 {
-    return std::move(util::mkptr(new inst::negation(std::move(rhs->inst(scope)))));
+    return std::move(util::mkptr(new inst::negation(pos, std::move(rhs->inst(scope)))));
 }

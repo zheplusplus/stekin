@@ -24,7 +24,8 @@ util::sptr<inst::mediate_base> var_def::inst(util::sref<inst::scope> scope) cons
 
 util::sptr<inst::mediate_base> branch::inst(util::sref<inst::scope> scope) const
 {
-    return std::move(util::mkmptr(new branch_mediate(std::move(condition->inst(scope))
+    return std::move(util::mkmptr(new branch_mediate(pos
+                                                   , std::move(condition->inst(scope))
                                                    , valid->get_stmts()
                                                    , invalid->get_stmts()
                                                    , scope)));
@@ -33,7 +34,7 @@ util::sptr<inst::mediate_base> branch::inst(util::sref<inst::scope> scope) const
 util::sptr<inst::mediate_base> loop::inst(util::sref<inst::scope> scope) const
 {
     return std::move(util::mkmptr(
-                    new loop_mediate(std::move(condition->inst(scope)), body->get_stmts(), scope)));
+                    new loop_mediate(pos, std::move(condition->inst(scope)), body->get_stmts(), scope)));
 }
 
 util::sptr<inst::mediate_base> func_ret::inst(util::sref<inst::scope> scope) const

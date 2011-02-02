@@ -29,3 +29,10 @@ void grammar::excessive_indent(misc::pos_type const& pos)
     std::cerr << pos << std::endl;
     std::cerr << "    excessive indentation" << std::endl;
 }
+
+void grammar::forbid_def_func(misc::pos_type const& pos, std::string const& name)
+{
+    _has_error = true;
+    std::cerr << pos << std::endl;
+    std::cerr << "    " << "attempt define function `" << name << "' but forbidden here." << std::endl;
+}

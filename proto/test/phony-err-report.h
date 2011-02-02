@@ -92,7 +92,6 @@ namespace test {
     std::vector<var_redef_rec> get_local_redefs();
     std::vector<invalid_ref_rec> get_invalid_refs();
 
-    std::vector<forbid_def_rec> get_forbid_func_defs();
     std::vector<func_redef_rec> get_local_func_redefs();
     std::vector<func_redef_rec> get_func_shadow_external();
     std::vector<func_nondef_rec> get_func_nondefs();

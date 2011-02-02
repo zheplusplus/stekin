@@ -6,6 +6,8 @@
 namespace output {
 
     void return_kw();
+    void return_nothing();
+    void ref_this_level(int offset, std::string const& type);
     void ref_level(int offset, int level, std::string const& type);
     void assign_sign();
 

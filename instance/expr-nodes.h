@@ -115,10 +115,7 @@ namespace inst {
     struct conjunction
         : public expr_base
     {
-        conjunction(util::sptr<expr_base const> l, util::sptr<expr_base const> r)
-            : lhs(std::move(l))
-            , rhs(std::move(r))
-        {}
+        conjunction(misc::pos_type const& p, util::sptr<expr_base const> l, util::sptr<expr_base const> r);
 
         type const* typeof() const;
         void write() const;
@@ -130,10 +127,7 @@ namespace inst {
     struct disjunction
         : public expr_base
     {
-        disjunction(util::sptr<expr_base const> l, util::sptr<expr_base const> r)
-            : lhs(std::move(l))
-            , rhs(std::move(r))
-        {}
+        disjunction(misc::pos_type const& p, util::sptr<expr_base const> l, util::sptr<expr_base const> r);
 
         type const* typeof() const;
         void write() const;
@@ -145,9 +139,7 @@ namespace inst {
     struct negation
         : public expr_base
     {
-        explicit negation(util::sptr<expr_base const> r)
-            : rhs(std::move(r))
-        {}
+        explicit negation(misc::pos_type const& p, util::sptr<expr_base const> r);
 
         type const* typeof() const;
         void write() const;

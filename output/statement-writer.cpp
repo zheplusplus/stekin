@@ -8,6 +8,18 @@ void output::return_kw()
     std::cout << "return ";
 }
 
+void output::return_nothing()
+{
+    return_kw();
+    std::cout << form_type("void") << "()";
+    end_of_statement();
+}
+
+void output::ref_this_level(int offset, std::string const& type)
+{
+    std::cout << "(*(" << form_type(type) << "*)(" << offset << " + (char*)(_stk_bases.this_base())))";
+}
+
 void output::ref_level(int offset, int level, std::string const& type)
 {
     std::cout << "(*(" << form_type(type) << "*)"

@@ -1,9 +1,27 @@
 #include <algorithm>
 
-#include "stmt-instances.h"
+#include "stmt-nodes.h"
 #include "../output/statement-writer.h"
 
 using namespace inst;
+
+branch::branch(misc::pos_type const& p
+             , util::sptr<expr_base const> c
+             , util::sptr<stmt_base const> v
+             , util::sptr<stmt_base const> i)
+    : condition(std::move(c))
+    , valid(std::move(v))
+    , invalid(std::move(i))
+{
+    check_condition_type(p, condition->typeof());
+}
+
+loop::loop(misc::pos_type const& p, util::sptr<expr_base const> c, util::sptr<stmt_base const> b)
+    : condition(std::move(c))
+    , body(std::move(b))
+{
+    check_condition_type(p, condition->typeof());
+}
 
 void arithmetics::write() const
 {
@@ -29,7 +47,7 @@ void loop::write() const
 
 void initialization::write() const
 {
-    output::ref_this_level(offset, init->type->name);
+    output::ref_this_level(offset, init->typeof()->name);
     output::assign_sign();
     init->write();
     output::end_of_statement();
@@ -44,6 +62,5 @@ void func_ret::write() const
 
 void func_ret_nothing::write() const
 {
-    output::return_kw();
-    output::end_of_statement();
+    output::return_nothing();
 }

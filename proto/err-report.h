@@ -17,7 +17,6 @@ namespace proto {
                           , std::list<misc::pos_type> const& ref_positions
                           , std::string const& var_name);
 
-    void forbid_def_func(misc::pos_type const& pos, std::string const& name);
     void func_already_in_local(misc::pos_type const& prev_def_pos
                              , misc::pos_type const& this_def_pos
                              , std::string const& name

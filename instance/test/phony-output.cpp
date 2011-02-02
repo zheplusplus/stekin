@@ -9,6 +9,7 @@ void output::write_call_begin(util::id) {}
 void output::write_arg_seperator() {}
 void output::write_call_end() {}
 void output::return_kw() {}
+void output::ref_this_level(int, std::string const&);
 void output::ref_level(int, int, std::string const&) {}
 void output::assign_sign() {}
 void output::write_int(int) {}

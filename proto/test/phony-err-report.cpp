@@ -9,7 +9,6 @@ namespace {
         std::list<var_redef_rec> local_redefs;
         std::list<invalid_ref_rec> invalid_refs;
 
-        std::list<forbid_def_rec> forbid_func_def_recs;
         std::list<func_redef_rec> local_func_redefs;
         std::list<func_redef_rec> func_shadow_external;
         std::list<func_nondef_rec> func_nondefs;
@@ -28,7 +27,6 @@ namespace {
             local_redefs.clear();
             invalid_refs.clear();
 
-            forbid_func_def_recs.clear();
             local_func_redefs.clear();
             func_shadow_external.clear();
             func_nondefs.clear();
@@ -68,12 +66,6 @@ void proto::var_ref_before_def(misc::pos_type const& def_pos
 {
     records.has_err = true;
     records.invalid_refs.push_back(invalid_ref_rec(ref_positions.begin(), ref_positions.end(), def_pos, name));
-}
-
-void proto::forbid_def_func(misc::pos_type const& pos, std::string const& name)
-{
-    records.has_err = true;
-    records.forbid_func_def_recs.push_back(forbid_def_rec(pos, name));
 }
 
 void proto::func_already_in_local(misc::pos_type const& prev_def_pos
@@ -140,12 +132,6 @@ std::vector<func_redef_rec> test::get_func_shadow_external()
 std::vector<func_nondef_rec> test::get_func_nondefs()
 {
     return std::vector<func_nondef_rec>(records.func_nondefs.begin(), records.func_nondefs.end());
-}
-
-std::vector<forbid_def_rec> test::get_forbid_func_defs()
-{
-    return std::vector<forbid_def_rec>(records.forbid_func_def_recs.begin()
-                                     , records.forbid_func_def_recs.end());
 }
 
 std::vector<ret_type_unresolvable_rec> test::get_ret_type_unresolvables()

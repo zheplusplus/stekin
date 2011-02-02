@@ -22,11 +22,10 @@ namespace inst {
     struct branch
         : public stmt_base
     {
-        branch(util::sptr<expr_base const> c, util::sptr<stmt_base const> v, util::sptr<stmt_base const> i)
-            : condition(std::move(c))
-            , valid(std::move(v))
-            , invalid(std::move(i))
-        {}
+        branch(misc::pos_type const& p
+             , util::sptr<expr_base const> c
+             , util::sptr<stmt_base const> v
+             , util::sptr<stmt_base const> i);
 
         void write() const;
 
@@ -38,10 +37,7 @@ namespace inst {
     struct loop
         : public stmt_base
     {
-        loop(util::sptr<expr_base const> c, util::sptr<stmt_base const> b)
-            : condition(std::move(c))
-            , body(std::move(b))
-        {}
+        loop(misc::pos_type const& p, util::sptr<expr_base const> c, util::sptr<stmt_base const> b);
 
         void write() const;
 

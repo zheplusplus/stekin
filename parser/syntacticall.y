@@ -55,9 +55,6 @@
 
 stackening:
     stmt_list
-    {
-        parser::builder.build_and_clear();
-    }
 ;
 
 indent:

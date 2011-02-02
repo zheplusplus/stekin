@@ -17,21 +17,21 @@ void yyerror(std::string const& msg)
     std::cerr << "    " <<  msg << std::endl;
 }
 
-void tab_as_indent(misc::pos_type const& pos)
+void parser::tab_as_indent(misc::pos_type const& pos)
 {
     _has_error = true;
     std::cerr << pos << std::endl;
     std::cerr << "    use tab as indent is forbidden." << std::endl;
 }
 
-void bad_indent(misc::pos_type const& pos)
+void parser::bad_indent(misc::pos_type const& pos)
 {
     _has_error = true;
     std::cerr << pos << std::endl;
     std::cerr << "    indent not exactly 4 spaces." << std::endl;
 }
 
-void invalid_char(misc::pos_type const& pos, int character)
+void parser::invalid_char(misc::pos_type const& pos, int character)
 {
     _has_error = true;
     std::cerr << pos << std::endl;

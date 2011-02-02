@@ -39,17 +39,21 @@ namespace proto {
     struct branch_mediate
         : public inst::mediate_base
     {
-        branch_mediate(util::sptr<inst::expr_base const> condition
+        branch_mediate(misc::pos_type const& ps
+                     , util::sptr<inst::expr_base const> condition
                      , std::list<util::sptr<stmt_base const>> const& valid_stmts
                      , std::list<util::sptr<stmt_base const>> const& invalid_stmts
                      , util::sref<inst::scope> sc)
-            : _condition(std::move(condition))
+            : pos(ps)
+            , _condition(std::move(condition))
             , _valid_mediate(valid_stmts, sc)
             , _invalid_mediate(invalid_stmts, sc)
         {}
 
         util::sptr<inst::stmt_base const> inst(util::sref<inst::scope> sc);
         void mediate_inst(util::sref<inst::scope> sc);
+    public:
+        misc::pos_type const pos;
     private:
         util::sptr<inst::expr_base const> _condition;
         block_mediate _valid_mediate;
@@ -59,15 +63,19 @@ namespace proto {
     struct loop_mediate
         : public inst::mediate_base
     {
-        loop_mediate(util::sptr<inst::expr_base const> condition
+        loop_mediate(misc::pos_type const& ps
+                   , util::sptr<inst::expr_base const> condition
                    , std::list<util::sptr<stmt_base const>> const& body_stmts
                    , util::sref<inst::scope> sc)
-            : _condition(std::move(condition))
+            : pos(ps)
+            , _condition(std::move(condition))
             , _body_mediate(body_stmts, sc)
         {}
 
         util::sptr<inst::stmt_base const> inst(util::sref<inst::scope> sc);
         void mediate_inst(util::sref<inst::scope> sc);
+    public:
+        misc::pos_type const pos;
     private:
         util::sptr<inst::expr_base const> _condition;
         block_mediate _body_mediate;
