@@ -70,6 +70,8 @@ namespace proto {
     public:
         util::sptr<scope> create_branch_scope();
         util::sptr<scope> create_loop_scope();
+
+        void add_custom_statement(util::sptr<stmt_base const> stmt);
     public:
         util::sref<func_templ> decl_func(misc::pos_type const& pos
                                        , std::string const& name

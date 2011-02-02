@@ -2,6 +2,8 @@
 #define __STACKENING_UTILITY_POINTER_H__
 
 #include <memory>
+#include <string>
+#include <sstream>
 
 namespace util {
 
@@ -15,6 +17,13 @@ namespace util {
         {
             os << _id;
             return os;
+        }
+
+        std::string str() const
+        {
+            std::stringstream os;
+            os << _id;
+            return os.str();
         }
     private:
         void const* const _id;

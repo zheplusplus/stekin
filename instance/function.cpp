@@ -4,6 +4,7 @@
 
 #include "function.h"
 #include "err-report.h"
+#include "../output/func-writer.h"
 #include "../util/map-compare.h"
 #include "../util/pointer.h"
 
@@ -73,11 +74,24 @@ namespace {
     };
 
     struct func_inst_recs
-        : protected std::list<std::unique_ptr<function const>>
+        : protected std::list<util::sptr<function const>>
     {
+        typedef std::list<util::sptr<function const>> base_type;
+        typedef base_type::const_iterator iterator;
+
         void add(util::sptr<function const> func)
         {
             push_back(std::move(func));
+        }
+
+        iterator begin() const
+        {
+            return base_type::begin();
+        }
+
+        iterator end() const
+        {
+            return base_type::end();
         }
     private:
         func_inst_recs() {}
@@ -124,4 +138,42 @@ bool function::has_more_path() const
 int function::level() const
 {
     return _symbols.level;
+}
+
+static std::list<output::stack_var_record> args_to_var_recs(std::list<inst::variable> const& args)
+{
+    std::list<output::stack_var_record> recs;
+    std::for_each(args.begin()
+                , args.end()
+                , [&](inst::variable const& var)
+                  {
+                      recs.push_back(
+                          output::stack_var_record(var.vtype->name, var.stack_offset, var.vtype->size));
+                  });
+    return recs;
+}
+
+void function::write_decls()
+{
+    std::for_each(func_inst_recs::instance.begin()
+                , func_inst_recs::instance.end()
+                , [&](util::sptr<function const> const& func)
+                  {
+                      output::write_func_decl(func->get_return_type()->name
+                                            , func.id()
+                                            , args_to_var_recs(func->_symbols.get_args())
+                                            , func->_symbols.level
+                                            , func->_symbols.stack_size());
+                  });
+}
+
+void function::write_impls()
+{
+    std::for_each(func_inst_recs::instance.begin()
+                , func_inst_recs::instance.end()
+                , [&](util::sptr<function const> const& func)
+                  {
+                      output::write_func_perform_impl(func->get_return_type()->name, func.id());
+                      func->_block.write();
+                  });
 }

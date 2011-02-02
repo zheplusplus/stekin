@@ -19,7 +19,7 @@ symbol_table::symbol_table(int ext_lvl
                 , args.end()
                 , [&](arg_name_type_pair const& arg_info)
                   {
-                      def_var(misc::pos_type(0), arg_info.atype, arg_info.name);
+                      _args.push_back(def_var(misc::pos_type(0), arg_info.atype, arg_info.name));
                   });
 }
 
@@ -57,4 +57,14 @@ variable symbol_table::query_var(misc::pos_type const& pos, std::string const& n
 
     var_not_def(pos, name);
     return BAD_REF;
+}
+
+int symbol_table::stack_size() const
+{
+    return _ss_used;
+}
+
+std::list<variable> symbol_table::get_args() const
+{
+    return _args;
 }

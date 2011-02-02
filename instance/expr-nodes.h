@@ -21,6 +21,7 @@ namespace inst {
         {}
 
         type const* typeof() const;
+        void write() const;
 
         platform::i4_type const value;
     };
@@ -33,6 +34,7 @@ namespace inst {
         {}
 
         type const* typeof() const;
+        void write() const;
 
         platform::f8_type const value;
     };
@@ -45,6 +47,7 @@ namespace inst {
         {}
 
         type const* typeof() const;
+        void write() const;
 
         bool const value;
     };
@@ -57,6 +60,7 @@ namespace inst {
         {}
 
         type const* typeof() const;
+        void write() const;
 
         variable const var;
     };
@@ -70,6 +74,7 @@ namespace inst {
         {}
 
         type const* typeof() const;
+        void write() const;
 
         util::sref<function const> const func;
         std::vector<util::sptr<expr_base const>> args;
@@ -85,6 +90,7 @@ namespace inst {
         {}
 
         type const* typeof() const;
+        void write() const;
 
         util::sptr<expr_base const> const lhs;
         operation const* const op;
@@ -100,6 +106,7 @@ namespace inst {
         {}
 
         type const* typeof() const;
+        void write() const;
 
         operation const* const op;
         util::sptr<expr_base const> const rhs;
@@ -114,6 +121,7 @@ namespace inst {
         {}
 
         type const* typeof() const;
+        void write() const;
 
         util::sptr<expr_base const> const lhs;
         util::sptr<expr_base const> const rhs;
@@ -128,6 +136,7 @@ namespace inst {
         {}
 
         type const* typeof() const;
+        void write() const;
 
         util::sptr<expr_base const> const lhs;
         util::sptr<expr_base const> const rhs;
@@ -141,6 +150,7 @@ namespace inst {
         {}
 
         type const* typeof() const;
+        void write() const;
 
         util::sptr<expr_base const> const rhs;
     };

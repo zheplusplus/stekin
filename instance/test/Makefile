@@ -14,8 +14,8 @@ WORK_OBJ=$(WORKDIR)/block.o \
          $(WORKDIR)/scope.o \
          $(WORKDIR)/function.o
 
-TEST_DEP=$(WORK_DEP) instance phony-err-report.dt test-common.dt
-TEST_OBJ=$(WORK_OBJ) $(TESTDIR)/phony-err-report.o $(TESTDIR)/test-common.o
+TEST_DEP=$(WORK_DEP) instance phony-err-report.dt test-common.dt phony-output.dt
+TEST_OBJ=$(WORK_OBJ) $(TESTDIR)/phony-err-report.o $(TESTDIR)/test-common.o $(TESTDIR)/phony-output.o
 
 $(TESTDIR)/test-instance.out:$(TEST_DEP) test-operation-query.dt test-symbol-table.dt test-function.dt
 	$(LINK) $(TEST_LIBS) $(TEST_OBJ) \

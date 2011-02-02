@@ -20,6 +20,8 @@ namespace inst {
         block(block&& rhs)
             : _stmts(std::move(_stmts))
         {}
+
+        void write() const;
     private:
         std::list<util::sptr<stmt_base const>> _stmts;
     };

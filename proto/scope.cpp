@@ -212,11 +212,6 @@ std::list<util::sptr<stmt_base const>> const& scope::get_stmts() const
     return _block.get_stmts();
 }
 
-util::sptr<scope> scope::global_scope()
-{
-    return util::sptr<scope>(0);
-}
-
 void sub_scope::def_var(misc::pos_type const& pos, std::string const& name, util::sptr<expr_base const>)
 {
     forbid_def_var(pos, name);

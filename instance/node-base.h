@@ -9,12 +9,15 @@ namespace inst {
         virtual ~expr_base() {}
 
         virtual type const* typeof() const = 0;
+        virtual void write() const = 0;
     protected:
         expr_base() {}
     };
 
     struct stmt_base {
         virtual ~stmt_base() {}
+
+        virtual void write() const = 0;
     protected:
         stmt_base() {}
     };

@@ -14,6 +14,8 @@ namespace inst {
             : expr(std::move(e))
         {}
 
+        void write() const;
+
         util::sptr<expr_base const> const expr;
     };
 
@@ -25,6 +27,8 @@ namespace inst {
             , valid(std::move(v))
             , invalid(std::move(i))
         {}
+
+        void write() const;
 
         util::sptr<expr_base const> const condition;
         util::sptr<stmt_base const> const valid;
@@ -39,6 +43,8 @@ namespace inst {
             , body(std::move(b))
         {}
 
+        void write() const;
+
         util::sptr<expr_base const> const condition;
         util::sptr<stmt_base const> const body;
     };
@@ -51,6 +57,8 @@ namespace inst {
             , init(std::move(i))
         {}
 
+        void write() const;
+
         int const offset;
         util::sptr<expr_base const> const init;
     };
@@ -62,12 +70,16 @@ namespace inst {
             : ret_val(std::move(r))
         {}
 
+        void write() const;
+
         util::sptr<expr_base const> const ret_val;
     };
 
     struct func_ret_nothing
         : public stmt_base
-    {};
+    {
+        void write() const;
+    };
 
 }
 

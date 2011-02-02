@@ -2,6 +2,8 @@
 
 #include "expr-nodes.h"
 #include "function.h"
+#include "../output/func-writer.h"
+#include "../output/statement-writer.h"
 
 using namespace inst;
 
@@ -53,4 +55,80 @@ type const* disjunction::typeof() const
 type const* negation::typeof() const
 {
     return type::BIT_BOOL;
+}
+
+void int_literal::write() const
+{
+    output::write_int(value);
+}
+
+void float_literal::write() const
+{
+    output::write_float(value);
+}
+
+void bool_literal::write() const
+{
+    output::write_bool(value);
+}
+
+void reference::write() const
+{
+    output::ref_level(var.stack_offset, var.level, typeof()->name);
+}
+
+void call::write() const
+{
+    output::write_call_begin(func.id());
+    std::for_each(args.begin()
+                , args.end()
+                , [&](util::sptr<expr_base const> const& expr)
+                  {
+                       output::write_arg_seperator();
+                       expr->write();
+                  });
+    output::write_call_end();
+}
+
+void binary_op::write() const
+{
+    output::begin_expr();
+    lhs->write();
+    output::write_operator(op->op_img);
+    rhs->write();
+    output::end_expr();
+}
+
+void pre_unary_op::write() const
+{
+    output::begin_expr();
+    output::write_operator(op->op_img);
+    rhs->write();
+    output::end_expr();
+}
+
+void conjunction::write() const
+{
+    output::begin_expr();
+    lhs->write();
+    output::write_operator("&&");
+    rhs->write();
+    output::end_expr();
+}
+
+void disjunction::write() const
+{
+    output::begin_expr();
+    lhs->write();
+    output::write_operator("||");
+    rhs->write();
+    output::end_expr();
+}
+
+void negation::write() const
+{
+    output::begin_expr();
+    output::write_operator("!");
+    rhs->write();
+    output::end_expr();
 }

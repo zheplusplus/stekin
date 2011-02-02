@@ -2,7 +2,6 @@
 #define __STACKENING_INSTANCE_FUNCTION_H__
 
 #include <map>
-#include <vector>
 #include <list>
 #include <string>
 
@@ -35,6 +34,9 @@ namespace inst {
                                                   , std::list<arg_name_type_pair> const& args
                                                   , std::map<std::string, variable const> const& extvars
                                                   , bool has_void_returns);
+
+        static void write_decls();
+        static void write_impls();
     protected:
         function(int ext_level
                , std::list<arg_name_type_pair> const& args

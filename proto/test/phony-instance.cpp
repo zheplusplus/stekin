@@ -173,3 +173,21 @@ type const* negation::typeof() const
     rhs->typeof();
     return &PROTO_TEST_TYPE;
 }
+
+void int_literal::write() const {}
+void float_literal::write() const {}
+void bool_literal::write() const {}
+void reference::write() const {}
+void call::write() const {}
+void binary_op::write() const {}
+void pre_unary_op::write() const {}
+void conjunction::write() const {}
+void disjunction::write() const {}
+void negation::write() const {}
+void arithmetics::write() const {}
+void branch::write() const {}
+void loop::write() const {}
+void initialization::write() const {}
+void func_ret::write() const {}
+void func_ret_nothing::write() const {}
+void block::write() const {}

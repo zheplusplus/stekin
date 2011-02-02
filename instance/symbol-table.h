@@ -34,6 +34,7 @@ namespace inst {
         symbol_table(symbol_table&& rhs)
             : level(rhs.level)
             , _ss_used(0)
+            , _args(rhs._args)
             , _external_defs(std::move(rhs._external_defs))
         {}
     public:
@@ -41,8 +42,12 @@ namespace inst {
         variable query_var(misc::pos_type const& pos, std::string const& name) const;
     public:
         int const level;
+    public:
+        int stack_size() const;
+        std::list<variable> get_args() const;
     private:
         int _ss_used;
+        std::list<variable> _args;
         std::map<std::string, variable const> _local_defs;
         std::map<std::string, variable const> const _external_defs;
 

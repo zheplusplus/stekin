@@ -5,6 +5,7 @@ all:
 	make -f grammar/Makefile
 	make -f proto/Makefile
 	make -f instance/Makefile
+	make -f output/Makefile
 
 runtest:
 	make -f util/test/Makefile
@@ -18,6 +19,7 @@ clean:
 	make -f grammar/Makefile clean
 	make -f proto/Makefile clean
 	make -f instance/Makefile clean
+	make -f output/Makefile clean
 	rm -f $(MKTMP)
 	rm -f $(UTILDIR)/*.o
 
