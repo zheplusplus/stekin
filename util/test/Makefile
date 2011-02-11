@@ -9,8 +9,11 @@ test:$(TESTDIR)/test-utilities.out
 TEST_DEP=string.du
 TEST_OBJ=$(UTILDIR)/string.o
 
-$(TESTDIR)/test-utilities.out:$(TEST_DEP) test-map-compare.dt test-string.dt
-	$(LINK) $(TEST_LIBS) $(TEST_OBJ) $(TESTDIR)/test-map-compare.o $(TESTDIR)/test-string.o \
+$(TESTDIR)/test-utilities.out:$(TEST_DEP) test-map-compare.dt test-string.dt test-pointer.dt
+	$(LINK) $(TEST_LIBS) $(TEST_OBJ) \
+	        $(TESTDIR)/test-map-compare.o \
+	        $(TESTDIR)/test-string.o \
+	        $(TESTDIR)/test-pointer.o \
 	     -o $(TESTDIR)/test-utilities.out
 
 cleant:
