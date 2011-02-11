@@ -1,7 +1,7 @@
 #include <algorithm>
 
 #include "symbol-table.h"
-#include "err-report.h"
+#include "../report/errors.h"
 #include "../misc/platform.h"
 
 using namespace inst;
@@ -55,7 +55,7 @@ variable symbol_table::query_var(misc::pos_type const& pos, std::string const& n
         return ext_find_result->second;
     }
 
-    var_not_def(pos, name);
+    error::var_not_def(pos, name);
     return BAD_REF;
 }
 

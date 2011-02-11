@@ -3,7 +3,7 @@
 #include <algorithm>
 
 #include "function.h"
-#include "err-report.h"
+#include "../report/errors.h"
 #include "../output/func-writer.h"
 #include "../util/map-compare.h"
 #include "../util/pointer.h"
@@ -28,7 +28,7 @@ type const* function::get_return_type() const
 void function::set_return_type(misc::pos_type const& pos, type const* return_type)
 {
     if (type::BIT_VOID != return_type) {
-        conflict_return_type(pos, type::BIT_VOID->name, return_type->name);
+        error::conflict_return_type(pos, type::BIT_VOID->name, return_type->name);
     }
 }
 
@@ -61,7 +61,7 @@ namespace {
                 return;
             }
             if (_return_type != return_type) {
-                conflict_return_type(pos, _return_type->name, return_type->name);
+                error::conflict_return_type(pos, _return_type->name, return_type->name);
             }
         }
 

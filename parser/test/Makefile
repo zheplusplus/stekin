@@ -1,11 +1,8 @@
 WORKDIR=parser
 TESTDIR=$(WORKDIR)/test
 
-WORK_DEP=parser
-WORK_OBJ=$(WORKDIR)/yy-misc.o $(WORKDIR)/lex.o $(WORKDIR)/syn.o
-
-TEST_DEP=$(WORK_DEP) phony-err-report.dt phony-grammar.dt test-common.dt
-TEST_OBJ=$(WORK_OBJ) $(TESTDIR)/phony-err-report.o $(TESTDIR)/phony-grammar.o $(TESTDIR)/test-common.o
+TEST_DEP=parser test-commons phony-grammar.dt test-common.dt
+TEST_OBJ=$(WORKDIR)/*.o $(TEST_COMMON_OBJ) $(TESTDIR)/phony-grammar.o $(TESTDIR)/test-common.o
 
 TEST_SRC_CODE=$(TESTDIR)/empty.stkn \
               $(TESTDIR)/inv-chars.stkn \
@@ -13,7 +10,7 @@ TEST_SRC_CODE=$(TESTDIR)/empty.stkn \
               $(TESTDIR)/bad-indent.stkn \
               $(TESTDIR)/mix.stkn
 
-test:test-empty test-err-tab-as-ind test-err-inv-chars test-err-bad-indent test-mix $(TEST_SRC_CODE)
+runtest:test-empty test-err-tab-as-ind test-err-inv-chars test-err-bad-indent test-mix $(TEST_SRC_CODE)
 
 test-empty:$(TESTDIR)/test-empty.out
 	$(TESTDIR)/test-empty.out < $(TESTDIR)/empty.stkn
@@ -46,6 +43,7 @@ $(TESTDIR)/test-mix.out:$(TEST_DEP) test-mix.dt
 	$(LINK) $(TEST_OBJ) $(TESTDIR)/test-mix.o $(TEST_LIBS) -o $(TESTDIR)/test-mix.out
 
 include $(WORKDIR)/Makefile
+include test/Makefile
 
 cleant:clean
 	rm -f $(TESTDIR)/*.o

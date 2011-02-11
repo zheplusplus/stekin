@@ -1,15 +1,15 @@
 #include <gtest/gtest.h>
 
-#include "phony-err-report.h"
 #include "test-common.h"
 #include "../yy-misc.h"
+#include "../../test/phony-errors.h"
 
 using namespace test;
 
 TEST(Syntax, Mix)
 {
     yyparse();
-    ASSERT_FALSE(parser::has_error());
+    ASSERT_FALSE(error::has_error());
 
     data_tree::expect_one()
         (misc::pos_type(1), 0, VAR_DEF, "n")

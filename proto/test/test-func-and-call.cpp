@@ -1,11 +1,11 @@
 #include <gtest/gtest.h>
 
 #include "test-common.h"
-#include "phony-err-report.h"
 #include "../scope.h"
 #include "../symbol-table.h"
 #include "../func-templ.h"
 #include "../../util/string.h"
+#include "../../test/phony-errors.h"
 
 using namespace test;
 
@@ -33,17 +33,17 @@ TEST_F(FuncNCallTest, NoBranchRecursionFunc)
 {
     misc::pos_type pos(1);
     func->inst(pos, *inst_scope, std::vector<inst::type const*>());
-    ASSERT_FALSE(proto::has_error());
+    ASSERT_FALSE(error::has_error());
 
     reset_func();
     func->get_scope()->add_func_ret_nothing(pos);
     func->inst(pos, *inst_scope, std::vector<inst::type const*>());
-    ASSERT_FALSE(proto::has_error());
+    ASSERT_FALSE(error::has_error());
 
     reset_func();
     func->get_scope()->add_func_ret(pos, std::move(func->get_scope()->make_int(pos, "20110127")));
     func->inst(pos, *inst_scope, std::vector<inst::type const*>());
-    ASSERT_FALSE(proto::has_error());
+    ASSERT_FALSE(error::has_error());
 
     data_tree::expect_one()
         (INIT_AS_VOID_RET)
@@ -82,7 +82,7 @@ TEST_F(FuncNCallTest, FuncWithBranchRecursion)
                 sub_scope0->make_call(pos
                                     , "test_func"
                                     , std::move(std::vector<util::sptr<proto::expr_base const>>()))));
-    ASSERT_FALSE(proto::has_error());
+    ASSERT_FALSE(error::has_error());
     test_func->get_scope()->add_branch(pos
                                      , std::move(test_func->get_scope()->make_int(pos, "1"))
                                      , std::move(sub_scope0)
@@ -90,7 +90,7 @@ TEST_F(FuncNCallTest, FuncWithBranchRecursion)
     test_func->get_scope()->add_func_ret(pos, std::move(test_func->get_scope()->make_int(pos, "1")));
 
     test_func->inst(pos, *inst_scope, std::vector<inst::type const*>());
-    ASSERT_FALSE(proto::has_error());
+    ASSERT_FALSE(error::has_error());
 
     data_tree::expect_one()
         (ADD_PATH)
@@ -130,10 +130,10 @@ TEST_F(FuncNCallTest, CouldNotResolve)
             test_func->get_scope()->make_call(pos
                                             , "test_func"
                                             , std::move(std::vector<util::sptr<proto::expr_base const>>()))));
-    ASSERT_FALSE(proto::has_error());
+    ASSERT_FALSE(error::has_error());
 
     test_func->inst(pos, *inst_scope, std::vector<inst::type const*>());
-    ASSERT_TRUE(proto::has_error());
+    ASSERT_TRUE(error::has_error());
 
     data_tree::expect_one()
         (ADD_PATH)

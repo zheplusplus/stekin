@@ -1,14 +1,14 @@
 #include <gtest/gtest.h>
 
-#include "phony-err-report.h"
 #include "../yy-misc.h"
+#include "../../test/phony-errors.h"
 
 using namespace test;
 
 TEST(Syntax, ErrTabAsIndent)
 {
     yyparse();
-    ASSERT_TRUE(parser::has_error());
+    ASSERT_TRUE(error::has_error());
     std::vector<tab_as_ind_rec> recs = get_tab_as_ind_recs();
     ASSERT_EQ(3, recs.size());
 

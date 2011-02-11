@@ -5,7 +5,7 @@
 #include <list>
 #include <vector>
 
-#include "err-report.h"
+#include "../report/errors.h"
 #include "../grammar/expr-nodes.h"
 #include "../misc/pos-type.h"
 

@@ -1,16 +1,16 @@
 #include "acceptor.h"
-#include "err-report.h"
+#include "../report/errors.h"
 
 using namespace grammar;
 
 void acceptor::accept_else(misc::pos_type const& else_pos)
 {
-    else_not_match_if(else_pos);
+    error::else_not_match_if(else_pos);
 }
 
 void func_def_forbid_acceptor::accept_func(util::sptr<func_def const> func)
 {
-    forbid_def_func(func->pos, func->name);
+    error::forbid_def_func(func->pos, func->name);
 }
 
 void if_acceptor::accept_stmt(util::sptr<stmt_base const> stmt)
@@ -27,7 +27,7 @@ void if_acceptor::deliver_to(util::sref<acceptor> acc)
 void if_acceptor::accept_else(misc::pos_type const& else_pos)
 {
     if (_else_matched()) {
-        if_already_match_else(*_last_else_pos, else_pos);
+        error::if_already_match_else(*_last_else_pos, else_pos);
     } else {
         _current_branch = &_invalid;
         _last_else_pos.reset(new misc::pos_type(else_pos));

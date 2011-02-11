@@ -5,7 +5,7 @@
 
 #include "syntax-types.h"
 #include "yy-misc.h"
-#include "err-report.h"
 #include "syn.hpp"
+#include "../report/errors.h"
 
 #endif /* __STACKENING_PARSER_LEX_INCLUDE_H__ */

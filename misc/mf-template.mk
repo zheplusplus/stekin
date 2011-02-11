@@ -26,3 +26,9 @@ TEST_LIBS=-lgtest -lgtest_main -lpthread
 	$(RESOLVE_DEP) $< >> $(MKTMP)
 	echo "	$(CC) $< $(CFLAGS) -o $(TESTDIR)/$*.o" >> $(MKTMP)
 	make -f $(MKTMP)
+
+%.dtc:test/%.cpp
+	echo -n "test/" > $(MKTMP)
+	$(RESOLVE_DEP) $< >> $(MKTMP)
+	echo "	$(CC) $< $(CFLAGS) -o test/$*.o" >> $(MKTMP)
+	make -f $(MKTMP)

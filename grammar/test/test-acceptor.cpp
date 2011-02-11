@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 
-#include "phony-err-report.h"
 #include "test-common.h"
 #include "../acceptor.h"
+#include "../../test/phony-errors.h"
 
 using namespace test;
 
@@ -55,7 +55,7 @@ TEST_F(AcceptorTest, IfAcceptor)
     acceptor_a.accept_stmt(std::move(util::mkptr(new grammar::func_ret_nothing(pos))));
 
     acceptor_a.accept_else(pos_else);
-    ASSERT_FALSE(grammar::has_error());
+    ASSERT_FALSE(error::has_error());
     acceptor_a.accept_stmt(std::move(
                 util::mkptr(new grammar::var_def(pos, "Hyperion", std::move(
                             util::mkptr(new grammar::reference(pos, "Raynor")))))));
@@ -80,7 +80,7 @@ TEST_F(AcceptorTest, IfAcceptor)
                 util::mkptr(new grammar::arithmetics(pos, std::move(
                             util::mkptr(new grammar::bool_literal(pos, false)))))));
     acceptor_c.accept_else(pos_else);
-    ASSERT_FALSE(grammar::has_error());
+    ASSERT_FALSE(error::has_error());
 
     acceptor_c.deliver_to(util::mkref(receiver));
     ASSERT_TRUE(bool(receiver.stmt));
@@ -89,7 +89,7 @@ TEST_F(AcceptorTest, IfAcceptor)
 
     grammar::if_acceptor acceptor_d(pos_head, std::move(util::mkptr(new grammar::int_literal(pos_head, "3"))));
     acceptor_d.accept_else(pos_else);
-    ASSERT_FALSE(grammar::has_error());
+    ASSERT_FALSE(error::has_error());
     acceptor_d.accept_stmt(std::move(
                 util::mkptr(new grammar::arithmetics(pos, std::move(
                             util::mkptr(new grammar::float_literal(pos, "20.54")))))));
@@ -130,7 +130,7 @@ TEST_F(AcceptorTest, IfAcceptor)
         (pos_head, INTEGER, "3")
         (pos_head, BRANCH)
     ;
-    ASSERT_FALSE(grammar::has_error());
+    ASSERT_FALSE(error::has_error());
 }
 
 TEST_F(AcceptorTest, IfAcceptorError)
@@ -140,9 +140,9 @@ TEST_F(AcceptorTest, IfAcceptorError)
     misc::pos_type pos_else(201);
     grammar::if_acceptor acceptor_a(pos_head, std::move(util::mkptr(new grammar::int_literal(pos_head, "0"))));
     acceptor_a.accept_else(pos);
-    ASSERT_FALSE(grammar::has_error());
+    ASSERT_FALSE(error::has_error());
     acceptor_a.accept_else(pos_else);
-    ASSERT_TRUE(grammar::has_error());
+    ASSERT_TRUE(error::has_error());
     ASSERT_EQ(1, get_if_matcheds().size());
     ASSERT_EQ(pos, get_if_matcheds()[0].prev_pos);
     ASSERT_EQ(pos_else, get_if_matcheds()[0].this_pos);
@@ -151,12 +151,12 @@ TEST_F(AcceptorTest, IfAcceptorError)
     misc::pos_type pos_func(210);
     grammar::if_acceptor acceptor_b(pos_head, std::move(util::mkptr(new grammar::int_literal(pos_head, "1"))));
     acceptor_b.accept_else(pos);
-    ASSERT_FALSE(grammar::has_error());
+    ASSERT_FALSE(error::has_error());
     acceptor_b.accept_func(std::move(util::mkptr(new grammar::func_def(pos_func
                                                                      , "_null_"
                                                                      , std::vector<std::string>({ "Nexus" })
                                                                      , std::move(grammar::block())))));
-    ASSERT_TRUE(grammar::has_error());
+    ASSERT_TRUE(error::has_error());
     ASSERT_EQ(1, get_forbidden_funcs().size());
     ASSERT_EQ(pos_func, get_forbidden_funcs()[0].pos);
     ASSERT_EQ("_null_", get_forbidden_funcs()[0].name);
@@ -192,12 +192,12 @@ TEST_F(AcceptorTest, IfNotAcceptor)
         (pos, BOOLEAN, "false")
         (pos, BRANCH)
     ;
-    ASSERT_FALSE(grammar::has_error());
+    ASSERT_FALSE(error::has_error());
 
     misc::pos_type pos_else(20);
     grammar::ifnot_acceptor ifnot_acc1(pos, std::move(util::mkptr(new grammar::bool_literal(pos, true))));
     ifnot_acc1.accept_else(pos_else);
-    ASSERT_TRUE(grammar::has_error());
+    ASSERT_TRUE(error::has_error());
     ASSERT_EQ(1, get_else_not_matches().size());
     ASSERT_EQ(pos_else, get_else_not_matches()[0].pos);
 
@@ -208,7 +208,7 @@ TEST_F(AcceptorTest, IfNotAcceptor)
                                                                       , "pylon"
                                                                       , std::vector<std::string>({ "zealot" })
                                                                       , std::move(grammar::block())))));
-    ASSERT_TRUE(grammar::has_error());
+    ASSERT_TRUE(error::has_error());
     ASSERT_EQ(1, get_forbidden_funcs().size());
     ASSERT_EQ(pos_func, get_forbidden_funcs()[0].pos);
     ASSERT_EQ("pylon", get_forbidden_funcs()[0].name);
@@ -243,12 +243,12 @@ TEST_F(AcceptorTest, WhileAcceptor)
         (pos, BOOLEAN, "true")
         (pos, LOOP)
     ;
-    ASSERT_FALSE(grammar::has_error());
+    ASSERT_FALSE(error::has_error());
 
     misc::pos_type pos_else(20);
     grammar::while_acceptor while_acc1(pos, std::move(util::mkptr(new grammar::bool_literal(pos, true))));
     while_acc1.accept_else(pos_else);
-    ASSERT_TRUE(grammar::has_error());
+    ASSERT_TRUE(error::has_error());
     ASSERT_EQ(pos_else, get_else_not_matches()[0].pos);
 
     clear_err();
@@ -258,7 +258,7 @@ TEST_F(AcceptorTest, WhileAcceptor)
                                                                       , "pylon"
                                                                       , std::vector<std::string>({ "zealot" })
                                                                       , std::move(grammar::block())))));
-    ASSERT_TRUE(grammar::has_error());
+    ASSERT_TRUE(error::has_error());
     ASSERT_EQ(1, get_forbidden_funcs().size());
     ASSERT_EQ(pos_func, get_forbidden_funcs()[0].pos);
     ASSERT_EQ("pylon", get_forbidden_funcs()[0].name);
@@ -294,12 +294,12 @@ TEST_F(AcceptorTest, FuncAcceptor)
                 (pos, INTEGER, "20110116")
             (pos, VAR_DEF, "SonOfKorhal")
     ;
-    ASSERT_FALSE(grammar::has_error());
+    ASSERT_FALSE(error::has_error());
 
     misc::pos_type pos_else(10);
     grammar::func_def_acceptor func_acc1(pos, "func2", std::vector<std::string>({ "Mengsk" }));
     func_acc1.accept_else(pos_else);
-    ASSERT_TRUE(grammar::has_error());
+    ASSERT_TRUE(error::has_error());
     ASSERT_EQ(1, get_else_not_matches().size());
     ASSERT_EQ(pos_else, get_else_not_matches()[0].pos);
 }
@@ -346,5 +346,5 @@ TEST_F(AcceptorTest, FuncAccNested)
                 (pos, REFERENCE, "wraith")
             (pos, VAR_DEF, "medic")
     ;
-    ASSERT_FALSE(grammar::has_error());
+    ASSERT_FALSE(error::has_error());
 }

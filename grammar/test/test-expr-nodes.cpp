@@ -1,9 +1,9 @@
 #include <list>
 #include <gtest/gtest.h>
 
-#include "phony-err-report.h"
 #include "test-common.h"
 #include "../expr-nodes.h"
+#include "../../test/phony-errors.h"
 
 using namespace test;
 

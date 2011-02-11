@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 
-#include "phony-err-report.h"
 #include "../function.h"
 #include "../../misc/pos-type.h"
+#include "../../test/phony-errors.h"
 
 using namespace test;
 
@@ -24,19 +24,19 @@ TEST_F(FunctionTest, Resolved)
     std::map<std::string, inst::variable const> extvars;
     util::sref<inst::function> func = inst::function::create_instance(0, args, extvars, true);
     ASSERT_TRUE(bool(func));
-    ASSERT_FALSE(inst::has_error());
+    ASSERT_FALSE(error::has_error());
 
     ASSERT_TRUE(func->is_return_type_resolved());
     ASSERT_EQ(inst::type::BIT_VOID, func->get_return_type());
-    ASSERT_FALSE(inst::has_error());
+    ASSERT_FALSE(error::has_error());
 
     func->set_return_type(misc::pos_type(1), inst::type::BIT_VOID);
     ASSERT_TRUE(func->is_return_type_resolved());
-    ASSERT_FALSE(inst::has_error());
+    ASSERT_FALSE(error::has_error());
 
     func->set_return_type(misc::pos_type(2), &TEST_T);
     ASSERT_TRUE(func->is_return_type_resolved());
-    ASSERT_TRUE(inst::has_error());
+    ASSERT_TRUE(error::has_error());
     ret_type_conflicts = get_ret_type_conflicts();
     ASSERT_EQ(1, ret_type_conflicts.size());
     ASSERT_EQ(misc::pos_type(2), ret_type_conflicts[0].this_pos);
@@ -51,17 +51,17 @@ TEST_F(FunctionTest, Unresolved)
     std::map<std::string, inst::variable const> extvars;
     util::sref<inst::function> func = inst::function::create_instance(0, args, extvars, false);
     ASSERT_TRUE(bool(func));
-    ASSERT_FALSE(inst::has_error());
+    ASSERT_FALSE(error::has_error());
     ASSERT_FALSE(func->is_return_type_resolved());
 
     func->set_return_type(misc::pos_type(10), &TEST_T);
     ASSERT_TRUE(func->is_return_type_resolved());
     ASSERT_EQ(&TEST_T, func->get_return_type());
-    ASSERT_FALSE(inst::has_error());
+    ASSERT_FALSE(error::has_error());
 
     func->set_return_type(misc::pos_type(20), inst::type::BIT_VOID);
     ASSERT_TRUE(func->is_return_type_resolved());
-    ASSERT_TRUE(inst::has_error());
+    ASSERT_TRUE(error::has_error());
     ret_type_conflicts = get_ret_type_conflicts();
     ASSERT_EQ(1, ret_type_conflicts.size());
     ASSERT_EQ(misc::pos_type(20), ret_type_conflicts[0].this_pos);

@@ -1,7 +1,7 @@
 #include <map>
 
 #include "operation.h"
-#include "err-report.h"
+#include "../report/errors.h"
 
 using namespace inst;
 
@@ -168,7 +168,7 @@ operation const* operation::query_binary(misc::pos_type const& pos
     try {
         return binary_op_map::instance().query(op, lhs, rhs);
     } catch (bad_op_exception) {
-        binary_op_not_avai(pos, op, lhs->name, rhs->name);
+        error::binary_op_not_avai(pos, op, lhs->name, rhs->name);
         return &BAD_OPERATION;
     }
 }
@@ -178,7 +178,7 @@ operation const* operation::query_pre_unary(misc::pos_type const& pos, std::stri
     try {
         return pre_unary_op_map::instance().query(op, rhs);
     } catch (bad_op_exception) {
-        pre_unary_op_not_avai(pos, op, rhs->name);
+        error::pre_unary_op_not_avai(pos, op, rhs->name);
         return &BAD_OPERATION;
     }
 }

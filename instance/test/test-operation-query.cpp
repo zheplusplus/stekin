@@ -3,9 +3,9 @@
 #include <algorithm>
 #include <gtest/gtest.h>
 
-#include "phony-err-report.h"
 #include "../operation.h"
 #include "../../misc/pos-type.h"
+#include "../../test/phony-errors.h"
 
 using namespace test;
 
@@ -32,7 +32,7 @@ TEST_F(QueryOperationTest, NoError)
                   {
                       inst::operation const* result = inst::operation::query_binary(
                               misc::pos_type(lineno), op, inst::type::BIT_INT, inst::type::BIT_INT);
-                      ASSERT_FALSE(inst::has_error()) << "operation img=" << op << " query failed.";
+                      ASSERT_FALSE(error::has_error()) << "operation img=" << op << " query failed.";
                       ASSERT_TRUE(op_records.insert(result).second)
                               << "operation img=" << op << " duplicate operation.";
                       ASSERT_EQ(inst::type::BIT_INT, result->ret_type)
@@ -46,7 +46,7 @@ TEST_F(QueryOperationTest, NoError)
                   {
                       inst::operation const* result = inst::operation::query_binary(
                               misc::pos_type(lineno), op, inst::type::BIT_FLOAT, inst::type::BIT_FLOAT);
-                      ASSERT_FALSE(inst::has_error()) << "operation img=" << op << " query failed.";
+                      ASSERT_FALSE(error::has_error()) << "operation img=" << op << " query failed.";
                       ASSERT_TRUE(op_records.insert(result).second)
                               << "operation img=" << op << " duplicate operation.";
                       ASSERT_EQ(inst::type::BIT_FLOAT, result->ret_type)
@@ -62,7 +62,7 @@ TEST_F(QueryOperationTest, NoError)
 
                       result = inst::operation::query_pre_unary(
                               misc::pos_type(lineno), op, inst::type::BIT_INT);
-                      ASSERT_FALSE(inst::has_error()) << "operation img=" << op << " query failed.";
+                      ASSERT_FALSE(error::has_error()) << "operation img=" << op << " query failed.";
                       ASSERT_TRUE(op_records.insert(result).second)
                               << "operation img=" << op << " duplicate operation.";
                       ASSERT_EQ(inst::type::BIT_INT, result->ret_type)
@@ -71,7 +71,7 @@ TEST_F(QueryOperationTest, NoError)
 
                       result = inst::operation::query_pre_unary(
                               misc::pos_type(lineno), op, inst::type::BIT_FLOAT);
-                      ASSERT_FALSE(inst::has_error()) << "operation img=" << op << " query failed.";
+                      ASSERT_FALSE(error::has_error()) << "operation img=" << op << " query failed.";
                       ASSERT_TRUE(op_records.insert(result).second)
                               << "operation img=" << op << " duplicate operation.";
                       ASSERT_EQ(inst::type::BIT_FLOAT, result->ret_type)
@@ -87,7 +87,7 @@ TEST_F(QueryOperationTest, NoError)
 
                       result = inst::operation::query_binary(
                               misc::pos_type(lineno), op, inst::type::BIT_INT, inst::type::BIT_INT);
-                      ASSERT_FALSE(inst::has_error()) << "operation img=" << op << " query failed.";
+                      ASSERT_FALSE(error::has_error()) << "operation img=" << op << " query failed.";
                       ASSERT_TRUE(op_records.insert(result).second)
                               << "operation img=" << op << " duplicate operation.";
                       ASSERT_EQ(inst::type::BIT_BOOL, result->ret_type)
@@ -96,14 +96,14 @@ TEST_F(QueryOperationTest, NoError)
 
                       result = inst::operation::query_binary(
                               misc::pos_type(lineno), op, inst::type::BIT_FLOAT, inst::type::BIT_FLOAT);
-                      ASSERT_FALSE(inst::has_error()) << "operation img=" << op << " query failed.";
+                      ASSERT_FALSE(error::has_error()) << "operation img=" << op << " query failed.";
                       ASSERT_TRUE(op_records.insert(result).second)
                               << "operation img=" << op << " duplicate operation.";
                       ASSERT_EQ(inst::type::BIT_BOOL, result->ret_type)
                               << "operation img=" << op << " type mismatch.";
                       ++lineno;
                   });
-    ASSERT_FALSE(inst::has_error());
+    ASSERT_FALSE(error::has_error());
 }
 
 TEST_F(QueryOperationTest, BadInputType)
@@ -119,35 +119,35 @@ TEST_F(QueryOperationTest, BadInputType)
 
                       result = inst::operation::query_binary(
                               misc::pos_type(lineno), op, inst::type::BAD_TYPE, inst::type::BAD_TYPE);
-                      ASSERT_FALSE(inst::has_error()) << "operation img=" << op << " query failed.";
+                      ASSERT_FALSE(error::has_error()) << "operation img=" << op << " query failed.";
                       ASSERT_EQ(inst::type::BAD_TYPE, result->ret_type)
                               << "operation img=" << op << " type mismatch.";
                       ++lineno;
 
                       result = inst::operation::query_binary(
                               misc::pos_type(lineno), op, inst::type::BAD_TYPE, inst::type::BIT_INT);
-                      ASSERT_FALSE(inst::has_error()) << "operation img=" << op << " query failed.";
+                      ASSERT_FALSE(error::has_error()) << "operation img=" << op << " query failed.";
                       ASSERT_EQ(inst::type::BAD_TYPE, result->ret_type)
                               << "operation img=" << op << " type mismatch.";
                       ++lineno;
 
                       result = inst::operation::query_binary(
                               misc::pos_type(lineno), op, inst::type::BIT_FLOAT, inst::type::BAD_TYPE);
-                      ASSERT_FALSE(inst::has_error()) << "operation img=" << op << " query failed.";
+                      ASSERT_FALSE(error::has_error()) << "operation img=" << op << " query failed.";
                       ASSERT_EQ(inst::type::BAD_TYPE, result->ret_type)
                               << "operation img=" << op << " type mismatch.";
                       ++lineno;
 
                       result = inst::operation::query_binary(
                               misc::pos_type(lineno), op, inst::type::BAD_TYPE, inst::type::BIT_BOOL);
-                      ASSERT_FALSE(inst::has_error()) << "operation img=" << op << " query failed.";
+                      ASSERT_FALSE(error::has_error()) << "operation img=" << op << " query failed.";
                       ASSERT_EQ(inst::type::BAD_TYPE, result->ret_type)
                               << "operation img=" << op << " type mismatch.";
                       ++lineno;
 
                       result = inst::operation::query_binary(
                               misc::pos_type(lineno), op, inst::type::BIT_VOID, inst::type::BAD_TYPE);
-                      ASSERT_FALSE(inst::has_error()) << "operation img=" << op << " query failed.";
+                      ASSERT_FALSE(error::has_error()) << "operation img=" << op << " query failed.";
                       ASSERT_EQ(inst::type::BAD_TYPE, result->ret_type)
                               << "operation img=" << op << " type mismatch.";
                       ++lineno;
@@ -159,12 +159,12 @@ TEST_F(QueryOperationTest, BadInputType)
                   {
                       inst::operation const* result = inst::operation::query_pre_unary(
                               misc::pos_type(lineno), op, inst::type::BAD_TYPE);
-                      ASSERT_FALSE(inst::has_error()) << "operation img=" << op << " query failed.";
+                      ASSERT_FALSE(error::has_error()) << "operation img=" << op << " query failed.";
                       ASSERT_EQ(inst::type::BAD_TYPE, result->ret_type)
                               << "operation img=" << op << " type mismatch.";
                       ++lineno;
                   });
-    ASSERT_FALSE(inst::has_error());
+    ASSERT_FALSE(error::has_error());
 }
 
 TEST_F(QueryOperationTest, BadOperation)
@@ -173,7 +173,7 @@ TEST_F(QueryOperationTest, BadOperation)
 
     result = inst::operation::query_binary(
             misc::pos_type(10), "%", inst::type::BIT_FLOAT, inst::type::BIT_FLOAT);
-    ASSERT_TRUE(inst::has_error());
+    ASSERT_TRUE(error::has_error());
     ASSERT_EQ(1, get_na_binary_ops().size());
     ASSERT_EQ(misc::pos_type(10), get_na_binary_ops()[0].pos);
     ASSERT_EQ("%", get_na_binary_ops()[0].op_img);
@@ -181,7 +181,7 @@ TEST_F(QueryOperationTest, BadOperation)
     clear_err();
 
     result = inst::operation::query_binary(misc::pos_type(11), "<", inst::type::BIT_INT, inst::type::BIT_FLOAT);
-    ASSERT_TRUE(inst::has_error());
+    ASSERT_TRUE(error::has_error());
     ASSERT_EQ(1, get_na_binary_ops().size());
     ASSERT_EQ(misc::pos_type(11), get_na_binary_ops()[0].pos);
     ASSERT_EQ("<", get_na_binary_ops()[0].op_img);
@@ -190,7 +190,7 @@ TEST_F(QueryOperationTest, BadOperation)
     clear_err();
 
     result = inst::operation::query_binary(misc::pos_type(12), "+", inst::type::BIT_INT, inst::type::BIT_BOOL);
-    ASSERT_TRUE(inst::has_error());
+    ASSERT_TRUE(error::has_error());
     ASSERT_EQ(1, get_na_binary_ops().size());
     ASSERT_EQ(misc::pos_type(12), get_na_binary_ops()[0].pos);
     ASSERT_EQ("+", get_na_binary_ops()[0].op_img);
@@ -199,7 +199,7 @@ TEST_F(QueryOperationTest, BadOperation)
     clear_err();
 
     result = inst::operation::query_pre_unary(misc::pos_type(13), "-", inst::type::BIT_VOID);
-    ASSERT_TRUE(inst::has_error());
+    ASSERT_TRUE(error::has_error());
     ASSERT_EQ(1, get_na_pre_unary_ops().size());
     ASSERT_EQ(misc::pos_type(13), get_na_pre_unary_ops()[0].pos);
     ASSERT_EQ("-", get_na_pre_unary_ops()[0].op_img);

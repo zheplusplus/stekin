@@ -1,5 +1,5 @@
 #include "type.h"
-#include "err-report.h"
+#include "../report/errors.h"
 
 using namespace inst;
 
@@ -18,6 +18,6 @@ type const* const type::BIT_FLOAT = &FLOAT;
 void inst::check_condition_type(misc::pos_type const& pos, type const* t)
 {
     if (type::BIT_BOOL != t) {
-        cond_not_bool(pos, t->name);
+        error::cond_not_bool(pos, t->name);
     }
 }

@@ -5,11 +5,10 @@ test:$(TESTDIR)/test-grammar.out
 	$(TESTDIR)/test-grammar.out
 
 include $(WORKDIR)/Makefile
+include test/Makefile
 
-WORK_OBJ=$(WORKDIR)/acceptor.o $(WORKDIR)/clause-builder.o $(WORKDIR)/expr-nodes.o $(WORKDIR)/stmt-nodes.o
-
-TEST_DEP=grammar phony-err-report.dt phony-proto.dt test-common.dt
-TEST_OBJ=$(WORK_OBJ) $(TESTDIR)/phony-err-report.o $(TESTDIR)/phony-proto.o $(TESTDIR)/test-common.o
+TEST_DEP=grammar test-commons phony-proto.dt test-common.dt
+TEST_OBJ=$(WORKDIR)/*.o $(TEST_COMMON_OBJ) $(TESTDIR)/phony-proto.o $(TESTDIR)/test-common.o
 
 $(TESTDIR)/test-grammar.out:$(TEST_DEP) \
                             test-expr-nodes.dt \

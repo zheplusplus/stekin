@@ -1,10 +1,10 @@
 #include <gtest/gtest.h>
 
 #include "test-common.h"
-#include "phony-err-report.h"
 #include "../scope.h"
 #include "../symbol-table.h"
 #include "../func-templ.h"
+#include "../../test/phony-errors.h"
 
 using namespace test;
 
@@ -56,7 +56,7 @@ TEST_F(ScopeTest, ExprNodesCreation)
          ->inst(*inst_scope)
          ->typeof();
     scope->make_nega(pos, std::move(scope->make_int(pos, "49")))->inst(*inst_scope)->typeof();
-    ASSERT_FALSE(proto::has_error());
+    ASSERT_FALSE(error::has_error());
 
     data_tree::expect_one()
         (BOOLEAN, "true")
@@ -110,9 +110,9 @@ TEST_F(ScopeTest, Symbol)
 {
     misc::pos_type pos(2);
     scope->add_arith(pos, std::move(scope->make_ref(pos, "four")));
-    ASSERT_FALSE(proto::has_error());
+    ASSERT_FALSE(error::has_error());
     scope->def_var(pos, "four", std::move(scope->make_bool(pos, true)));
-    ASSERT_TRUE(proto::has_error());
+    ASSERT_TRUE(error::has_error());
     ASSERT_EQ(1, get_invalid_refs().size());
     ASSERT_EQ(pos, get_invalid_refs()[0].def_pos);
     ASSERT_EQ(1, get_invalid_refs()[0].ref_positions.size());
@@ -120,9 +120,9 @@ TEST_F(ScopeTest, Symbol)
     clear_err();
 
     scope->decl_func(pos, "five", std::vector<std::string>({ "a", "b" }));
-    ASSERT_FALSE(proto::has_error());
+    ASSERT_FALSE(error::has_error());
     scope->get_symbols()->def_func(pos, "five", std::vector<std::string>({ "m", "n" }));
-    ASSERT_TRUE(proto::has_error());
+    ASSERT_TRUE(error::has_error());
     ASSERT_EQ(1, get_local_func_redefs().size());
     ASSERT_EQ(pos, get_local_func_redefs()[0].this_def_pos);
     ASSERT_EQ(pos, get_local_func_redefs()[0].prev_def_pos);
@@ -372,5 +372,5 @@ TEST_F(ScopeTest, TerminateStatus)
     scope->add_loop(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0));
     ASSERT_EQ(proto::PARTIAL_RETURN_VOID, scope->termination());
 
-    ASSERT_FALSE(proto::has_error());
+    ASSERT_FALSE(error::has_error());
 }

@@ -1,14 +1,14 @@
 #include <gtest/gtest.h>
 
-#include "phony-err-report.h"
 #include "../yy-misc.h"
+#include "../../test/phony-errors.h"
 
 using namespace test;
 
 TEST(Syntax, InvalidCharacters)
 {
     yyparse();
-    ASSERT_TRUE(parser::has_error());
+    ASSERT_TRUE(error::has_error());
     std::vector<inv_char_rec> recs = get_inv_char_recs();
     ASSERT_EQ(3, recs.size());
 

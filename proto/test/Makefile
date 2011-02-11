@@ -6,6 +6,7 @@ test:$(TESTDIR)/test-proto.out
 	$(TESTDIR)/test-proto.out
 
 include $(WORKDIR)/Makefile
+include test/Makefile
 
 WORK_OBJ=$(WORKDIR)/scope.o \
          $(WORKDIR)/block.o \
@@ -19,14 +20,14 @@ UTIL_OBJ=$(UTILDIR)/string.o
 
 TEST_DEP=proto \
          string.du \
-         phony-err-report.dt \
+         test-commons \
          phony-instance.dt \
          test-common.dt \
          test-scope.dt \
          test-func-and-call.dt
 TEST_OBJ=$(WORK_OBJ) \
          $(UTILDIR)/string.o \
-         $(TESTDIR)/phony-err-report.o \
+         $(TEST_COMMON_OBJ) \
          $(TESTDIR)/phony-instance.o \
          $(TESTDIR)/test-common.o
 

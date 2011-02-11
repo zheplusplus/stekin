@@ -4,9 +4,9 @@
 #include "func-templ.h"
 #include "expr-nodes.h"
 #include "stmt-nodes.h"
-#include "err-report.h"
 #include "inst-mediates.h"
 #include "../util/map-compare.h"
+#include "../report/errors.h"
 
 using namespace proto;
 
@@ -69,7 +69,7 @@ util::sref<inst::function> func_templ::inst(misc::pos_type const& pos
             instance->inst_next_path();
         }
         if (!instance->is_return_type_resolved()) {
-            func_ret_type_unresolvable(name, arg_types.size());
+            error::func_ret_type_unresolvable(name, arg_types.size());
         }
         return instance;
     }

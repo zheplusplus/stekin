@@ -2,7 +2,7 @@
 #include "expr-nodes.h"
 #include "stmt-nodes.h"
 #include "func-templ.h"
-#include "err-report.h"
+#include "../report/errors.h"
 
 using namespace proto;
 
@@ -214,5 +214,5 @@ std::list<util::sptr<stmt_base const>> const& scope::get_stmts() const
 
 void sub_scope::def_var(misc::pos_type const& pos, std::string const& name, util::sptr<expr_base const>)
 {
-    forbid_def_var(pos, name);
+    error::forbid_def_var(pos, name);
 }

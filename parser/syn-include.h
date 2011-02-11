@@ -8,8 +8,8 @@
 
 #include "syntax-types.h"
 #include "yy-misc.h"
-#include "err-report.h"
 #include "../grammar/expr-nodes.h"
 #include "../util/pointer.h"
+#include "../report/errors.h"
 
 #endif /* __STACKENING_PARSER_SYN_INCLUDE_H__ */

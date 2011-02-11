@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 
-#include "phony-err-report.h"
 #include "test-common.h"
 #include "../clause-builder.h"
+#include "../../test/phony-errors.h"
 
 using namespace test;
 
@@ -25,7 +25,7 @@ TEST_F(ClauseBuilderTest, AcceptorStackNext)
                                                                   , "skull"
                                                                   , std::vector<std::string>({ "chipped" })
                                                                   , std::move(grammar::block())))));
-    ASSERT_FALSE(grammar::has_error());
+    ASSERT_FALSE(error::has_error());
     grammar::block block0(std::move(stack0.pack_all()));
     block0.compile(*scope);
 
@@ -43,7 +43,7 @@ TEST_F(ClauseBuilderTest, AcceptorStackNext)
 
     misc::pos_type err_pos0(101);
     misc::pos_type err_pos1(102);
-    ASSERT_FALSE(grammar::has_error());
+    ASSERT_FALSE(error::has_error());
     stack0.next_stmt(1, std::move(
                 util::mkptr(new grammar::arithmetics(err_pos0, std::move(
                             util::mkptr(new grammar::int_literal(item_pos, "20110119")))))));
@@ -54,7 +54,7 @@ TEST_F(ClauseBuilderTest, AcceptorStackNext)
                                                                   , "ith"
                                                                   , std::vector<std::string>({ "el", "eth" })
                                                                   , std::move(grammar::block())))));
-    ASSERT_TRUE(grammar::has_error());
+    ASSERT_TRUE(error::has_error());
     ASSERT_EQ(2, get_excess_inds().size());
     ASSERT_EQ(err_pos0, get_excess_inds()[0].pos);
     ASSERT_EQ(err_pos1, get_excess_inds()[1].pos);
@@ -79,7 +79,7 @@ TEST_F(ClauseBuilderTest, AcceptorStackAdd)
     stack0.next_stmt(1, std::move(
                 util::mkptr(new grammar::arithmetics(item_pos, std::move(
                             util::mkptr(new grammar::reference(item_pos, "buriza_do_kyanon"))))))); 
-    ASSERT_FALSE(grammar::has_error());
+    ASSERT_FALSE(error::has_error());
     grammar::block block0(std::move(stack0.pack_all()));
     block0.compile(*scope);
 
@@ -109,7 +109,7 @@ TEST_F(ClauseBuilderTest, AcceptorStackAdd)
     stack1.next_stmt(1, std::move(
                 util::mkptr(new grammar::arithmetics(item_pos, std::move(
                             util::mkptr(new grammar::reference(item_pos, "buriza_do_kyanon"))))))); 
-    ASSERT_TRUE(grammar::has_error());
+    ASSERT_TRUE(error::has_error());
     ASSERT_EQ(1, get_excess_inds().size());
     ASSERT_EQ(item_pos, get_excess_inds()[0].pos);
 }
@@ -135,7 +135,7 @@ TEST_F(ClauseBuilderTest, AcceptorStackMatchElse)
     stack0.next_stmt(1, std::move(
                 util::mkptr(new grammar::arithmetics(item_pos, std::move(
                             util::mkptr(new grammar::reference(item_pos, "magewrath"))))))); 
-    ASSERT_FALSE(grammar::has_error());
+    ASSERT_FALSE(error::has_error());
     grammar::block block0(std::move(stack0.pack_all()));
     block0.compile(*scope);
 
@@ -167,7 +167,7 @@ TEST_F(ClauseBuilderTest, AcceptorStackMatchElse)
     stack1.next_stmt(1, std::move(
                 util::mkptr(new grammar::arithmetics(item_pos, std::move(
                             util::mkptr(new grammar::reference(item_pos, "magewrath"))))))); 
-    ASSERT_TRUE(grammar::has_error());
+    ASSERT_TRUE(error::has_error());
     ASSERT_EQ(1, get_else_not_matches().size());
     ASSERT_EQ(else_pos, get_else_not_matches()[0].pos);
 }
@@ -191,7 +191,7 @@ TEST_F(ClauseBuilderTest, ClauseBuilder)
     builder0.add_arith(1, std::move(util::mkptr(new grammar::reference(item_pos1, "widowmaker"))));
 
     builder0.build_and_clear();
-    ASSERT_FALSE(grammar::has_error());
+    ASSERT_FALSE(error::has_error());
 
     data_tree::expect_one()
     (SCOPE)
@@ -229,7 +229,7 @@ TEST_F(ClauseBuilderTest, ClauseBuilder)
     builder1.add_if(0, std::move(util::mkptr(new grammar::bool_literal(item_pos0, true))));
     builder1.add_var_def(0, "wind_force", std::move(util::mkptr(new grammar::int_literal(item_pos1, "13571"))));
     builder1.add_else(0, item_pos2);
-    ASSERT_TRUE(grammar::has_error());
+    ASSERT_TRUE(error::has_error());
     ASSERT_EQ(1, get_else_not_matches().size());
     ASSERT_EQ(item_pos2, get_else_not_matches()[0].pos);
 }

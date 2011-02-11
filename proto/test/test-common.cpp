@@ -1,5 +1,5 @@
 #include "test-common.h"
-#include "phony-err-report.h"
+#include "../../test/phony-errors.h"
 
 using namespace test;
 

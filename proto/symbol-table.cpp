@@ -1,6 +1,6 @@
 #include "symbol-table.h"
 #include "func-templ.h"
-#include "err-report.h"
+#include "../report/errors.h"
 
 using namespace proto;
 
@@ -15,11 +15,11 @@ void symbol_table::def_var(misc::pos_type const& pos, std::string const& name)
 {
     auto local_refs = _external_var_refs.find(name);
     if (_external_var_refs.end() != local_refs) {
-        var_ref_before_def(pos, local_refs->second, name);
+        error::var_ref_before_def(pos, local_refs->second, name);
     }
     auto insert_result = _var_defs.insert(std::make_pair(name, pos));
     if (!insert_result.second) {
-        var_already_in_local(insert_result.first->second, pos, name);
+        error::var_already_in_local(insert_result.first->second, pos, name);
     }
 }
 
@@ -31,11 +31,11 @@ util::sref<func_templ> symbol_table::def_func(misc::pos_type const& pos
     auto insert_result = _funcs.insert(std::make_pair(func_signature(name, params.size())
                                                     , util::mkref(_func_entities.back())));
     if (!insert_result.second) {
-        func_already_in_local(insert_result.first->second->pos, pos, name, params.size());
+        error::func_already_in_local(insert_result.first->second->pos, pos, name, params.size());
     }
     util::sref<func_templ> func_in_external = _query_func_in_external_or_null_if_nonexist(name, params.size());
     if (bool(func_in_external)) {
-        func_shadow_external(func_in_external->pos, pos, name, params.size());
+        error::func_shadow_external(func_in_external->pos, pos, name, params.size());
     }
     return insert_result.first->second;
 }
@@ -48,7 +48,7 @@ util::sref<func_templ> symbol_table::query_func(misc::pos_type const& pos
     if (bool(func)) {
         return func;
     }
-    func_not_def(pos, name, param_count);
+    error::func_not_def(pos, name, param_count);
     return util::mkref(_fake_prototype);
 }
 

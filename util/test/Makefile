@@ -6,11 +6,10 @@ include misc/mf-template.mk
 test:$(TESTDIR)/test-utilities.out
 	$(TESTDIR)/test-utilities.out
 
-TEST_DEP=string.du
-TEST_OBJ=$(UTILDIR)/string.o
+include $(UTILDIR)/Makefile
 
-$(TESTDIR)/test-utilities.out:$(TEST_DEP) test-map-compare.dt test-string.dt test-pointer.dt
-	$(LINK) $(TEST_LIBS) $(TEST_OBJ) \
+$(TESTDIR)/test-utilities.out:util test-map-compare.dt test-string.dt test-pointer.dt
+	$(LINK) $(TEST_LIBS) $(UTILDIR)/*.o \
 	        $(TESTDIR)/test-map-compare.o \
 	        $(TESTDIR)/test-string.o \
 	        $(TESTDIR)/test-pointer.o \

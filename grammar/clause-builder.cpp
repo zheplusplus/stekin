@@ -1,5 +1,5 @@
 #include "clause-builder.h"
-#include "err-report.h"
+#include "../report/errors.h"
 
 using namespace grammar;
 
@@ -46,7 +46,7 @@ void acceptor_stack::match_else(int level, misc::pos_type const& pos)
 void acceptor_stack::_fill_to(int level, misc::pos_type const& pos)
 {
     if (int(_acceptors.size()) <= level) {
-        excessive_indent(pos);
+        error::excessive_indent(pos);
         while (int(_acceptors.size()) <= level) {
             _acceptors.push_back(std::move(util::mkmptr(new dummy_acceptor)));
         }
