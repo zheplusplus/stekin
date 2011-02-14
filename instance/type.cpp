@@ -17,7 +17,7 @@ type const* const type::BIT_FLOAT = &FLOAT;
 
 void inst::check_condition_type(misc::pos_type const& pos, type const* t)
 {
-    if (type::BIT_BOOL != t) {
+    if (type::BIT_BOOL != t && type::BAD_TYPE != t) {
         error::cond_not_bool(pos, t->name);
     }
 }
