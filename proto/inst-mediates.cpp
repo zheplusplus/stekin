@@ -62,14 +62,3 @@ void branch_mediate::mediate_inst(util::sref<inst::scope> sc)
     _valid_mediate.mediate_inst(sc);
     _invalid_mediate.mediate_inst(sc);
 }
-
-util::sptr<inst::stmt_base const> loop_mediate::inst(util::sref<inst::scope> sc)
-{
-    return std::move(
-            util::mkptr(new inst::loop(pos, std::move(_condition), std::move(_body_mediate.inst(sc)))));
-}
-
-void loop_mediate::mediate_inst(util::sref<inst::scope> sc)
-{
-    _body_mediate.mediate_inst(sc);
-}

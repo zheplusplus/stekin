@@ -22,8 +22,6 @@ namespace output {
     void branch_if();
     void branch_else();
 
-    void loop_while();
-
     void block_begin();
     void block_end();
     void end_of_statement();

@@ -3,5 +3,4 @@ parser/syn.cpp
 parser/syn.hpp
 *.o
 *.out
-tmp.mk
-tmp.cpp
+tmp.*

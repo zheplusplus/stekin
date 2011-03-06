@@ -21,7 +21,6 @@ void output::begin_expr() {}
 void output::end_expr() {}
 void output::branch_if() {}
 void output::branch_else() {}
-void output::loop_while() {}
 void output::block_begin() {}
 void output::block_end() {}
 void output::end_of_statement() {}

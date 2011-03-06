@@ -49,10 +49,6 @@ else {
     return KW_ELSE;
 }
 
-while {
-    return KW_WHILE;
-}
-
 return {
     return KW_RETURN;
 }

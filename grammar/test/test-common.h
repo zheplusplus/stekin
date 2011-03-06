@@ -70,7 +70,6 @@ namespace test {
 
     extern node_type const SCOPE;
     extern node_type const BRANCH;
-    extern node_type const LOOP;
 
     struct grammar_test
         : public testing::Test

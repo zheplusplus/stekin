@@ -181,12 +181,12 @@ TEST_F(ClauseBuilderTest, ClauseBuilder)
     grammar::clause_builder builder0;
     builder0.add_if(0, std::move(util::mkptr(new grammar::bool_literal(item_pos0, true))));
     builder0.add_var_def(1, "wind_force", std::move(util::mkptr(new grammar::int_literal(item_pos1, "13571"))));
-    builder0.add_while(1, std::move(util::mkptr(new grammar::reference(item_pos2, "raven_claw"))));
+    builder0.add_if(1, std::move(util::mkptr(new grammar::reference(item_pos2, "raven_claw"))));
     builder0.add_return(2, std::move(util::mkptr(new grammar::float_literal(item_pos0, "0.000123"))));
     builder0.add_return_nothing(1, item_pos1);
     builder0.add_else(0, item_pos2);
     builder0.add_ifnot(1, std::move(util::mkptr(new grammar::reference(item_pos2, "cliffkiller"))));
-    builder0.add_while(2, std::move(util::mkptr(new grammar::reference(item_pos0, "skystrike"))));
+    builder0.add_if(2, std::move(util::mkptr(new grammar::reference(item_pos0, "skystrike"))));
     builder0.add_func_def(0, item_pos1, "goldenstrike_arch", std::vector<std::string>({ "amn", "tir" }));
     builder0.add_arith(1, std::move(util::mkptr(new grammar::reference(item_pos1, "widowmaker"))));
 
@@ -209,16 +209,18 @@ TEST_F(ClauseBuilderTest, ClauseBuilder)
             (SCOPE)
                     (item_pos0, FLOATING, "0.000123")
                 (item_pos0, RETURN)
+            (SCOPE)
             (item_pos2, REFERENCE, "raven_claw")
-            (item_pos2, LOOP)
+            (item_pos2, BRANCH)
 
             (item_pos1, RETURN_NOTHING)
         (SCOPE)
             (SCOPE)
             (SCOPE)
                 (SCOPE)
+                (SCOPE)
                 (item_pos0, REFERENCE, "skystrike")
-                (item_pos0, LOOP)
+                (item_pos0, BRANCH)
             (item_pos2, REFERENCE, "cliffkiller")
             (item_pos2, BRANCH)
         (item_pos0, BOOLEAN, "true")

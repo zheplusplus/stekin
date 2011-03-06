@@ -161,14 +161,6 @@ void clause_builder::add_else(int indent_level, misc::pos_type const& pos)
     data_tree::actual_one()(pos, indent_level, BRANCH_ELSE);
 }
 
-void clause_builder::add_while(int indent_level, util::sptr<expr_base const> condition)
-{
-    misc::pos_type pos(condition->pos);
-    data_tree::actual_one()(pos, indent_level, LOOP_WHILE)(pos, indent_level, CONDITION_BEGIN);
-    util::sptr<expr_base const>(std::move(condition))->compile(nullref());
-    data_tree::actual_one()(pos, indent_level, CONDITION_END);
-}
-
 util::sptr<proto::scope const> clause_builder::build_and_clear()
 {
     return util::sptr<proto::scope const>(NULL);

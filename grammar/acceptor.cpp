@@ -50,16 +50,6 @@ void ifnot_acceptor::deliver_to(util::sref<acceptor> acc)
                             new branch(pos, std::move(_condition), std::move(block()), std::move(_invalid)))));
 }
 
-void while_acceptor::accept_stmt(util::sptr<stmt_base const> stmt)
-{
-    _body.add_stmt(std::move(stmt));
-}
-
-void while_acceptor::deliver_to(util::sref<acceptor> acc)
-{
-    acc->accept_stmt(std::move(util::mkptr(new loop(pos, std::move(_condition), std::move(_body)))));
-}
-
 void func_def_acceptor::accept_stmt(util::sptr<stmt_base const> stmt)
 {
     _body.add_stmt(std::move(stmt));

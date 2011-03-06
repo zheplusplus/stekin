@@ -80,23 +80,6 @@ namespace grammar {
         block _invalid;
     };
 
-    struct while_acceptor
-        : public func_def_forbid_acceptor
-    {
-        void accept_stmt(util::sptr<stmt_base const> stmt);
-
-        void deliver_to(util::sref<acceptor> acc);
-
-        while_acceptor(misc::pos_type const& pos, util::sptr<expr_base const> condition)
-            : func_def_forbid_acceptor(pos)
-            , _condition(std::move(condition))
-        {}
-    private:
-        util::sptr<expr_base const> _condition;
-
-        block _body;
-    };
-
     struct func_def_acceptor
         : public acceptor
     {

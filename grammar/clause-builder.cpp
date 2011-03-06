@@ -149,12 +149,6 @@ void clause_builder::add_else(int indent_len, misc::pos_type const& pos)
     _stack.match_else(indent_len, pos);
 }
 
-void clause_builder::add_while(int indent_len, util::sptr<expr_base const> condition)
-{
-    misc::pos_type pos(condition->pos);
-    _stack.add(indent_len, std::move(util::mkmptr(new while_acceptor(pos, std::move(condition)))));
-}
-
 util::sptr<proto::scope const> clause_builder::build_and_clear()
 {
     block global(std::move(_stack.pack_all()));

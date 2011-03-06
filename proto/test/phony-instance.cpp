@@ -197,11 +197,6 @@ branch::branch(misc::pos_type const&
     , invalid(std::move(i))
 {}
 
-loop::loop(misc::pos_type const&, util::sptr<expr_base const> c, util::sptr<stmt_base const> b)
-    : condition(std::move(c))
-    , body(std::move(b))
-{}
-
 void int_literal::write() const {}
 void float_literal::write() const {}
 void bool_literal::write() const {}
@@ -214,7 +209,6 @@ void disjunction::write() const {}
 void negation::write() const {}
 void arithmetics::write() const {}
 void branch::write() const {}
-void loop::write() const {}
 void initialization::write() const {}
 void func_ret::write() const {}
 void func_ret_nothing::write() const {}

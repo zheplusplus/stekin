@@ -83,7 +83,7 @@ TEST(Syntax, Mix)
 
         (misc::pos_type(15), 0, FUNC_DEF_HEAD_BEGIN, "print_10")
         (misc::pos_type(15), 0, FUNC_DEF_HEAD_END)
-            (misc::pos_type(16), 1, LOOP_WHILE)
+            (misc::pos_type(16), 1, BRANCH_IF)
             (misc::pos_type(16), 1, CONDITION_BEGIN)
                 (misc::pos_type(16), BOOLEAN, "true")
             (misc::pos_type(16), 1, CONDITION_END)

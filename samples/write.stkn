@@ -1,0 +1,6 @@
+write(0)
+write(1)
+write(3.14159)
+write(2.71828)
+write(true)
+write(false)

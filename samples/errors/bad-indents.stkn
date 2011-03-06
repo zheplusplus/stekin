@@ -1,0 +1,5 @@
+  ifnot false
+    return
+
+func nothing()
+        return

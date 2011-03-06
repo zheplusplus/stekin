@@ -61,21 +61,6 @@ namespace grammar {
         block const invalid;
     };
 
-    struct loop
-        : public stmt_base
-    {
-        loop(misc::pos_type const& pos, util::sptr<expr_base const> cond, block b)
-            : stmt_base(pos)
-            , condition(std::move(cond))
-            , body(std::move(b))
-        {}
-
-        void compile(util::sref<proto::scope> scope) const;
-
-        util::sptr<expr_base const> const condition;
-        block const body;
-    };
-
     struct func_ret
         : public stmt_base
     {

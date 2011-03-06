@@ -13,5 +13,5 @@ else
     write(false)
     
 func print_10()
-    while true
+    if true
         write(+10.0)

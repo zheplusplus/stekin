@@ -74,8 +74,6 @@ namespace test {
     extern node_type const BRANCH_IFNOT;
     extern node_type const BRANCH_ELSE;
 
-    extern node_type const LOOP_WHILE;
-
 }
 
 std::ostream& operator<<(std::ostream& os, test::parser_data const& data);

@@ -24,6 +24,11 @@ struct ScopeTest
         inst_scope.reset(new phony_func);
     }
 
+    util::sptr<proto::scope> mkscope() const
+    {
+        return std::move(scope->create_branch_scope());
+    }
+
     util::sptr<proto::symbol_table> symbols;
     util::sptr<proto::scope> scope;
     util::sptr<inst::scope> inst_scope;
@@ -158,21 +163,21 @@ TEST_F(ScopeTest, TerminateStatus)
 
     util::sptr<proto::scope> sub_scope0(NULL);
     reset_scope();
-    sub_scope0 = std::move(scope->create_loop_scope());
+    sub_scope0 = std::move(scope->create_branch_scope());
     ASSERT_EQ(proto::NO_EXPLICIT_TERMINATION, sub_scope0->termination());
-    scope->add_loop(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0));
+    scope->add_branch(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0), std::move(mkscope()));
     ASSERT_EQ(proto::NO_EXPLICIT_TERMINATION, scope->termination());
 
-    sub_scope0 = std::move(scope->create_loop_scope());
+    sub_scope0 = std::move(scope->create_branch_scope());
     sub_scope0->add_func_ret(pos, std::move(sub_scope0->make_bool(pos, true)));
     ASSERT_EQ(proto::RETURN_NO_VOID, sub_scope0->termination());
-    scope->add_loop(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0));
+    scope->add_branch(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0), std::move(mkscope()));
     ASSERT_EQ(proto::PARTIAL_RETURN_NO_VOID, scope->termination());
 
-    sub_scope0 = std::move(scope->create_loop_scope());
+    sub_scope0 = std::move(scope->create_branch_scope());
     sub_scope0->add_func_ret_nothing(pos);
     ASSERT_EQ(proto::RETURN_VOID, sub_scope0->termination());
-    scope->add_loop(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0));
+    scope->add_branch(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0), std::move(mkscope()));
     ASSERT_EQ(proto::PARTIAL_RETURN_VOID, scope->termination());
 
     scope->add_func_ret(pos, std::move(scope->make_ref(pos, "eight")));
@@ -181,93 +186,93 @@ TEST_F(ScopeTest, TerminateStatus)
     ASSERT_EQ(proto::RETURN_VOID, scope->termination());
 
     reset_scope();
-    sub_scope0 = std::move(scope->create_loop_scope());
+    sub_scope0 = std::move(scope->create_branch_scope());
     sub_scope0->add_func_ret(pos, std::move(sub_scope0->make_bool(pos, true)));
-    scope->add_loop(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0));
+    scope->add_branch(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0), std::move(mkscope()));
     scope->add_func_ret(pos, std::move(scope->make_ref(pos, "eight")));
     ASSERT_EQ(proto::RETURN_NO_VOID, scope->termination());
-    sub_scope0 = std::move(scope->create_loop_scope());
+    sub_scope0 = std::move(scope->create_branch_scope());
     sub_scope0->add_func_ret(pos, std::move(sub_scope0->make_bool(pos, true)));
-    scope->add_loop(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0));
+    scope->add_branch(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0), std::move(mkscope()));
     ASSERT_EQ(proto::RETURN_NO_VOID, scope->termination());
-    sub_scope0 = std::move(scope->create_loop_scope());
+    sub_scope0 = std::move(scope->create_branch_scope());
     sub_scope0->add_func_ret_nothing(pos);
-    scope->add_loop(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0));
+    scope->add_branch(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0), std::move(mkscope()));
     ASSERT_EQ(proto::PARTIAL_RETURN_VOID, scope->termination());
 
     reset_scope();
-    sub_scope0 = std::move(scope->create_loop_scope());
+    sub_scope0 = std::move(scope->create_branch_scope());
     sub_scope0->add_func_ret(pos, std::move(sub_scope0->make_bool(pos, true)));
-    scope->add_loop(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0));
+    scope->add_branch(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0), std::move(mkscope()));
     scope->add_func_ret_nothing(pos);
     ASSERT_EQ(proto::RETURN_VOID, scope->termination());
-    sub_scope0 = std::move(scope->create_loop_scope());
+    sub_scope0 = std::move(scope->create_branch_scope());
     sub_scope0->add_func_ret(pos, std::move(sub_scope0->make_bool(pos, true)));
-    scope->add_loop(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0));
+    scope->add_branch(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0), std::move(mkscope()));
     ASSERT_EQ(proto::RETURN_VOID, scope->termination());
-    sub_scope0 = std::move(scope->create_loop_scope());
+    sub_scope0 = std::move(scope->create_branch_scope());
     sub_scope0->add_func_ret_nothing(pos);
-    scope->add_loop(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0));
+    scope->add_branch(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0), std::move(mkscope()));
     ASSERT_EQ(proto::RETURN_VOID, scope->termination());
-    sub_scope0 = std::move(scope->create_loop_scope());
-    scope->add_loop(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0));
+    sub_scope0 = std::move(scope->create_branch_scope());
+    scope->add_branch(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0), std::move(mkscope()));
     ASSERT_EQ(proto::RETURN_VOID, scope->termination());
-    sub_scope0 = std::move(scope->create_loop_scope());
+    sub_scope0 = std::move(scope->create_branch_scope());
     sub_scope0->add_func_ret(pos, std::move(scope->make_ref(pos, "nine")));
-    scope->add_loop(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0));
+    scope->add_branch(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0), std::move(mkscope()));
     ASSERT_EQ(proto::RETURN_VOID, scope->termination());
 
     reset_scope();
-    sub_scope0 = std::move(scope->create_loop_scope());
+    sub_scope0 = std::move(scope->create_branch_scope());
     sub_scope0->add_func_ret(pos, std::move(sub_scope0->make_bool(pos, true)));
-    scope->add_loop(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0));
-    sub_scope0 = std::move(scope->create_loop_scope());
-    scope->add_loop(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0));
+    scope->add_branch(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0), std::move(mkscope()));
+    sub_scope0 = std::move(scope->create_branch_scope());
+    scope->add_branch(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0), std::move(mkscope()));
     ASSERT_EQ(proto::PARTIAL_RETURN_NO_VOID, scope->termination());
 
     reset_scope();
-    sub_scope0 = std::move(scope->create_loop_scope());
+    sub_scope0 = std::move(scope->create_branch_scope());
     sub_scope0->add_func_ret_nothing(pos);
-    scope->add_loop(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0));
-    sub_scope0 = std::move(scope->create_loop_scope());
-    scope->add_loop(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0));
+    scope->add_branch(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0), std::move(mkscope()));
+    sub_scope0 = std::move(scope->create_branch_scope());
+    scope->add_branch(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0), std::move(mkscope()));
     ASSERT_EQ(proto::PARTIAL_RETURN_VOID, scope->termination());
 
     reset_scope();
     scope->add_func_ret(pos, std::move(scope->make_bool(pos, true)));
-    sub_scope0 = std::move(scope->create_loop_scope());
-    scope->add_loop(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0));
+    sub_scope0 = std::move(scope->create_branch_scope());
+    scope->add_branch(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0), std::move(mkscope()));
     ASSERT_EQ(proto::RETURN_NO_VOID, scope->termination());
 
     reset_scope();
-    sub_scope0 = std::move(scope->create_loop_scope());
+    sub_scope0 = std::move(scope->create_branch_scope());
     sub_scope0->add_func_ret_nothing(pos);
-    scope->add_loop(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0));
+    scope->add_branch(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0), std::move(mkscope()));
     ASSERT_EQ(proto::PARTIAL_RETURN_VOID, scope->termination());
-    sub_scope0 = std::move(scope->create_loop_scope());
+    sub_scope0 = std::move(scope->create_branch_scope());
     sub_scope0->add_func_ret_nothing(pos);
-    scope->add_loop(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0));
+    scope->add_branch(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0), std::move(mkscope()));
     ASSERT_EQ(proto::PARTIAL_RETURN_VOID, scope->termination());
-    sub_scope0 = std::move(scope->create_loop_scope());
+    sub_scope0 = std::move(scope->create_branch_scope());
     sub_scope0->add_func_ret(pos, std::move(sub_scope0->make_ref(pos, "ten")));
-    scope->add_loop(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0));
+    scope->add_branch(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0), std::move(mkscope()));
     ASSERT_EQ(proto::PARTIAL_RETURN_VOID, scope->termination());
 
     reset_scope();
-    sub_scope0 = std::move(scope->create_loop_scope());
+    sub_scope0 = std::move(scope->create_branch_scope());
     sub_scope0->add_func_ret(pos, std::move(sub_scope0->make_ref(pos, "eleven")));
-    scope->add_loop(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0));
+    scope->add_branch(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0), std::move(mkscope()));
     ASSERT_EQ(proto::PARTIAL_RETURN_NO_VOID, scope->termination());
-    sub_scope0 = std::move(scope->create_loop_scope());
+    sub_scope0 = std::move(scope->create_branch_scope());
     sub_scope0->add_func_ret(pos, std::move(sub_scope0->make_ref(pos, "twelve")));
-    scope->add_loop(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0));
+    scope->add_branch(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0), std::move(mkscope()));
     ASSERT_EQ(proto::PARTIAL_RETURN_NO_VOID, scope->termination());
 
     util::sptr<proto::scope> sub_scope1(NULL);
     util::sptr<proto::scope> sub_scope2(NULL);
 
     reset_scope();
-    sub_scope0 = std::move(scope->create_loop_scope());
+    sub_scope0 = std::move(scope->create_branch_scope());
     sub_scope1 = std::move(sub_scope0->create_branch_scope());
     sub_scope2 = std::move(sub_scope0->create_branch_scope());
     sub_scope1->add_func_ret(pos, std::move(sub_scope1->make_ref(pos, "thirteen")));
@@ -276,9 +281,9 @@ TEST_F(ScopeTest, TerminateStatus)
                          , std::move(sub_scope1)
                          , std::move(sub_scope2));
     ASSERT_EQ(proto::PARTIAL_RETURN_NO_VOID, sub_scope0->termination());
-    scope->add_loop(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0));
+    scope->add_branch(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0), std::move(mkscope()));
     ASSERT_EQ(proto::PARTIAL_RETURN_NO_VOID, scope->termination());
-    sub_scope0 = std::move(scope->create_loop_scope());
+    sub_scope0 = std::move(scope->create_branch_scope());
     sub_scope1 = std::move(sub_scope0->create_branch_scope());
     sub_scope2 = std::move(sub_scope0->create_branch_scope());
     sub_scope1->add_func_ret(pos, std::move(sub_scope1->make_ref(pos, "fourteen")));
@@ -286,12 +291,12 @@ TEST_F(ScopeTest, TerminateStatus)
                          , std::move(sub_scope0->make_bool(pos, false))
                          , std::move(sub_scope1)
                          , std::move(sub_scope2));
-    scope->add_loop(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0));
+    scope->add_branch(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0), std::move(mkscope()));
     ASSERT_EQ(proto::PARTIAL_RETURN_NO_VOID, scope->termination());
 
     scope->add_func_ret(pos, std::move(scope->make_ref(pos, "fifteen")));
     ASSERT_EQ(proto::RETURN_NO_VOID, scope->termination());
-    sub_scope0 = std::move(scope->create_loop_scope());
+    sub_scope0 = std::move(scope->create_branch_scope());
     sub_scope1 = std::move(sub_scope0->create_branch_scope());
     sub_scope2 = std::move(sub_scope0->create_branch_scope());
     sub_scope1->add_func_ret(pos, std::move(sub_scope1->make_ref(pos, "sixteen")));
@@ -299,10 +304,10 @@ TEST_F(ScopeTest, TerminateStatus)
                          , std::move(sub_scope0->make_bool(pos, false))
                          , std::move(sub_scope1)
                          , std::move(sub_scope2));
-    scope->add_loop(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0));
+    scope->add_branch(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0), std::move(mkscope()));
     ASSERT_EQ(proto::RETURN_NO_VOID, scope->termination());
 
-    sub_scope0 = std::move(scope->create_loop_scope());
+    sub_scope0 = std::move(scope->create_branch_scope());
     sub_scope1 = std::move(sub_scope0->create_branch_scope());
     sub_scope2 = std::move(sub_scope0->create_branch_scope());
     sub_scope1->add_func_ret_nothing(pos);
@@ -311,9 +316,9 @@ TEST_F(ScopeTest, TerminateStatus)
                          , std::move(sub_scope1)
                          , std::move(sub_scope2));
     ASSERT_EQ(proto::PARTIAL_RETURN_VOID, sub_scope0->termination());
-    scope->add_loop(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0));
+    scope->add_branch(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0), std::move(mkscope()));
     ASSERT_EQ(proto::PARTIAL_RETURN_VOID, scope->termination());
-    sub_scope0 = std::move(scope->create_loop_scope());
+    sub_scope0 = std::move(scope->create_branch_scope());
     sub_scope1 = std::move(sub_scope0->create_branch_scope());
     sub_scope2 = std::move(sub_scope0->create_branch_scope());
     sub_scope1->add_func_ret_nothing(pos);
@@ -321,12 +326,12 @@ TEST_F(ScopeTest, TerminateStatus)
                          , std::move(sub_scope0->make_bool(pos, false))
                          , std::move(sub_scope1)
                          , std::move(sub_scope2));
-    scope->add_loop(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0));
+    scope->add_branch(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0), std::move(mkscope()));
     ASSERT_EQ(proto::PARTIAL_RETURN_VOID, scope->termination());
 
     scope->add_func_ret_nothing(pos);
     ASSERT_EQ(proto::RETURN_VOID, scope->termination());
-    sub_scope0 = std::move(scope->create_loop_scope());
+    sub_scope0 = std::move(scope->create_branch_scope());
     sub_scope1 = std::move(sub_scope0->create_branch_scope());
     sub_scope2 = std::move(sub_scope0->create_branch_scope());
     sub_scope1->add_func_ret(pos, std::move(sub_scope1->make_ref(pos, "seventeen")));
@@ -334,9 +339,9 @@ TEST_F(ScopeTest, TerminateStatus)
                          , std::move(sub_scope0->make_bool(pos, false))
                          , std::move(sub_scope1)
                          , std::move(sub_scope2));
-    scope->add_loop(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0));
+    scope->add_branch(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0), std::move(mkscope()));
     ASSERT_EQ(proto::RETURN_VOID, scope->termination());
-    sub_scope0 = std::move(scope->create_loop_scope());
+    sub_scope0 = std::move(scope->create_branch_scope());
     sub_scope1 = std::move(sub_scope0->create_branch_scope());
     sub_scope2 = std::move(sub_scope0->create_branch_scope());
     sub_scope1->add_func_ret_nothing(pos);
@@ -344,11 +349,11 @@ TEST_F(ScopeTest, TerminateStatus)
                          , std::move(sub_scope0->make_bool(pos, false))
                          , std::move(sub_scope1)
                          , std::move(sub_scope2));
-    scope->add_loop(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0));
+    scope->add_branch(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0), std::move(mkscope()));
     ASSERT_EQ(proto::RETURN_VOID, scope->termination());
 
     reset_scope();
-    sub_scope0 = std::move(scope->create_loop_scope());
+    sub_scope0 = std::move(scope->create_branch_scope());
     sub_scope1 = std::move(sub_scope0->create_branch_scope());
     sub_scope2 = std::move(sub_scope0->create_branch_scope());
     sub_scope1->add_func_ret_nothing(pos);
@@ -356,12 +361,12 @@ TEST_F(ScopeTest, TerminateStatus)
                          , std::move(sub_scope0->make_bool(pos, false))
                          , std::move(sub_scope1)
                          , std::move(sub_scope2));
-    scope->add_loop(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0));
+    scope->add_branch(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0), std::move(mkscope()));
     ASSERT_EQ(proto::PARTIAL_RETURN_VOID, scope->termination());
 
     reset_scope();
     scope->add_func_ret(pos, std::move(scope->make_ref(pos, "eighteen")));
-    sub_scope0 = std::move(scope->create_loop_scope());
+    sub_scope0 = std::move(scope->create_branch_scope());
     sub_scope1 = std::move(sub_scope0->create_branch_scope());
     sub_scope2 = std::move(sub_scope0->create_branch_scope());
     sub_scope1->add_func_ret_nothing(pos);
@@ -369,7 +374,7 @@ TEST_F(ScopeTest, TerminateStatus)
                          , std::move(sub_scope0->make_bool(pos, false))
                          , std::move(sub_scope1)
                          , std::move(sub_scope2));
-    scope->add_loop(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0));
+    scope->add_branch(pos, std::move(scope->make_bool(pos, true)), std::move(sub_scope0), std::move(mkscope()));
     ASSERT_EQ(proto::PARTIAL_RETURN_VOID, scope->termination());
 
     ASSERT_FALSE(error::has_error());

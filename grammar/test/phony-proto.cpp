@@ -158,22 +158,12 @@ void scope::add_branch(misc::pos_type const& pos
     data_tree::actual_one()(pos, BRANCH);
 }
 
-void scope::add_loop(misc::pos_type const& pos, util::sptr<expr_base const>, util::sptr<scope>)
-{
-    data_tree::actual_one()(pos, LOOP);
-}
-
 void scope::def_var(misc::pos_type const& pos, std::string const& name, util::sptr<expr_base const> init)
 {
     data_tree::actual_one()(pos, VAR_DEF, name);
 }
 
 util::sptr<scope> scope::create_branch_scope()
-{
-    return std::move(mkscope());
-}
-
-util::sptr<scope> scope::create_loop_scope()
 {
     return std::move(mkscope());
 }

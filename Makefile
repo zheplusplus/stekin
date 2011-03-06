@@ -12,13 +12,14 @@ all:main.d
 	make -f output/Makefile
 	$(LINK) main.o util/*.o report/*.o parser/*.o grammar/*.o proto/*.o instance/*.o output/*.o -o stk-core.out
 
-runtest:
+runtest:all
 	make -f test/Makefile
 	make -f util/test/Makefile
 	make -f parser/test/Makefile
 	make -f grammar/test/Makefile
 	make -f proto/test/Makefile
 	make -f instance/test/Makefile
+	./sample-test
 
 clean:
 	make -f util/Makefile clean
@@ -30,7 +31,7 @@ clean:
 	make -f output/Makefile clean
 	rm -f $(MKTMP)
 	rm -f $(UTILDIR)/*.o
-	rm -f tmp.cpp
+	rm -f tmp.*
 	rm -f main.o
 	rm -f stk-core.out
 

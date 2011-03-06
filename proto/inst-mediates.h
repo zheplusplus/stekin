@@ -60,27 +60,6 @@ namespace proto {
         block_mediate _invalid_mediate;
     };
 
-    struct loop_mediate
-        : public inst::mediate_base
-    {
-        loop_mediate(misc::pos_type const& ps
-                   , util::sptr<inst::expr_base const> condition
-                   , std::list<util::sptr<stmt_base const>> const& body_stmts
-                   , util::sref<inst::scope> sc)
-            : pos(ps)
-            , _condition(std::move(condition))
-            , _body_mediate(body_stmts, sc)
-        {}
-
-        util::sptr<inst::stmt_base const> inst(util::sref<inst::scope> sc);
-        void mediate_inst(util::sref<inst::scope> sc);
-    public:
-        misc::pos_type const pos;
-    private:
-        util::sptr<inst::expr_base const> _condition;
-        block_mediate _body_mediate;
-    };
-
 }
 
 #endif /* __STACKENING_PROTO_INSTANTIATE_MEDIATE_H__ */

@@ -43,7 +43,7 @@
 %type <op_type> pm_sign
 
 %token INDENT EOL
-%token KW_FUNC KW_IF KW_IFNOT KW_ELSE KW_WHILE KW_RETURN
+%token KW_FUNC KW_IF KW_IFNOT KW_ELSE KW_RETURN
 %token KW_TRUE KW_FALSE
 %token LE GE NE AND OR
 %token COMMA COLON
@@ -104,8 +104,6 @@ clue:
     ifnot_clue {}
     |
     else_clue {}
-    |
-    while_clue {}
 ;
 
 var_def:
@@ -186,13 +184,6 @@ else_clue:
     indent KW_ELSE eol
     {
         parser::builder.add_else($1, parser::here($3));
-    }
-;
-
-while_clue:
-    indent KW_WHILE cond eol
-    {
-        parser::builder.add_while($1, std::move(util::mkptr($3)));
     }
 ;
 

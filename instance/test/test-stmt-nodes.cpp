@@ -32,18 +32,3 @@ TEST_F(StmtNodesTest, BranchConditionTypeCheck)
     ASSERT_EQ(pos, get_cond_not_bools()[0].pos);
     ASSERT_EQ("void", get_cond_not_bools()[0].type_name);
 }
-
-TEST_F(StmtNodesTest, LoopConditionTypeCheck)
-{
-    misc::pos_type pos(2);
-    inst::loop(pos, std::move(util::mkptr(new cond_type_expr)), std::move(util::mkptr(new inst::block)));
-    ASSERT_FALSE(error::has_error());
-    inst::loop(pos, std::move(util::mkptr(new bad_type_expr)), std::move(util::mkptr(new inst::block)));
-    ASSERT_FALSE(error::has_error());
-
-    inst::loop(pos, std::move(util::mkptr(new void_type_expr)), std::move(util::mkptr(new inst::block)));
-    ASSERT_TRUE(error::has_error());
-    ASSERT_EQ(1, get_cond_not_bools().size());
-    ASSERT_EQ(pos, get_cond_not_bools()[0].pos);
-    ASSERT_EQ("void", get_cond_not_bools()[0].type_name);
-}

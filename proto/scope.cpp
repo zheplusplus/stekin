@@ -98,13 +98,6 @@ void scope::add_branch(misc::pos_type const& pos
                 new branch(pos, std::move(condition), std::move(valid_block), std::move(invalid_block)))));
 }
 
-void scope::add_loop(misc::pos_type const& pos, util::sptr<expr_base const> condition, util::sptr<scope> body)
-{
-    _status_changed_by_sub_scope_status(body->_status);
-    util::sptr<block const> body_block(new block(std::move(body->_block)));
-    _block.add_stmt(std::move(util::mkptr(new loop(pos, std::move(condition), std::move(body_block)))));
-}
-
 void scope::def_var(misc::pos_type const& pos, std::string const& name, util::sptr<expr_base const> init)
 {
     _symbols->def_var(pos, name);
@@ -112,11 +105,6 @@ void scope::def_var(misc::pos_type const& pos, std::string const& name, util::sp
 }
 
 util::sptr<scope> scope::create_branch_scope()
-{
-    return std::move(util::mkmptr(new sub_scope(_symbols)));
-}
-
-util::sptr<scope> scope::create_loop_scope()
 {
     return std::move(util::mkmptr(new sub_scope(_symbols)));
 }

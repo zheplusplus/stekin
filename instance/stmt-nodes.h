@@ -34,17 +34,6 @@ namespace inst {
         util::sptr<stmt_base const> const invalid;
     };
 
-    struct loop
-        : public stmt_base
-    {
-        loop(misc::pos_type const& p, util::sptr<expr_base const> c, util::sptr<stmt_base const> b);
-
-        void write() const;
-
-        util::sptr<expr_base const> const condition;
-        util::sptr<stmt_base const> const body;
-    };
-
     struct initialization
         : public stmt_base
     {

@@ -9,6 +9,9 @@ MKTMP=tmp.mk
 LIBS=-lgmp -lgmpxx
 TEST_LIBS=-lgtest -lgtest_main -lpthread
 
+SAMPLEDIR=samples
+ERRSAMPLEDIR=$(SAMPLEDIR)/errors
+
 %.d:$(WORKDIR)/%.cpp
 	echo -n "$(WORKDIR)/" > $(MKTMP)
 	$(RESOLVE_DEP) $< >> $(MKTMP)

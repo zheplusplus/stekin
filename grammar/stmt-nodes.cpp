@@ -55,13 +55,6 @@ void branch::compile(util::sref<proto::scope> scope) const
     scope->add_branch(pos, condition->compile(scope), std::move(valid_scope), std::move(invalid_scope));
 }
 
-void loop::compile(util::sref<proto::scope> scope) const 
-{
-    util::sptr<proto::scope> loop_scope = scope->create_loop_scope();
-    body.compile(*loop_scope);
-    scope->add_loop(pos, condition->compile(scope), std::move(loop_scope));
-}
-
 void func_ret::compile(util::sref<proto::scope> scope) const 
 {
     scope->add_func_ret(pos, ret_val->compile(scope));

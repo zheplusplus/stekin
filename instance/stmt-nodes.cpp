@@ -16,13 +16,6 @@ branch::branch(misc::pos_type const& p
     check_condition_type(p, condition->typeof());
 }
 
-loop::loop(misc::pos_type const& p, util::sptr<expr_base const> c, util::sptr<stmt_base const> b)
-    : condition(std::move(c))
-    , body(std::move(b))
-{
-    check_condition_type(p, condition->typeof());
-}
-
 void arithmetics::write() const
 {
     expr->write();
@@ -36,13 +29,6 @@ void branch::write() const
     valid->write();
     output::branch_else();
     invalid->write();
-}
-
-void loop::write() const
-{
-    output::loop_while();
-    condition->write();
-    body->write();
 }
 
 void initialization::write() const

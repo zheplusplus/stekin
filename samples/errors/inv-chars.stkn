@@ -1,4 +1,4 @@
-while `false
+if `false
     write(true?)
 
 write(false);

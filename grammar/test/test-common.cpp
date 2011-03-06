@@ -55,7 +55,6 @@ node_type const test::PARAMETER("parameter");
 
 node_type const test::SCOPE("scope");
 node_type const test::BRANCH("branch");
-node_type const test::LOOP("loop");
 
 void grammar_test::SetUp()
 {

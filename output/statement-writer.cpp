@@ -51,11 +51,6 @@ void output::branch_else()
     std::cout << " else ";
 }
 
-void output::loop_while()
-{
-    std::cout << "while ";
-}
-
 void output::block_begin()
 {
     std::cout << "{" << std::endl;

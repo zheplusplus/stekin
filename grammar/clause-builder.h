@@ -63,7 +63,6 @@ namespace grammar {
         void add_if(int indent_len, util::sptr<expr_base const> condition);
         void add_ifnot(int indent_len, util::sptr<expr_base const> condition);
         void add_else(int indent_len, misc::pos_type const& pos);
-        void add_while(int indent_len, util::sptr<expr_base const> condition);
 
         util::sptr<proto::scope const> build_and_clear();
     private:

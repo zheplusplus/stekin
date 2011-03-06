@@ -198,41 +198,6 @@ TEST_F(StmtNodesTest, Branch)
     ;
 }
 
-TEST_F(StmtNodesTest, Loop)
-{
-    misc::pos_type pos(7);
-    util::sptr<proto::scope> scope(std::move(proto::scope::global_scope()));
-    grammar::loop(pos
-                , std::move(util::mkptr(new grammar::reference(pos, "condition")))
-                , std::move(grammar::block()))
-        .compile(*scope);
-
-    grammar::block block;
-    block.add_stmt(std::move(
-                util::mkptr(new grammar::arithmetics(pos, std::move(
-                            util::mkptr(new grammar::int_literal(pos, "8")))))));
-    block.add_stmt(std::move(
-                util::mkptr(new grammar::var_def(pos, "Toji", std::move(
-                            util::mkptr(new grammar::bool_literal(pos, true)))))));
-    grammar::loop(pos, std::move(util::mkptr(new grammar::bool_literal(pos, false))), std::move(block))
-        .compile(*scope);
-
-    data_tree::expect_one()
-    (SCOPE)
-        (SCOPE)
-        (pos, REFERENCE, "condition")
-        (pos, LOOP)
-
-        (SCOPE)
-                (pos, INTEGER, "8")
-            (pos, ARITHMETICS)
-                (pos, BOOLEAN, "true")
-            (pos, VAR_DEF, "Toji")
-        (pos, BOOLEAN, "false")
-        (pos, LOOP)
-    ;
-}
-
 TEST_F(StmtNodesTest, FuncDefs)
 {
     misc::pos_type pos(8);

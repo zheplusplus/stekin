@@ -214,56 +214,6 @@ TEST_F(AcceptorTest, IfNotAcceptor)
     ASSERT_EQ("pylon", get_forbidden_funcs()[0].name);
 }
 
-TEST_F(AcceptorTest, WhileAcceptor)
-{
-    misc::pos_type pos(4);
-    test_acceptor receiver;
-
-    grammar::while_acceptor while_acc0(pos, std::move(util::mkptr(new grammar::bool_literal(pos, true))));
-    while_acc0.accept_stmt(std::move(
-                util::mkptr(new grammar::var_def(pos, "probe", std::move(
-                            util::mkptr(new grammar::reference(pos, "dragoon")))))));
-    while_acc0.accept_stmt(std::move(
-                util::mkptr(new grammar::arithmetics(pos, std::move(
-                            util::mkptr(new grammar::int_literal(pos, "20")))))));
-
-    while_acc0.deliver_to(util::mkref(receiver));
-    ASSERT_TRUE(bool(receiver.stmt));
-    ASSERT_FALSE(bool(receiver.func));
-    util::sptr<proto::scope> scope(std::move(proto::scope::global_scope()));
-    receiver.compile(*scope);
-
-    data_tree::expect_one()
-    (SCOPE)
-        (SCOPE)
-                (pos, REFERENCE, "dragoon")
-            (pos, VAR_DEF, "probe")
-                (pos, INTEGER, "20")
-            (pos, ARITHMETICS)
-        (pos, BOOLEAN, "true")
-        (pos, LOOP)
-    ;
-    ASSERT_FALSE(error::has_error());
-
-    misc::pos_type pos_else(20);
-    grammar::while_acceptor while_acc1(pos, std::move(util::mkptr(new grammar::bool_literal(pos, true))));
-    while_acc1.accept_else(pos_else);
-    ASSERT_TRUE(error::has_error());
-    ASSERT_EQ(pos_else, get_else_not_matches()[0].pos);
-
-    clear_err();
-    misc::pos_type pos_func(220);
-    grammar::if_acceptor while_acc2(pos, std::move(util::mkptr(new grammar::reference(pos, "tank"))));
-    while_acc2.accept_func(std::move(util::mkptr(new grammar::func_def(pos_func
-                                                                      , "pylon"
-                                                                      , std::vector<std::string>({ "zealot" })
-                                                                      , std::move(grammar::block())))));
-    ASSERT_TRUE(error::has_error());
-    ASSERT_EQ(1, get_forbidden_funcs().size());
-    ASSERT_EQ(pos_func, get_forbidden_funcs()[0].pos);
-    ASSERT_EQ("pylon", get_forbidden_funcs()[0].name);
-}
-
 TEST_F(AcceptorTest, FuncAcceptor)
 {
     misc::pos_type pos(5);

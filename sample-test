@@ -1,0 +1,11 @@
+#!/bin/sh
+
+verify() {
+    ./stk.sh samples/$1.stkn tmp.out && ./tmp.out | diff samples/$1.expected -
+}
+
+verify empty
+verify write
+verify fib
+verify nest-func
+verify return-void

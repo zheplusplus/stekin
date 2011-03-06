@@ -44,22 +44,6 @@ namespace proto {
         util::sptr<block const> const invalid;
     };
 
-    struct loop
-        : public stmt_base
-    {
-        loop(misc::pos_type const& ps, util::sptr<expr_base const> c, util::sptr<block const> b)
-            : pos(ps)
-            , condition(std::move(c))
-            , body(std::move(b))
-        {}
-
-        util::sptr<inst::mediate_base> inst(util::sref<inst::scope> scope) const;
-
-        misc::pos_type const pos;
-        util::sptr<expr_base const> const condition;
-        util::sptr<block const> const body;
-    };
-
     struct var_def
         : public stmt_base
     {

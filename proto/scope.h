@@ -60,16 +60,12 @@ namespace proto {
                               , util::sptr<expr_base const> condition
                               , util::sptr<scope> valid
                               , util::sptr<scope> invalid);
-        virtual void add_loop(misc::pos_type const& pos
-                            , util::sptr<expr_base const> condition
-                            , util::sptr<scope> body);
 
         virtual void def_var(misc::pos_type const& pos
                            , std::string const& name
                            , util::sptr<expr_base const> init);
     public:
         util::sptr<scope> create_branch_scope();
-        util::sptr<scope> create_loop_scope();
 
         void add_custom_statement(util::sptr<stmt_base const> stmt);
     public:

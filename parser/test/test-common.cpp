@@ -63,5 +63,3 @@ node_type const test::CONDITION_END("condition end");
 node_type const test::BRANCH_IF("branch if");
 node_type const test::BRANCH_IFNOT("branch ifnot");
 node_type const test::BRANCH_ELSE("branch else");
-
-node_type const test::LOOP_WHILE("loop while");

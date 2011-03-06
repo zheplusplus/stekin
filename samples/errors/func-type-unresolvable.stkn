@@ -1,0 +1,6 @@
+unresolvable(false)
+
+func unresolvable(x)
+    ifnot x
+        return unresolvable(!x)
+    return unresolvable(false)

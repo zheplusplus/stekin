@@ -31,12 +31,6 @@ util::sptr<inst::mediate_base> branch::inst(util::sref<inst::scope> scope) const
                                                    , scope)));
 }
 
-util::sptr<inst::mediate_base> loop::inst(util::sref<inst::scope> scope) const
-{
-    return std::move(util::mkmptr(
-                    new loop_mediate(pos, std::move(condition->inst(scope)), body->get_stmts(), scope)));
-}
-
 util::sptr<inst::mediate_base> func_ret::inst(util::sref<inst::scope> scope) const
 {
     util::sptr<inst::expr_base const> e = ret_val->inst(scope);
