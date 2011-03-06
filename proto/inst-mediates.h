@@ -40,14 +40,14 @@ namespace proto {
         : public inst::mediate_base
     {
         branch_mediate(misc::pos_type const& ps
-                     , util::sptr<inst::expr_base const> condition
-                     , std::list<util::sptr<stmt_base const>> const& valid_stmts
-                     , std::list<util::sptr<stmt_base const>> const& invalid_stmts
+                     , util::sptr<inst::expr_base const> predicate
+                     , std::list<util::sptr<stmt_base const>> const& consequence_stmts
+                     , std::list<util::sptr<stmt_base const>> const& alternative_stmts
                      , util::sref<inst::scope> sc)
             : pos(ps)
-            , _condition(std::move(condition))
-            , _valid_mediate(valid_stmts, sc)
-            , _invalid_mediate(invalid_stmts, sc)
+            , _predicate(std::move(predicate))
+            , _consequence_mediate(consequence_stmts, sc)
+            , _alternative_mediate(alternative_stmts, sc)
         {}
 
         util::sptr<inst::stmt_base const> inst(util::sref<inst::scope> sc);
@@ -55,9 +55,9 @@ namespace proto {
     public:
         misc::pos_type const pos;
     private:
-        util::sptr<inst::expr_base const> _condition;
-        block_mediate _valid_mediate;
-        block_mediate _invalid_mediate;
+        util::sptr<inst::expr_base const> _predicate;
+        block_mediate _consequence_mediate;
+        block_mediate _alternative_mediate;
     };
 
 }

@@ -27,21 +27,21 @@ namespace proto {
         : public stmt_base
     {
         branch(misc::pos_type const& ps
-             , util::sptr<expr_base const> c
-             , util::sptr<block const> v
-             , util::sptr<block const> i)
+             , util::sptr<expr_base const> p
+             , util::sptr<block const> c
+             , util::sptr<block const> a)
                 : pos(ps)
-                , condition(std::move(c))
-                , valid(std::move(v))
-                , invalid(std::move(i))
+                , predicate(std::move(p))
+                , consequence(std::move(c))
+                , alternative(std::move(a))
         {}
 
         util::sptr<inst::mediate_base> inst(util::sref<inst::scope> scope) const;
 
         misc::pos_type const pos;
-        util::sptr<expr_base const> const condition;
-        util::sptr<block const> const valid;
-        util::sptr<block const> const invalid;
+        util::sptr<expr_base const> const predicate;
+        util::sptr<block const> const consequence;
+        util::sptr<block const> const alternative;
     };
 
     struct var_def

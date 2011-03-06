@@ -52,13 +52,13 @@ void block_mediate::mediate_inst(util::sref<inst::scope> sc)
 util::sptr<inst::stmt_base const> branch_mediate::inst(util::sref<inst::scope> sc)
 {
     return std::move(util::mkptr(new inst::branch(pos
-                                                , std::move(_condition)
-                                                , std::move(_valid_mediate.inst(sc))
-                                                , std::move(_invalid_mediate.inst(sc)))));
+                                                , std::move(_predicate)
+                                                , std::move(_consequence_mediate.inst(sc))
+                                                , std::move(_alternative_mediate.inst(sc)))));
 }
 
 void branch_mediate::mediate_inst(util::sref<inst::scope> sc)
 {
-    _valid_mediate.mediate_inst(sc);
-    _invalid_mediate.mediate_inst(sc);
+    _consequence_mediate.mediate_inst(sc);
+    _alternative_mediate.mediate_inst(sc);
 }

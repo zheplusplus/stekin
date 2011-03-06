@@ -189,12 +189,12 @@ negation::negation(misc::pos_type const&, util::sptr<expr_base const> r)
 {}
 
 branch::branch(misc::pos_type const&
-             , util::sptr<expr_base const> c
-             , util::sptr<stmt_base const> v
-             , util::sptr<stmt_base const> i)
-    : condition(std::move(c))
-    , valid(std::move(v))
-    , invalid(std::move(i))
+             , util::sptr<expr_base const> p
+             , util::sptr<stmt_base const> c
+             , util::sptr<stmt_base const> a)
+    : predicate(std::move(p))
+    , consequence(std::move(c))
+    , alternative(std::move(a))
 {}
 
 void int_literal::write() const {}

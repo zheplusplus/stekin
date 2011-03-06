@@ -47,18 +47,18 @@ namespace grammar {
     struct branch
         : public stmt_base
     {
-        branch(misc::pos_type const& pos, util::sptr<expr_base const> cond, block v, block i)
+        branch(misc::pos_type const& pos, util::sptr<expr_base const> p, block c, block a)
             : stmt_base(pos)
-            , condition(std::move(cond))
-            , valid(std::move(v))
-            , invalid(std::move(i))
+            , predicate(std::move(p))
+            , consequence(std::move(c))
+            , alternative(std::move(a))
         {}
 
         void compile(util::sref<proto::scope> scope) const;
 
-        util::sptr<expr_base const> const condition;
-        block const valid;
-        block const invalid;
+        util::sptr<expr_base const> const predicate;
+        block const consequence;
+        block const alternative;
     };
 
     struct func_ret

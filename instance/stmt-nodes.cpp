@@ -5,15 +5,15 @@
 
 using namespace inst;
 
-branch::branch(misc::pos_type const& p
-             , util::sptr<expr_base const> c
-             , util::sptr<stmt_base const> v
-             , util::sptr<stmt_base const> i)
-    : condition(std::move(c))
-    , valid(std::move(v))
-    , invalid(std::move(i))
+branch::branch(misc::pos_type const& pos
+             , util::sptr<expr_base const> p
+             , util::sptr<stmt_base const> c
+             , util::sptr<stmt_base const> a)
+    : predicate(std::move(p))
+    , consequence(std::move(c))
+    , alternative(std::move(a))
 {
-    check_condition_type(p, condition->typeof());
+    check_condition_type(pos, predicate->typeof());
 }
 
 void arithmetics::write() const
@@ -25,10 +25,10 @@ void arithmetics::write() const
 void branch::write() const
 {
     output::branch_if();
-    condition->write();
-    valid->write();
+    predicate->write();
+    consequence->write();
     output::branch_else();
-    invalid->write();
+    alternative->write();
 }
 
 void initialization::write() const

@@ -86,16 +86,16 @@ void scope::add_arith(misc::pos_type const& pos, util::sptr<expr_base const> exp
 }
 
 void scope::add_branch(misc::pos_type const& pos
-                     , util::sptr<expr_base const> condition
-                     , util::sptr<scope> valid
-                     , util::sptr<scope> invalid)
+                     , util::sptr<expr_base const> predicate
+                     , util::sptr<scope> consequence
+                     , util::sptr<scope> alternative)
 {
-    _status_changed_by_sub_scope_status(valid->_status);
-    _status_changed_by_sub_scope_status(invalid->_status);
-    util::sptr<block const> valid_block(new block(std::move(valid->_block)));
-    util::sptr<block const> invalid_block(new block(std::move(invalid->_block)));
+    _status_changed_by_sub_scope_status(consequence->_status);
+    _status_changed_by_sub_scope_status(alternative->_status);
+    util::sptr<block const> consequence_block(new block(std::move(consequence->_block)));
+    util::sptr<block const> alternative_block(new block(std::move(alternative->_block)));
     _block.add_stmt(std::move(util::mkptr(
-                new branch(pos, std::move(condition), std::move(valid_block), std::move(invalid_block)))));
+          new branch(pos, std::move(predicate), std::move(consequence_block), std::move(alternative_block)))));
 }
 
 void scope::def_var(misc::pos_type const& pos, std::string const& name, util::sptr<expr_base const> init)

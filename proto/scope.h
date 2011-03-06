@@ -57,9 +57,9 @@ namespace proto {
         virtual void add_arith(misc::pos_type const& pos, util::sptr<expr_base const> expr);
 
         virtual void add_branch(misc::pos_type const& pos
-                              , util::sptr<expr_base const> condition
-                              , util::sptr<scope> valid
-                              , util::sptr<scope> invalid);
+                              , util::sptr<expr_base const> predicate
+                              , util::sptr<scope> consequence
+                              , util::sptr<scope> alternative);
 
         virtual void def_var(misc::pos_type const& pos
                            , std::string const& name

@@ -25,9 +25,9 @@ util::sptr<inst::mediate_base> var_def::inst(util::sref<inst::scope> scope) cons
 util::sptr<inst::mediate_base> branch::inst(util::sref<inst::scope> scope) const
 {
     return std::move(util::mkmptr(new branch_mediate(pos
-                                                   , std::move(condition->inst(scope))
-                                                   , valid->get_stmts()
-                                                   , invalid->get_stmts()
+                                                   , std::move(predicate->inst(scope))
+                                                   , consequence->get_stmts()
+                                                   , alternative->get_stmts()
                                                    , scope)));
 }
 

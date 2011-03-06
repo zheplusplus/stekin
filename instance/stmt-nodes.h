@@ -22,16 +22,16 @@ namespace inst {
     struct branch
         : public stmt_base
     {
-        branch(misc::pos_type const& p
-             , util::sptr<expr_base const> c
-             , util::sptr<stmt_base const> v
-             , util::sptr<stmt_base const> i);
+        branch(misc::pos_type const& pos
+             , util::sptr<expr_base const> p
+             , util::sptr<stmt_base const> c
+             , util::sptr<stmt_base const> a);
 
         void write() const;
 
-        util::sptr<expr_base const> const condition;
-        util::sptr<stmt_base const> const valid;
-        util::sptr<stmt_base const> const invalid;
+        util::sptr<expr_base const> const predicate;
+        util::sptr<stmt_base const> const consequence;
+        util::sptr<stmt_base const> const alternative;
     };
 
     struct initialization

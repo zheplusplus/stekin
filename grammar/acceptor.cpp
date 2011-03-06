@@ -21,7 +21,7 @@ void if_acceptor::accept_stmt(util::sptr<stmt_base const> stmt)
 void if_acceptor::deliver_to(util::sref<acceptor> acc)
 {
     acc->accept_stmt(std::move(util::mkptr(
-                            new branch(pos, std::move(_condition), std::move(_valid), std::move(_invalid)))));
+                    new branch(pos, std::move(_predicate), std::move(_consequence), std::move(_alternative)))));
 }
 
 void if_acceptor::accept_else(misc::pos_type const& else_pos)
@@ -29,7 +29,7 @@ void if_acceptor::accept_else(misc::pos_type const& else_pos)
     if (_else_matched()) {
         error::if_already_match_else(*_last_else_pos, else_pos);
     } else {
-        _current_branch = &_invalid;
+        _current_branch = &_alternative;
         _last_else_pos.reset(new misc::pos_type(else_pos));
     }
 }
@@ -41,13 +41,13 @@ bool if_acceptor::_else_matched() const
 
 void ifnot_acceptor::accept_stmt(util::sptr<stmt_base const> stmt)
 {
-    _invalid.add_stmt(std::move(stmt));
+    _alternative.add_stmt(std::move(stmt));
 }
 
 void ifnot_acceptor::deliver_to(util::sref<acceptor> acc)
 {
     acc->accept_stmt(std::move(util::mkptr(
-                            new branch(pos, std::move(_condition), std::move(block()), std::move(_invalid)))));
+                        new branch(pos, std::move(_predicate), std::move(block()), std::move(_alternative)))));
 }
 
 void func_def_acceptor::accept_stmt(util::sptr<stmt_base const> stmt)

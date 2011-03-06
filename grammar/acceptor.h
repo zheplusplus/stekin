@@ -46,21 +46,21 @@ namespace grammar {
 
         void accept_else(misc::pos_type const& else_pos);
 
-        if_acceptor(misc::pos_type const& pos, util::sptr<expr_base const> condition)
+        if_acceptor(misc::pos_type const& pos, util::sptr<expr_base const> predicate)
             : func_def_forbid_acceptor(pos)
-            , _condition(std::move(condition))
-            , _current_branch(&_valid)
+            , _predicate(std::move(predicate))
+            , _current_branch(&_consequence)
         {}
     private:
         bool _else_matched() const;
     private:
-        util::sptr<expr_base const> _condition;
+        util::sptr<expr_base const> _predicate;
 
         util::sptr<misc::pos_type> _last_else_pos;
         block* _current_branch;
 
-        block _valid;
-        block _invalid;
+        block _consequence;
+        block _alternative;
     };
 
     struct ifnot_acceptor
@@ -70,14 +70,14 @@ namespace grammar {
 
         void deliver_to(util::sref<acceptor> acc);
 
-        ifnot_acceptor(misc::pos_type const& pos, util::sptr<expr_base const> condition)
+        ifnot_acceptor(misc::pos_type const& pos, util::sptr<expr_base const> predicate)
             : func_def_forbid_acceptor(pos)
-            , _condition(std::move(condition))
+            , _predicate(std::move(predicate))
         {}
     private:
-        util::sptr<expr_base const> _condition;
+        util::sptr<expr_base const> _predicate;
 
-        block _invalid;
+        block _alternative;
     };
 
     struct func_def_acceptor
