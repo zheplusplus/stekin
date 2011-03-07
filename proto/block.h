@@ -8,9 +8,7 @@
 
 namespace proto {
 
-    struct block
-        : public stmt_base
-    {
+    struct block {
         block(block const&) = delete;
         block() = default;
 
