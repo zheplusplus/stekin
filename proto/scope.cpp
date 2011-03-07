@@ -190,11 +190,6 @@ void scope::_status_changed_by_return(termination_status status)
     }
 }
 
-util::sref<symbol_table> scope::get_symbols() const
-{
-    return _symbols;
-}
-
 std::list<util::sptr<stmt_base const>> const& scope::get_stmts() const
 {
     return _block.get_stmts();

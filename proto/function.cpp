@@ -77,12 +77,12 @@ util::sref<inst::function> function::inst(misc::pos_type const& pos
                 = inst::function::create_instance(ext_scope->level()
                                                 , args
                                                 , ext_vars
-                                                , RETURN_VOID == termination()
-                                               || PARTIAL_RETURN_VOID == termination()
-                                               || NO_EXPLICIT_TERMINATION == termination());
+                                                , RETURN_VOID == _status
+                                               || PARTIAL_RETURN_VOID == _status
+                                               || NO_EXPLICIT_TERMINATION == _status);
     _instance_cache.insert(std::make_pair(instance_info(ext_vars, arg_types), instance));
 
-    block_mediate body_mediate(get_stmts(), instance);
+    block_mediate body_mediate(_block.get_stmts(), instance);
     instance->inst_next_path();
     instance->add_stmt(std::move(body_mediate.inst(instance)));
     return instance;

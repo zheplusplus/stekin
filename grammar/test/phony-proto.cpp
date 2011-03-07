@@ -183,11 +183,6 @@ util::sref<function> scope::decl_func(misc::pos_type const& pos
     return *func_entities.back();
 }
 
-util::sref<symbol_table> scope::get_symbols() const
-{
-    return _symbols;
-}
-
 util::sptr<scope> scope::global_scope()
 {
     return std::move(mkscope());

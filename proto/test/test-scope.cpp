@@ -122,17 +122,6 @@ TEST_F(ScopeTest, Symbol)
     ASSERT_EQ(pos, get_invalid_refs()[0].def_pos);
     ASSERT_EQ(1, get_invalid_refs()[0].ref_positions.size());
     ASSERT_EQ(pos, get_invalid_refs()[0].ref_positions[0]);
-    clear_err();
-
-    scope->decl_func(pos, "five", std::vector<std::string>({ "a", "b" }));
-    ASSERT_FALSE(error::has_error());
-    scope->get_symbols()->def_func(pos, "five", std::vector<std::string>({ "m", "n" }));
-    ASSERT_TRUE(error::has_error());
-    ASSERT_EQ(1, get_local_func_redefs().size());
-    ASSERT_EQ(pos, get_local_func_redefs()[0].this_def_pos);
-    ASSERT_EQ(pos, get_local_func_redefs()[0].prev_def_pos);
-    ASSERT_EQ("five", get_local_func_redefs()[0].name);
-    ASSERT_EQ(2, get_local_func_redefs()[0].param_count);
 }
 
 TEST_F(ScopeTest, TerminateStatus)
