@@ -80,5 +80,5 @@ util::sref<proto::func_templ> func_def::declare(util::sref<proto::scope> scope) 
 
 void func_def::compile(util::sref<proto::func_templ> templ) const
 {
-    body.compile(templ->get_scope());
+    body.compile(templ);
 }

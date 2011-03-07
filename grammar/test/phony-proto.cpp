@@ -194,14 +194,9 @@ util::sptr<scope> scope::global_scope()
 }
 
 func_templ::func_templ(misc::pos_type const& p, std::string const&, std::vector<std::string> const&)
-    : pos(p)
-    , _body_scope(nullsymbols())
+    : scope(nullsymbols())
+    , pos(p)
 {
     map_func_to_index[this] = func_scope_entities.size();
     func_scope_entities.push_back(std::move(mkscope()));
-}
-
-util::sref<scope> func_templ::get_scope()
-{
-    return *func_scope_entities[map_func_to_index[this]];
 }

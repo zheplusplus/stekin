@@ -36,12 +36,12 @@ TEST_F(FuncNCallTest, NoBranchRecursionFunc)
     ASSERT_FALSE(error::has_error());
 
     reset_func();
-    func->get_scope()->add_func_ret_nothing(pos);
+    func->add_func_ret_nothing(pos);
     func->inst(pos, *inst_scope, std::vector<inst::type const*>());
     ASSERT_FALSE(error::has_error());
 
     reset_func();
-    func->get_scope()->add_func_ret(pos, std::move(func->get_scope()->make_int(pos, "20110127")));
+    func->add_func_ret(pos, std::move(func->make_int(pos, "20110127")));
     func->inst(pos, *inst_scope, std::vector<inst::type const*>());
     ASSERT_FALSE(error::has_error());
 
@@ -74,20 +74,20 @@ TEST_F(FuncNCallTest, FuncWithBranchRecursion)
     util::sptr<proto::scope> sub_scope1(NULL);
     util::sref<proto::func_templ> test_func(NULL);
 
-    test_func = func->get_scope()->decl_func(pos, "test_func", std::vector<std::string>());
-    sub_scope0 = std::move(test_func->get_scope()->create_branch_scope());
-    sub_scope1 = std::move(test_func->get_scope()->create_branch_scope());
+    test_func = func->decl_func(pos, "test_func", std::vector<std::string>());
+    sub_scope0 = std::move(test_func->create_branch_scope());
+    sub_scope1 = std::move(test_func->create_branch_scope());
 
     sub_scope0->add_func_ret(pos, std::move(
-                sub_scope0->make_call(pos
-                                    , "test_func"
-                                    , std::move(std::vector<util::sptr<proto::expr_base const>>()))));
+                        sub_scope0->make_call(pos
+                                            , "test_func"
+                                            , std::move(std::vector<util::sptr<proto::expr_base const>>()))));
     ASSERT_FALSE(error::has_error());
-    test_func->get_scope()->add_branch(pos
-                                     , std::move(test_func->get_scope()->make_int(pos, "1"))
-                                     , std::move(sub_scope0)
-                                     , std::move(sub_scope1));
-    test_func->get_scope()->add_func_ret(pos, std::move(test_func->get_scope()->make_int(pos, "1")));
+    test_func->add_branch(pos
+                        , std::move(test_func->make_int(pos, "1"))
+                        , std::move(sub_scope0)
+                        , std::move(sub_scope1));
+    test_func->add_func_ret(pos, std::move(test_func->make_int(pos, "1")));
 
     test_func->inst(pos, *inst_scope, std::vector<inst::type const*>());
     ASSERT_FALSE(error::has_error());
@@ -118,16 +118,16 @@ TEST_F(FuncNCallTest, CouldNotResolve)
     util::sptr<proto::scope> sub_scope1(NULL);
     util::sref<proto::func_templ> test_func(NULL);
 
-    test_func = func->get_scope()->decl_func(pos, "test_func", std::vector<std::string>());
-    sub_scope0 = std::move(test_func->get_scope()->create_branch_scope());
-    sub_scope1 = std::move(test_func->get_scope()->create_branch_scope());
+    test_func = func->decl_func(pos, "test_func", std::vector<std::string>());
+    sub_scope0 = std::move(test_func->create_branch_scope());
+    sub_scope1 = std::move(test_func->create_branch_scope());
 
-    test_func->get_scope()->add_branch(pos
-                                     , std::move(test_func->get_scope()->make_int(pos, "1"))
-                                     , std::move(sub_scope0)
-                                     , std::move(sub_scope1));
-    test_func->get_scope()->add_func_ret(pos, std::move(
-            test_func->get_scope()->make_call(pos
+    test_func->add_branch(pos
+                        , std::move(test_func->make_int(pos, "1"))
+                        , std::move(sub_scope0)
+                        , std::move(sub_scope1));
+    test_func->add_func_ret(pos, std::move(
+                         test_func->make_call(pos
                                             , "test_func"
                                             , std::move(std::vector<util::sptr<proto::expr_base const>>()))));
     ASSERT_FALSE(error::has_error());

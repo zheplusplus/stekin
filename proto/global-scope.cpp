@@ -58,7 +58,7 @@ namespace {
     {
         util::sref<proto::func_templ> func_write
                     = decl_func(misc::pos_type(0), "write", std::vector<std::string>({ "value to write" }));
-        func_write->get_scope()->add_custom_statement(std::move(util::mkptr(new write_stmt_proto)));
+        func_write->add_custom_statement(std::move(util::mkptr(new write_stmt_proto)));
     }
 
 }

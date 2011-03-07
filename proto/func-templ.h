@@ -13,7 +13,9 @@
 
 namespace proto {
 
-    struct func_templ {
+    struct func_templ
+        : public scope
+    {
         util::sref<inst::function> inst(misc::pos_type const& pos
                                       , util::sref<inst::scope> ext_scope
                                       , std::vector<inst::type const*> const& arg_types);
@@ -32,13 +34,10 @@ namespace proto {
         misc::pos_type const pos;
         std::string const name;
         std::vector<std::string> const param_names;
-
-        util::sref<scope> get_scope();
     private:
         void _fill_param_names();
 
         symbol_table _symbols;
-        func_scope _body_scope;
     private:
         struct instance_info {
             std::map<std::string, inst::variable const> const ext_vars;

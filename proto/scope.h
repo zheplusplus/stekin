@@ -88,19 +88,11 @@ namespace proto {
         void _status_changed_by_return(termination_status status);
     };
 
-    struct func_scope
+    struct sub_scope
         : public scope
     {
-        explicit func_scope(util::sref<symbol_table> symbols)
-            : scope(symbols)
-        {}
-    };
-
-    struct sub_scope
-        : public func_scope
-    {
         explicit sub_scope(util::sref<symbol_table> symbols)
-            : func_scope(symbols)
+            : scope(symbols)
         {}
     public:
         void def_var(misc::pos_type const& pos

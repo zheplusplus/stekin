@@ -13,10 +13,10 @@ using namespace proto;
 func_templ::func_templ(misc::pos_type const& ps
                      , std::string const& name
                      , std::vector<std::string> const& params)
-    : pos(ps)
+    : scope(util::mkref(_symbols))
+    , pos(ps)
     , name(name)
     , param_names(params)
-    , _body_scope(util::mkref(_symbols))
 {
     _fill_param_names();
 }
@@ -25,21 +25,21 @@ func_templ::func_templ(misc::pos_type const& ps
                      , std::string const& name
                      , std::vector<std::string> const& params
                      , util::sref<symbol_table const> container_symbols)
-    : pos(ps)
+    : scope(util::mkref(_symbols))
+    , pos(ps)
     , name(name)
     , param_names(params)
     , _symbols(container_symbols)
-    , _body_scope(util::mkref(_symbols))
 {
     _fill_param_names();
 }
 
 func_templ::func_templ(func_templ&& rhs)
-    : pos(rhs.pos)
+    : scope(util::mkref(_symbols))
+    , pos(rhs.pos)
     , name(rhs.name)
     , param_names(rhs.param_names)
     , _symbols(std::move(rhs._symbols))
-    , _body_scope(util::mkref(_symbols))
 {}
 
 void func_templ::_fill_param_names()
@@ -50,11 +50,6 @@ void func_templ::_fill_param_names()
                   {
                       _symbols.def_var(pos, param_name);
                   });
-}
-
-util::sref<scope> func_templ::get_scope()
-{
-    return util::mkref(_body_scope);
 }
 
 util::sref<inst::function> func_templ::inst(misc::pos_type const& pos
@@ -82,12 +77,12 @@ util::sref<inst::function> func_templ::inst(misc::pos_type const& pos
                 = inst::function::create_instance(ext_scope->level()
                                                 , args
                                                 , ext_vars
-                                                , RETURN_VOID == _body_scope.termination()
-                                               || PARTIAL_RETURN_VOID == _body_scope.termination()
-                                               || NO_EXPLICIT_TERMINATION == _body_scope.termination());
+                                                , RETURN_VOID == termination()
+                                               || PARTIAL_RETURN_VOID == termination()
+                                               || NO_EXPLICIT_TERMINATION == termination());
     _instance_cache.insert(std::make_pair(instance_info(ext_vars, arg_types), instance));
 
-    block_mediate body_mediate(_body_scope.get_stmts(), instance);
+    block_mediate body_mediate(get_stmts(), instance);
     instance->inst_next_path();
     instance->add_stmt(std::move(body_mediate.inst(instance)));
     return instance;
