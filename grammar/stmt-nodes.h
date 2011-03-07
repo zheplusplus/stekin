@@ -5,7 +5,7 @@
 #include <list>
 
 #include "node-base.h"
-#include "../proto/func-templ.h"
+#include "../proto/function.h"
 #include "../util/pointer.h"
 
 namespace grammar {
@@ -110,8 +110,8 @@ namespace grammar {
             , body(std::move(func_body))
         {}
 
-        util::sref<proto::func_templ> declare(util::sref<proto::scope> scope) const;
-        void compile(util::sref<proto::func_templ> templ) const;
+        util::sref<proto::function> declare(util::sref<proto::scope> scope) const;
+        void compile(util::sref<proto::function> func) const;
 
         misc::pos_type const pos;
 

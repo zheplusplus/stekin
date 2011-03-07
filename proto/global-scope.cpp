@@ -1,7 +1,7 @@
 #include "scope.h"
 #include "expr-nodes.h"
 #include "stmt-nodes.h"
-#include "func-templ.h"
+#include "function.h"
 #include "symbol-table.h"
 #include "inst-mediates.h"
 #include "../instance/node-base.h"
@@ -56,7 +56,7 @@ namespace {
     proto_global_scope::proto_global_scope()
         : proto::scope(util::mkref(_symbols))
     {
-        util::sref<proto::func_templ> func_write
+        util::sref<proto::function> func_write
                     = decl_func(misc::pos_type(0), "write", std::vector<std::string>({ "value to write" }));
         func_write->add_custom_statement(std::move(util::mkptr(new write_stmt_proto)));
     }

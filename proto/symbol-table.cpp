@@ -1,5 +1,5 @@
 #include "symbol-table.h"
-#include "func-templ.h"
+#include "function.h"
 #include "../report/errors.h"
 
 using namespace proto;
@@ -23,28 +23,28 @@ void symbol_table::def_var(misc::pos_type const& pos, std::string const& name)
     }
 }
 
-util::sref<func_templ> symbol_table::def_func(misc::pos_type const& pos
-                                            , std::string const& name
-                                            , std::vector<std::string> const& params)
+util::sref<function> symbol_table::def_func(misc::pos_type const& pos
+                                          , std::string const& name
+                                          , std::vector<std::string> const& params)
 {
-    _func_entities.push_back(std::move(func_templ(pos, name, params, util::mkref(*this))));
+    _func_entities.push_back(std::move(function(pos, name, params, util::mkref(*this))));
     auto insert_result = _funcs.insert(std::make_pair(func_signature(name, params.size())
                                                     , util::mkref(_func_entities.back())));
     if (!insert_result.second) {
         error::func_already_in_local(insert_result.first->second->pos, pos, name, params.size());
     }
-    util::sref<func_templ> func_in_external = _query_func_in_external_or_null_if_nonexist(name, params.size());
+    util::sref<function> func_in_external = _query_func_in_external_or_null_if_nonexist(name, params.size());
     if (bool(func_in_external)) {
         error::func_shadow_external(func_in_external->pos, pos, name, params.size());
     }
     return insert_result.first->second;
 }
 
-util::sref<func_templ> symbol_table::query_func(misc::pos_type const& pos
-                                              , std::string const& name
-                                              , int param_count) const
+util::sref<function> symbol_table::query_func(misc::pos_type const& pos
+                                            , std::string const& name
+                                            , int param_count) const
 {
-    util::sref<func_templ> func = _query_func_or_null_if_nonexist(name, param_count);
+    util::sref<function> func = _query_func_or_null_if_nonexist(name, param_count);
     if (bool(func)) {
         return func;
     }
@@ -66,7 +66,7 @@ std::map<std::string, inst::variable const>
     return result;
 }
 
-util::sref<func_templ>
+util::sref<function>
     symbol_table::_query_func_or_null_if_nonexist(std::string const& name, int param_count) const
 {
     auto find_result = _funcs.find(func_signature(name, param_count));
@@ -76,12 +76,12 @@ util::sref<func_templ>
     return _query_func_in_external_or_null_if_nonexist(name, param_count);
 }
 
-util::sref<func_templ>
+util::sref<function>
     symbol_table::_query_func_in_external_or_null_if_nonexist(std::string const& name, int param_count) const
 {
     return bool(_external_or_null_on_global)
                  ? _external_or_null_on_global->_query_func_or_null_if_nonexist(name, param_count)
-                 : util::sref<func_templ>(0);
+                 : util::sref<function>(0);
 }
 
-func_templ symbol_table::_fake_prototype(misc::pos_type(0), "", std::vector<std::string>());
+function symbol_table::_fake_prototype(misc::pos_type(0), "", std::vector<std::string>());

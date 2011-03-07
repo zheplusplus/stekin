@@ -13,23 +13,23 @@
 
 namespace proto {
 
-    struct func_templ
+    struct function
         : public scope
     {
         util::sref<inst::function> inst(misc::pos_type const& pos
                                       , util::sref<inst::scope> ext_scope
                                       , std::vector<inst::type const*> const& arg_types);
 
-        func_templ(misc::pos_type const& ps, std::string const& name, std::vector<std::string> const& params);
+        function(misc::pos_type const& ps, std::string const& name, std::vector<std::string> const& params);
 
-        func_templ(misc::pos_type const& ps
-                 , std::string const& func_name
-                 , std::vector<std::string> const& params
-                 , util::sref<symbol_table const> container_symbols);
+        function(misc::pos_type const& ps
+               , std::string const& func_name
+               , std::vector<std::string> const& params
+               , util::sref<symbol_table const> container_symbols);
 
-        func_templ(func_templ&& rhs);
+        function(function&& rhs);
 
-        func_templ(func_templ const&) = delete;
+        function(function const&) = delete;
 
         misc::pos_type const pos;
         std::string const name;

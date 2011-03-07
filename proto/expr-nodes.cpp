@@ -1,7 +1,7 @@
 #include <algorithm>
 
 #include "expr-nodes.h"
-#include "func-templ.h"
+#include "function.h"
 #include "../instance/expr-nodes.h"
 #include "../instance/type.h"
 

@@ -16,7 +16,7 @@ void block::add_func(util::sptr<struct func_def const> func_def)
 
 void block::compile(util::sref<proto::scope> scope) const 
 {
-    std::vector<util::sref<proto::func_templ>> func_decls;
+    std::vector<util::sref<proto::function>> func_decls;
     func_decls.reserve(_func_defs.size());
     std::for_each(_func_defs.begin()
                 , _func_defs.end()
@@ -25,12 +25,12 @@ void block::compile(util::sref<proto::scope> scope) const
                       func_decls.push_back(def->declare(scope));
                   });
 
-    std::vector<util::sref<proto::func_templ>>::iterator decl_templ = func_decls.begin();
+    std::vector<util::sref<proto::function>>::iterator func_decl = func_decls.begin();
     std::for_each(_func_defs.begin()
                 , _func_defs.end()
                 , [&](util::sptr<func_def const> const& def)
                   {
-                      def->compile(*decl_templ++);
+                      def->compile(*func_decl++);
                   });
 
     std::for_each(_flow.begin()
@@ -73,12 +73,12 @@ void func_ret_nothing::compile(util::sref<proto::scope> scope) const
     scope->add_func_ret_nothing(pos);
 }
 
-util::sref<proto::func_templ> func_def::declare(util::sref<proto::scope> scope) const
+util::sref<proto::function> func_def::declare(util::sref<proto::scope> scope) const
 {
     return scope->decl_func(pos, name, param_names);
 }
 
-void func_def::compile(util::sref<proto::func_templ> templ) const
+void func_def::compile(util::sref<proto::function> func) const
 {
-    body.compile(templ);
+    body.compile(func);
 }

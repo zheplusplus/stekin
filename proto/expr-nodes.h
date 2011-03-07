@@ -11,7 +11,7 @@
 
 namespace proto {
 
-    struct func_templ;
+    struct function;
 
     struct bool_literal
         : public expr_base
@@ -72,7 +72,7 @@ namespace proto {
     struct call
         : public expr_base
     {
-        call(misc::pos_type const& ps, util::sref<func_templ> f, std::vector<util::sptr<expr_base const>> a)
+        call(misc::pos_type const& ps, util::sref<function> f, std::vector<util::sptr<expr_base const>> a)
             : pos(ps)
             , func(f)
             , args(std::move(a))
@@ -81,7 +81,7 @@ namespace proto {
         util::sptr<inst::expr_base const> inst(util::sref<inst::scope> scope) const;
 
         misc::pos_type const pos;
-        util::sref<func_templ> const func;
+        util::sref<function> const func;
         std::vector<util::sptr<expr_base const>> const args;
     };
 

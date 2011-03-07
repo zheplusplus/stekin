@@ -203,7 +203,7 @@ TEST_F(StmtNodesTest, FuncDefs)
     misc::pos_type pos(8);
     util::sptr<proto::scope> scope(std::move(proto::scope::global_scope()));
     grammar::func_def func0(pos, "func0", std::vector<std::string>(), std::move(grammar::block()));
-    util::sref<proto::func_templ> templ0 = func0.declare(*scope);
+    util::sref<proto::function> templ0 = func0.declare(*scope);
     func0.compile(templ0);
 
     grammar::block body;
@@ -215,7 +215,7 @@ TEST_F(StmtNodesTest, FuncDefs)
                           , "func1"
                           , std::vector<std::string>({ "Konata", "Kagami", "Tsukasa", "Miyuki" })
                           , std::move(body));
-    util::sref<proto::func_templ> templ1 = func1.declare(*scope);
+    util::sref<proto::function> templ1 = func1.declare(*scope);
     func1.compile(templ1);
 
     data_tree::expect_one()
@@ -261,7 +261,7 @@ TEST_F(StmtNodesTest, Mixed)
                          , "funco"
                          , std::vector<std::string>({ "Suzumiya", "Koizumi", "Nagato", "Asahina" })
                          , std::move(body));
-    util::sref<proto::func_templ> templ = func.declare(*scope);
+    util::sref<proto::function> templ = func.declare(*scope);
     func.compile(templ);
 
     data_tree::expect_one()

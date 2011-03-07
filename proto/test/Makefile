@@ -10,7 +10,7 @@ include test/Makefile
 
 WORK_OBJ=$(WORKDIR)/scope.o \
          $(WORKDIR)/block.o \
-         $(WORKDIR)/func-templ.o \
+         $(WORKDIR)/function.o \
          $(WORKDIR)/expr-nodes.o \
          $(WORKDIR)/stmt-nodes.o \
          $(WORKDIR)/inst-mediates.o \

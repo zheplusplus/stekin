@@ -12,7 +12,7 @@
 namespace proto {
 
     struct symbol_table;
-    struct func_templ;
+    struct function;
 
     enum termination_status {
         NO_EXPLICIT_TERMINATION,
@@ -69,9 +69,9 @@ namespace proto {
 
         void add_custom_statement(util::sptr<stmt_base const> stmt);
     public:
-        util::sref<func_templ> decl_func(misc::pos_type const& pos
-                                       , std::string const& name
-                                       , std::vector<std::string> const& param_names);
+        util::sref<function> decl_func(misc::pos_type const& pos
+                                     , std::string const& name
+                                     , std::vector<std::string> const& param_names);
     public:
         util::sref<symbol_table> get_symbols() const;
         std::list<util::sptr<stmt_base const>> const& get_stmts() const;

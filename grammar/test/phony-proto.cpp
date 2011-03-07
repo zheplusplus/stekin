@@ -4,7 +4,7 @@
 
 #include "test-common.h"
 #include "../../proto/scope.h"
-#include "../../proto/func-templ.h"
+#include "../../proto/function.h"
 
 using namespace test;
 using namespace proto;
@@ -26,7 +26,7 @@ namespace {
         }
     };
 
-    std::list<util::sptr<func_templ>> func_entities;
+    std::list<util::sptr<function>> func_entities;
 
     util::sptr<expr_base const> nullptr()
     {
@@ -53,7 +53,7 @@ namespace {
     };
 
     std::vector<util::sptr<scope>> func_scope_entities;
-    std::map<func_templ const*, std::vector<util::sptr<scope>>::size_type> map_func_to_index;
+    std::map<function const*, std::vector<util::sptr<scope>>::size_type> map_func_to_index;
 
 }
 
@@ -168,9 +168,9 @@ util::sptr<scope> scope::create_branch_scope()
     return std::move(mkscope());
 }
 
-util::sref<func_templ> scope::decl_func(misc::pos_type const& pos
-                                      , std::string const& name
-                                      , std::vector<std::string> const& param_names)
+util::sref<function> scope::decl_func(misc::pos_type const& pos
+                                    , std::string const& name
+                                    , std::vector<std::string> const& param_names)
 {
     data_tree::actual_one()(pos, FUNC_DECL, name);
     std::for_each(param_names.begin()
@@ -179,7 +179,7 @@ util::sref<func_templ> scope::decl_func(misc::pos_type const& pos
                   {
                       data_tree::actual_one()(pos, PARAMETER, param);
                   });
-    func_entities.push_back(std::move(util::mkmptr(new func_templ(pos, name, param_names))));
+    func_entities.push_back(std::move(util::mkmptr(new function(pos, name, param_names))));
     return *func_entities.back();
 }
 
@@ -193,7 +193,7 @@ util::sptr<scope> scope::global_scope()
     return std::move(mkscope());
 }
 
-func_templ::func_templ(misc::pos_type const& p, std::string const&, std::vector<std::string> const&)
+function::function(misc::pos_type const& p, std::string const&, std::vector<std::string> const&)
     : scope(nullsymbols())
     , pos(p)
 {

@@ -13,7 +13,7 @@
 
 namespace proto {
 
-    struct func_templ;
+    struct function;
 
     struct func_signature {
         std::string const name;
@@ -51,28 +51,28 @@ namespace proto {
 
         void ref_var(misc::pos_type const& pos, std::string const& name);
         void def_var(misc::pos_type const& pos, std::string const& name);
-        util::sref<func_templ> def_func(misc::pos_type const& pos
+        util::sref<function> def_func(misc::pos_type const& pos
+                                    , std::string const& name
+                                    , std::vector<std::string> const& param_names);
+        util::sref<function> query_func(misc::pos_type const& pos
                                       , std::string const& name
-                                      , std::vector<std::string> const& param_names);
-        util::sref<func_templ> query_func(misc::pos_type const& pos
-                                        , std::string const& name
-                                        , int param_count) const;
+                                      , int param_count) const;
         std::map<std::string, inst::variable const>
             bind_external_var_refs(misc::pos_type const& pos, util::sref<inst::scope const> ext_scope) const;
     private:
         std::map<std::string, std::list<misc::pos_type>> _external_var_refs;
         std::map<std::string, misc::pos_type> _var_defs;
-        std::map<func_signature, util::sref<func_templ> const> _funcs;
-        std::list<func_templ> _func_entities;
+        std::map<func_signature, util::sref<function> const> _funcs;
+        std::list<function> _func_entities;
         util::sref<symbol_table const> const _external_or_null_on_global;
 
-        util::sref<func_templ> _query_func_or_null_if_nonexist(std::string const& name, int param_count) const;
-        util::sref<func_templ> _query_func_in_external_or_null_if_nonexist(std::string const& name
-                                                                         , int param_count) const;
+        util::sref<function> _query_func_or_null_if_nonexist(std::string const& name, int param_count) const;
+        util::sref<function> _query_func_in_external_or_null_if_nonexist(std::string const& name
+                                                                       , int param_count) const;
 
         symbol_table(symbol_table const&) = delete;
 
-        static func_templ _fake_prototype;
+        static function _fake_prototype;
     };
 
 }

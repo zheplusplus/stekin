@@ -3,7 +3,7 @@
 #include "test-common.h"
 #include "../scope.h"
 #include "../symbol-table.h"
-#include "../func-templ.h"
+#include "../function.h"
 #include "../../test/phony-errors.h"
 
 using namespace test;

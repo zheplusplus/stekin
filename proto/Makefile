@@ -9,7 +9,7 @@ proto:symbol-table.d \
       stmt-nodes.d \
       expr-nodes.d \
       inst-mediates.d \
-      func-templ.d
+      function.d
 
 clean:
 	rm -f $(WORKDIR)/*.o

@@ -1,7 +1,7 @@
 #include "scope.h"
 #include "expr-nodes.h"
 #include "stmt-nodes.h"
-#include "func-templ.h"
+#include "function.h"
 #include "../report/errors.h"
 
 using namespace proto;
@@ -109,9 +109,9 @@ util::sptr<scope> scope::create_branch_scope()
     return std::move(util::mkmptr(new sub_scope(_symbols)));
 }
 
-util::sref<func_templ> scope::decl_func(misc::pos_type const& pos
-                                      , std::string const& name
-                                      , std::vector<std::string> const& param_names)
+util::sref<function> scope::decl_func(misc::pos_type const& pos
+                                    , std::string const& name
+                                    , std::vector<std::string> const& param_names)
 {
     return _symbols->def_func(pos, name, param_names);
 }

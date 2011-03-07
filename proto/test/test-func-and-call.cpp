@@ -3,7 +3,7 @@
 #include "test-common.h"
 #include "../scope.h"
 #include "../symbol-table.h"
-#include "../func-templ.h"
+#include "../function.h"
 #include "../../util/string.h"
 #include "../../test/phony-errors.h"
 
@@ -22,10 +22,10 @@ struct FuncNCallTest
     void reset_func()
     {
         misc::pos_type pos(65535);
-        func.reset(new proto::func_templ(pos, "f", std::vector<std::string>()));
+        func.reset(new proto::function(pos, "f", std::vector<std::string>()));
     }
 
-    util::sptr<proto::func_templ> func;
+    util::sptr<proto::function> func;
     util::sptr<inst::scope> inst_scope;
 };
 
@@ -72,7 +72,7 @@ TEST_F(FuncNCallTest, FuncWithBranchRecursion)
     misc::pos_type pos(2);
     util::sptr<proto::scope> sub_scope0(NULL);
     util::sptr<proto::scope> sub_scope1(NULL);
-    util::sref<proto::func_templ> test_func(NULL);
+    util::sref<proto::function> test_func(NULL);
 
     test_func = func->decl_func(pos, "test_func", std::vector<std::string>());
     sub_scope0 = std::move(test_func->create_branch_scope());
@@ -116,7 +116,7 @@ TEST_F(FuncNCallTest, CouldNotResolve)
     misc::pos_type pos(3);
     util::sptr<proto::scope> sub_scope0(NULL);
     util::sptr<proto::scope> sub_scope1(NULL);
-    util::sref<proto::func_templ> test_func(NULL);
+    util::sref<proto::function> test_func(NULL);
 
     test_func = func->decl_func(pos, "test_func", std::vector<std::string>());
     sub_scope0 = std::move(test_func->create_branch_scope());
