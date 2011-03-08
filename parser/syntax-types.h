@@ -36,14 +36,9 @@ namespace parser {
             return this;
         }
 
-        std::list<std::string>::const_iterator begin() const
+        std::vector<std::string> get() const
         {
-            return _names.begin();
-        }
-
-        std::list<std::string>::const_iterator end() const
-        {
-            return _names.end();
+            return std::vector<std::string>(_names.begin(), _names.end());
         }
     private:
         std::list<std::string> _names;
