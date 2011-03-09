@@ -92,10 +92,10 @@ void scope::add_branch(misc::pos_type const& pos
 {
     _status_changed_by_sub_scope_status(consequence->_status);
     _status_changed_by_sub_scope_status(alternative->_status);
-    util::sptr<block const> consequence_block(new block(std::move(consequence->_block)));
-    util::sptr<block const> alternative_block(new block(std::move(alternative->_block)));
-    _block.add_stmt(std::move(util::mkptr(
-          new branch(pos, std::move(predicate), std::move(consequence_block), std::move(alternative_block)))));
+    _block.add_stmt(std::move(util::mkptr(new branch(pos
+                                                   , std::move(predicate)
+                                                   , std::move(consequence->_block)
+                                                   , std::move(alternative->_block)))));
 }
 
 void scope::def_var(misc::pos_type const& pos, std::string const& name, util::sptr<expr_base const> init)

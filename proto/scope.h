@@ -93,9 +93,7 @@ namespace proto {
             : scope(symbols)
         {}
     public:
-        void def_var(misc::pos_type const& pos
-                   , std::string const& name
-                   , util::sptr<expr_base const> init);
+        void def_var(misc::pos_type const& pos, std::string const& name, util::sptr<expr_base const> init);
     };
 
 }
