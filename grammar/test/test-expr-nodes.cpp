@@ -3,6 +3,8 @@
 
 #include "test-common.h"
 #include "../expr-nodes.h"
+#include "../../proto/function.h"
+#include "../../proto/global-scope.h"
 #include "../../test/phony-errors.h"
 
 using namespace test;
@@ -12,7 +14,7 @@ typedef grammar_test ExprNodesTest;
 TEST_F(ExprNodesTest, Literals)
 {
     misc::pos_type pos(1);
-    util::sptr<proto::scope> scope(std::move(proto::scope::global_scope()));
+    util::sptr<proto::scope> scope(std::move(new proto::global_scope));
     grammar::int_literal int0(pos, "20110116");
     int0.compile(*scope);
     grammar::float_literal float0(pos, "19.50");
@@ -40,7 +42,7 @@ TEST_F(ExprNodesTest, Literals)
 TEST_F(ExprNodesTest, Reference)
 {
     misc::pos_type pos(1);
-    util::sptr<proto::scope> scope(std::move(proto::scope::global_scope()));
+    util::sptr<proto::scope> scope(std::move(new proto::global_scope));
     grammar::reference ref0(pos, "a20110116");
     ref0.compile(*scope);
     grammar::reference ref1(pos, "b1950");
@@ -56,7 +58,7 @@ TEST_F(ExprNodesTest, Reference)
 TEST_F(ExprNodesTest, Operations)
 {
     misc::pos_type pos(2);
-    util::sptr<proto::scope> scope(std::move(proto::scope::global_scope()));
+    util::sptr<proto::scope> scope(std::move(new proto::global_scope));
     grammar::binary_op binary0(pos
                              , new grammar::int_literal(pos, "1")
                              , "+"
@@ -114,7 +116,7 @@ TEST_F(ExprNodesTest, Operations)
 TEST_F(ExprNodesTest, Calls)
 {
     misc::pos_type pos(3);
-    util::sptr<proto::scope> scope(std::move(proto::scope::global_scope()));
+    util::sptr<proto::scope> scope(std::move(new proto::global_scope));
 
     std::list<util::sptr<grammar::expr_base const>> params;
     grammar::call call0(pos, "fib", std::move(params));

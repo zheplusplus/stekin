@@ -1,8 +1,6 @@
 #include "scope.h"
 #include "expr-nodes.h"
 #include "stmt-nodes.h"
-#include "function.h"
-#include "../report/errors.h"
 
 using namespace proto;
 
@@ -19,19 +17,6 @@ util::sptr<expr_base const> scope::make_int(misc::pos_type const& pos, std::stri
 util::sptr<expr_base const> scope::make_float(misc::pos_type const& pos, std::string const& value) const
 {
     return std::move(util::mkptr(new float_literal(pos, value)));
-}
-
-util::sptr<expr_base const> scope::make_ref(misc::pos_type const& pos, std::string const& name) const
-{
-    _symbols->ref_var(pos, name);
-    return std::move(util::mkptr(new reference(pos, name)));
-}
-
-util::sptr<expr_base const> scope::make_call(misc::pos_type const& pos
-                                           , std::string const& name
-                                           , std::vector<util::sptr<expr_base const>> args) const
-{
-    return std::move(util::mkptr(new call(pos, _symbols->query_func(pos, name, args.size()), std::move(args))));
 }
 
 util::sptr<expr_base const> scope::make_binary(misc::pos_type const& pos
@@ -98,22 +83,9 @@ void scope::add_branch(misc::pos_type const& pos
                                                    , std::move(alternative->_block)))));
 }
 
-void scope::def_var(misc::pos_type const& pos, std::string const& name, util::sptr<expr_base const> init)
+void scope::add_custom_statement(util::sptr<stmt_base const> stmt)
 {
-    _symbols->def_var(pos, name);
-    _block.add_stmt(std::move(util::mkptr(new var_def(pos, name, std::move(init)))));
-}
-
-util::sptr<scope> scope::create_branch_scope()
-{
-    return std::move(util::mkmptr(new sub_scope(_symbols)));
-}
-
-util::sref<function> scope::decl_func(misc::pos_type const& pos
-                                    , std::string const& name
-                                    , std::vector<std::string> const& param_names)
-{
-    return _symbols->def_func(pos, name, param_names);
+    _block.add_stmt(std::move(stmt));
 }
 
 termination_status scope::termination() const
@@ -193,9 +165,4 @@ void scope::_status_changed_by_return(termination_status status)
 std::list<util::sptr<stmt_base const>> const& scope::get_stmts() const
 {
     return _block.get_stmts();
-}
-
-void sub_scope::def_var(misc::pos_type const& pos, std::string const& name, util::sptr<expr_base const>)
-{
-    error::forbid_def_var(pos, name);
 }

@@ -45,7 +45,10 @@ namespace proto {
 
         symbol_table(symbol_table&& rhs)
             : level(rhs.level)
-            , _var_defs(std::move(rhs._var_defs))
+            , _external_var_refs(rhs._external_var_refs)
+            , _var_defs(rhs._var_defs)
+            , _funcs(rhs._funcs)
+            , _func_entities(std::move(rhs._func_entities))
             , _external_or_null_on_global(rhs._external_or_null_on_global)
         {}
 
@@ -69,8 +72,6 @@ namespace proto {
         util::sref<function> _query_func_or_null_if_nonexist(std::string const& name, int param_count) const;
         util::sref<function> _query_func_in_external_or_null_if_nonexist(std::string const& name
                                                                        , int param_count) const;
-
-        symbol_table(symbol_table const&) = delete;
 
         static function _fake_prototype;
     };

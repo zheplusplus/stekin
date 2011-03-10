@@ -3,7 +3,8 @@
 #include <map>
 
 #include "test-common.h"
-#include "../../proto/scope.h"
+#include "../../proto/general-scope.h"
+#include "../../proto/global-scope.h"
 #include "../../proto/function.h"
 
 using namespace test;
@@ -16,16 +17,6 @@ namespace {
         return util::sref<symbol_table>(0);
     }
 
-    struct phony_scope
-        : public scope
-    {
-        phony_scope()
-            : scope(nullsymbols())
-        {
-            data_tree::actual_one()(SCOPE);
-        }
-    };
-
     std::list<util::sptr<function>> func_entities;
 
     util::sptr<expr_base const> nullptr()
@@ -35,7 +26,7 @@ namespace {
 
     util::sptr<scope> mkscope()
     {
-        return std::move(util::mkmptr(new phony_scope));
+        return std::move(util::mkmptr(new global_scope));
     }
 
     struct dummy_stmt
@@ -53,7 +44,7 @@ namespace {
     };
 
     std::vector<util::sptr<scope>> func_scope_entities;
-    std::map<function const*, std::vector<util::sptr<scope>>::size_type> map_func_to_index;
+    symbol_table phony_symbols;
 
 }
 
@@ -82,15 +73,15 @@ util::sptr<expr_base const> scope::make_float(misc::pos_type const& pos, std::st
     return std::move(nullptr());
 }
 
-util::sptr<expr_base const> scope::make_ref(misc::pos_type const& pos, std::string const& var_name) const
+util::sptr<expr_base const> general_scope::make_ref(misc::pos_type const& pos, std::string const& var_name)
 {
     data_tree::actual_one()(pos, REFERENCE, var_name);
     return std::move(nullptr());
 }
 
-util::sptr<expr_base const> scope::make_call(misc::pos_type const& pos
-                                           , std::string const& func_name
-                                           , std::vector<util::sptr<expr_base const>> args) const
+util::sptr<expr_base const> general_scope::make_call(misc::pos_type const& pos
+                                                   , std::string const& func_name
+                                                   , std::vector<util::sptr<expr_base const>> args) const
 {
     data_tree::actual_one()(pos, CALL, func_name, args.size());
     return std::move(nullptr());
@@ -158,19 +149,19 @@ void scope::add_branch(misc::pos_type const& pos
     data_tree::actual_one()(pos, BRANCH);
 }
 
-void scope::def_var(misc::pos_type const& pos, std::string const& name, util::sptr<expr_base const> init)
+void general_scope::def_var(misc::pos_type const& pos, std::string const& name, util::sptr<expr_base const> init)
 {
     data_tree::actual_one()(pos, VAR_DEF, name);
 }
 
-util::sptr<scope> scope::create_branch_scope()
+util::sptr<scope> general_scope::create_branch_scope()
 {
     return std::move(mkscope());
 }
 
-util::sref<function> scope::decl_func(misc::pos_type const& pos
-                                    , std::string const& name
-                                    , std::vector<std::string> const& param_names)
+util::sref<function> general_scope::decl_func(misc::pos_type const& pos
+                                            , std::string const& name
+                                            , std::vector<std::string> const& param_names)
 {
     data_tree::actual_one()(pos, FUNC_DECL, name);
     std::for_each(param_names.begin()
@@ -179,19 +170,23 @@ util::sref<function> scope::decl_func(misc::pos_type const& pos
                   {
                       data_tree::actual_one()(pos, PARAMETER, param);
                   });
-    func_entities.push_back(std::move(util::mkmptr(new function(pos, name, param_names))));
+    func_entities.push_back(std::move(util::mkmptr(new function(pos
+                                                              , name
+                                                              , param_names
+                                                              , util::mkref(phony_symbols)))));
     return *func_entities.back();
 }
 
-util::sptr<scope> scope::global_scope()
+global_scope::global_scope()
 {
-    return std::move(mkscope());
+    data_tree::actual_one()(SCOPE);
 }
 
-function::function(misc::pos_type const& p, std::string const&, std::vector<std::string> const&)
-    : scope(nullsymbols())
-    , pos(p)
+function::function(misc::pos_type const& p
+                 , std::string const&
+                 , std::vector<std::string> const&
+                 , util::sref<symbol_table const>)
+    : pos(p)
 {
-    map_func_to_index[this] = func_scope_entities.size();
     func_scope_entities.push_back(std::move(mkscope()));
 }

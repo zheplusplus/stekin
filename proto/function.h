@@ -5,8 +5,7 @@
 #include <map>
 
 #include "stmt-nodes.h"
-#include "symbol-table.h"
-#include "scope.h"
+#include "general-scope.h"
 #include "../instance/function.h"
 #include "../instance/type.h"
 #include "../misc/pos-type.h"
@@ -14,20 +13,23 @@
 namespace proto {
 
     struct function
-        : public scope
+        : public general_scope
     {
         util::sref<inst::function> inst(misc::pos_type const& pos
                                       , util::sref<inst::scope> ext_scope
                                       , std::vector<inst::type const*> const& arg_types);
 
-        function(misc::pos_type const& ps, std::string const& name, std::vector<std::string> const& params);
-
         function(misc::pos_type const& ps
                , std::string const& func_name
                , std::vector<std::string> const& params
-               , util::sref<symbol_table const> container_symbols);
+               , util::sref<symbol_table const> ext_symbols);
 
-        function(function&& rhs);
+        function(function&& rhs)
+            : general_scope(std::move(rhs))
+            , pos(rhs.pos)
+            , name(rhs.name)
+            , param_names(rhs.param_names)
+        {}
 
         function(function const&) = delete;
 
@@ -36,8 +38,6 @@ namespace proto {
         std::vector<std::string> const param_names;
     private:
         void _fill_param_names();
-
-        symbol_table _symbols;
     private:
         struct instance_info {
             std::map<std::string, inst::variable const> const ext_vars;

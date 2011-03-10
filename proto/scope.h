@@ -11,7 +11,6 @@
 
 namespace proto {
 
-    struct symbol_table;
     struct function;
 
     enum termination_status {
@@ -23,20 +22,15 @@ namespace proto {
     };
 
     struct scope {
-        explicit scope(util::sref<symbol_table> s)
-            : _symbols(s)
-            , _status(NO_EXPLICIT_TERMINATION)
-        {}
-
         virtual ~scope() {}
     public:
         util::sptr<expr_base const> make_bool(misc::pos_type const& pos, bool value) const;
         util::sptr<expr_base const> make_int(misc::pos_type const& pos, std::string const& value) const;
         util::sptr<expr_base const> make_float(misc::pos_type const& pos, std::string const& value) const;
-        util::sptr<expr_base const> make_ref(misc::pos_type const& pos, std::string const& var_name) const;
-        util::sptr<expr_base const> make_call(misc::pos_type const& pos
-                                            , std::string const& func_name
-                                            , std::vector<util::sptr<expr_base const>> args) const;
+        virtual util::sptr<expr_base const> make_ref(misc::pos_type const& pos, std::string const& var_name) = 0;
+        virtual util::sptr<expr_base const> make_call(misc::pos_type const& pos
+                                                    , std::string const& func_name
+                                                    , std::vector<util::sptr<expr_base const>> args) const = 0;
         util::sptr<expr_base const> make_binary(misc::pos_type const& pos
                                               , util::sptr<expr_base const> lhs
                                               , std::string const& op
@@ -56,44 +50,42 @@ namespace proto {
         virtual void add_func_ret_nothing(misc::pos_type const& pos);
         virtual void add_arith(misc::pos_type const& pos, util::sptr<expr_base const> expr);
 
-        virtual void add_branch(misc::pos_type const& pos
-                              , util::sptr<expr_base const> predicate
-                              , util::sptr<scope> consequence
-                              , util::sptr<scope> alternative);
+        void add_branch(misc::pos_type const& pos
+                      , util::sptr<expr_base const> predicate
+                      , util::sptr<scope> consequence
+                      , util::sptr<scope> alternative);
 
         virtual void def_var(misc::pos_type const& pos
                            , std::string const& name
-                           , util::sptr<expr_base const> init);
+                           , util::sptr<expr_base const> init) = 0;
     public:
-        util::sptr<scope> create_branch_scope();
+        virtual util::sptr<scope> create_branch_scope() = 0;
 
         void add_custom_statement(util::sptr<stmt_base const> stmt);
     public:
-        util::sref<function> decl_func(misc::pos_type const& pos
-                                     , std::string const& name
-                                     , std::vector<std::string> const& param_names);
+        virtual util::sref<function> decl_func(misc::pos_type const& pos
+                                             , std::string const& name
+                                             , std::vector<std::string> const& param_names) = 0;
     public:
         std::list<util::sptr<stmt_base const>> const& get_stmts() const;
         termination_status termination() const;
-    public:
-        static util::sptr<scope> global_scope();
     protected:
         block _block;
-        util::sref<symbol_table> const _symbols;
         termination_status _status;
     protected:
         void _status_changed_by_sub_scope_status(termination_status sub_status);
         void _status_changed_by_return(termination_status status);
-    };
-
-    struct sub_scope
-        : public scope
-    {
-        explicit sub_scope(util::sref<symbol_table> symbols)
-            : scope(symbols)
+    protected:
+        scope()
+            : _status(NO_EXPLICIT_TERMINATION)
         {}
-    public:
-        void def_var(misc::pos_type const& pos, std::string const& name, util::sptr<expr_base const> init);
+
+        scope(scope&& rhs)
+            : _block(std::move(rhs._block))
+            , _status(rhs._status)
+        {}
+
+        scope(scope const&) = delete;
     };
 
 }

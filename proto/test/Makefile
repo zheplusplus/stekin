@@ -9,6 +9,8 @@ include $(WORKDIR)/Makefile
 include test/Makefile
 
 WORK_OBJ=$(WORKDIR)/scope.o \
+         $(WORKDIR)/general-scope.o \
+         $(WORKDIR)/sub-scope.o \
          $(WORKDIR)/block.o \
          $(WORKDIR)/function.o \
          $(WORKDIR)/expr-nodes.o \
@@ -23,7 +25,7 @@ TEST_DEP=proto \
          test-commons \
          phony-instance.dt \
          test-common.dt \
-         test-scope.dt \
+         test-general-scope.dt \
          test-func-and-call.dt
 TEST_OBJ=$(WORK_OBJ) \
          $(UTILDIR)/string.o \
@@ -37,7 +39,7 @@ $(TESTDIR)/test-proto.out:$(TEST_DEP) \
 	$(LINK) $(TEST_LIBS) $(TEST_OBJ) \
 	        $(TESTDIR)/test-symbol-table.o \
 	        $(TESTDIR)/test-expr-nodes.o \
-	        $(TESTDIR)/test-scope.o \
+	        $(TESTDIR)/test-general-scope.o \
 	        $(TESTDIR)/test-func-and-call.o \
 	     -o $(TESTDIR)/test-proto.out
 

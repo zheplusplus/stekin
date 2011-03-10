@@ -19,8 +19,8 @@ struct ScopeTest
 
     void reset_scope()
     {
-        symbols.reset(new proto::symbol_table);
-        scope.reset(new proto::scope(*symbols));
+        ext_symbols.reset(new proto::symbol_table);
+        scope.reset(new proto::general_scope(*ext_symbols));
         inst_scope.reset(new phony_func);
     }
 
@@ -29,8 +29,8 @@ struct ScopeTest
         return std::move(scope->create_branch_scope());
     }
 
-    util::sptr<proto::symbol_table> symbols;
-    util::sptr<proto::scope> scope;
+    util::sptr<proto::symbol_table> ext_symbols;
+    util::sptr<proto::general_scope> scope;
     util::sptr<inst::scope> inst_scope;
 };
 

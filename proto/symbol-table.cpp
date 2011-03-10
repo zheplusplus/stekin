@@ -84,4 +84,8 @@ util::sref<function>
                  : util::sref<function>(0);
 }
 
-function symbol_table::_fake_prototype(misc::pos_type(0), "", std::vector<std::string>());
+static symbol_table fake_symbols;
+function symbol_table::_fake_prototype(misc::pos_type(0)
+                                     , ""
+                                     , std::vector<std::string>()
+                                     , util::mkref(fake_symbols));

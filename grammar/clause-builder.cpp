@@ -1,4 +1,5 @@
 #include "clause-builder.h"
+#include "../proto/global-scope.h"
 #include "../report/errors.h"
 
 using namespace grammar;
@@ -152,7 +153,7 @@ void clause_builder::add_else(int indent_len, misc::pos_type const& pos)
 util::sptr<proto::scope const> clause_builder::build_and_clear()
 {
     block global(std::move(_stack.pack_all()));
-    util::sptr<proto::scope> scope(std::move(proto::scope::global_scope()));
+    util::sptr<proto::scope> scope(new proto::global_scope);
     global.compile(*scope);
     return std::move(scope);
 }

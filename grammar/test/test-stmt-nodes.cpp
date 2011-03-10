@@ -4,6 +4,7 @@
 #include "test-common.h"
 #include "../stmt-nodes.h"
 #include "../expr-nodes.h"
+#include "../../proto/global-scope.h"
 #include "../../test/phony-errors.h"
 
 using namespace test;
@@ -13,7 +14,7 @@ typedef grammar_test StmtNodesTest;
 TEST_F(StmtNodesTest, Arithmetics)
 {
     misc::pos_type pos(1);
-    util::sptr<proto::scope> scope(std::move(proto::scope::global_scope()));
+    util::sptr<proto::scope> scope(std::move(new proto::global_scope));
     grammar::arithmetics arith0(pos, std::move(util::mkptr(new grammar::int_literal(pos, "1840"))));
     grammar::arithmetics arith1(pos, std::move(util::mkptr(new grammar::bool_literal(pos, false))));
     arith0.compile(*scope);
@@ -31,7 +32,7 @@ TEST_F(StmtNodesTest, Arithmetics)
 TEST_F(StmtNodesTest, VarDef)
 {
     misc::pos_type pos(2);
-    util::sptr<proto::scope> scope(std::move(proto::scope::global_scope()));
+    util::sptr<proto::scope> scope(std::move(new proto::global_scope));
     grammar::var_def def0(pos, "Shinji", std::move(util::mkptr(new grammar::float_literal(pos, "18.47"))));
     grammar::var_def def1(pos, "Asuka", std::move(util::mkptr(new grammar::reference(pos, "tsundere"))));
     def0.compile(*scope);
@@ -49,7 +50,7 @@ TEST_F(StmtNodesTest, VarDef)
 TEST_F(StmtNodesTest, Returns)
 {
     misc::pos_type pos(3);
-    util::sptr<proto::scope> scope(std::move(proto::scope::global_scope()));
+    util::sptr<proto::scope> scope(std::move(new proto::global_scope));
     grammar::func_ret ret0(pos, std::move(util::mkptr(new grammar::reference(pos, "KaworuNagisa"))));
     grammar::func_ret_nothing ret1(pos);
     ret0.compile(*scope);
@@ -66,7 +67,7 @@ TEST_F(StmtNodesTest, Returns)
 TEST_F(StmtNodesTest, Block)
 {
     misc::pos_type pos(4);
-    util::sptr<proto::scope> scope(std::move(proto::scope::global_scope()));
+    util::sptr<proto::scope> scope(std::move(new proto::global_scope));
     grammar::block block;
     block.add_stmt(std::move(
                 util::mkptr(new grammar::var_def(pos, "Misato", std::move(
@@ -85,7 +86,7 @@ TEST_F(StmtNodesTest, Block)
 TEST_F(StmtNodesTest, BlockMove)
 {
     misc::pos_type pos(5);
-    util::sptr<proto::scope> scope_a(std::move(proto::scope::global_scope()));
+    util::sptr<proto::scope> scope_a(std::move(new proto::global_scope));
     grammar::block block0;
     block0.add_stmt(std::move(
                 util::mkptr(new grammar::var_def(pos, "Akagi", std::move(
@@ -102,12 +103,12 @@ TEST_F(StmtNodesTest, BlockMove)
     data_tree::verify();
 
     grammar::block block1(std::move(block0));
-    util::sptr<proto::scope> scope_b(std::move(proto::scope::global_scope()));
+    util::sptr<proto::scope> scope_b(std::move(new proto::global_scope));
     block0.compile(*scope_b);
     data_tree::expect_one()(SCOPE);
     data_tree::verify();
 
-    util::sptr<proto::scope> scope_c(std::move(proto::scope::global_scope()));
+    util::sptr<proto::scope> scope_c(std::move(new proto::global_scope));
     block1.compile(*scope_c);
     data_tree::expect_one()
     (SCOPE)
@@ -120,7 +121,7 @@ TEST_F(StmtNodesTest, BlockMove)
 TEST_F(StmtNodesTest, Branch)
 {
     misc::pos_type pos(6);
-    util::sptr<proto::scope> scope(std::move(proto::scope::global_scope()));
+    util::sptr<proto::scope> scope(std::move(new proto::global_scope));
     grammar::branch(pos
                   , std::move(util::mkptr(new grammar::bool_literal(pos, true)))
                   , std::move(grammar::block())
@@ -201,7 +202,7 @@ TEST_F(StmtNodesTest, Branch)
 TEST_F(StmtNodesTest, FuncDefs)
 {
     misc::pos_type pos(8);
-    util::sptr<proto::scope> scope(std::move(proto::scope::global_scope()));
+    util::sptr<proto::scope> scope(std::move(new proto::global_scope));
     grammar::func_def func0(pos, "func0", std::vector<std::string>(), std::move(grammar::block()));
     util::sref<proto::function> templ0 = func0.declare(*scope);
     func0.compile(templ0);
@@ -238,7 +239,7 @@ TEST_F(StmtNodesTest, FuncDefs)
 TEST_F(StmtNodesTest, Mixed)
 {
     misc::pos_type pos(9);
-    util::sptr<proto::scope> scope(std::move(proto::scope::global_scope()));
+    util::sptr<proto::scope> scope(std::move(new proto::global_scope));
 
     grammar::block block_nested;
     block_nested.add_stmt(std::move(

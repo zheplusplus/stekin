@@ -12,35 +12,15 @@ using namespace proto;
 
 function::function(misc::pos_type const& ps
                  , std::string const& name
-                 , std::vector<std::string> const& params)
-    : scope(util::mkref(_symbols))
-    , pos(ps)
-    , name(name)
-    , param_names(params)
-{
-    _fill_param_names();
-}
-
-function::function(misc::pos_type const& ps
-                 , std::string const& name
                  , std::vector<std::string> const& params
-                 , util::sref<symbol_table const> container_symbols)
-    : scope(util::mkref(_symbols))
+                 , util::sref<symbol_table const> ext_symbols)
+    : general_scope(ext_symbols)
     , pos(ps)
     , name(name)
     , param_names(params)
-    , _symbols(container_symbols)
 {
     _fill_param_names();
 }
-
-function::function(function&& rhs)
-    : scope(util::mkref(_symbols))
-    , pos(rhs.pos)
-    , name(rhs.name)
-    , param_names(rhs.param_names)
-    , _symbols(std::move(rhs._symbols))
-{}
 
 void function::_fill_param_names()
 {

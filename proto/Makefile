@@ -5,6 +5,8 @@ include misc/mf-template.mk
 proto:symbol-table.d \
       scope.d \
       global-scope.d \
+      sub-scope.d \
+      general-scope.d \
       block.d \
       stmt-nodes.d \
       expr-nodes.d \

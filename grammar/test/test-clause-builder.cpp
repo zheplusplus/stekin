@@ -2,6 +2,7 @@
 
 #include "test-common.h"
 #include "../clause-builder.h"
+#include "../../proto/global-scope.h"
 #include "../../test/phony-errors.h"
 
 using namespace test;
@@ -12,7 +13,7 @@ TEST_F(ClauseBuilderTest, AcceptorStackNext)
 {
     misc::pos_type item_pos(1);
     misc::pos_type acc_pos(100);
-    util::sptr<proto::scope> scope(std::move(proto::scope::global_scope()));
+    util::sptr<proto::scope> scope(std::move(new proto::global_scope));
 
     grammar::acceptor_stack stack0;
     stack0.next_stmt(0, std::move(
@@ -64,7 +65,7 @@ TEST_F(ClauseBuilderTest, AcceptorStackAdd)
 {
     misc::pos_type item_pos(2);
     misc::pos_type acc_pos(100);
-    util::sptr<proto::scope> scope(std::move(proto::scope::global_scope()));
+    util::sptr<proto::scope> scope(std::move(new proto::global_scope));
 
     grammar::acceptor_stack stack0;
     stack0.next_stmt(0, std::move(
@@ -119,7 +120,7 @@ TEST_F(ClauseBuilderTest, AcceptorStackMatchElse)
     misc::pos_type item_pos(3);
     misc::pos_type acc_pos(210);
     misc::pos_type else_pos(211);
-    util::sptr<proto::scope> scope(std::move(proto::scope::global_scope()));
+    util::sptr<proto::scope> scope(std::move(new proto::global_scope));
 
     grammar::acceptor_stack stack0;
     stack0.next_stmt(0, std::move(

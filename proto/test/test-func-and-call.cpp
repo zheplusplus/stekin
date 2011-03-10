@@ -21,10 +21,12 @@ struct FuncNCallTest
 
     void reset_func()
     {
+        ext_symbols.reset(new proto::symbol_table);
         misc::pos_type pos(65535);
-        func.reset(new proto::function(pos, "f", std::vector<std::string>()));
+        func.reset(new proto::function(pos, "f", std::vector<std::string>(), *ext_symbols));
     }
 
+    util::sptr<proto::symbol_table> ext_symbols;
     util::sptr<proto::function> func;
     util::sptr<inst::scope> inst_scope;
 };

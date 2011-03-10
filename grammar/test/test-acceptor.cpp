@@ -2,6 +2,7 @@
 
 #include "test-common.h"
 #include "../acceptor.h"
+#include "../../proto/global-scope.h"
 #include "../../test/phony-errors.h"
 
 using namespace test;
@@ -49,7 +50,7 @@ TEST_F(AcceptorTest, IfAcceptor)
     misc::pos_type pos_head(100);
     misc::pos_type pos_else(101);
     test_acceptor receiver;
-    util::sptr<proto::scope> scope(std::move(proto::scope::global_scope()));
+    util::sptr<proto::scope> scope(std::move(new proto::global_scope));
 
     grammar::if_acceptor acceptor_a(pos_head, std::move(util::mkptr(new grammar::int_literal(pos_head, "0"))));
     acceptor_a.accept_stmt(std::move(util::mkptr(new grammar::func_ret_nothing(pos))));
@@ -176,7 +177,7 @@ TEST_F(AcceptorTest, IfNotAcceptor)
                             util::mkptr(new grammar::reference(pos, "Marine")))))));
 
     ifnot_acc0.deliver_to(util::mkref(receiver));
-    util::sptr<proto::scope> scope(std::move(proto::scope::global_scope()));
+    util::sptr<proto::scope> scope(std::move(new proto::global_scope));
     ASSERT_TRUE(bool(receiver.stmt));
     ASSERT_FALSE(bool(receiver.func));
     receiver.compile(*scope);
@@ -230,7 +231,7 @@ TEST_F(AcceptorTest, FuncAcceptor)
     func_acc0.deliver_to(util::mkref(receiver));
     ASSERT_FALSE(bool(receiver.stmt));
     ASSERT_TRUE(bool(receiver.func));
-    util::sptr<proto::scope> scope(std::move(proto::scope::global_scope()));
+    util::sptr<proto::scope> scope(std::move(new proto::global_scope));
     receiver.compile(*scope);
 
     data_tree::expect_one()
@@ -276,7 +277,7 @@ TEST_F(AcceptorTest, FuncAccNested)
     func_acc0.deliver_to(util::mkref(receiver));
     ASSERT_FALSE(bool(receiver.stmt));
     ASSERT_TRUE(bool(receiver.func));
-    util::sptr<proto::scope> scope(std::move(proto::scope::global_scope()));
+    util::sptr<proto::scope> scope(std::move(new proto::global_scope));
     receiver.compile(*scope);
 
     data_tree::expect_one()
