@@ -3,9 +3,11 @@
 #include <map>
 
 #include "test-common.h"
+#include "../../proto/node-base.h"
 #include "../../proto/general-scope.h"
 #include "../../proto/global-scope.h"
 #include "../../proto/function.h"
+#include "../../instance/inst-mediate.h"
 
 using namespace test;
 using namespace proto;
@@ -32,7 +34,7 @@ namespace {
     struct dummy_stmt
         : public stmt_base
     {
-        util::sptr<inst::mediate_base> inst(util::sref<inst::scope> scope) const
+        util::sptr<inst::mediate_base> inst(util::sref<inst::scope>) const
         {
             return std::move(util::sptr<inst::mediate_base>(NULL));
         }
@@ -120,7 +122,7 @@ util::sptr<expr_base const> scope::make_disj(misc::pos_type const& pos
     return std::move(nullptr());
 }
 
-util::sptr<expr_base const> scope::make_nega(misc::pos_type const& pos, util::sptr<expr_base const> rhs) const
+util::sptr<expr_base const> scope::make_nega(misc::pos_type const& pos, util::sptr<expr_base const>) const
 {
     data_tree::actual_one()(pos, PRE_UNARY_OP, "!");
     return std::move(nullptr());
@@ -149,7 +151,7 @@ void scope::add_branch(misc::pos_type const& pos
     data_tree::actual_one()(pos, BRANCH);
 }
 
-void general_scope::def_var(misc::pos_type const& pos, std::string const& name, util::sptr<expr_base const> init)
+void general_scope::def_var(misc::pos_type const& pos, std::string const& name, util::sptr<expr_base const>)
 {
     data_tree::actual_one()(pos, VAR_DEF, name);
 }

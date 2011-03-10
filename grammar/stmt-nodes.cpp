@@ -1,45 +1,9 @@
-#include <algorithm>
-
 #include "stmt-nodes.h"
+#include "function.h"
+#include "../proto/node-base.h"
+#include "../proto/function.h"
 
 using namespace grammar;
-
-void block::add_stmt(util::sptr<stmt_base const> stmt)
-{
-    _flow.push_back(std::move(stmt));
-}
-
-void block::add_func(util::sptr<struct func_def const> func_def)
-{
-    _func_defs.push_back(std::move(func_def));
-}
-
-void block::compile(util::sref<proto::scope> scope) const 
-{
-    std::vector<util::sref<proto::function>> func_decls;
-    func_decls.reserve(_func_defs.size());
-    std::for_each(_func_defs.begin()
-                , _func_defs.end()
-                , [&](util::sptr<func_def const> const& def)
-                  {
-                      func_decls.push_back(def->declare(scope));
-                  });
-
-    std::vector<util::sref<proto::function>>::iterator func_decl = func_decls.begin();
-    std::for_each(_func_defs.begin()
-                , _func_defs.end()
-                , [&](util::sptr<func_def const> const& def)
-                  {
-                      def->compile(*func_decl++);
-                  });
-
-    std::for_each(_flow.begin()
-                , _flow.end()
-                , [&](util::sptr<stmt_base const> const& stmt)
-                  {
-                      stmt->compile(scope);
-                  });
-}
 
 void arithmetics::compile(util::sref<proto::scope> scope) const 
 {
@@ -71,14 +35,4 @@ void var_def::compile(util::sref<proto::scope> scope) const
 void func_ret_nothing::compile(util::sref<proto::scope> scope) const
 {
     scope->add_func_ret_nothing(pos);
-}
-
-util::sref<proto::function> func_def::declare(util::sref<proto::scope> scope) const
-{
-    return scope->decl_func(pos, name, param_names);
-}
-
-void func_def::compile(util::sref<proto::function> func) const
-{
-    body.compile(func);
 }

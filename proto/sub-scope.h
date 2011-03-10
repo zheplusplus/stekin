@@ -1,11 +1,10 @@
 #ifndef __STACKENING_PROTO_SUB_SCOPE_H__
 #define __STACKENING_PROTO_SUB_SCOPE_H__
 
+#include "fwd-decl.h"
 #include "scope.h"
 
 namespace proto {
-
-    struct symbol_table;
 
     struct sub_scope
         : public scope

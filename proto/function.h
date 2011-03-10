@@ -4,10 +4,9 @@
 #include <list>
 #include <map>
 
-#include "stmt-nodes.h"
 #include "general-scope.h"
-#include "../instance/function.h"
-#include "../instance/type.h"
+#include "../instance/fwd-decl.h"
+#include "../instance/variable.h"
 #include "../misc/pos-type.h"
 
 namespace proto {

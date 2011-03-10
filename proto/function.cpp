@@ -5,6 +5,8 @@
 #include "expr-nodes.h"
 #include "stmt-nodes.h"
 #include "inst-mediates.h"
+#include "../instance/stmt-nodes.h"
+#include "../instance/function.h"
 #include "../util/map-compare.h"
 #include "../report/errors.h"
 

@@ -1,6 +1,7 @@
 #ifndef __STACKENING_PROTO_TEST_TEST_COMMON_H__
 #define __STACKENING_PROTO_TEST_TEST_COMMON_H__
 
+#include "../../instance/node-base.h"
 #include "../../instance/type.h"
 #include "../../instance/function.h"
 #include "../../misc/pos-type.h"

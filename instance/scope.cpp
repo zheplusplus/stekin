@@ -1,3 +1,4 @@
+#include "node-base.h"
 #include "scope.h"
 #include "function.h"
 #include "variable.h"

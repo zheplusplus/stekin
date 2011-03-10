@@ -3,6 +3,7 @@
 
 #include "test-common.h"
 #include "../symbol-table.h"
+#include "../variable.h"
 #include "../../misc/platform.h"
 #include "../../misc/pos-type.h"
 #include "../../test/phony-errors.h"

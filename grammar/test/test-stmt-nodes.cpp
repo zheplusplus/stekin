@@ -4,7 +4,10 @@
 #include "test-common.h"
 #include "../stmt-nodes.h"
 #include "../expr-nodes.h"
+#include "../function.h"
+#include "../../proto/node-base.h"
 #include "../../proto/global-scope.h"
+#include "../../proto/function.h"
 #include "../../test/phony-errors.h"
 
 using namespace test;
@@ -203,7 +206,7 @@ TEST_F(StmtNodesTest, FuncDefs)
 {
     misc::pos_type pos(8);
     util::sptr<proto::scope> scope(std::move(new proto::global_scope));
-    grammar::func_def func0(pos, "func0", std::vector<std::string>(), std::move(grammar::block()));
+    grammar::function func0(pos, "func0", std::vector<std::string>(), std::move(grammar::block()));
     util::sref<proto::function> templ0 = func0.declare(*scope);
     func0.compile(templ0);
 
@@ -212,7 +215,7 @@ TEST_F(StmtNodesTest, FuncDefs)
                 util::mkptr(new grammar::arithmetics(pos, std::move(
                             util::mkptr(new grammar::reference(pos, "Kuroi")))))));
     body.add_stmt(std::move(util::mkptr(new grammar::func_ret_nothing(pos))));
-    grammar::func_def func1(pos
+    grammar::function func1(pos
                           , "func1"
                           , std::vector<std::string>({ "Konata", "Kagami", "Tsukasa", "Miyuki" })
                           , std::move(body));
@@ -245,10 +248,10 @@ TEST_F(StmtNodesTest, Mixed)
     block_nested.add_stmt(std::move(
                 util::mkptr(new grammar::arithmetics(pos, std::move(
                             util::mkptr(new grammar::int_literal(pos, "9")))))));
-    util::sptr<grammar::func_def> func_nested0(
-            new grammar::func_def(pos, "funcn", std::vector<std::string>({ "SOS" }), std::move(block_nested)));
-    util::sptr<grammar::func_def> func_nested1(
-            new grammar::func_def(pos, "funcn", std::vector<std::string>(), std::move(grammar::block())));
+    util::sptr<grammar::function> func_nested0(
+            new grammar::function(pos, "funcn", std::vector<std::string>({ "SOS" }), std::move(block_nested)));
+    util::sptr<grammar::function> func_nested1(
+            new grammar::function(pos, "funcn", std::vector<std::string>(), std::move(grammar::block())));
 
     grammar::block body;
     body.add_stmt(std::move(
@@ -258,7 +261,7 @@ TEST_F(StmtNodesTest, Mixed)
     body.add_func(std::move(func_nested1));
     body.add_stmt(std::move(util::mkptr(new grammar::func_ret_nothing(pos))));
 
-    grammar::func_def func(pos
+    grammar::function func(pos
                          , "funco"
                          , std::vector<std::string>({ "Suzumiya", "Koizumi", "Nagato", "Asahina" })
                          , std::move(body));

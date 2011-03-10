@@ -1,4 +1,5 @@
 #include "acceptor.h"
+#include "stmt-nodes.h"
 #include "../report/errors.h"
 
 using namespace grammar;
@@ -8,7 +9,7 @@ void acceptor::accept_else(misc::pos_type const& else_pos)
     error::else_not_match_if(else_pos);
 }
 
-void func_def_forbid_acceptor::accept_func(util::sptr<func_def const> func)
+void function_forbid_acceptor::accept_func(util::sptr<function const> func)
 {
     error::forbid_def_func(func->pos, func->name);
 }
@@ -50,17 +51,17 @@ void ifnot_acceptor::deliver_to(util::sref<acceptor> acc)
                         new branch(pos, std::move(_predicate), std::move(block()), std::move(_alternative)))));
 }
 
-void func_def_acceptor::accept_stmt(util::sptr<stmt_base const> stmt)
+void function_acceptor::accept_stmt(util::sptr<stmt_base const> stmt)
 {
     _body.add_stmt(std::move(stmt));
 }
 
-void func_def_acceptor::accept_func(util::sptr<func_def const> func)
+void function_acceptor::accept_func(util::sptr<function const> func)
 {
     _body.add_func(std::move(func));
 }
 
-void func_def_acceptor::deliver_to(util::sref<acceptor> acc)
+void function_acceptor::deliver_to(util::sref<acceptor> acc)
 {
-    acc->accept_func(std::move(util::mkptr(new func_def(pos, name, param_names, std::move(_body)))));
+    acc->accept_func(std::move(util::mkptr(new function(pos, name, param_names, std::move(_body)))));
 }

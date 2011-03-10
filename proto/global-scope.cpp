@@ -4,6 +4,7 @@
 #include "function.h"
 #include "../instance/node-base.h"
 #include "../instance/expr-nodes.h"
+#include "../instance/block.h"
 #include "../output/statement-writer.h"
 
 namespace {
@@ -30,7 +31,8 @@ namespace {
         : public proto::stmt_base
     {
         write_stmt_proto()
-            : ref(misc::pos_type(0), "value to write")
+            : proto::stmt_base(misc::pos_type(0))
+            , ref(misc::pos_type(0), "value to write")
         {}
 
         util::sptr<inst::mediate_base> inst(util::sref<inst::scope> inst_scope) const

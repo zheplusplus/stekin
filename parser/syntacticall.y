@@ -136,7 +136,7 @@ func_return:
 func_clue:
     indent KW_FUNC ident '(' param_list ')' eol
     {
-        parser::builder.add_func_def($1, parser::here($7), $3->id, $5->get());
+        parser::builder.add_function($1, parser::here($7), $3->id, $5->get());
         delete $3;
         delete $5;
     }

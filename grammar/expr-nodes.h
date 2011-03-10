@@ -2,6 +2,7 @@
 #define _STAKCENING_GRAMMAR_EXPRESSION_NODES_H__
 
 #include <string>
+#include <list>
 
 #include "node-base.h"
 #include "../util/pointer.h"

@@ -2,8 +2,8 @@
 #define __STACKENING_INSTANCE_STATEMENT_NODES_H__
 
 #include "node-base.h"
-#include "expr-nodes.h"
 #include "../util/pointer.h"
+#include "../misc/pos-type.h"
 
 namespace inst {
 

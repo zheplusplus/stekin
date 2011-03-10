@@ -1,4 +1,7 @@
 #include "clause-builder.h"
+#include "stmt-nodes.h"
+#include "../proto/node-base.h"
+#include "../proto/function.h"
 #include "../proto/global-scope.h"
 #include "../report/errors.h"
 
@@ -14,7 +17,7 @@ namespace {
         {}
 
         void accept_stmt(util::sptr<stmt_base const>) {}
-        void accept_func(util::sptr<func_def const>) {}
+        void accept_func(util::sptr<function const>) {}
         void deliver_to(util::sref<acceptor>) {}
     };
 
@@ -32,7 +35,7 @@ void acceptor_stack::next_stmt(int level, util::sptr<stmt_base const> stmt)
     _acceptors.back()->accept_stmt(std::move(stmt));
 }
 
-void acceptor_stack::next_func(int level, util::sptr<func_def const> func)
+void acceptor_stack::next_func(int level, util::sptr<function const> func)
 {
     _prepare_level(level, func->pos);
     _acceptors.back()->accept_func(std::move(func));
@@ -92,7 +95,7 @@ void acceptor_stack::acceptor_of_pack::accept_stmt(util::sptr<stmt_base const> s
     _pack.add_stmt(std::move(stmt));
 }
 
-void acceptor_stack::acceptor_of_pack::accept_func(util::sptr<func_def const> func)
+void acceptor_stack::acceptor_of_pack::accept_func(util::sptr<function const> func)
 {
     _pack.add_func(std::move(func));
 }
@@ -125,12 +128,12 @@ void clause_builder::add_return_nothing(int indent_len, misc::pos_type const& po
     _stack.next_stmt(indent_len, std::move(util::mkptr(new func_ret_nothing(pos))));
 }
 
-void clause_builder::add_func_def(int indent_len
+void clause_builder::add_function(int indent_len
                                 , misc::pos_type const& pos
                                 , std::string const& name
                                 , std::vector<std::string> const& params)
 {
-    _stack.add(indent_len, std::move(util::mkmptr(new func_def_acceptor(pos, name, params))));
+    _stack.add(indent_len, std::move(util::mkmptr(new function_acceptor(pos, name, params))));
 }
 
 void clause_builder::add_if(int indent_len, util::sptr<expr_base const> condition)

@@ -2,6 +2,8 @@
 
 #include "block.h"
 #include "inst-mediates.h"
+#include "../instance/node-base.h"
+#include "../instance/block.h"
 
 using namespace proto;
 

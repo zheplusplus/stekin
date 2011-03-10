@@ -2,6 +2,7 @@
 
 #include "inst-mediates.h"
 #include "../instance/stmt-nodes.h"
+#include "../instance/scope.h"
 
 using namespace proto;
 

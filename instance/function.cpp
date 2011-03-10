@@ -2,6 +2,7 @@
 #include <set>
 #include <algorithm>
 
+#include "node-base.h"
 #include "function.h"
 #include "../report/errors.h"
 #include "../output/func-writer.h"

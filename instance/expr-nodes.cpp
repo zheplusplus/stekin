@@ -2,6 +2,7 @@
 
 #include "expr-nodes.h"
 #include "function.h"
+#include "operation.h"
 #include "../output/func-writer.h"
 #include "../output/statement-writer.h"
 

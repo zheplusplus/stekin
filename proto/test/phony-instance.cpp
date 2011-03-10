@@ -1,6 +1,6 @@
 #include "test-common.h"
-#include "../../instance/function.h"
 #include "../../instance/expr-nodes.h"
+#include "../../instance/function.h"
 #include "../../util/string.h"
 
 using namespace test;
@@ -71,7 +71,7 @@ operation const* scope::query_pre_unary(misc::pos_type const& pos, std::string c
     return NULL;
 }
 
-void scope::add_stmt(util::sptr<stmt_base const> stmt)
+void scope::add_stmt(util::sptr<stmt_base const>)
 {
     data_tree::actual_one()(ADD_STMT_TO_SCOPE);
 }
@@ -81,15 +81,16 @@ int function::level() const
     return 0;
 }
 
-symbol_table::symbol_table(
-            int, std::list<arg_name_type_pair> const&, std::map<std::string, variable const> const&)
+symbol_table::symbol_table(int
+                         , std::list<arg_name_type_pair> const&
+                         , std::map<std::string, variable const> const&)
     : level(0)
     , _ss_used(0)
 {}
 
-util::sref<function> function::create_instance(int ext_level
-                                             , std::list<arg_name_type_pair> const& args
-                                             , std::map<std::string, variable const> const& extvars
+util::sref<function> function::create_instance(int
+                                             , std::list<arg_name_type_pair> const&
+                                             , std::map<std::string, variable const> const&
                                              , bool has_void_returns)
 {
     test_func_inst_resolved = false;

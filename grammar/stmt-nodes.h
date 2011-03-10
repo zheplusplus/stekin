@@ -5,31 +5,10 @@
 #include <list>
 
 #include "node-base.h"
-#include "../proto/function.h"
+#include "block.h"
 #include "../util/pointer.h"
 
 namespace grammar {
-
-    struct func_def;
-
-    struct block {
-        void compile(util::sref<proto::scope> scope) const;
-
-        void add_stmt(util::sptr<stmt_base const> stmt);
-        void add_func(util::sptr<func_def const> func_def);
-
-        block() = default;
-
-        block(block const&) = delete;
-
-        block(block&& rhs)
-            : _flow(std::move(rhs._flow))
-            , _func_defs(std::move(rhs._func_defs))
-        {}
-    private:
-        std::list<util::sptr<stmt_base const>> _flow;
-        std::list<util::sptr<func_def const>> _func_defs;
-    };
 
     struct arithmetics
         : public stmt_base
@@ -97,27 +76,6 @@ namespace grammar {
 
         std::string const name;
         util::sptr<expr_base const> const init;
-    };
-
-    struct func_def {
-        func_def(misc::pos_type const& ps
-               , std::string const& func_name
-               , std::vector<std::string> const& params
-               , block func_body)
-            : pos(ps)
-            , name(func_name)
-            , param_names(params)
-            , body(std::move(func_body))
-        {}
-
-        util::sref<proto::function> declare(util::sref<proto::scope> scope) const;
-        void compile(util::sref<proto::function> func) const;
-
-        misc::pos_type const pos;
-
-        std::string const name;
-        std::vector<std::string> const param_names;
-        block const body;
     };
 
 }

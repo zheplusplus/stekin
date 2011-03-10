@@ -1,5 +1,11 @@
+#include <algorithm>
+
 #include "symbol-table.h"
 #include "function.h"
+#include "node-base.h"
+#include "../instance/node-base.h"
+#include "../instance/scope.h"
+#include "../instance/variable.h"
 #include "../report/errors.h"
 
 using namespace proto;

@@ -2,7 +2,12 @@
 
 #include "test-common.h"
 #include "../acceptor.h"
+#include "../function.h"
+#include "../expr-nodes.h"
+#include "../stmt-nodes.h"
+#include "../../proto/node-base.h"
 #include "../../proto/global-scope.h"
+#include "../../proto/function.h"
 #include "../../test/phony-errors.h"
 
 using namespace test;
@@ -19,7 +24,7 @@ struct test_acceptor
         stmt = std::move(s);
     }
 
-    void accept_func(util::sptr<grammar::func_def const> f)
+    void accept_func(util::sptr<grammar::function const> f)
     {
         func = std::move(f);
     }
@@ -37,7 +42,7 @@ struct test_acceptor
     }
 
     util::sptr<grammar::stmt_base const> stmt;
-    util::sptr<grammar::func_def const> func;
+    util::sptr<grammar::function const> func;
 
     void deliver_to(util::sref<grammar::acceptor>) {}
 };
@@ -153,7 +158,7 @@ TEST_F(AcceptorTest, IfAcceptorError)
     grammar::if_acceptor acceptor_b(pos_head, std::move(util::mkptr(new grammar::int_literal(pos_head, "1"))));
     acceptor_b.accept_else(pos);
     ASSERT_FALSE(error::has_error());
-    acceptor_b.accept_func(std::move(util::mkptr(new grammar::func_def(pos_func
+    acceptor_b.accept_func(std::move(util::mkptr(new grammar::function(pos_func
                                                                      , "_null_"
                                                                      , std::vector<std::string>({ "Nexus" })
                                                                      , std::move(grammar::block())))));
@@ -205,7 +210,7 @@ TEST_F(AcceptorTest, IfNotAcceptor)
     clear_err();
     misc::pos_type pos_func(220);
     grammar::if_acceptor ifnot_acc2(pos, std::move(util::mkptr(new grammar::reference(pos, "tank"))));
-    ifnot_acc2.accept_func(std::move(util::mkptr(new grammar::func_def(pos_func
+    ifnot_acc2.accept_func(std::move(util::mkptr(new grammar::function(pos_func
                                                                       , "pylon"
                                                                       , std::vector<std::string>({ "zealot" })
                                                                       , std::move(grammar::block())))));
@@ -220,7 +225,7 @@ TEST_F(AcceptorTest, FuncAcceptor)
     misc::pos_type pos(5);
     test_acceptor receiver;
 
-    grammar::func_def_acceptor func_acc0(pos, "func1", std::vector<std::string>({ "Duke", "Duran" }));
+    grammar::function_acceptor func_acc0(pos, "func1", std::vector<std::string>({ "Duke", "Duran" }));
     func_acc0.accept_stmt(std::move(
                 util::mkptr(new grammar::arithmetics(pos, std::move(
                             util::mkptr(new grammar::float_literal(pos, "21.37")))))));
@@ -248,7 +253,7 @@ TEST_F(AcceptorTest, FuncAcceptor)
     ASSERT_FALSE(error::has_error());
 
     misc::pos_type pos_else(10);
-    grammar::func_def_acceptor func_acc1(pos, "func2", std::vector<std::string>({ "Mengsk" }));
+    grammar::function_acceptor func_acc1(pos, "func2", std::vector<std::string>({ "Mengsk" }));
     func_acc1.accept_else(pos_else);
     ASSERT_TRUE(error::has_error());
     ASSERT_EQ(1, get_else_not_matches().size());
@@ -260,7 +265,7 @@ TEST_F(AcceptorTest, FuncAccNested)
     misc::pos_type pos(5);
     test_acceptor receiver;
 
-    grammar::func_def_acceptor func_acc0(pos, "funca", std::vector<std::string>({ "firebat", "ghost" }));
+    grammar::function_acceptor func_acc0(pos, "funca", std::vector<std::string>({ "firebat", "ghost" }));
     func_acc0.accept_stmt(std::move(
                 util::mkptr(new grammar::arithmetics(pos, std::move(
                             util::mkptr(new grammar::float_literal(pos, "22.15")))))));
@@ -268,7 +273,7 @@ TEST_F(AcceptorTest, FuncAccNested)
                 util::mkptr(new grammar::var_def(pos, "medic", std::move(
                             util::mkptr(new grammar::reference(pos, "wraith")))))));
 
-    grammar::func_def_acceptor func_acc1(pos, "funca", std::vector<std::string>({ "vulture" }));
+    grammar::function_acceptor func_acc1(pos, "funca", std::vector<std::string>({ "vulture" }));
     func_acc1.accept_stmt(std::move(
                 util::mkptr(new grammar::arithmetics(pos, std::move(
                             util::mkptr(new grammar::reference(pos, "goliath")))))));

@@ -5,13 +5,11 @@
 #include <vector>
 #include <list>
 
-#include "node-base.h"
 #include "block.h"
+#include "fwd-decl.h"
 #include "../misc/pos-type.h"
 
 namespace proto {
-
-    struct function;
 
     enum termination_status {
         NO_EXPLICIT_TERMINATION,

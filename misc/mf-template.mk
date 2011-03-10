@@ -3,7 +3,7 @@ RESOLVE_DEP=g++ -MM
 LINK=g++ $(LIBS)
 UTILDIR=util
 
-CFLAGS=-Wall
+CFLAGS=-Wall -Wextra -Werror
 MKTMP=tmp.mk
 
 LIBS=-lgmp -lgmpxx

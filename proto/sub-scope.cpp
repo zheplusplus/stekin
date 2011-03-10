@@ -24,9 +24,9 @@ void sub_scope::def_var(misc::pos_type const& pos, std::string const& name, util
     error::forbid_def_var(pos, name);
 }
 
-util::sref<function> sub_scope::decl_func(misc::pos_type const& pos
-                                        , std::string const& name
-                                        , std::vector<std::string> const& param_names)
+util::sref<function> sub_scope::decl_func(misc::pos_type const&
+                                        , std::string const&
+                                        , std::vector<std::string> const&)
 {
     return util::sref<function>(NULL);
 }

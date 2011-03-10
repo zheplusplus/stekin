@@ -3,7 +3,7 @@
 
 #include <list>
 
-#include "node-base.h"
+#include "fwd-decl.h"
 #include "../util/pointer.h"
 
 namespace inst {
@@ -18,7 +18,7 @@ namespace inst {
         block(block const&) = delete;
 
         block(block&& rhs)
-            : _stmts(std::move(_stmts))
+            : _stmts(std::move(rhs._stmts))
         {}
 
         void write() const;

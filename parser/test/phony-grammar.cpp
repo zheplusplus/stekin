@@ -4,6 +4,8 @@
 #include "../../test/data-trees.h"
 #include "../../grammar/expr-nodes.h"
 #include "../../grammar/clause-builder.h"
+#include "../../proto/node-base.h"
+#include "../../proto/scope.h"
 
 using namespace grammar;
 using namespace test;
@@ -125,7 +127,7 @@ void clause_builder::add_return_nothing(int indent_level, misc::pos_type const& 
     data_tree::actual_one()(pos, indent_level, RETURN, "");
 }
 
-void clause_builder::add_func_def(int indent_level
+void clause_builder::add_function(int indent_level
                                 , misc::pos_type const& pos
                                 , std::string const& name
                                 , std::vector<std::string> const& params)

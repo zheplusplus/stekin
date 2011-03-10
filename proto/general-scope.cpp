@@ -1,5 +1,6 @@
 #include "general-scope.h"
 #include "expr-nodes.h"
+#include "stmt-nodes.h"
 #include "function.h"
 #include "sub-scope.h"
 

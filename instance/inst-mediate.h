@@ -1,14 +1,10 @@
 #ifndef __STACKENING_INSTANCE_INSTANTIATE_MEDIATE_H__
 #define __STACKENING_INSTANCE_INSTANTIATE_MEDIATE_H__
 
+#include "fwd-decl.h"
 #include "../util/pointer.h"
 
-#include "node-base.h"
-#include "type.h"
-
 namespace inst {
-
-    struct scope;
 
     struct mediate_base {
         virtual ~mediate_base() {}

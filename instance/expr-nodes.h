@@ -4,14 +4,12 @@
 #include <vector>
 
 #include "node-base.h"
-#include "operation.h"
 #include "variable.h"
+#include "fwd-decl.h"
 #include "../util/pointer.h"
 #include "../misc/platform.h"
 
 namespace inst {
-
-    struct function;
 
     struct int_literal
         : public expr_base

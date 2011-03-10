@@ -1,5 +1,6 @@
 #include <algorithm>
 
+#include "node-base.h"
 #include "block.h"
 #include "../output/statement-writer.h"
 

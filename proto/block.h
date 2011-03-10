@@ -3,8 +3,9 @@
 
 #include <list>
 
-#include "node-base.h"
-#include "../instance/scope.h"
+#include "fwd-decl.h"
+#include "../instance/fwd-decl.h"
+#include "../util/pointer.h"
 
 namespace proto {
 

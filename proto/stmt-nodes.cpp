@@ -1,5 +1,8 @@
 #include "stmt-nodes.h"
 #include "inst-mediates.h"
+#include "../instance/stmt-nodes.h"
+#include "../instance/scope.h"
+#include "../instance/type.h"
 #include "../instance/symbol-table.h"
 
 using namespace proto;
@@ -24,7 +27,7 @@ util::sptr<inst::mediate_base> var_def::inst(util::sref<inst::scope> scope) cons
 
 util::sptr<inst::mediate_base> branch::inst(util::sref<inst::scope> scope) const
 {
-    return std::move(util::mkmptr(new branch_mediate(_pos
+    return std::move(util::mkmptr(new branch_mediate(pos
                                                    , std::move(_predicate->inst(scope))
                                                    , _consequence.get_stmts()
                                                    , _alternative.get_stmts()

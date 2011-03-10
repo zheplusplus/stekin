@@ -3,6 +3,7 @@
 #include "test-common.h"
 #include "../symbol-table.h"
 #include "../function.h"
+#include "../node-base.h"
 #include "../../test/phony-errors.h"
 
 using namespace test;

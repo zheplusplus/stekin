@@ -5,8 +5,7 @@
 #include <map>
 #include <list>
 
-#include "variable.h"
-#include "type.h"
+#include "fwd-decl.h"
 #include "../misc/pos-type.h"
 
 namespace inst {

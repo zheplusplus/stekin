@@ -1,7 +1,9 @@
 #ifndef __STACKENGING_INSTANCE_OPERATION_H__
 #define __STACKENGING_INSTANCE_OPERATION_H__
 
-#include "type.h"
+#include <string>
+
+#include "fwd-decl.h"
 #include "../misc/pos-type.h"
 
 namespace inst {

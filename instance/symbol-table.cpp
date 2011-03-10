@@ -1,6 +1,8 @@
 #include <algorithm>
 
 #include "symbol-table.h"
+#include "variable.h"
+#include "type.h"
 #include "../report/errors.h"
 #include "../misc/platform.h"
 

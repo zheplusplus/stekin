@@ -1,7 +1,8 @@
 #ifndef __STAKCENING_GRAMMAR_NODE_BASE_H__
 #define __STAKCENING_GRAMMAR_NODE_BASE_H__
 
-#include "../proto/scope.h"
+#include "../proto/fwd-decl.h"
+#include "../util/pointer.h"
 #include "../misc/pos-type.h"
 
 namespace grammar {

@@ -3,6 +3,7 @@
 
 #include "test-common.h"
 #include "../expr-nodes.h"
+#include "../../proto/node-base.h"
 #include "../../proto/function.h"
 #include "../../proto/global-scope.h"
 #include "../../test/phony-errors.h"

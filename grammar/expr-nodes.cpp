@@ -1,7 +1,8 @@
 #include <algorithm>
 
 #include "expr-nodes.h"
-#include "../proto/function.h"
+#include "../proto/scope.h"
+#include "../proto/expr-nodes.h"
 
 using namespace grammar;
 

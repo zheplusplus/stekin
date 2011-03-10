@@ -3,7 +3,7 @@
 #include "expr-nodes.h"
 #include "function.h"
 #include "../instance/expr-nodes.h"
-#include "../instance/type.h"
+#include "../instance/scope.h"
 
 using namespace proto;
 

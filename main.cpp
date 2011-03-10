@@ -5,6 +5,7 @@
 #include "grammar/clause-builder.h"
 #include "proto/scope.h"
 #include "proto/inst-mediates.h"
+#include "instance/node-base.h"
 #include "instance/function.h"
 #include "output/func-writer.h"
 #include "util/pointer.h"

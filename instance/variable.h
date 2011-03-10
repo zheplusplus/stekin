@@ -1,7 +1,7 @@
 #ifndef __STACKENING_INSTANCE_VARIABLE_H__ 
 #define __STACKENING_INSTANCE_VARIABLE_H__ 
 
-#include "type.h"
+#include "fwd-decl.h"
 #include "../misc/pos-type.h"
 
 namespace inst {

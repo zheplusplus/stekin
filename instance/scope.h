@@ -3,12 +3,9 @@
 
 #include <string>
 
-#include "type.h"
-#include "node-base.h"
-#include "operation.h"
+#include "fwd-decl.h"
 #include "variable.h"
 #include "block.h"
-#include "inst-mediate.h"
 #include "../util/pointer.h"
 #include "../misc/pos-type.h"
 

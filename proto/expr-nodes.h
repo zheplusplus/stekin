@@ -6,24 +6,21 @@
 #include <gmpxx.h>
 
 #include "node-base.h"
-#include "../instance/expr-nodes.h"
-#include "../instance/scope.h"
+#include "fwd-decl.h"
+#include "../instance/fwd-decl.h"
 
 namespace proto {
-
-    struct function;
 
     struct bool_literal
         : public expr_base
     {
         bool_literal(misc::pos_type const& ps, bool v)
-            : pos(ps)
+            : expr_base(ps)
             , value(v)
         {}
 
         util::sptr<inst::expr_base const> inst(util::sref<inst::scope>) const; 
 
-        misc::pos_type const pos;
         bool const value;
     };
 
@@ -31,13 +28,12 @@ namespace proto {
         : public expr_base
     {
         int_literal(misc::pos_type const& ps, std::string const& image)
-            : pos(ps)
+            : expr_base(ps)
             , value(image)
         {}
 
         util::sptr<inst::expr_base const> inst(util::sref<inst::scope>) const; 
 
-        misc::pos_type const pos;
         mpz_class value;
     };
 
@@ -45,13 +41,12 @@ namespace proto {
         : public expr_base
     {
         float_literal(misc::pos_type const& ps, std::string const& image)
-            : pos(ps)
+            : expr_base(ps)
             , value(image)
         {}
 
         util::sptr<inst::expr_base const> inst(util::sref<inst::scope>) const; 
 
-        misc::pos_type const pos;
         mpf_class value;
     };
 
@@ -59,13 +54,12 @@ namespace proto {
         : public expr_base
     {
         reference(misc::pos_type const& ps, std::string const& n)
-            : pos(ps)
+            : expr_base(ps)
             , name(n)
         {}
 
         util::sptr<inst::expr_base const> inst(util::sref<inst::scope> scope) const;
 
-        misc::pos_type const pos;
         std::string const name;
     };
 
@@ -73,14 +67,13 @@ namespace proto {
         : public expr_base
     {
         call(misc::pos_type const& ps, util::sref<function> f, std::vector<util::sptr<expr_base const>> a)
-            : pos(ps)
+            : expr_base(ps)
             , func(f)
             , args(std::move(a))
         {}
 
         util::sptr<inst::expr_base const> inst(util::sref<inst::scope> scope) const;
 
-        misc::pos_type const pos;
         util::sref<function> const func;
         std::vector<util::sptr<expr_base const>> const args;
     };
@@ -92,7 +85,7 @@ namespace proto {
                 , util::sptr<expr_base const> l
                 , std::string const& o
                 , util::sptr<expr_base const> r)
-            : pos(ps)
+            : expr_base(ps)
             , lhs(std::move(l))
             , op(o)
             , rhs(std::move(r))
@@ -100,7 +93,6 @@ namespace proto {
 
         util::sptr<inst::expr_base const> inst(util::sref<inst::scope> scope) const;
 
-        misc::pos_type const pos;
         util::sptr<expr_base const> const lhs;
         std::string const op;
         util::sptr<expr_base const> const rhs;
@@ -110,14 +102,13 @@ namespace proto {
         : public expr_base
     {
         pre_unary_op(misc::pos_type const& ps, std::string const& o, util::sptr<expr_base const> r)
-            : pos(ps)
+            : expr_base(ps)
             , op(o)
             , rhs(std::move(r))
         {}
 
         util::sptr<inst::expr_base const> inst(util::sref<inst::scope> scope) const;
 
-        misc::pos_type const pos;
         std::string const op;
         util::sptr<expr_base const> const rhs;
     };
@@ -126,14 +117,13 @@ namespace proto {
         : public expr_base
     {
         conjunction(misc::pos_type const& ps, util::sptr<expr_base const> l, util::sptr<expr_base const> r)
-            : pos(ps)
+            : expr_base(ps)
             , lhs(std::move(l))
             , rhs(std::move(r))
         {}
 
         util::sptr<inst::expr_base const> inst(util::sref<inst::scope> scope) const;
 
-        misc::pos_type const pos;
         util::sptr<expr_base const> const lhs;
         util::sptr<expr_base const> const rhs;
     };
@@ -142,14 +132,13 @@ namespace proto {
         : public expr_base
     {
         disjunction(misc::pos_type const& ps, util::sptr<expr_base const> l, util::sptr<expr_base const> r)
-            : pos(ps)
+            : expr_base(ps)
             , lhs(std::move(l))
             , rhs(std::move(r))
         {}
 
         util::sptr<inst::expr_base const> inst(util::sref<inst::scope> scope) const;
 
-        misc::pos_type const pos;
         util::sptr<expr_base const> const lhs;
         util::sptr<expr_base const> const rhs;
     };
@@ -158,13 +147,12 @@ namespace proto {
         : public expr_base
     {
         negation(misc::pos_type const& ps, util::sptr<expr_base const> r)
-            : pos(ps)
+            : expr_base(ps)
             , rhs(std::move(r))
         {}
 
         util::sptr<inst::expr_base const> inst(util::sref<inst::scope> scope) const;
 
-        misc::pos_type const pos;
         util::sptr<expr_base const> const rhs;
     };
 

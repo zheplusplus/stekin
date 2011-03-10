@@ -1,7 +1,7 @@
 #ifndef __STACKENING_INSTANCE_NODE_BASE_H__
 #define __STACKENING_INSTANCE_NODE_BASE_H__
 
-#include "type.h"
+#include "fwd-decl.h"
 
 namespace inst {
 

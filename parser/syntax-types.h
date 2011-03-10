@@ -5,8 +5,9 @@
 #include <list>
 #include <vector>
 
+#include "../grammar/fwd-decl.h"
 #include "../report/errors.h"
-#include "../grammar/expr-nodes.h"
+#include "../util/pointer.h"
 #include "../misc/pos-type.h"
 
 namespace parser {

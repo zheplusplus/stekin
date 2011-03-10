@@ -1,6 +1,7 @@
 #include <map>
 
 #include "operation.h"
+#include "type.h"
 #include "../report/errors.h"
 
 using namespace inst;

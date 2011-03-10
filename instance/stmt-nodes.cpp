@@ -1,6 +1,8 @@
 #include <algorithm>
 
 #include "stmt-nodes.h"
+#include "operation.h"
+#include "type.h"
 #include "../output/statement-writer.h"
 
 using namespace inst;

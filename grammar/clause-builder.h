@@ -2,10 +2,11 @@
 #define __STACKENING_GRAMMAR_CLAUSE_BUILDER_H__
 
 #include <list>
+#include <vector>
 #include <string>
 
-#include "node-base.h"
 #include "acceptor.h"
+#include "fwd-decl.h"
 #include "../util/pointer.h"
 #include "../misc/pos-type.h"
 
@@ -15,7 +16,7 @@ namespace grammar {
         void add(int level, util::sptr<acceptor> acc);
 
         void next_stmt(int level, util::sptr<stmt_base const> stmt);
-        void next_func(int level, util::sptr<func_def const> func);
+        void next_func(int level, util::sptr<function const> func);
 
         void match_else(int level, misc::pos_type const& pos);
 
@@ -35,7 +36,7 @@ namespace grammar {
             {}
 
             void accept_stmt(util::sptr<stmt_base const> stmt);
-            void accept_func(util::sptr<func_def const> func);
+            void accept_func(util::sptr<function const> func);
 
             void deliver_to(util::sref<acceptor>) {}
 
@@ -56,7 +57,7 @@ namespace grammar {
         void add_return(int indent_len, util::sptr<expr_base const> ret_val);
         void add_return_nothing(int indent_len, misc::pos_type const& pos);
 
-        void add_func_def(int indent_len
+        void add_function(int indent_len
                         , misc::pos_type const& pos
                         , std::string const& name
                         , std::vector<std::string> const& params);

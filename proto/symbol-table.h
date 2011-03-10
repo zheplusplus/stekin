@@ -5,15 +5,13 @@
 #include <map>
 #include <list>
 #include <vector>
-#include <algorithm>
 
-#include "../instance/scope.h"
-#include "../instance/variable.h"
+#include "fwd-decl.h"
+#include "../instance/fwd-decl.h"
 #include "../util/pointer.h"
+#include "../misc/pos-type.h"
 
 namespace proto {
-
-    struct function;
 
     struct func_signature {
         std::string const name;

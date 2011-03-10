@@ -2,6 +2,11 @@
 
 #include "test-common.h"
 #include "../clause-builder.h"
+#include "../function.h"
+#include "../expr-nodes.h"
+#include "../stmt-nodes.h"
+#include "../../proto/node-base.h"
+#include "../../proto/function.h"
 #include "../../proto/global-scope.h"
 #include "../../test/phony-errors.h"
 
@@ -22,7 +27,7 @@ TEST_F(ClauseBuilderTest, AcceptorStackNext)
     stack0.next_stmt(0, std::move(
                 util::mkptr(new grammar::var_def(item_pos, "topiz", std::move(
                             util::mkptr(new grammar::reference(item_pos, "ruby")))))));
-    stack0.next_func(0, std::move(util::mkptr(new grammar::func_def(item_pos
+    stack0.next_func(0, std::move(util::mkptr(new grammar::function(item_pos
                                                                   , "skull"
                                                                   , std::vector<std::string>({ "chipped" })
                                                                   , std::move(grammar::block())))));
@@ -51,7 +56,7 @@ TEST_F(ClauseBuilderTest, AcceptorStackNext)
     stack0.next_stmt(1, std::move(
                 util::mkptr(new grammar::arithmetics(item_pos, std::move(
                             util::mkptr(new grammar::float_literal(item_pos, "19.55")))))));
-    stack0.next_func(4, std::move(util::mkptr(new grammar::func_def(err_pos1
+    stack0.next_func(4, std::move(util::mkptr(new grammar::function(err_pos1
                                                                   , "ith"
                                                                   , std::vector<std::string>({ "el", "eth" })
                                                                   , std::move(grammar::block())))));
@@ -71,7 +76,7 @@ TEST_F(ClauseBuilderTest, AcceptorStackAdd)
     stack0.next_stmt(0, std::move(
                 util::mkptr(new grammar::arithmetics(item_pos, std::move(
                             util::mkptr(new grammar::reference(item_pos, "eaglehorn")))))));
-    stack0.add(0, std::move(util::mkmptr(new grammar::func_def_acceptor(acc_pos
+    stack0.add(0, std::move(util::mkmptr(new grammar::function_acceptor(acc_pos
                                                                       , "witherstring"
                                                                       , std::vector<std::string>()))));
     stack0.next_stmt(1, std::move(
@@ -98,7 +103,7 @@ TEST_F(ClauseBuilderTest, AcceptorStackAdd)
     ;
 
     grammar::acceptor_stack stack1;
-    stack1.add(0, std::move(util::mkmptr(new grammar::func_def_acceptor(acc_pos
+    stack1.add(0, std::move(util::mkmptr(new grammar::function_acceptor(acc_pos
                                                                       , "witherstring"
                                                                       , std::vector<std::string>()))));
     stack1.next_stmt(1, std::move(
@@ -188,7 +193,7 @@ TEST_F(ClauseBuilderTest, ClauseBuilder)
     builder0.add_else(0, item_pos2);
     builder0.add_ifnot(1, std::move(util::mkptr(new grammar::reference(item_pos2, "cliffkiller"))));
     builder0.add_if(2, std::move(util::mkptr(new grammar::reference(item_pos0, "skystrike"))));
-    builder0.add_func_def(0, item_pos1, "goldenstrike_arch", std::vector<std::string>({ "amn", "tir" }));
+    builder0.add_function(0, item_pos1, "goldenstrike_arch", std::vector<std::string>({ "amn", "tir" }));
     builder0.add_arith(1, std::move(util::mkptr(new grammar::reference(item_pos1, "widowmaker"))));
 
     builder0.build_and_clear();

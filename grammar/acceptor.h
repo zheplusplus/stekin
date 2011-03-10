@@ -1,8 +1,8 @@
 #ifndef __STACKENING_GRAMMAR_ACCEPTOR_H__
 #define __STACKENING_GRAMMAR_ACCEPTOR_H__
 
-#include "stmt-nodes.h"
-#include "expr-nodes.h"
+#include "node-base.h"
+#include "function.h"
 #include "../util/pointer.h"
 #include "../misc/pos-type.h"
 
@@ -10,7 +10,7 @@ namespace grammar {
 
     struct acceptor {
         virtual void accept_stmt(util::sptr<stmt_base const> stmt) = 0;
-        virtual void accept_func(util::sptr<func_def const> func) = 0;
+        virtual void accept_func(util::sptr<function const> func) = 0;
 
         virtual void deliver_to(util::sref<acceptor> acc) = 0;
 
@@ -27,18 +27,18 @@ namespace grammar {
         acceptor(acceptor const&) = delete;
     };
 
-    struct func_def_forbid_acceptor
+    struct function_forbid_acceptor
         : public acceptor
     {
-        void accept_func(util::sptr<func_def const> func);
+        void accept_func(util::sptr<function const> func);
     protected:
-        explicit func_def_forbid_acceptor(misc::pos_type const& pos)
+        explicit function_forbid_acceptor(misc::pos_type const& pos)
             : acceptor(pos)
         {}
     };
 
     struct if_acceptor
-        : public func_def_forbid_acceptor
+        : public function_forbid_acceptor
     {
         void accept_stmt(util::sptr<stmt_base const> stmt);
 
@@ -47,7 +47,7 @@ namespace grammar {
         void accept_else(misc::pos_type const& else_pos);
 
         if_acceptor(misc::pos_type const& pos, util::sptr<expr_base const> predicate)
-            : func_def_forbid_acceptor(pos)
+            : function_forbid_acceptor(pos)
             , _predicate(std::move(predicate))
             , _current_branch(&_consequence)
         {}
@@ -64,14 +64,14 @@ namespace grammar {
     };
 
     struct ifnot_acceptor
-        : public func_def_forbid_acceptor
+        : public function_forbid_acceptor
     {
         void accept_stmt(util::sptr<stmt_base const> stmt);
 
         void deliver_to(util::sref<acceptor> acc);
 
         ifnot_acceptor(misc::pos_type const& pos, util::sptr<expr_base const> predicate)
-            : func_def_forbid_acceptor(pos)
+            : function_forbid_acceptor(pos)
             , _predicate(std::move(predicate))
         {}
     private:
@@ -80,15 +80,15 @@ namespace grammar {
         block _alternative;
     };
 
-    struct func_def_acceptor
+    struct function_acceptor
         : public acceptor
     {
         void accept_stmt(util::sptr<stmt_base const> stmt);
-        void accept_func(util::sptr<func_def const> func);
+        void accept_func(util::sptr<function const> func);
 
         void deliver_to(util::sref<acceptor> acc);
 
-        func_def_acceptor(misc::pos_type const& pos
+        function_acceptor(misc::pos_type const& pos
                         , std::string const& func_name
                         , std::vector<std::string> const& params)
             : acceptor(pos)

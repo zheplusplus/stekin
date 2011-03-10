@@ -4,6 +4,7 @@
 #include <gtest/gtest.h>
 
 #include "../operation.h"
+#include "../type.h"
 #include "../../misc/pos-type.h"
 #include "../../test/phony-errors.h"
 
