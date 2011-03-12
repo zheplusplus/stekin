@@ -62,6 +62,13 @@ void error::excessive_indent(misc::pos_type const& pos)
     std::cerr << "    excessive indentation" << std::endl;
 }
 
+void error::flow_terminated(misc::pos_type const& this_pos, misc::pos_type const& prev_pos)
+{
+    _has_error = true;
+    std::cerr << this_pos << std::endl;
+    std::cerr << "    flow already terminated at " << prev_pos << std::endl;
+}
+
 void error::forbid_def_func(misc::pos_type const& pos, std::string const& name)
 {
     _has_error = true;

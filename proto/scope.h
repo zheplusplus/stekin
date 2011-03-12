@@ -11,14 +11,6 @@
 
 namespace proto {
 
-    enum termination_status {
-        NO_EXPLICIT_TERMINATION,
-        RETURN_VOID,
-        RETURN_NO_VOID,
-        PARTIAL_RETURN_VOID,
-        PARTIAL_RETURN_NO_VOID,
-    };
-
     struct scope {
         virtual ~scope() {}
     public:
@@ -44,43 +36,24 @@ namespace proto {
                                             , util::sptr<expr_base const> rhs) const;
         util::sptr<expr_base const> make_nega(misc::pos_type const& pos, util::sptr<expr_base const> rhs) const;
     public:
-        virtual void add_func_ret(misc::pos_type const& pos, util::sptr<expr_base const> ret_val);
-        virtual void add_func_ret_nothing(misc::pos_type const& pos);
-        virtual void add_arith(misc::pos_type const& pos, util::sptr<expr_base const> expr);
-
-        void add_branch(misc::pos_type const& pos
-                      , util::sptr<expr_base const> predicate
-                      , util::sptr<scope> consequence
-                      , util::sptr<scope> alternative);
-
-        virtual void def_var(misc::pos_type const& pos
-                           , std::string const& name
-                           , util::sptr<expr_base const> init) = 0;
-    public:
+        virtual void def_var(misc::pos_type const& pos, std::string const& name) = 0;
+        virtual util::sref<function> declare(misc::pos_type const& pos
+                                           , std::string const& name
+                                           , std::vector<std::string> const& param_names
+                                           , bool contains_void_return) = 0;
         virtual util::sptr<scope> create_branch_scope() = 0;
-
-        void add_custom_statement(util::sptr<stmt_base const> stmt);
     public:
-        virtual util::sref<function> decl_func(misc::pos_type const& pos
-                                             , std::string const& name
-                                             , std::vector<std::string> const& param_names) = 0;
+        void add_stmt(util::sptr<stmt_base const> stmt);
     public:
+        block deliver();
         std::list<util::sptr<stmt_base const>> const& get_stmts() const;
-        termination_status termination() const;
     protected:
         block _block;
-        termination_status _status;
     protected:
-        void _status_changed_by_sub_scope_status(termination_status sub_status);
-        void _status_changed_by_return(termination_status status);
-    protected:
-        scope()
-            : _status(NO_EXPLICIT_TERMINATION)
-        {}
+        scope() {}
 
         scope(scope&& rhs)
             : _block(std::move(rhs._block))
-            , _status(rhs._status)
         {}
 
         scope(scope const&) = delete;

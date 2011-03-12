@@ -4,7 +4,7 @@
 #include "../proto/scope.h"
 #include "../proto/expr-nodes.h"
 
-using namespace grammar;
+using namespace flchk;
 
 util::sptr<proto::expr_base const> pre_unary_op::compile(util::sref<proto::scope> scope) const
 {

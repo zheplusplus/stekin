@@ -52,6 +52,6 @@ using namespace proto;
 global_scope::global_scope()
 {
     util::sref<proto::function> func_write
-                = decl_func(misc::pos_type(0), "write", std::vector<std::string>({ "value to write" }));
-    func_write->add_custom_statement(std::move(util::mkptr(new write_stmt_proto)));
+                = declare(misc::pos_type(0), "write", std::vector<std::string>({ "value to write" }), true);
+    func_write->add_stmt(std::move(util::mkptr(new write_stmt_proto)));
 }

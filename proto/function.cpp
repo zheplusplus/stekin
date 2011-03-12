@@ -15,11 +15,13 @@ using namespace proto;
 function::function(misc::pos_type const& ps
                  , std::string const& name
                  , std::vector<std::string> const& params
-                 , util::sref<symbol_table const> ext_symbols)
+                 , util::sref<symbol_table const> ext_symbols
+                 , bool func_hint_void_return)
     : general_scope(ext_symbols)
     , pos(ps)
     , name(name)
     , param_names(params)
+    , hint_void_return(func_hint_void_return)
 {
     _fill_param_names();
 }
@@ -59,9 +61,7 @@ util::sref<inst::function> function::inst(misc::pos_type const& pos
                 = inst::function::create_instance(ext_scope->level()
                                                 , args
                                                 , ext_vars
-                                                , RETURN_VOID == _status
-                                               || PARTIAL_RETURN_VOID == _status
-                                               || NO_EXPLICIT_TERMINATION == _status);
+                                                , hint_void_return);
     _instance_cache.insert(std::make_pair(instance_info(ext_vars, arg_types), instance));
 
     block_mediate body_mediate(_block.get_stmts(), instance);

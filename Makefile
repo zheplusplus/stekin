@@ -7,10 +7,20 @@ all:main.d
 	make -f report/Makefile
 	make -f parser/Makefile
 	make -f grammar/Makefile
+	make -f flowcheck/Makefile
 	make -f proto/Makefile
 	make -f instance/Makefile
 	make -f output/Makefile
-	$(LINK) main.o util/*.o report/*.o parser/*.o grammar/*.o proto/*.o instance/*.o output/*.o -o stk-core.out
+	$(LINK) main.o \
+	        util/*.o \
+	        report/*.o \
+	        parser/*.o \
+	        grammar/*.o \
+	        flowcheck/*.o \
+	        proto/*.o \
+	        instance/*.o \
+	        output/*.o \
+	     -o stk-core.out
 
 runtest:all
 	make -f test/Makefile
@@ -26,6 +36,7 @@ clean:
 	make -f report/Makefile clean
 	make -f parser/Makefile clean
 	make -f grammar/Makefile clean
+	make -f flowcheck/Makefile clean
 	make -f proto/Makefile clean
 	make -f instance/Makefile clean
 	make -f output/Makefile clean

@@ -9,9 +9,8 @@
 namespace grammar {
 
     struct acceptor {
-        virtual void accept_stmt(util::sptr<stmt_base const> stmt) = 0;
         virtual void accept_func(util::sptr<function const> func) = 0;
-
+        virtual void accept_stmt(util::sptr<stmt_base> stmt) = 0;
         virtual void deliver_to(util::sref<acceptor> acc) = 0;
 
         virtual void accept_else(misc::pos_type const& else_pos);
@@ -27,27 +26,16 @@ namespace grammar {
         acceptor(acceptor const&) = delete;
     };
 
-    struct function_forbid_acceptor
+    struct if_acceptor
         : public acceptor
     {
         void accept_func(util::sptr<function const> func);
-    protected:
-        explicit function_forbid_acceptor(misc::pos_type const& pos)
-            : acceptor(pos)
-        {}
-    };
-
-    struct if_acceptor
-        : public function_forbid_acceptor
-    {
-        void accept_stmt(util::sptr<stmt_base const> stmt);
-
+        void accept_stmt(util::sptr<stmt_base> stmt);
         void deliver_to(util::sref<acceptor> acc);
-
         void accept_else(misc::pos_type const& else_pos);
 
         if_acceptor(misc::pos_type const& pos, util::sptr<expr_base const> predicate)
-            : function_forbid_acceptor(pos)
+            : acceptor(pos)
             , _predicate(std::move(predicate))
             , _current_branch(&_consequence)
         {}
@@ -64,14 +52,14 @@ namespace grammar {
     };
 
     struct ifnot_acceptor
-        : public function_forbid_acceptor
+        : public acceptor
     {
-        void accept_stmt(util::sptr<stmt_base const> stmt);
-
+        void accept_func(util::sptr<function const> func);
+        void accept_stmt(util::sptr<stmt_base> stmt);
         void deliver_to(util::sref<acceptor> acc);
 
         ifnot_acceptor(misc::pos_type const& pos, util::sptr<expr_base const> predicate)
-            : function_forbid_acceptor(pos)
+            : acceptor(pos)
             , _predicate(std::move(predicate))
         {}
     private:
@@ -83,9 +71,8 @@ namespace grammar {
     struct function_acceptor
         : public acceptor
     {
-        void accept_stmt(util::sptr<stmt_base const> stmt);
         void accept_func(util::sptr<function const> func);
-
+        void accept_stmt(util::sptr<stmt_base> stmt);
         void deliver_to(util::sref<acceptor> acc);
 
         function_acceptor(misc::pos_type const& pos

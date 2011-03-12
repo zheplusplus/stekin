@@ -3,8 +3,12 @@
 
 #include "parser/yy-misc.h"
 #include "grammar/clause-builder.h"
-#include "proto/scope.h"
+#include "flowcheck/filter.h"
+#include "flowcheck/node-base.h"
+#include "flowcheck/function.h"
+#include "proto/global-scope.h"
 #include "proto/inst-mediates.h"
+#include "proto/function.h"
 #include "instance/node-base.h"
 #include "instance/function.h"
 #include "output/func-writer.h"
@@ -18,7 +22,13 @@ int main()
         return 1;
     }
 
-    util::sptr<proto::scope const> proto_global_scope(std::move(parser::builder.build_and_clear()));
+    flchk::block global_flow(std::move(parser::builder.build_and_clear()));
+    if (error::has_error()) {
+        return 1;
+    }
+
+    util::sptr<proto::scope> proto_global_scope(new proto::global_scope);
+    global_flow.compile(*proto_global_scope);
     if (error::has_error()) {
         return 1;
     }

@@ -1,8 +1,9 @@
 #include "clause-builder.h"
 #include "stmt-nodes.h"
+#include "../flowcheck/filter.h"
+#include "../flowcheck/node-base.h"
+#include "../flowcheck/function.h"
 #include "../proto/node-base.h"
-#include "../proto/function.h"
-#include "../proto/global-scope.h"
 #include "../report/errors.h"
 
 using namespace grammar;
@@ -16,7 +17,7 @@ namespace {
             : acceptor(misc::pos_type(-1))
         {}
 
-        void accept_stmt(util::sptr<stmt_base const>) {}
+        void accept_stmt(util::sptr<stmt_base>) {}
         void accept_func(util::sptr<function const>) {}
         void deliver_to(util::sref<acceptor>) {}
     };
@@ -29,7 +30,7 @@ void acceptor_stack::add(int level, util::sptr<acceptor> acc)
     _acceptors.push_back(std::move(acc));
 }
 
-void acceptor_stack::next_stmt(int level, util::sptr<stmt_base const> stmt)
+void acceptor_stack::next_stmt(int level, util::sptr<stmt_base> stmt)
 {
     _prepare_level(level, stmt->pos);
     _acceptors.back()->accept_stmt(std::move(stmt));
@@ -90,7 +91,7 @@ util::sref<acceptor_stack::acceptor_of_pack> acceptor_stack::_prepare_first_acce
     return ref;
 }
 
-void acceptor_stack::acceptor_of_pack::accept_stmt(util::sptr<stmt_base const> stmt)
+void acceptor_stack::acceptor_of_pack::accept_stmt(util::sptr<stmt_base> stmt)
 {
     _pack.add_stmt(std::move(stmt));
 }
@@ -108,24 +109,24 @@ block acceptor_stack::acceptor_of_pack::pack()
 void clause_builder::add_arith(int indent_len, util::sptr<expr_base const> arith)
 {
     misc::pos_type pos(arith->pos);
-    _stack.next_stmt(indent_len, std::move(util::mkptr(new arithmetics(pos, std::move(arith)))));
+    _stack.next_stmt(indent_len, std::move(util::mkmptr(new arithmetics(pos, std::move(arith)))));
 }
 
 void clause_builder::add_var_def(int indent_len, std::string const& name, util::sptr<expr_base const> init)
 {
     misc::pos_type pos(init->pos);
-    _stack.next_stmt(indent_len, std::move(util::mkptr(new var_def(pos, name, std::move(init)))));
+    _stack.next_stmt(indent_len, std::move(util::mkmptr(new var_def(pos, name, std::move(init)))));
 }
 
 void clause_builder::add_return(int indent_len, util::sptr<expr_base const> ret_val)
 {
     misc::pos_type pos(ret_val->pos);
-    _stack.next_stmt(indent_len, std::move(util::mkptr(new func_ret(pos, std::move(ret_val)))));
+    _stack.next_stmt(indent_len, std::move(util::mkmptr(new func_ret(pos, std::move(ret_val)))));
 }
 
 void clause_builder::add_return_nothing(int indent_len, misc::pos_type const& pos)
 {
-    _stack.next_stmt(indent_len, std::move(util::mkptr(new func_ret_nothing(pos))));
+    _stack.next_stmt(indent_len, std::move(util::mkmptr(new func_ret_nothing(pos))));
 }
 
 void clause_builder::add_function(int indent_len
@@ -153,10 +154,7 @@ void clause_builder::add_else(int indent_len, misc::pos_type const& pos)
     _stack.match_else(indent_len, pos);
 }
 
-util::sptr<proto::scope const> clause_builder::build_and_clear()
+flchk::block clause_builder::build_and_clear()
 {
-    block global(std::move(_stack.pack_all()));
-    util::sptr<proto::scope> scope(new proto::global_scope);
-    global.compile(*scope);
-    return std::move(scope);
+    return std::move(_stack.pack_all().compile(std::move(util::mkmptr(new flchk::filter)))->deliver());
 }

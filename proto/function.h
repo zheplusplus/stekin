@@ -21,13 +21,15 @@ namespace proto {
         function(misc::pos_type const& ps
                , std::string const& func_name
                , std::vector<std::string> const& params
-               , util::sref<symbol_table const> ext_symbols);
+               , util::sref<symbol_table const> ext_symbols
+               , bool func_hint_void_return);
 
         function(function&& rhs)
             : general_scope(std::move(rhs))
             , pos(rhs.pos)
             , name(rhs.name)
             , param_names(rhs.param_names)
+            , hint_void_return(rhs.hint_void_return)
         {}
 
         function(function const&) = delete;
@@ -35,6 +37,7 @@ namespace proto {
         misc::pos_type const pos;
         std::string const name;
         std::vector<std::string> const param_names;
+        bool hint_void_return;
     private:
         void _fill_param_names();
     private:

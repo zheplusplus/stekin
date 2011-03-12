@@ -90,6 +90,11 @@ namespace util {
             return util::id(_ptr);
         }
 
+        _RawType cp() const
+        {
+            return *_ptr;
+        }
+
         template <typename _OS>
         _OS& print(_OS& os) const
         {
@@ -134,6 +139,11 @@ namespace util {
         util::id id() const
         {
             return util::id(base_type::get());
+        }
+
+        _RawType cp() const
+        {
+            return *base_type::get();
         }
 
         pointer get() const = delete;

@@ -19,19 +19,17 @@ util::sptr<expr_base const> general_scope::make_call(misc::pos_type const& pos
     return std::move(util::mkptr(new call(pos, _symbols.query_func(pos, name, args.size()), std::move(args))));
 }
 
-void general_scope::def_var(misc::pos_type const& pos
-                          , std::string const& name
-                          , util::sptr<expr_base const> init)
+void general_scope::def_var(misc::pos_type const& pos, std::string const& name)
 {
     _symbols.def_var(pos, name);
-    _block.add_stmt(std::move(util::mkptr(new var_def(pos, name, std::move(init)))));
 }
 
-util::sref<function> general_scope::decl_func(misc::pos_type const& pos
-                                            , std::string const& name
-                                            , std::vector<std::string> const& param_names)
+util::sref<function> general_scope::declare(misc::pos_type const& pos
+                                          , std::string const& name
+                                          , std::vector<std::string> const& param_names
+                                          , bool hint_void_return)
 {
-    return _symbols.def_func(pos, name, param_names);
+    return _symbols.def_func(pos, name, param_names, hint_void_return);
 }
 
 util::sptr<scope> general_scope::create_branch_scope()

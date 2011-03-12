@@ -54,7 +54,8 @@ namespace proto {
         void def_var(misc::pos_type const& pos, std::string const& name);
         util::sref<function> def_func(misc::pos_type const& pos
                                     , std::string const& name
-                                    , std::vector<std::string> const& param_names);
+                                    , std::vector<std::string> const& param_names
+                                    , bool hint_void_return);
         util::sref<function> query_func(misc::pos_type const& pos
                                       , std::string const& name
                                       , int param_count) const;

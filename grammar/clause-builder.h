@@ -15,7 +15,7 @@ namespace grammar {
     struct acceptor_stack {
         void add(int level, util::sptr<acceptor> acc);
 
-        void next_stmt(int level, util::sptr<stmt_base const> stmt);
+        void next_stmt(int level, util::sptr<stmt_base> stmt);
         void next_func(int level, util::sptr<function const> func);
 
         void match_else(int level, misc::pos_type const& pos);
@@ -35,7 +35,7 @@ namespace grammar {
                 : acceptor(misc::pos_type(-1))
             {}
 
-            void accept_stmt(util::sptr<stmt_base const> stmt);
+            void accept_stmt(util::sptr<stmt_base> stmt);
             void accept_func(util::sptr<function const> func);
 
             void deliver_to(util::sref<acceptor>) {}
@@ -65,7 +65,7 @@ namespace grammar {
         void add_ifnot(int indent_len, util::sptr<expr_base const> condition);
         void add_else(int indent_len, misc::pos_type const& pos);
 
-        util::sptr<proto::scope const> build_and_clear();
+        flchk::block build_and_clear();
     private:
         acceptor_stack _stack;
     };

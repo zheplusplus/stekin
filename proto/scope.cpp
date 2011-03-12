@@ -53,116 +53,17 @@ util::sptr<expr_base const> scope::make_nega(misc::pos_type const& pos, util::sp
     return std::move(util::mkptr(new negation(pos, std::move(rhs))));
 }
 
-void scope::add_func_ret(misc::pos_type const& pos, util::sptr<expr_base const> ret_val)
-{
-    _status_changed_by_return(RETURN_NO_VOID);
-    _block.add_stmt(std::move(util::mkptr(new func_ret(pos, std::move(ret_val)))));
-}
-
-void scope::add_func_ret_nothing(misc::pos_type const& pos)
-{
-    _status_changed_by_return(RETURN_VOID);
-    _block.add_stmt(std::move(util::mkptr(new func_ret_nothing(pos))));
-}
-
-void scope::add_arith(misc::pos_type const& pos, util::sptr<expr_base const> expr)
-{
-    _block.add_stmt(std::move(util::mkptr(new arithmetics(pos, std::move(expr)))));
-}
-
-void scope::add_branch(misc::pos_type const& pos
-                     , util::sptr<expr_base const> predicate
-                     , util::sptr<scope> consequence
-                     , util::sptr<scope> alternative)
-{
-    _status_changed_by_sub_scope_status(consequence->_status);
-    _status_changed_by_sub_scope_status(alternative->_status);
-    _block.add_stmt(std::move(util::mkptr(new branch(pos
-                                                   , std::move(predicate)
-                                                   , std::move(consequence->_block)
-                                                   , std::move(alternative->_block)))));
-}
-
-void scope::add_custom_statement(util::sptr<stmt_base const> stmt)
+void scope::add_stmt(util::sptr<stmt_base const> stmt)
 {
     _block.add_stmt(std::move(stmt));
-}
-
-termination_status scope::termination() const
-{
-    return _status;
-}
-
-void scope::_status_changed_by_sub_scope_status(termination_status sub_status)
-{
-    switch (_status) {
-    case RETURN_VOID:
-       return;
-    case RETURN_NO_VOID:
-       {
-           switch (sub_status) {
-           case RETURN_VOID:
-           case PARTIAL_RETURN_VOID:
-               _status = PARTIAL_RETURN_VOID;
-               return;
-           default:
-               return;
-           }
-       }
-    case PARTIAL_RETURN_VOID:
-       return;
-    case PARTIAL_RETURN_NO_VOID:
-       {
-           switch (sub_status) {
-           case RETURN_VOID:
-           case PARTIAL_RETURN_VOID:
-               _status = PARTIAL_RETURN_VOID;
-               return;
-           default:
-               return;
-           }
-       }
-    default:
-       {
-           switch (sub_status) {
-           case RETURN_VOID:
-           case PARTIAL_RETURN_VOID:
-               _status = PARTIAL_RETURN_VOID;
-               return;
-           case RETURN_NO_VOID:
-           case PARTIAL_RETURN_NO_VOID:
-               _status = PARTIAL_RETURN_NO_VOID;
-               return;
-           default:
-               return;
-           }
-       }
-    }
-}
-
-void scope::_status_changed_by_return(termination_status status)
-{
-    switch (status) {
-    case RETURN_VOID:
-        _status = RETURN_VOID;
-        return;
-    case RETURN_NO_VOID:
-        {
-            switch (_status) {
-            case PARTIAL_RETURN_NO_VOID:
-            case NO_EXPLICIT_TERMINATION:
-                _status = RETURN_NO_VOID;
-                return;
-            default:
-                return;
-            }
-        }
-    default:
-        return;
-    }
 }
 
 std::list<util::sptr<stmt_base const>> const& scope::get_stmts() const
 {
     return _block.get_stmts();
+}
+
+block scope::deliver()
+{
+    return std::move(_block);
 }

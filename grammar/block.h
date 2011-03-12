@@ -4,28 +4,28 @@
 #include <list>
 
 #include "fwd-decl.h"
-#include "../proto/fwd-decl.h"
+#include "../flowcheck/fwd-decl.h"
 #include "../util/pointer.h"
 
 namespace grammar {
 
     struct block {
-        void compile(util::sref<proto::scope> scope) const;
+        util::sptr<flchk::filter> compile(util::sptr<flchk::filter> filter) const;
 
-        void add_stmt(util::sptr<stmt_base const> stmt);
-        void add_func(util::sptr<function const> function);
+        void add_stmt(util::sptr<stmt_base> stmt);
+        void add_func(util::sptr<function const> func);
 
         block() = default;
 
         block(block const&) = delete;
 
         block(block&& rhs)
-            : _flow(std::move(rhs._flow))
-            , _functions(std::move(rhs._functions))
+            : _stmts(std::move(rhs._stmts))
+            , _funcs(std::move(rhs._funcs))
         {}
     private:
-        std::list<util::sptr<stmt_base const>> _flow;
-        std::list<util::sptr<function const>> _functions;
+        std::list<util::sptr<stmt_base>> _stmts;
+        std::list<util::sptr<function const>> _funcs;
     };
 
 }

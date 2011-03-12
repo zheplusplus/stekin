@@ -27,11 +27,12 @@ namespace proto {
                                             , std::string const& func_name
                                             , std::vector<util::sptr<expr_base const>> args) const;
 
-        void def_var(misc::pos_type const& pos, std::string const& name, util::sptr<expr_base const> init);
+        void def_var(misc::pos_type const& pos, std::string const& name);
 
-        util::sref<function> decl_func(misc::pos_type const& pos
-                                     , std::string const& name
-                                     , std::vector<std::string> const& param_names);
+        util::sref<function> declare(misc::pos_type const& pos
+                                   , std::string const& name
+                                   , std::vector<std::string> const& param_names
+                                   , bool hint_void_return);
 
         util::sptr<scope> create_branch_scope();
     protected:

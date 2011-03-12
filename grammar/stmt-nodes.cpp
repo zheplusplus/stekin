@@ -1,38 +1,51 @@
 #include "stmt-nodes.h"
 #include "function.h"
+#include "../flowcheck/node-base.h"
+#include "../flowcheck/filter.h"
+#include "../flowcheck/function.h"
 #include "../proto/node-base.h"
-#include "../proto/function.h"
 
 using namespace grammar;
 
-void arithmetics::compile(util::sref<proto::scope> scope) const 
+void arithmetics::compile(util::sref<flchk::filter> filter)
 {
-    scope->add_arith(pos, expr->compile(scope));
+    filter->add_arith(pos, std::move(_expr));
 }
 
-void branch::compile(util::sref<proto::scope> scope) const 
+void branch::compile(util::sref<flchk::filter> filter)
 {
-    util::sptr<proto::scope> consequence_scope = scope->create_branch_scope();
-    consequence.compile(*consequence_scope);
-    util::sptr<proto::scope> alternative_scope = scope->create_branch_scope();
-    alternative.compile(*alternative_scope);
-    scope->add_branch(pos
-                    , predicate->compile(scope)
-                    , std::move(consequence_scope)
-                    , std::move(alternative_scope));
+    filter->add_branch(pos
+                     , std::move(_predicate)
+                     , std::move(_consequence.compile(std::move(util::mkmptr(new flchk::symbol_def_filter))))
+                     , std::move(_alternative.compile(std::move(util::mkmptr(new flchk::symbol_def_filter)))));
 }
 
-void func_ret::compile(util::sref<proto::scope> scope) const 
+void branch_cons_only::compile(util::sref<flchk::filter> filter)
 {
-    scope->add_func_ret(pos, ret_val->compile(scope));
+    filter->add_branch(pos
+                     , std::move(_predicate)
+                     , std::move(_consequence.compile(std::move(util::mkmptr(new flchk::symbol_def_filter)))));
 }
 
-void var_def::compile(util::sref<proto::scope> scope) const 
+void branch_alt_only::compile(util::sref<flchk::filter> filter)
 {
-    scope->def_var(pos, name, init->compile(scope));
+    filter->add_branch_alt_only(
+                       pos
+                     , std::move(_predicate)
+                     , std::move(_alternative.compile(std::move(util::mkmptr(new flchk::symbol_def_filter)))));
 }
 
-void func_ret_nothing::compile(util::sref<proto::scope> scope) const
+void func_ret::compile(util::sref<flchk::filter> filter)
 {
-    scope->add_func_ret_nothing(pos);
+    filter->add_func_ret(pos, std::move(_ret_val));
+}
+
+void func_ret_nothing::compile(util::sref<flchk::filter> filter)
+{
+    filter->add_func_ret_nothing(pos);
+}
+
+void var_def::compile(util::sref<flchk::filter> filter)
+{
+    filter->def_var(pos, _name, std::move(_init));
 }

@@ -4,6 +4,7 @@
 #include <string>
 
 #include "syntax-types.h"
+#include "../flowcheck/node-base.h"
 #include "yy-misc.h"
 #include "syn.hpp"
 #include "../report/errors.h"

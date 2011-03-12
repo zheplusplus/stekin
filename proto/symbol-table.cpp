@@ -31,9 +31,10 @@ void symbol_table::def_var(misc::pos_type const& pos, std::string const& name)
 
 util::sref<function> symbol_table::def_func(misc::pos_type const& pos
                                           , std::string const& name
-                                          , std::vector<std::string> const& params)
+                                          , std::vector<std::string> const& params
+                                          , bool hint_void_return)
 {
-    _func_entities.push_back(std::move(function(pos, name, params, util::mkref(*this))));
+    _func_entities.push_back(std::move(function(pos, name, params, util::mkref(*this), hint_void_return)));
     auto insert_result = _funcs.insert(std::make_pair(func_signature(name, params.size())
                                                     , util::mkref(_func_entities.back())));
     if (!insert_result.second) {
@@ -94,4 +95,5 @@ static symbol_table fake_symbols;
 function symbol_table::_fake_prototype(misc::pos_type(0)
                                      , ""
                                      , std::vector<std::string>()
-                                     , util::mkref(fake_symbols));
+                                     , util::mkref(fake_symbols)
+                                     , false);

@@ -2,6 +2,7 @@
 #include <deque>
 
 #include "yy-misc.h"
+#include "../flowcheck/node-base.h"
 
 int yywrap(void)
 {

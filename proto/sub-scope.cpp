@@ -19,14 +19,12 @@ util::sptr<expr_base const> sub_scope::make_call(misc::pos_type const& pos
     return std::move(util::mkptr(new call(pos, _symbols->query_func(pos, name, args.size()), std::move(args))));
 }
 
-void sub_scope::def_var(misc::pos_type const& pos, std::string const& name, util::sptr<expr_base const>)
-{
-    error::forbid_def_var(pos, name);
-}
+void sub_scope::def_var(misc::pos_type const&, std::string const&) {}
 
-util::sref<function> sub_scope::decl_func(misc::pos_type const&
-                                        , std::string const&
-                                        , std::vector<std::string> const&)
+util::sref<function> sub_scope::declare(misc::pos_type const&
+                                      , std::string const&
+                                      , std::vector<std::string> const&
+                                      , bool)
 {
     return util::sref<function>(NULL);
 }
