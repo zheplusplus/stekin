@@ -4,8 +4,10 @@
 #include "../../test/data-trees.h"
 #include "../../grammar/expr-nodes.h"
 #include "../../grammar/clause-builder.h"
+#include "../../flowcheck/block.h"
+#include "../../flowcheck/function.h"
+#include "../../flowcheck/node-base.h"
 #include "../../proto/node-base.h"
-#include "../../proto/scope.h"
 
 using namespace grammar;
 using namespace test;
@@ -163,9 +165,9 @@ void clause_builder::add_else(int indent_level, misc::pos_type const& pos)
     data_tree::actual_one()(pos, indent_level, BRANCH_ELSE);
 }
 
-util::sptr<proto::scope const> clause_builder::build_and_clear()
+flchk::block clause_builder::build_and_clear()
 {
-    return util::sptr<proto::scope const>(NULL);
+    return std::move(flchk::block());
 }
 
 acceptor_stack::acceptor_stack()
