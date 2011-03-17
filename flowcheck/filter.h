@@ -58,7 +58,7 @@ namespace flchk {
         void def_func(misc::pos_type const& pos
                     , std::string const& name
                     , std::vector<std::string> const&
-                    , filter);
+                    , util::sptr<filter>);
     };
 
 }

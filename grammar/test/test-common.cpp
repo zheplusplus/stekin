@@ -50,8 +50,8 @@ node_type const test::FUNC_DEF_FILTERED("func def filtered");
 node_type const test::PARAMETER("parameter");
 
 node_type const test::BRANCH("branch");
-node_type const test::BRANCH_CONS_ONLY("branch consequence only");
-node_type const test::BRANCH_ALT_ONLY("branch alternative only");
+node_type const test::BRANCH_CONSQ_ONLY("branch consequence only");
+node_type const test::BRANCH_ALTER_ONLY("branch alternative only");
 
 void grammar_test::SetUp()
 {

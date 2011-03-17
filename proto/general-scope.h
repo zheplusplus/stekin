@@ -22,9 +22,9 @@ namespace proto {
             , _symbols(std::move(rhs._symbols))
         {}
     public:
-        util::sptr<expr_base const> make_ref(misc::pos_type const& pos, std::string const& var_name);
+        util::sptr<expr_base const> make_ref(misc::pos_type const& pos, std::string const& name);
         util::sptr<expr_base const> make_call(misc::pos_type const& pos
-                                            , std::string const& func_name
+                                            , std::string const& name
                                             , std::vector<util::sptr<expr_base const>> args) const;
 
         void def_var(misc::pos_type const& pos, std::string const& name);

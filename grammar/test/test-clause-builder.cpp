@@ -32,6 +32,7 @@ TEST_F(ClauseBuilderTest, AcceptorStackNext)
 
     data_tree::expect_one()
         (item_pos, FUNC_DEF, "skull")
+            (item_pos, PARAMETER, "chipped")
 
         (item_pos, VAR_DEF, "ruby")
         (item_pos, VAR_DEF, "topiz")
@@ -71,9 +72,9 @@ TEST_F(ClauseBuilderTest, AcceptorStackAdd)
     block0.compile(std::move(util::mkmptr(new flchk::filter)));
 
     data_tree::expect_one()
-        (acc_pos, FUNC_DEF, "witherstring")
             (item_pos, VAR_DEF, "cedar_bow")
             (item_pos, ARITHMETICS)
+        (acc_pos, FUNC_DEF, "witherstring")
 
         (item_pos, ARITHMETICS)
     ;
@@ -128,47 +129,47 @@ TEST_F(ClauseBuilderTest, AcceptorStackMatchElse)
 
 TEST_F(ClauseBuilderTest, ClauseBuilder)
 {
-    misc::pos_type item_pos0(4);
-    misc::pos_type item_pos1(5);
-    misc::pos_type item_pos2(6);
+    misc::pos_type item_pos(5);
+    misc::pos_type null_pos(0);
 
     grammar::clause_builder builder0;
     builder0.add_if(0, std::move(mkexpr()));
-    builder0.add_var_def(1, "wind_force", std::move(mkexpr()));
-    builder0.add_if(1, std::move(mkexpr()));
-    builder0.add_return(2, std::move(mkexpr()));
-    builder0.add_return_nothing(1, item_pos1);
-    builder0.add_else(0, item_pos2);
-    builder0.add_ifnot(1, std::move(mkexpr()));
-    builder0.add_if(2, std::move(mkexpr()));
-    builder0.add_function(0, item_pos1, "goldenstrike_arch", std::vector<std::string>({ "amn", "tir" }));
+        builder0.add_var_def(1, "wind_force", std::move(mkexpr()));
+        builder0.add_if(1, std::move(mkexpr()));
+            builder0.add_return(2, std::move(mkexpr()));
+        builder0.add_return_nothing(1, item_pos);
+    builder0.add_else(0, item_pos);
+        builder0.add_ifnot(1, std::move(mkexpr()));
+            builder0.add_if(2, std::move(mkexpr()));
+            builder0.add_function(2, item_pos, "skystrike", std::vector<std::string>());
+    builder0.add_function(0, item_pos, "goldenstrike_arch", std::vector<std::string>({ "amn", "tir" }));
     builder0.add_arith(1, std::move(mkexpr()));
 
     builder0.build_and_clear();
     ASSERT_FALSE(error::has_error());
 
     data_tree::expect_one()
-        (item_pos1, FUNC_DEF, "goldenstrike_arch")
-            (item_pos1, PARAMETER, "amn")
-            (item_pos1, PARAMETER, "tir")
+            (null_pos, ARITHMETICS)
+        (item_pos, FUNC_DEF, "goldenstrike_arch")
+            (item_pos, PARAMETER, "amn")
+            (item_pos, PARAMETER, "tir")
 
-            (item_pos1, ARITHMETICS)
-            (item_pos1, VAR_DEF, "wind_force")
+                (item_pos, FUNC_DEF_FILTERED, "skystrike")
+                (null_pos, BRANCH_CONSQ_ONLY)
+            (null_pos, BRANCH_ALTER_ONLY)
 
-                (item_pos0, RETURN)
-            (item_pos2, BRANCH)
-
-            (item_pos1, RETURN_NOTHING)
-                (item_pos0, BRANCH)
-            (item_pos2, BRANCH)
-        (item_pos0, BRANCH)
+            (null_pos, VAR_DEF_FILTERED, "wind_force")
+                (null_pos, RETURN)
+            (null_pos, BRANCH_CONSQ_ONLY)
+            (item_pos, RETURN_NOTHING)
+        (null_pos, BRANCH)
     ;
 
     grammar::clause_builder builder1;
     builder1.add_if(0, std::move(mkexpr()));
     builder1.add_var_def(0, "wind_force", std::move(mkexpr()));
-    builder1.add_else(0, item_pos2);
+    builder1.add_else(0, item_pos);
     ASSERT_TRUE(error::has_error());
     ASSERT_EQ(1, get_else_not_matches().size());
-    ASSERT_EQ(item_pos2, get_else_not_matches()[0].pos);
+    ASSERT_EQ(item_pos, get_else_not_matches()[0].pos);
 }

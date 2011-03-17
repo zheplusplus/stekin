@@ -97,12 +97,12 @@ TEST_F(AcceptorTest, IfAcceptor)
     receiver.compile();
 
     data_tree::expect_one()
+            (pos, VAR_DEF_FILTERED, "Hyperion")
             (pos, RETURN_NOTHING)
-            (pos, VAR_DEF, "Hyperion")
         (pos_head, BRANCH)
 
             (pos, RETURN)
-        (pos_head, BRANCH)
+        (pos_head, BRANCH_CONSQ_ONLY)
 
             (pos, ARITHMETICS)
         (pos_head, BRANCH)
@@ -126,20 +126,6 @@ TEST_F(AcceptorTest, IfAcceptorError)
     ASSERT_EQ(1, get_if_matcheds().size());
     ASSERT_EQ(pos, get_if_matcheds()[0].prev_pos);
     ASSERT_EQ(pos_else, get_if_matcheds()[0].this_pos);
-
-    clear_err();
-    misc::pos_type pos_func(210);
-    grammar::if_acceptor acceptor_b(pos_head, std::move(mkexpr()));
-    acceptor_b.accept_else(pos);
-    ASSERT_FALSE(error::has_error());
-    acceptor_b.accept_func(std::move(util::mkptr(new grammar::function(pos_func
-                                                                     , "_null_"
-                                                                     , std::vector<std::string>({ "Nexus" })
-                                                                     , std::move(grammar::block())))));
-    ASSERT_TRUE(error::has_error());
-    ASSERT_EQ(1, get_forbidden_funcs().size());
-    ASSERT_EQ(pos_func, get_forbidden_funcs()[0].pos);
-    ASSERT_EQ("_null_", get_forbidden_funcs()[0].name);
 }
 
 TEST_F(AcceptorTest, IfNotAcceptor)
@@ -157,9 +143,9 @@ TEST_F(AcceptorTest, IfNotAcceptor)
     receiver.compile();
 
     data_tree::expect_one()
-            (pos, VAR_DEF, "SCV")
+            (pos, VAR_DEF_FILTERED, "SCV")
             (pos, ARITHMETICS)
-        (pos, BRANCH)
+        (pos, BRANCH_ALTER_ONLY)
     ;
     ASSERT_FALSE(error::has_error());
 
@@ -169,18 +155,6 @@ TEST_F(AcceptorTest, IfNotAcceptor)
     ASSERT_TRUE(error::has_error());
     ASSERT_EQ(1, get_else_not_matches().size());
     ASSERT_EQ(pos_else, get_else_not_matches()[0].pos);
-
-    clear_err();
-    misc::pos_type pos_func(220);
-    grammar::if_acceptor ifnot_acc2(pos, std::move(mkexpr()));
-    ifnot_acc2.accept_func(std::move(util::mkptr(new grammar::function(pos_func
-                                                                      , "pylon"
-                                                                      , std::vector<std::string>({ "zealot" })
-                                                                      , std::move(grammar::block())))));
-    ASSERT_TRUE(error::has_error());
-    ASSERT_EQ(1, get_forbidden_funcs().size());
-    ASSERT_EQ(pos_func, get_forbidden_funcs()[0].pos);
-    ASSERT_EQ("pylon", get_forbidden_funcs()[0].name);
 }
 
 TEST_F(AcceptorTest, FuncAcceptor)
@@ -189,12 +163,10 @@ TEST_F(AcceptorTest, FuncAcceptor)
     test_acceptor receiver;
 
     grammar::function_acceptor func_acc0(pos, "func1", std::vector<std::string>({ "Duke", "Duran" }));
-    func_acc0.accept_stmt(std::move(
-                util::mkmptr(new grammar::arithmetics(pos, std::move(
-                            mkexpr())))));
-    func_acc0.accept_stmt(std::move(
-                util::mkmptr(new grammar::var_def(pos, "SonOfKorhal", std::move(
-                            mkexpr())))));
+    func_acc0.accept_stmt(std::move(util::mkmptr(new grammar::arithmetics(pos, std::move(mkexpr())))));
+    func_acc0.accept_stmt(std::move(util::mkmptr(new grammar::var_def(pos
+                                                                    , "SonOfKorhal"
+                                                                    , std::move(mkexpr())))));
 
     func_acc0.deliver_to(util::mkref(receiver));
     ASSERT_FALSE(bool(receiver.stmt));
@@ -202,11 +174,11 @@ TEST_F(AcceptorTest, FuncAcceptor)
     receiver.compile();
 
     data_tree::expect_one()
+            (pos, ARITHMETICS)
+            (pos, VAR_DEF, "SonOfKorhal")
         (pos, FUNC_DEF, "func1")
             (pos, PARAMETER, "Duke")
             (pos, PARAMETER, "Duran")
-            (pos, ARITHMETICS)
-            (pos, VAR_DEF, "SonOfKorhal")
     ;
     ASSERT_FALSE(error::has_error());
 
@@ -224,17 +196,11 @@ TEST_F(AcceptorTest, FuncAccNested)
     test_acceptor receiver;
 
     grammar::function_acceptor func_acc0(pos, "funca", std::vector<std::string>({ "firebat", "ghost" }));
-    func_acc0.accept_stmt(std::move(
-                util::mkmptr(new grammar::arithmetics(pos, std::move(
-                            mkexpr())))));
-    func_acc0.accept_stmt(std::move(
-                util::mkmptr(new grammar::var_def(pos, "medic", std::move(
-                            mkexpr())))));
+    func_acc0.accept_stmt(std::move(util::mkmptr(new grammar::arithmetics(pos, std::move(mkexpr())))));
+    func_acc0.accept_stmt(std::move(util::mkmptr(new grammar::var_def(pos, "medic", std::move(mkexpr())))));
 
     grammar::function_acceptor func_acc1(pos, "funca", std::vector<std::string>({ "vulture" }));
-    func_acc1.accept_stmt(std::move(
-                util::mkmptr(new grammar::arithmetics(pos, std::move(
-                            mkexpr())))));
+    func_acc1.accept_stmt(std::move(util::mkmptr(new grammar::arithmetics(pos, std::move(mkexpr())))));
 
     func_acc1.deliver_to(util::mkref(func_acc0));
     func_acc0.deliver_to(util::mkref(receiver));
@@ -243,15 +209,15 @@ TEST_F(AcceptorTest, FuncAccNested)
     receiver.compile();
 
     data_tree::expect_one()
-        (pos, FUNC_DEF, "funca")
-            (pos, PARAMETER, "firebat")
-            (pos, PARAMETER, "ghost")
+                (pos, ARITHMETICS)
             (pos, FUNC_DEF, "funca")
                 (pos, PARAMETER, "vulture")
-                (pos, ARITHMETICS)
 
             (pos, ARITHMETICS)
             (pos, VAR_DEF, "medic")
+        (pos, FUNC_DEF, "funca")
+            (pos, PARAMETER, "firebat")
+            (pos, PARAMETER, "ghost")
     ;
     ASSERT_FALSE(error::has_error());
 }

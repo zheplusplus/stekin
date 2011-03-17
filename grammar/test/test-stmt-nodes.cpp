@@ -73,31 +73,6 @@ TEST_F(StmtNodesTest, Block)
     ;
 }
 
-TEST_F(StmtNodesTest, BlockMove)
-{
-    misc::pos_type pos(5);
-    grammar::block block0;
-    block0.add_stmt(std::move(util::mkmptr(new grammar::var_def(pos, "Akagi", std::move(mkexpr())))));
-    block0.add_stmt(std::move(util::mkmptr(new grammar::func_ret_nothing(pos))));
-    block0.compile(std::move(util::mkmptr(new flchk::filter)));
-
-    data_tree::expect_one()
-        (pos, VAR_DEF, "Akagi")
-        (pos, RETURN_NOTHING)
-    ;
-    data_tree::verify();
-
-    grammar::block block1(std::move(block0));
-    block0.compile(std::move(util::mkmptr(new flchk::filter)));
-    data_tree::verify();
-
-    block1.compile(std::move(util::mkmptr(new flchk::filter)));
-    data_tree::expect_one()
-        (pos, VAR_DEF, "Akagi")
-        (pos, RETURN_NOTHING)
-    ;
-}
-
 TEST_F(StmtNodesTest, Branch)
 {
     misc::pos_type pos(6);
@@ -106,8 +81,7 @@ TEST_F(StmtNodesTest, Branch)
         .compile(*filter);
 
     grammar::block block0;
-    block0.add_stmt(std::move(util::mkmptr(
-                new grammar::arithmetics(pos, std::move(mkexpr())))));
+    block0.add_stmt(std::move(util::mkmptr(new grammar::var_def(pos, "Akagi", std::move(mkexpr())))));
     block0.add_stmt(std::move(util::mkmptr(new grammar::func_ret_nothing(pos))));
     grammar::branch_cons_only(pos, std::move(mkexpr()), std::move(block0)).compile(*filter);
 
@@ -126,17 +100,18 @@ TEST_F(StmtNodesTest, Branch)
     data_tree::expect_one()
         (pos, BRANCH)
 
-            (pos, ARITHMETICS)
+            (pos, VAR_DEF_FILTERED, "Akagi")
             (pos, RETURN_NOTHING)
-        (pos, BRANCH)
+        (pos, BRANCH_CONSQ_ONLY)
 
             (pos, ARITHMETICS)
             (pos, RETURN_NOTHING)
-        (pos, BRANCH)
+        (pos, BRANCH_ALTER_ONLY)
 
-            (pos, ARITHMETICS)
-            (pos, RETURN_NOTHING)
             (pos, RETURN)
+
+            (pos, ARITHMETICS)
+            (pos, RETURN_NOTHING)
         (pos, BRANCH)
     ;
 }
@@ -160,13 +135,13 @@ TEST_F(StmtNodesTest, FuncDefs)
     data_tree::expect_one()
         (pos, FUNC_DEF, "func0")
 
+            (pos, ARITHMETICS)
+            (pos, RETURN_NOTHING)
         (pos, FUNC_DEF, "func1")
             (pos, PARAMETER, "Konata")
             (pos, PARAMETER, "Kagami")
             (pos, PARAMETER, "Tsukasa")
             (pos, PARAMETER, "Miyuki")
-            (pos, ARITHMETICS)
-            (pos, RETURN_NOTHING)
     ;
 }
 
@@ -185,8 +160,8 @@ TEST_F(StmtNodesTest, Mixed)
     grammar::block body;
     body.add_stmt(std::move(util::mkmptr(new grammar::arithmetics(pos, std::move(mkexpr())))));
     body.add_func(std::move(func_nested0));
-    body.add_func(std::move(func_nested1));
     body.add_stmt(std::move(util::mkmptr(new grammar::func_ret_nothing(pos))));
+    body.add_func(std::move(func_nested1));
 
     grammar::function func(pos
                          , "funco"
@@ -195,17 +170,17 @@ TEST_F(StmtNodesTest, Mixed)
     func.compile(*filter);
 
     data_tree::expect_one()
+                (pos, ARITHMETICS)
+            (pos, FUNC_DEF, "funcn")
+                (pos, PARAMETER, "SOS")
+            (pos, FUNC_DEF, "funcn")
+
+            (pos, ARITHMETICS)
+            (pos, RETURN_NOTHING)
         (pos, FUNC_DEF, "funco")
             (pos, PARAMETER, "Suzumiya")
             (pos, PARAMETER, "Koizumi")
             (pos, PARAMETER, "Nagato")
             (pos, PARAMETER, "Asahina")
-            (pos, FUNC_DEF, "funcn")
-            (pos, FUNC_DEF, "funcn")
-                (pos, PARAMETER, "SOS")
-                (pos, ARITHMETICS)
-
-            (pos, ARITHMETICS)
-            (pos, RETURN_NOTHING)
     ;
 }

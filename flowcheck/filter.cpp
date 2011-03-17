@@ -72,7 +72,7 @@ void symbol_def_filter::def_var(misc::pos_type const& pos, std::string const& na
 void symbol_def_filter::def_func(misc::pos_type const& pos
                                , std::string const& name
                                , std::vector<std::string> const&
-                               , filter)
+                               , util::sptr<filter>)
 {
     error::forbid_def_func(pos, name);
 }

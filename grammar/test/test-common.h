@@ -62,8 +62,8 @@ namespace test {
     extern node_type const PARAMETER;
 
     extern node_type const BRANCH;
-    extern node_type const BRANCH_CONS_ONLY;
-    extern node_type const BRANCH_ALT_ONLY;
+    extern node_type const BRANCH_CONSQ_ONLY;
+    extern node_type const BRANCH_ALTER_ONLY;
 
     struct grammar_test
         : public testing::Test
