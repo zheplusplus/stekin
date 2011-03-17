@@ -170,24 +170,24 @@ TEST_F(SymbolTableTest, DefFunc)
     misc::pos_type pos(7);
     util::sref<proto::function const> func(NULL);
     std::vector<std::string> param_names;
-    func = symbols->def_func(pos, "f0", param_names);
+    func = symbols->def_func(pos, "f0", param_names, true);
     ASSERT_EQ(pos, func->pos);
     ASSERT_EQ("f0", func->name);
     ASSERT_TRUE(param_names == func->param_names);
     ASSERT_FALSE(error::has_error());
-    func = symbols->def_func(pos, "f1", param_names);
+    func = symbols->def_func(pos, "f1", param_names, true);
     ASSERT_EQ(pos, func->pos);
     ASSERT_EQ("f1", func->name);
     ASSERT_TRUE(param_names == func->param_names);
     ASSERT_FALSE(error::has_error());
     param_names = { "x", "y", "z" };
-    func = symbols->def_func(pos, "f0", param_names);
+    func = symbols->def_func(pos, "f0", param_names, true);
     ASSERT_EQ(pos, func->pos);
     ASSERT_EQ("f0", func->name);
     ASSERT_TRUE(param_names == func->param_names);
     ASSERT_FALSE(error::has_error());
     param_names.push_back("a");
-    func = symbols->def_func(pos, "f1", param_names);
+    func = symbols->def_func(pos, "f1", param_names, true);
     ASSERT_EQ(pos, func->pos);
     ASSERT_EQ("f1", func->name);
     ASSERT_TRUE(param_names == func->param_names);
@@ -201,10 +201,10 @@ TEST_F(SymbolTableTest, RefFunc)
     util::sref<proto::function const> func(NULL);
     std::vector<std::string> param_names;
     param_names = { "m", "n" };
-    symbols->def_func(pos, "fa", param_names);
+    symbols->def_func(pos, "fa", param_names, true);
     param_names = { "x", "y", "z" };
-    symbols->def_func(pos, "fa", param_names);
-    symbols->def_func(pos, "fb", param_names);
+    symbols->def_func(pos, "fa", param_names, true);
+    symbols->def_func(pos, "fb", param_names, true);
 
     func = symbols->query_func(ref_pos, "fa", 2);
     ASSERT_FALSE(error::has_error());
@@ -226,7 +226,7 @@ TEST_F(SymbolTableTest, RefFunc)
 
     proto::symbol_table inner_symbols(ref_sym());
     param_names = { "a", "b" };
-    inner_symbols.def_func(pos, "fb", param_names);
+    inner_symbols.def_func(pos, "fb", param_names, true);
     ASSERT_FALSE(error::has_error());
 
     func = inner_symbols.query_func(ref_pos, "fa", 2);
@@ -262,13 +262,13 @@ TEST_F(SymbolTableTest, RedefFunc)
     std::vector<std::string> param_names;
 
     param_names = { "m", "n" };
-    symbols->def_func(pos, "f0", param_names);
+    symbols->def_func(pos, "f0", param_names, true);
     param_names = { "x", "y", "z" };
-    symbols->def_func(pos, "f1", param_names);
+    symbols->def_func(pos, "f1", param_names, true);
     ASSERT_FALSE(error::has_error());
 
     param_names = { "a", "b" };
-    symbols->def_func(err_pos0, "f0", param_names);
+    symbols->def_func(err_pos0, "f0", param_names, true);
     ASSERT_TRUE(error::has_error());
     std::vector<func_redef_rec> local_redefs = get_local_func_redefs();
     ASSERT_EQ(1, local_redefs.size());
@@ -279,10 +279,10 @@ TEST_F(SymbolTableTest, RedefFunc)
 
     proto::symbol_table inner_symbols(ref_sym());
     param_names = { "a", "b" };
-    inner_symbols.def_func(pos, "f1", param_names);
+    inner_symbols.def_func(pos, "f1", param_names, true);
 
     param_names = { "a", "b", "c" };
-    inner_symbols.def_func(err_pos1, "f1", param_names);
+    inner_symbols.def_func(err_pos1, "f1", param_names, true);
 
     std::vector<func_redef_rec> extern_shadow_defs = get_func_shadow_external();
     ASSERT_EQ(1, extern_shadow_defs.size());
@@ -302,9 +302,9 @@ TEST_F(SymbolTableTest, NondefFunc)
     std::vector<std::string> param_names;
 
     param_names = { "m", "n" };
-    symbols->def_func(pos, "f0", param_names);
+    symbols->def_func(pos, "f0", param_names, true);
     param_names = { "x", "y", "z" };
-    symbols->def_func(pos, "f1", param_names);
+    symbols->def_func(pos, "f1", param_names, true);
     ASSERT_FALSE(error::has_error());
 
     symbols->query_func(err_pos0, "f2", 3);
