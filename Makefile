@@ -27,6 +27,7 @@ runtest:all
 	make -f util/test/Makefile
 	make -f parser/test/Makefile
 	make -f grammar/test/Makefile
+	make -f flowcheck/test/Makefile
 	make -f proto/test/Makefile
 	make -f instance/test/Makefile
 	./sample-test
@@ -51,5 +52,6 @@ cleant:
 	make -f util/test/Makefile cleant
 	make -f parser/test/Makefile cleant
 	make -f grammar/test/Makefile cleant
+	make -f flowcheck/test/Makefile cleant
 	make -f instance/test/Makefile cleant
 	make -f proto/test/Makefile cleant

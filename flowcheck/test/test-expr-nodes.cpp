@@ -6,27 +6,28 @@
 #include "../../proto/node-base.h"
 #include "../../proto/function.h"
 #include "../../proto/global-scope.h"
+#include "../../instance/node-base.h"
 #include "../../test/phony-errors.h"
 
 using namespace test;
 
-typedef grammar_test ExprNodesTest;
+typedef flow_check_test ExprNodesTest;
 
 TEST_F(ExprNodesTest, Literals)
 {
     misc::pos_type pos(1);
     util::sptr<proto::scope> scope(std::move(new proto::global_scope));
-    grammar::int_literal int0(pos, "20110116");
+    flchk::int_literal int0(pos, "20110116");
     int0.compile(*scope);
-    grammar::float_literal float0(pos, "19.50");
+    flchk::float_literal float0(pos, "19.50");
     float0.compile(*scope);
-    grammar::bool_literal bool0(pos, true);
+    flchk::bool_literal bool0(pos, true);
     bool0.compile(*scope);
-    grammar::int_literal int1(pos, "441499");
+    flchk::int_literal int1(pos, "441499");
     int1.compile(*scope);
-    grammar::float_literal float1(pos, "0.1950");
+    flchk::float_literal float1(pos, "0.1950");
     float1.compile(*scope);
-    grammar::bool_literal bool1(pos, false);
+    flchk::bool_literal bool1(pos, false);
     bool1.compile(*scope);
 
     data_tree::expect_one()
@@ -44,15 +45,15 @@ TEST_F(ExprNodesTest, Reference)
 {
     misc::pos_type pos(1);
     util::sptr<proto::scope> scope(std::move(new proto::global_scope));
-    grammar::reference ref0(pos, "a20110116");
+    flchk::reference ref0(pos, "a20110116");
     ref0.compile(*scope);
-    grammar::reference ref1(pos, "b1950");
+    flchk::reference ref1(pos, "b1950");
     ref1.compile(*scope);
 
     data_tree::expect_one()
     (SCOPE)
-        (pos, REFERENCE, "a20110116")
-        (pos, REFERENCE, "b1950")
+        (pos, VAR_REF, "a20110116")
+        (pos, VAR_REF, "b1950")
     ;
 }
 
@@ -60,26 +61,26 @@ TEST_F(ExprNodesTest, Operations)
 {
     misc::pos_type pos(2);
     util::sptr<proto::scope> scope(std::move(new proto::global_scope));
-    grammar::binary_op binary0(pos
-                             , new grammar::int_literal(pos, "1")
+    flchk::binary_op binary0(pos
+                             , new flchk::int_literal(pos, "1")
                              , "+"
-                             , new grammar::float_literal(pos, "11235.8"));
-    grammar::binary_op binary1(pos
-                             , new grammar::float_literal(pos, "1.12358")
+                             , new flchk::float_literal(pos, "11235.8"));
+    flchk::binary_op binary1(pos
+                             , new flchk::float_literal(pos, "1.12358")
                              , "<="
-                             , new grammar::int_literal(pos, "2357111317"));
+                             , new flchk::int_literal(pos, "2357111317"));
 
-    grammar::pre_unary_op pre_unary0(pos, "+", new grammar::float_literal(pos, ".13"));
-    grammar::pre_unary_op pre_unary1(pos
+    flchk::pre_unary_op pre_unary0(pos, "+", new flchk::float_literal(pos, ".13"));
+    flchk::pre_unary_op pre_unary1(pos
                                    , "-"
-                                   , new grammar::binary_op(pos
-                                                          , new grammar::reference(pos, "wasureru")
+                                   , new flchk::binary_op(pos
+                                                          , new flchk::reference(pos, "wasureru")
                                                           , "%"
-                                                          , new grammar::int_literal(pos, "1")));
+                                                          , new flchk::int_literal(pos, "1")));
 
-    grammar::conjunction conj(pos, new grammar::bool_literal(pos, true), new grammar::reference(pos, "koto"));
-    grammar::disjunction disj(pos, new grammar::bool_literal(pos, false), new grammar::int_literal(pos, "2"));
-    grammar::negation nega(pos, new grammar::float_literal(pos, "1954.0112"));
+    flchk::conjunction conj(pos, new flchk::bool_literal(pos, true), new flchk::reference(pos, "koto"));
+    flchk::disjunction disj(pos, new flchk::bool_literal(pos, false), new flchk::int_literal(pos, "2"));
+    flchk::negation nega(pos, new flchk::float_literal(pos, "1954.0112"));
 
     binary0.compile(*scope);
     binary1.compile(*scope);
@@ -100,10 +101,10 @@ TEST_F(ExprNodesTest, Operations)
             (pos, FLOATING, ".13")
         (pos, PRE_UNARY_OP, "+")
                 (pos, INTEGER, "1")
-                (pos, REFERENCE, "wasureru")
+                (pos, VAR_REF, "wasureru")
             (pos, BINARY_OP, "%")
         (pos, PRE_UNARY_OP, "-")
-            (pos, REFERENCE, "koto")
+            (pos, VAR_REF, "koto")
             (pos, BOOLEAN, "true")
         (pos, BINARY_OP, "&&")
             (pos, INTEGER, "2")
@@ -119,28 +120,28 @@ TEST_F(ExprNodesTest, Calls)
     misc::pos_type pos(3);
     util::sptr<proto::scope> scope(std::move(new proto::global_scope));
 
-    std::list<util::sptr<grammar::expr_base const>> params;
-    grammar::call call0(pos, "fib", std::move(params));
+    std::list<util::sptr<flchk::expr_base const>> params;
+    flchk::call call0(pos, "fib", std::move(params));
 
-    params.push_back(std::move(util::mkptr(new grammar::bool_literal(pos, false))));
+    params.push_back(std::move(util::mkptr(new flchk::bool_literal(pos, false))));
     params.push_back(std::move(util::mkptr(
-                    new grammar::pre_unary_op(pos, "-", new grammar::float_literal(pos, "11.11")))));
-    params.push_back(std::move(util::mkptr(new grammar::negation(pos, new grammar::int_literal(pos, "21")))));
-    params.push_back(std::move(util::mkptr(new grammar::reference(pos, "dareka_tasukete_kudasai"))));
-    grammar::call call1(pos, "leap", std::move(params));
+                    new flchk::pre_unary_op(pos, "-", new flchk::float_literal(pos, "11.11")))));
+    params.push_back(std::move(util::mkptr(new flchk::negation(pos, new flchk::int_literal(pos, "21")))));
+    params.push_back(std::move(util::mkptr(new flchk::reference(pos, "dareka_tasukete_kudasai"))));
+    flchk::call call1(pos, "leap", std::move(params));
 
     call0.compile(*scope);
     call1.compile(*scope);
 
     data_tree::expect_one()
     (SCOPE)
-        (pos, CALL, "fib", 0)
+        (pos, CALL, "fib", 0, false)
             (pos, BOOLEAN, "false")
                 (pos, FLOATING, "11.11")
             (pos, PRE_UNARY_OP, "-")
                 (pos, INTEGER, "21")
             (pos, PRE_UNARY_OP, "!")
-            (pos, REFERENCE, "dareka_tasukete_kudasai")
-        (pos, CALL, "leap", 4)
+            (pos, VAR_REF, "dareka_tasukete_kudasai")
+        (pos, CALL, "leap", 4, false)
     ;
 }

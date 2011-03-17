@@ -59,6 +59,16 @@ namespace test {
         {}
     };
 
+    struct flow_terminated_rec {
+        misc::pos_type const this_pos;
+        misc::pos_type const prev_pos;
+
+        flow_terminated_rec(misc::pos_type const tpos, misc::pos_type const& ppos)
+            : this_pos(tpos)
+            , prev_pos(ppos)
+        {}
+    };
+
     struct func_forbidden_rec {
         misc::pos_type const pos;
         std::string const name;
