@@ -1,4 +1,8 @@
 #include "test-common.h"
+#include "../../flowcheck/filter.h"
+#include "../../flowcheck/node-base.h"
+#include "../../flowcheck/function.h"
+#include "../../proto/node-base.h"
 #include "../../test/phony-errors.h"
 
 using namespace test;
@@ -35,26 +39,19 @@ std::ostream& operator<<(std::ostream& os, grammar_data const& data)
     return -1 == data.func_arg_size ? (os << data.pos) : (os << data.pos << " arg size=" << data.func_arg_size);
 }
 
-node_type const test::BOOLEAN("boolean");
-node_type const test::INTEGER("integer");
-node_type const test::FLOATING("floating");
-node_type const test::REFERENCE("reference");
-
-node_type const test::BINARY_OP("binary operation");
-node_type const test::PRE_UNARY_OP("prefix unary operation");
-
-node_type const test::CALL("call");
-
 node_type const test::VAR_DEF("var def");
+node_type const test::VAR_DEF_FILTERED("var def filtered");
 node_type const test::ARITHMETICS("arithmetics");
 node_type const test::RETURN("return");
 node_type const test::RETURN_NOTHING("return nothing");
 
-node_type const test::FUNC_DECL("func decl");
+node_type const test::FUNC_DEF("func def");
+node_type const test::FUNC_DEF_FILTERED("func def filtered");
 node_type const test::PARAMETER("parameter");
 
-node_type const test::SCOPE("scope");
 node_type const test::BRANCH("branch");
+node_type const test::BRANCH_CONS_ONLY("branch consequence only");
+node_type const test::BRANCH_ALT_ONLY("branch alternative only");
 
 void grammar_test::SetUp()
 {
@@ -64,4 +61,9 @@ void grammar_test::SetUp()
 void grammar_test::TearDown()
 {
     data_tree::verify();
+}
+
+util::sptr<flchk::expr_base const> grammar_test::mkexpr() const
+{
+    return std::move(util::mkptr(new phony_expr));
 }

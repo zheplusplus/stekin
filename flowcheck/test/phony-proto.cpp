@@ -3,10 +3,6 @@
 #include <map>
 
 #include "test-common.h"
-#include "../../proto/node-base.h"
-#include "../../proto/general-scope.h"
-#include "../../proto/global-scope.h"
-#include "../../proto/function.h"
 #include "../../instance/inst-mediate.h"
 
 using namespace test;
