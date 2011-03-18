@@ -10,9 +10,10 @@ struct _stk_type_bool {
     _stk_type_bool& operator=(_stk_type_bool const& rhs)
     {
         boolean = rhs.boolean;
+        return *this;
     }
 
-    operator bool()
+    operator bool() const
     {
         return boolean;
     }

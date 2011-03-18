@@ -204,7 +204,7 @@ ident:
 cond:
     cond OR conj_cond
     {
-        $$ = new grammar::disjunction($1->pos, $1, $3);
+        $$ = new grammar::disjunction($1->pos, std::move(util::mkptr($1)), std::move(util::mkptr($3)));
     }
     |
     conj_cond
@@ -216,7 +216,7 @@ cond:
 conj_cond:
     conj_cond AND nega_cond
     {
-        $$ = new grammar::conjunction($1->pos, $1, $3);
+        $$ = new grammar::conjunction($1->pos, std::move(util::mkptr($1)), std::move(util::mkptr($3)));
     }
     |
     nega_cond
@@ -228,7 +228,7 @@ conj_cond:
 nega_cond:
     '!' comp
     {
-        $$ = new grammar::negation($2->pos, $2);
+        $$ = new grammar::negation($2->pos, std::move(util::mkptr($2)));
     }
     |
     comp
@@ -240,7 +240,7 @@ nega_cond:
 comp:
     comp cmp_op expr
     {
-        $$ = new grammar::binary_op($1->pos, $1, $2->img, $3);
+        $$ = new grammar::binary_op($1->pos, std::move(util::mkptr($1)), $2->img, std::move(util::mkptr($3)));
         delete $2;
     }
     |
@@ -253,7 +253,7 @@ comp:
 expr:
     expr add_op term
     {
-        $$ = new grammar::binary_op($1->pos, $1, $2->img, $3);
+        $$ = new grammar::binary_op($1->pos, std::move(util::mkptr($1)), $2->img, std::move(util::mkptr($3)));
         delete $2;
     }
     |
@@ -266,7 +266,7 @@ expr:
 term:
     term mul_op unary_factor
     {
-        $$ = new grammar::binary_op($1->pos, $1, $2->img, $3);
+        $$ = new grammar::binary_op($1->pos, std::move(util::mkptr($1)), $2->img, std::move(util::mkptr($3)));
         delete $2;
     }
     |
@@ -279,7 +279,7 @@ term:
 unary_factor:
     pm_sign factor
     {
-        $$ = new grammar::pre_unary_op($2->pos, $1->img, $2);
+        $$ = new grammar::pre_unary_op($2->pos, $1->img, std::move(util::mkptr($2)));
         delete $1;
     }
     |

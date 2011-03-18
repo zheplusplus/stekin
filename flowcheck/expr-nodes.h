@@ -1,5 +1,5 @@
-#ifndef _STAKCENING_FLOW_CHECK_EXPRESSION_NODES_H__
-#define _STAKCENING_FLOW_CHECK_EXPRESSION_NODES_H__
+#ifndef __STAKCENING_FLOW_CHECK_EXPRESSION_NODES_H__
+#define __STAKCENING_FLOW_CHECK_EXPRESSION_NODES_H__
 
 #include <string>
 #include <list>
@@ -12,10 +12,10 @@ namespace flchk {
     struct pre_unary_op
         : public expr_base
     {
-        pre_unary_op(misc::pos_type const& pos, std::string const& op, expr_base const* r)
+        pre_unary_op(misc::pos_type const& pos, std::string const& op, util::sptr<expr_base const> r)
             : expr_base(pos)
             , op_img(op)
-            , rhs(r)
+            , rhs(std::move(r))
         {}
 
         util::sptr<proto::expr_base const> compile(util::sref<proto::scope> scope) const;
@@ -27,11 +27,14 @@ namespace flchk {
     struct binary_op
         : public expr_base
     {
-        binary_op(misc::pos_type const& pos, expr_base const* l, std::string const& op, expr_base const* r)
+        binary_op(misc::pos_type const& pos
+                , util::sptr<expr_base const> l
+                , std::string const& op
+                , util::sptr<expr_base const> r)
             : expr_base(pos)
-            , lhs(l)
+            , lhs(std::move(l))
             , op_img(op)
-            , rhs(r)
+            , rhs(std::move(r))
         {}
 
         util::sptr<proto::expr_base const> compile(util::sref<proto::scope> scope) const;
@@ -44,10 +47,10 @@ namespace flchk {
     struct conjunction
         : public expr_base
     {
-        conjunction(misc::pos_type const& pos, expr_base const* l, expr_base const* r)
+        conjunction(misc::pos_type const& pos, util::sptr<expr_base const> l, util::sptr<expr_base const> r)
             : expr_base(pos)
-            , lhs(l)
-            , rhs(r)
+            , lhs(std::move(l))
+            , rhs(std::move(r))
         {}
 
         util::sptr<proto::expr_base const> compile(util::sref<proto::scope> scope) const;
@@ -59,10 +62,10 @@ namespace flchk {
     struct disjunction
         : public expr_base
     {
-        disjunction(misc::pos_type const& pos, expr_base const* l, expr_base const* r)
+        disjunction(misc::pos_type const& pos, util::sptr<expr_base const> l, util::sptr<expr_base const> r)
             : expr_base(pos)
-            , lhs(l)
-            , rhs(r)
+            , lhs(std::move(l))
+            , rhs(std::move(r))
         {}
 
         util::sptr<proto::expr_base const> compile(util::sref<proto::scope> scope) const;
@@ -74,9 +77,9 @@ namespace flchk {
     struct negation
         : public expr_base
     {
-        negation(misc::pos_type const& pos, expr_base const* r)
+        negation(misc::pos_type const& pos, util::sptr<expr_base const> r)
             : expr_base(pos)
-            , rhs(r)
+            , rhs(std::move(r))
         {}
 
         util::sptr<proto::expr_base const> compile(util::sref<proto::scope> scope) const;
@@ -87,9 +90,9 @@ namespace flchk {
     struct reference
         : public expr_base
     {
-        reference(misc::pos_type const& pos, std::string const& name)
+        reference(misc::pos_type const& pos, std::string const& n)
             : expr_base(pos)
-            , name(name)
+            , name(n)
         {}
 
         util::sptr<proto::expr_base const> compile(util::sref<proto::scope> scope) const;
@@ -113,7 +116,7 @@ namespace flchk {
     struct int_literal
         : public expr_base
     {
-        int_literal(misc::pos_type const& pos, char const* val)
+        int_literal(misc::pos_type const& pos, std::string const& val)
             : expr_base(pos)
             , value(val)
         {}
@@ -126,7 +129,7 @@ namespace flchk {
     struct float_literal
         : public expr_base
     {
-        float_literal(misc::pos_type const& pos, char const* val)
+        float_literal(misc::pos_type const& pos, std::string const& val)
             : expr_base(pos)
             , value(val)
         {}
@@ -139,9 +142,9 @@ namespace flchk {
     struct call
         : public expr_base
     {
-        call(misc::pos_type const& pos, std::string const& name, std::list<util::sptr<expr_base const>> a)
+        call(misc::pos_type const& pos, std::string const& n, std::list<util::sptr<expr_base const>> a)
             : expr_base(pos)
-            , name(name)
+            , name(n)
             , args(std::move(a))
         {}
 

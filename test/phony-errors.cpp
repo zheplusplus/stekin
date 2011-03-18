@@ -222,8 +222,7 @@ std::vector<inv_char_rec> test::get_inv_char_recs()
 
 std::vector<else_not_match_rec> test::get_else_not_matches()
 {
-    return std::vector<else_not_match_rec>(else_not_matches_recs.begin()
-                                         , else_not_matches_recs.end());
+    return std::vector<else_not_match_rec>(else_not_matches_recs.begin(), else_not_matches_recs.end());
 }
 
 std::vector<if_matched_rec> test::get_if_matcheds()
@@ -238,8 +237,7 @@ std::vector<excess_ind_rec> test::get_excess_inds()
 
 std::vector<func_forbidden_rec> test::get_forbidden_funcs()
 {
-    return std::vector<func_forbidden_rec>(forbidden_func_recs.begin()
-                                         , forbidden_func_recs.end());
+    return std::vector<func_forbidden_rec>(forbidden_func_recs.begin(), forbidden_func_recs.end());
 }
 
 std::vector<forbid_def_rec> test::get_forbid_var_defs()
@@ -264,8 +262,7 @@ std::vector<func_redef_rec> test::get_local_func_redefs()
 
 std::vector<func_redef_rec> test::get_func_shadow_external()
 {
-    return std::vector<func_redef_rec>(func_shadow_external_recs.begin()
-                                     , func_shadow_external_recs.end());
+    return std::vector<func_redef_rec>(func_shadow_external_recs.begin(), func_shadow_external_recs.end());
 }
 
 std::vector<func_nondef_rec> test::get_func_nondefs()
@@ -290,8 +287,7 @@ std::vector<na_pre_unary_op_rec> test::get_na_pre_unary_ops()
 
 std::vector<ret_type_conflict_rec> test::get_ret_type_conflicts()
 {
-    return std::vector<ret_type_conflict_rec>(ret_type_conflict_recs.begin()
-                                            , ret_type_conflict_recs.end());
+    return std::vector<ret_type_conflict_rec>(ret_type_conflict_recs.begin(), ret_type_conflict_recs.end());
 }
 
 std::vector<ret_type_unresolvable_rec> test::get_ret_type_unresolvables()
