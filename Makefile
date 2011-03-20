@@ -2,7 +2,7 @@ WORKDIR=.
 
 include misc/mf-template.mk
 
-all:main.d
+all:main.d write-head.d
 	make -f util/Makefile
 	make -f report/Makefile
 	make -f parser/Makefile
@@ -21,6 +21,7 @@ all:main.d
 	        instance/*.o \
 	        output/*.o \
 	     -o stk-core.out
+	$(LINK) write-head.o util/string.o -o write-head.out
 
 runtest:all
 	make -f test/Makefile
@@ -44,10 +45,10 @@ clean:
 	rm -f $(MKTMP)
 	rm -f $(UTILDIR)/*.o
 	rm -f tmp.*
-	rm -f main.o
-	rm -f stk-core.out
+	rm -f *.o
+	rm -f *.out
 
-cleant:
+cleant:clean
 	make -f test/Makefile clean
 	make -f util/test/Makefile cleant
 	make -f parser/test/Makefile cleant

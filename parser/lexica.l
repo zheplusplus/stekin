@@ -3,6 +3,7 @@
 %}
 
 %option nounput
+%option always-interactive
 
 %%
 \r\n {

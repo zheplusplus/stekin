@@ -1,11 +1,5 @@
-#include <algorithm>
-#include <iostream>
-
-typedef int _stk_type_int;
-typedef double _stk_type_float;
-
 struct _stk_type_bool {
-    char boolean;
+    _stk_type_bool_1 boolean;
 
     _stk_type_bool& operator=(_stk_type_bool const& rhs)
     {

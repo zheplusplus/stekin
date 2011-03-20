@@ -1,15 +1,75 @@
-#ifndef __STACKENING_MISC_PLATFORM_H__
-#define __STACKENING_MISC_PLATFORM_H__
+#ifndef __STACKENING_MISCELLANY_PLATFORM_H__
+#define __STACKENING_MISCELLANY_PLATFORM_H__
 
 #include <string>
 
 namespace platform {
 
-    int const WORD_LENGTH_INBYTE = 4;
+    template <typename _EntryTraits, int _Size>
+    struct type_find {
+        template <bool _SizeMatched, typename _Traits, int _Sz> struct type_find_branch;
 
-    typedef int i4_type;
-    typedef double f8_type;
+        template <typename _Traits, int _Sz>
+        struct type_find_branch<true, _Traits, _Sz> {
+            typedef _Traits traits;
+        };
+
+        template <typename _Traits, int _Sz>
+        struct type_find_branch<false, _Traits, _Sz> {
+            typedef typename type_find<typename _EntryTraits::candidate_traits, _Sz>::traits traits;
+        };
+
+        typedef typename type_find_branch<_Size == sizeof(typename _EntryTraits::type)
+                                        , _EntryTraits
+                                        , _Size>::traits traits;
+        typedef typename traits::type type;
+    };
+
+    struct c_long_long {
+        static std::string const& type_name();
+        typedef long long type;
+    };
+
+    struct c_long {
+        static std::string const& type_name();
+        typedef long type;
+        typedef c_long_long candidate_traits;
+    };
+
+    struct c_int {
+        static std::string const& type_name();
+        typedef int type;
+        typedef c_long candidate_traits;
+    };
+
+    struct c_short {
+        static std::string const& type_name();
+        typedef short type;
+        typedef c_int candidate_traits;
+    };
+
+    struct c_double {
+        static std::string const& type_name();
+        typedef double type;
+    };
+
+    struct c_char {
+        static std::string const& type_name();
+        typedef char type;
+    };
+
+    int const WORD_LENGTH_INBYTE = 4;
+    int const INT_SIZE = 4;
+    int const FLOAT_SIZE = 8;
+
+    typedef type_find<c_short, INT_SIZE>::traits i4_traits;
+    typedef type_find<c_double, FLOAT_SIZE>::traits f8_traits;
+    typedef type_find<c_char, 1>::traits b1_traits;
+
+    typedef type_find<c_short, INT_SIZE>::type i4_type;
+    typedef type_find<c_double, FLOAT_SIZE>::type f8_type;
+    typedef type_find<c_char, 1>::type b1_type;
 
 }
 
-#endif /* __STACKENING_MISC_PLATFORM_H__ */
+#endif /* __STACKENING_MISCELLANY_PLATFORM_H__ */

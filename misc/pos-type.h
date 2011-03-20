@@ -1,5 +1,5 @@
-#ifndef __STACKENING_MISC_POSITION_TYPE_H__
-#define __STACKENING_MISC_POSITION_TYPE_H__
+#ifndef __STACKENING_MISCELLANY_POSITION_TYPE_H__
+#define __STACKENING_MISCELLANY_POSITION_TYPE_H__
 
 namespace misc {
 
@@ -25,4 +25,4 @@ _OS& operator<<(_OS& os, misc::pos_type const& pos)
     return os;
 }
 
-#endif /* __STACKENING_MISC_POSITION_TYPE_H__ */
+#endif /* __STACKENING_MISCELLANY_POSITION_TYPE_H__ */
