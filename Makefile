@@ -2,7 +2,7 @@ WORKDIR=.
 
 include misc/mf-template.mk
 
-all:main.d write-head.d
+all:main.d head-writer.d
 	make -f util/Makefile
 	make -f report/Makefile
 	make -f parser/Makefile
@@ -21,7 +21,7 @@ all:main.d write-head.d
 	        instance/*.o \
 	        output/*.o \
 	     -o stk-core.out
-	$(LINK) write-head.o util/string.o -o write-head.out
+	$(LINK) head-writer.o util/string.o -o head-writer.out
 
 runtest:all
 	make -f test/Makefile

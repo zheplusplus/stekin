@@ -6,13 +6,13 @@ using namespace test;
 
 data_tree& data_tree::operator()(misc::pos_type const& pos, node_type const& type, std::string const& str)
 {
-    base_type::operator()(type, flow_check_data(pos), str);
+    base_type::operator()(type, flowcheck_data(pos), str);
     return *this;
 }
 
 data_tree& data_tree::operator()(misc::pos_type const& pos, node_type const& type)
 {
-    base_type::operator()(type, flow_check_data(pos));
+    base_type::operator()(type, flowcheck_data(pos));
     return *this;
 }
 
@@ -22,17 +22,17 @@ data_tree& data_tree::operator()(misc::pos_type const& pos
                                , int func_arg_size
                                , bool func_hint_ret_void)
 {
-    base_type::operator()(type, flow_check_data(pos, func_arg_size, func_hint_ret_void), str);
+    base_type::operator()(type, flowcheck_data(pos, func_arg_size, func_hint_ret_void), str);
     return *this;
 }
 
 data_tree& data_tree::operator()(node_type const& type)
 {
-    base_type::operator()(type, flow_check_data());
+    base_type::operator()(type, flowcheck_data());
     return *this;
 }
 
-std::ostream& operator<<(std::ostream& os, flow_check_data const& data)
+std::ostream& operator<<(std::ostream& os, flowcheck_data const& data)
 {
     return -1 == data.func_arg_size
         ? (os << data.pos)
@@ -61,12 +61,12 @@ node_type const test::PARAMETER("parameter");
 node_type const test::SCOPE("scope");
 node_type const test::BRANCH("branch");
 
-void flow_check_test::SetUp()
+void flowcheck_test::SetUp()
 {
     clear_err();
 }
 
-void flow_check_test::TearDown()
+void flowcheck_test::TearDown()
 {
     data_tree::verify();
 }

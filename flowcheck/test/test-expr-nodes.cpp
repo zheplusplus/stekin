@@ -11,7 +11,7 @@
 
 using namespace test;
 
-typedef flow_check_test ExprNodesTest;
+typedef flowcheck_test ExprNodesTest;
 
 TEST_F(ExprNodesTest, Literals)
 {

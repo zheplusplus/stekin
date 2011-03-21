@@ -9,30 +9,30 @@
 
 namespace test {
 
-    struct flow_check_data {
+    struct flowcheck_data {
         misc::pos_type const pos;
         int const func_arg_size;
         bool const func_hint_ret_void;
 
-        flow_check_data(misc::pos_type const& ps, int arg_size, bool hint_ret_void)
+        flowcheck_data(misc::pos_type const& ps, int arg_size, bool hint_ret_void)
             : pos(ps)
             , func_arg_size(arg_size)
             , func_hint_ret_void(hint_ret_void)
         {}
 
-        explicit flow_check_data(misc::pos_type const ps)
+        explicit flowcheck_data(misc::pos_type const ps)
             : pos(ps)
             , func_arg_size(-1)
             , func_hint_ret_void(false)
         {}
 
-        flow_check_data()
+        flowcheck_data()
             : pos(-1)
             , func_arg_size(-1)
             , func_hint_ret_void(false)
         {}
 
-        bool operator==(flow_check_data const& rhs) const
+        bool operator==(flowcheck_data const& rhs) const
         {
             return pos == rhs.pos
                 && func_arg_size == rhs.func_arg_size
@@ -40,14 +40,14 @@ namespace test {
         }
     };
 
-    typedef data_node_templ<flow_check_data> data_node_base;
-    typedef nothing_node_templ<flow_check_data> nothing_node;
-    typedef string_node_templ<flow_check_data> string_node;
+    typedef data_node_templ<flowcheck_data> data_node_base;
+    typedef nothing_node_templ<flowcheck_data> nothing_node;
+    typedef string_node_templ<flowcheck_data> string_node;
 
     struct data_tree
-        : public data_tree_templ<flow_check_data, data_tree>
+        : public data_tree_templ<flowcheck_data, data_tree>
     {
-        typedef data_tree_templ<flow_check_data, data_tree> base_type;
+        typedef data_tree_templ<flowcheck_data, data_tree> base_type;
 
         data_tree& operator()(misc::pos_type const& pos, node_type const& type, std::string const& str);
         data_tree& operator()(misc::pos_type const& pos
@@ -80,7 +80,7 @@ namespace test {
     extern node_type const SCOPE;
     extern node_type const BRANCH;
 
-    struct flow_check_test
+    struct flowcheck_test
         : public testing::Test
     {
         void SetUp();
@@ -89,6 +89,6 @@ namespace test {
 
 }
 
-std::ostream& operator<<(std::ostream& os, test::flow_check_data const& data);
+std::ostream& operator<<(std::ostream& os, test::flowcheck_data const& data);
 
 #endif /* __STACKENING_FLOW_CHECK_TEST_TEST_COMMON_H__ */

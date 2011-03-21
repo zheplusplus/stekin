@@ -58,7 +58,7 @@ namespace platform {
         typedef char type;
     };
 
-    int const WORD_LENGTH_INBYTE = 4;
+    int const WORD_LENGTH_INBYTE = sizeof(void*);
     int const INT_SIZE = 4;
     int const FLOAT_SIZE = 8;
 
