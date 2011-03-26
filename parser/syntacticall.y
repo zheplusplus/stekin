@@ -192,6 +192,12 @@ ref:
         $$ = new grammar::reference($1->pos, $1->id);
         delete $1;
     }
+    |
+    ident '@' INT_LITERAL
+    {
+        $$ = new grammar::func_reference($1->pos, $1->id, atoi(yytext));
+        delete $1;
+    }
 ;
 
 ident:

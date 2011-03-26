@@ -15,6 +15,7 @@ namespace grammar {
     typedef flchk::int_literal int_literal;
     typedef flchk::float_literal float_literal;
     typedef flchk::call call;
+    typedef flchk::func_reference func_reference;
 
 }
 

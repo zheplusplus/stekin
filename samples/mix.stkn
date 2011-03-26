@@ -15,3 +15,6 @@ else
 func print_10()
     if true
         write(+10.0)
+
+x: print_10@0
+y: fib @ 1

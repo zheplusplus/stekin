@@ -96,6 +96,11 @@ TEST(Syntax, Mix)
                                 (misc::pos_type(17), FLOATING, "10.0")
                             (misc::pos_type(17), PRE_UNARY_OP_END)
                     (misc::pos_type(17), FUNC_CALL_END)
+
+        (misc::pos_type(19), 0, VAR_DEF, "x")
+            (misc::pos_type(19), IDENTIFIER, "print_10@0")
+        (misc::pos_type(20), 0, VAR_DEF, "y")
+            (misc::pos_type(20), IDENTIFIER, "fib@1")
     ;
     data_tree::verify();
 }

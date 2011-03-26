@@ -154,6 +154,21 @@ namespace flchk {
         std::list<util::sptr<expr_base const>> const args;
     };
 
+    struct func_reference
+        : public expr_base
+    {
+        func_reference(misc::pos_type const& pos, std::string const& n, int pc)
+            : expr_base(pos)
+            , name(n)
+            , param_count(pc)
+        {}
+
+        util::sptr<proto::expr_base const> compile(util::sref<proto::scope> scope) const;
+
+        std::string const name;
+        int const param_count;
+    };
+
 }
 
 #endif /* _STAKCENING_FLOW_CHECK_EXPRESSION_NODES_H__ */

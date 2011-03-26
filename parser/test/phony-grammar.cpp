@@ -8,6 +8,7 @@
 #include "../../flowcheck/function.h"
 #include "../../flowcheck/node-base.h"
 #include "../../proto/node-base.h"
+#include "../../util/string.h"
 
 using namespace grammar;
 using namespace test;
@@ -103,6 +104,12 @@ util::sptr<proto::expr_base const> call::compile(util::sref<proto::scope>) const
                       expr->compile(nullref());
                   });
     data_tree::actual_one()(pos, FUNC_CALL_END);
+    return std::move(nullptr());;
+}
+
+util::sptr<proto::expr_base const> func_reference::compile(util::sref<proto::scope>) const
+{
+    data_tree::actual_one()(pos, IDENTIFIER, name + '@' + util::str(param_count));
     return std::move(nullptr());;
 }
 
