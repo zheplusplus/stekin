@@ -16,7 +16,7 @@ namespace proto {
     {
         util::sref<inst::function> inst(misc::pos_type const& pos
                                       , util::sref<inst::scope> ext_scope
-                                      , std::vector<inst::type const*> const& arg_types);
+                                      , std::vector<util::sref<inst::type const>> const& arg_types);
 
         function(misc::pos_type const& ps
                , std::string const& func_name
@@ -43,10 +43,10 @@ namespace proto {
     private:
         struct instance_info {
             std::map<std::string, inst::variable const> const ext_vars;
-            std::vector<inst::type const*> const arg_types;
+            std::vector<util::sref<inst::type const>> const arg_types;
 
             instance_info(std::map<std::string, inst::variable const> const& e
-                        , std::vector<inst::type const*> const& a)
+                        , std::vector<util::sref<inst::type const>> const& a)
                 : ext_vars(e)
                 , arg_types(a)
             {}
@@ -55,9 +55,9 @@ namespace proto {
         };
 
         std::map<instance_info, util::sref<inst::function>> _instance_cache;
-    private:
+    public:
         std::map<std::string, inst::variable const>
-                _bind_external_vars(misc::pos_type const& pos, util::sref<inst::scope const> ext_scope) const;
+                bind_external_vars(misc::pos_type const& pos, util::sref<inst::scope const> ext_scope) const;
     };
 
 }

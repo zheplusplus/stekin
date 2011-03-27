@@ -25,6 +25,21 @@ namespace util {
             os << _id;
             return os.str();
         }
+
+        bool operator<(id const& rhs) const
+        {
+            return _id < rhs._id;
+        }
+
+        bool operator==(id const& rhs) const
+        {
+            return _id == rhs._id;
+        }
+
+        bool operator!=(id const& rhs) const
+        {
+            return !operator==(rhs);
+        }
     private:
         void const* const _id;
     };

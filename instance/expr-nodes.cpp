@@ -30,52 +30,57 @@ negation::negation(misc::pos_type const& p, util::sptr<expr_base const> r)
     check_condition_type(p, rhs->typeof());
 }
 
-type const* int_literal::typeof() const
+util::sref<type const> int_literal::typeof() const
 {
     return type::BIT_INT;
 }
 
-type const* float_literal::typeof() const
+util::sref<type const> float_literal::typeof() const
 {
     return type::BIT_FLOAT;
 }
 
-type const* bool_literal::typeof() const
+util::sref<type const> bool_literal::typeof() const
 {
     return type::BIT_BOOL;
 }
 
-type const* reference::typeof() const
+util::sref<type const> reference::typeof() const
 {
     return var.vtype;
 }
 
-type const* call::typeof() const
+util::sref<type const> call::typeof() const
 {
     return func->get_return_type();
 }
 
-type const* binary_op::typeof() const
+util::sref<type const> func_reference::typeof() const
+{
+    return util::mkref(_type);
+}
+
+util::sref<type const> binary_op::typeof() const
 {
     return op->ret_type;
 }
 
-type const* pre_unary_op::typeof() const
+util::sref<type const> pre_unary_op::typeof() const
 {
     return op->ret_type;
 }
 
-type const* conjunction::typeof() const
+util::sref<type const> conjunction::typeof() const
 {
     return type::BIT_BOOL;
 }
 
-type const* disjunction::typeof() const
+util::sref<type const> disjunction::typeof() const
 {
     return type::BIT_BOOL;
 }
 
-type const* negation::typeof() const
+util::sref<type const> negation::typeof() const
 {
     return type::BIT_BOOL;
 }
@@ -97,7 +102,7 @@ void bool_literal::write() const
 
 void reference::write() const
 {
-    output::ref_level(var.stack_offset, var.level, typeof()->name);
+    output::ref_level(var.stack_offset, var.level, typeof()->name());
 }
 
 void call::write() const
@@ -112,6 +117,8 @@ void call::write() const
                   });
     output::write_call_end();
 }
+
+void func_reference::write() const {}
 
 void binary_op::write() const
 {

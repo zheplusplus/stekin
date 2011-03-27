@@ -10,13 +10,15 @@ using namespace inst;
 
 operation const* scope::query_binary(misc::pos_type const& pos
                                    , std::string const& op
-                                   , type const* lhs
-                                   , type const* rhs) const
+                                   , util::sref<type const> lhs
+                                   , util::sref<type const> rhs) const
 {
     return operation::query_binary(pos, op, lhs, rhs);
 }
 
-operation const* scope::query_pre_unary(misc::pos_type const& pos, std::string const& op, type const* rhs) const
+operation const* scope::query_pre_unary(misc::pos_type const& pos
+                                      , std::string const& op
+                                      , util::sref<type const> rhs) const
 {
     return operation::query_pre_unary(pos, op, rhs);
 }

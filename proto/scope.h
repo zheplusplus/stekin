@@ -21,6 +21,9 @@ namespace proto {
         virtual util::sptr<expr_base const> make_call(misc::pos_type const& pos
                                                     , std::string const& name
                                                     , std::vector<util::sptr<expr_base const>> args) const = 0;
+        virtual util::sptr<expr_base const> make_func_reference(misc::pos_type const& pos
+                                                              , std::string const& name
+                                                              , int param_count) const = 0;
         util::sptr<expr_base const> make_binary(misc::pos_type const& pos
                                               , util::sptr<expr_base const> lhs
                                               , std::string const& op

@@ -5,9 +5,11 @@
 
 #include "node-base.h"
 #include "variable.h"
+#include "type.h"
 #include "fwd-decl.h"
 #include "../util/pointer.h"
 #include "../misc/platform.h"
+#include "../proto/fwd-decl.h"
 
 namespace inst {
 
@@ -18,7 +20,7 @@ namespace inst {
             : value(v)
         {}
 
-        type const* typeof() const;
+        util::sref<type const> typeof() const;
         void write() const;
 
         platform::i4_type const value;
@@ -31,7 +33,7 @@ namespace inst {
             : value(v)
         {}
 
-        type const* typeof() const;
+        util::sref<type const> typeof() const;
         void write() const;
 
         platform::f8_type const value;
@@ -44,7 +46,7 @@ namespace inst {
             : value(v)
         {}
 
-        type const* typeof() const;
+        util::sref<type const> typeof() const;
         void write() const;
 
         bool const value;
@@ -57,7 +59,7 @@ namespace inst {
             : var(v)
         {}
 
-        type const* typeof() const;
+        util::sref<type const> typeof() const;
         void write() const;
 
         variable const var;
@@ -71,11 +73,24 @@ namespace inst {
             , args(std::move(a))
         {}
 
-        type const* typeof() const;
+        util::sref<type const> typeof() const;
         void write() const;
 
         util::sref<function const> const func;
         std::vector<util::sptr<expr_base const>> args;
+    };
+
+    struct func_reference
+        : public expr_base
+    {
+        func_reference(util::sref<proto::function> func_proto, std::map<std::string, variable const> const& cr)
+            : _type(func_proto, cr)
+        {}
+
+        util::sref<type const> typeof() const;
+        void write() const;
+    private:
+        func_reference_type const _type;
     };
 
     struct binary_op
@@ -87,7 +102,7 @@ namespace inst {
             , rhs(std::move(r))
         {}
 
-        type const* typeof() const;
+        util::sref<type const> typeof() const;
         void write() const;
 
         util::sptr<expr_base const> const lhs;
@@ -103,7 +118,7 @@ namespace inst {
             , rhs(std::move(r))
         {}
 
-        type const* typeof() const;
+        util::sref<type const> typeof() const;
         void write() const;
 
         operation const* const op;
@@ -115,7 +130,7 @@ namespace inst {
     {
         conjunction(misc::pos_type const& p, util::sptr<expr_base const> l, util::sptr<expr_base const> r);
 
-        type const* typeof() const;
+        util::sref<type const> typeof() const;
         void write() const;
 
         util::sptr<expr_base const> const lhs;
@@ -127,7 +142,7 @@ namespace inst {
     {
         disjunction(misc::pos_type const& p, util::sptr<expr_base const> l, util::sptr<expr_base const> r);
 
-        type const* typeof() const;
+        util::sref<type const> typeof() const;
         void write() const;
 
         util::sptr<expr_base const> const lhs;
@@ -139,7 +154,7 @@ namespace inst {
     {
         explicit negation(misc::pos_type const& p, util::sptr<expr_base const> r);
 
-        type const* typeof() const;
+        util::sref<type const> typeof() const;
         void write() const;
 
         util::sptr<expr_base const> const rhs;

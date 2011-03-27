@@ -37,7 +37,9 @@ static int calc_offset_on_align(int base, int new_size)
     return base - mod + platform::WORD_LENGTH_INBYTE;
 }
 
-variable symbol_table::def_var(misc::pos_type const& pos, type const* var_type, std::string const& name)
+variable symbol_table::def_var(misc::pos_type const& pos
+                             , util::sref<type const> var_type
+                             , std::string const& name)
 {
     int offset = calc_offset_on_align(_ss_used, var_type->size);
     auto insert_result = _local_defs.insert(std::make_pair(name, variable(pos, var_type, offset, level)));

@@ -63,3 +63,8 @@ util::sptr<proto::expr_base const> call::compile(util::sref<proto::scope> scope)
                   });
     return std::move(scope->make_call(pos, name, std::move(arguments)));
 }
+
+util::sptr<proto::expr_base const> func_reference::compile(util::sref<proto::scope> scope) const
+{
+    return std::move(scope->make_func_reference(pos, name, param_count));
+}

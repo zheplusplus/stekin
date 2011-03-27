@@ -35,7 +35,7 @@ void branch::write() const
 
 void initialization::write() const
 {
-    output::ref_this_level(offset, init->typeof()->name);
+    output::ref_this_level(offset, init->typeof()->name());
     output::assign_sign();
     init->write();
     output::end_of_statement();

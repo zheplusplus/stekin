@@ -4,26 +4,27 @@
 #include <string>
 
 #include "fwd-decl.h"
+#include "../util/pointer.h"
 #include "../misc/pos-type.h"
 
 namespace inst {
 
     struct operation {
-        type const* const ret_type;
+        util::sref<type const> const ret_type;
         std::string const op_img;
 
-        operation(type const* rt, std::string const& oi)
+        operation(util::sref<type const> rt, std::string const& oi)
             : ret_type(rt)
             , op_img(oi)
         {}
 
         static operation const* query_binary(misc::pos_type const& pos
                                            , std::string const& op
-                                           , type const* lhs
-                                           , type const* rhs);
+                                           , util::sref<type const> lhs
+                                           , util::sref<type const> rhs);
         static operation const* query_pre_unary(misc::pos_type const& pos
                                               , std::string const& op
-                                              , type const* rhs);
+                                              , util::sref<type const> rhs);
     };
 
 }

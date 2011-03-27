@@ -56,6 +56,9 @@ namespace proto {
                                     , std::string const& name
                                     , std::vector<std::string> const& param_names
                                     , bool hint_void_return);
+        util::sptr<expr_base const> query_call(misc::pos_type const& pos
+                                             , std::string const& name
+                                             , std::vector<util::sptr<expr_base const>> args) const;
         util::sref<function> query_func(misc::pos_type const& pos
                                       , std::string const& name
                                       , int param_count) const;

@@ -26,6 +26,9 @@ namespace proto {
         util::sptr<expr_base const> make_call(misc::pos_type const& pos
                                             , std::string const& name
                                             , std::vector<util::sptr<expr_base const>> args) const;
+        util::sptr<expr_base const> make_func_reference(misc::pos_type const& pos
+                                                      , std::string const& name
+                                                      , int param_count) const;
 
         void def_var(misc::pos_type const& pos, std::string const& name);
 

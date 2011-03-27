@@ -11,7 +11,7 @@
 
 using namespace inst;
 
-variable function::def_var(misc::pos_type const& pos, type const* vtype, std::string const& name)
+variable function::def_var(misc::pos_type const& pos, util::sref<type const> vtype, std::string const& name)
 {
     return _symbols.def_var(pos, vtype, name);
 }
@@ -21,15 +21,15 @@ variable function::query_var(misc::pos_type const& pos, std::string const& name)
     return _symbols.query_var(pos, name);
 }
 
-type const* function::get_return_type() const
+util::sref<type const> function::get_return_type() const
 {
     return type::BIT_VOID;
 }
 
-void function::set_return_type(misc::pos_type const& pos, type const* return_type)
+void function::set_return_type(misc::pos_type const& pos, util::sref<type const> return_type)
 {
     if (type::BIT_VOID != return_type) {
-        error::conflict_return_type(pos, type::BIT_VOID->name, return_type->name);
+        error::conflict_return_type(pos, type::BIT_VOID->name(), return_type->name());
     }
 }
 
@@ -50,19 +50,19 @@ namespace {
             , _return_type(type::BAD_TYPE)
         {}
 
-        type const* get_return_type() const
+        util::sref<type const> get_return_type() const
         {
             return _return_type;
         }
 
-        void set_return_type(misc::pos_type const& pos, type const* return_type)
+        void set_return_type(misc::pos_type const& pos, util::sref<type const> return_type)
         {
             if (type::BAD_TYPE == _return_type) {
                 _return_type = return_type;
                 return;
             }
             if (_return_type != return_type) {
-                error::conflict_return_type(pos, _return_type->name, return_type->name);
+                error::conflict_return_type(pos, _return_type->name(), return_type->name());
             }
         }
 
@@ -71,7 +71,7 @@ namespace {
             return type::BAD_TYPE != _return_type;
         }
 
-        type const* _return_type;
+        util::sref<type const> _return_type;
     };
 
     struct func_inst_recs
@@ -149,7 +149,7 @@ static std::list<output::stack_var_record> args_to_var_recs(std::list<inst::vari
                 , [&](inst::variable const& var)
                   {
                       recs.push_back(
-                          output::stack_var_record(var.vtype->name, var.stack_offset, var.vtype->size));
+                          output::stack_var_record(var.vtype->name(), var.stack_offset, var.vtype->size));
                   });
     return recs;
 }
@@ -160,7 +160,7 @@ void function::write_decls()
                 , func_inst_recs::instance.end()
                 , [&](util::sptr<function const> const& func)
                   {
-                      output::write_func_decl(func->get_return_type()->name
+                      output::write_func_decl(func->get_return_type()->name()
                                             , func.id()
                                             , args_to_var_recs(func->_symbols.get_args())
                                             , func->_symbols.level
@@ -174,7 +174,7 @@ void function::write_impls()
                 , func_inst_recs::instance.end()
                 , [&](util::sptr<function const> const& func)
                   {
-                      output::write_func_perform_impl(func->get_return_type()->name, func.id());
+                      output::write_func_perform_impl(func->get_return_type()->name(), func.id());
                       func->_block.write();
                   });
 }

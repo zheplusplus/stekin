@@ -50,7 +50,7 @@ namespace {
             return inst;
         }
 
-        operation const* query(std::string const& op, type const* lhs, type const* rhs) const
+        operation const* query(std::string const& op, util::sref<type const> lhs, util::sref<type const> rhs) const
         {
             if (type::BAD_TYPE == lhs || type::BAD_TYPE == rhs) {
                 return &BAD_OPERATION;
@@ -74,7 +74,7 @@ namespace {
             return third_stage->second;
         }
     private:
-        binary_op_map& add(std::string const& op_id, type const* lhs, type const* rhs, operation const* oper)
+        binary_op_map& add(std::string const& op_id, util::sref<type const> lhs, util::sref<type const> rhs, operation const* oper)
         {
             _map[op_id][lhs][rhs] = oper;
             return *this;
@@ -110,7 +110,7 @@ namespace {
             ;
         }
 
-        std::map<std::string, std::map<type const*, std::map<type const*, operation const*>>> _map;
+        std::map<std::string, std::map<util::sref<type const>, std::map<util::sref<type const>, operation const*>>> _map;
     };
 
     struct pre_unary_op_map {
@@ -120,7 +120,7 @@ namespace {
             return inst;
         }
 
-        operation const* query(std::string const& op, type const* rhs) const
+        operation const* query(std::string const& op, util::sref<type const> rhs) const
         {
             if (type::BAD_TYPE == rhs) {
                 return &BAD_OPERATION;
@@ -139,7 +139,7 @@ namespace {
             return second_stage->second;
         }
     private:
-        pre_unary_op_map& add(std::string const& op_id, type const* rhs, operation const* oper)
+        pre_unary_op_map& add(std::string const& op_id, util::sref<type const> rhs, operation const* oper)
         {
             _map[op_id][rhs] = oper;
             return *this;
@@ -156,30 +156,32 @@ namespace {
             ;
         }
 
-        std::map<std::string, std::map<type const*, operation const*>> _map;
+        std::map<std::string, std::map<util::sref<type const>, operation const*>> _map;
     };
 
 }
 
 operation const* operation::query_binary(misc::pos_type const& pos
                                        , std::string const& op
-                                       , type const* lhs
-                                       , type const* rhs)
+                                       , util::sref<type const> lhs
+                                       , util::sref<type const> rhs)
 {
     try {
         return binary_op_map::instance().query(op, lhs, rhs);
     } catch (bad_op_exception) {
-        error::binary_op_not_avai(pos, op, lhs->name, rhs->name);
+        error::binary_op_not_avai(pos, op, lhs->name(), rhs->name());
         return &BAD_OPERATION;
     }
 }
 
-operation const* operation::query_pre_unary(misc::pos_type const& pos, std::string const& op, type const* rhs)
+operation const* operation::query_pre_unary(misc::pos_type const& pos
+                                          , std::string const& op
+                                          , util::sref<type const> rhs)
 {
     try {
         return pre_unary_op_map::instance().query(op, rhs);
     } catch (bad_op_exception) {
-        error::pre_unary_op_not_avai(pos, op, rhs->name);
+        error::pre_unary_op_not_avai(pos, op, rhs->name());
         return &BAD_OPERATION;
     }
 }

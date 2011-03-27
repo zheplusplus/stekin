@@ -7,14 +7,15 @@
 
 #include "fwd-decl.h"
 #include "../misc/pos-type.h"
+#include "../util/pointer.h"
 
 namespace inst {
 
     struct arg_name_type_pair {
         std::string const name;
-        type const* const atype;
+        util::sref<type const> const atype;
 
-        arg_name_type_pair(std::string const& n, type const* const t)
+        arg_name_type_pair(std::string const& n, util::sref<type const> const t)
             : name(n)
             , atype(t)
         {}
@@ -37,7 +38,7 @@ namespace inst {
             , _external_defs(std::move(rhs._external_defs))
         {}
     public:
-        variable def_var(misc::pos_type const& pos, type const* vtype, std::string const& name);
+        variable def_var(misc::pos_type const& pos, util::sref<type const> vtype, std::string const& name);
         variable query_var(misc::pos_type const& pos, std::string const& name) const;
     public:
         int const level;

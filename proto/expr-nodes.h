@@ -78,6 +78,34 @@ namespace proto {
         std::vector<util::sptr<expr_base const>> const args;
     };
 
+    struct functor
+        : public expr_base
+    {
+        functor(misc::pos_type const& ps, std::string const& n, std::vector<util::sptr<expr_base const>> a)
+            : expr_base(ps)
+            , name(n)
+            , args(std::move(a))
+        {}
+
+        util::sptr<inst::expr_base const> inst(util::sref<inst::scope> scope) const;
+
+        std::string const name;
+        std::vector<util::sptr<expr_base const>> const args;
+    };
+
+    struct func_reference
+        : public expr_base
+    {
+        func_reference(misc::pos_type const& ps, util::sref<function> f)
+            : expr_base(ps)
+            , func(f)
+        {}
+
+        util::sptr<inst::expr_base const> inst(util::sref<inst::scope> scope) const;
+
+        util::sref<function> const func;
+    };
+
     struct binary_op
         : public expr_base
     {
