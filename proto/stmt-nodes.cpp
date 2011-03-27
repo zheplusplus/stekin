@@ -20,7 +20,7 @@ util::sptr<inst::mediate_base> arithmetics::inst(util::sref<inst::scope> scope) 
 util::sptr<inst::mediate_base> var_def::inst(util::sref<inst::scope> scope) const
 {
     util::sptr<inst::expr_base const> init_val = init->inst(scope);
-    inst::type const* init_type = init_val->typeof();
+    util::sref<inst::type const> init_type = init_val->typeof();
     return std::move(mkdirect(new inst::initialization(scope->def_var(pos, init_type, name).stack_offset
                                                      , std::move(init_val))));
 }

@@ -27,10 +27,14 @@ util::sptr<inst::expr_base const> reference::inst(util::sref<inst::scope> scope)
     return std::move(util::mkptr(new inst::reference(scope->query_var(pos, name))));
 }
 
-util::sptr<inst::expr_base const> call::inst(util::sref<inst::scope> scope) const
+static util::sptr<inst::expr_base const> instantiate_function(
+            misc::pos_type const& pos
+          , util::sref<function> const func
+          , std::vector<util::sptr<expr_base const>> const& args
+          , util::sref<inst::scope> scope)
 {
     std::vector<util::sptr<inst::expr_base const>> arg_instances;
-    std::vector<inst::type const*> arg_types;
+    std::vector<util::sref<inst::type const>> arg_types;
     std::for_each(args.begin()
                 , args.end()
                 , [&](util::sptr<expr_base const> const& expr)
@@ -42,12 +46,28 @@ util::sptr<inst::expr_base const> call::inst(util::sref<inst::scope> scope) cons
     return std::move(util::mkptr(new inst::call(func->inst(pos, scope, arg_types), std::move(arg_instances))));
 }
 
+util::sptr<inst::expr_base const> call::inst(util::sref<inst::scope> scope) const
+{
+    return std::move(instantiate_function(pos, func, args, scope));
+}
+
+util::sptr<inst::expr_base const> functor::inst(util::sref<inst::scope> scope) const
+{
+    util::sref<proto::function> func(scope->query_func_proto(pos, name, args.size()));
+    return std::move(instantiate_function(pos, func, args, scope));
+}
+
+util::sptr<inst::expr_base const> func_reference::inst(util::sref<inst::scope> scope) const
+{
+    return std::move(util::mkptr(new inst::func_reference(func, func->bind_external_vars(pos, scope))));
+}
+
 util::sptr<inst::expr_base const> binary_op::inst(util::sref<inst::scope> scope) const
 {
     util::sptr<inst::expr_base const> left = lhs->inst(scope);
     util::sptr<inst::expr_base const> right = rhs->inst(scope);
-    inst::type const* ltype = left->typeof();
-    inst::type const* rtype = right->typeof();
+    util::sref<inst::type const> ltype = left->typeof();
+    util::sref<inst::type const> rtype = right->typeof();
     return std::move(util::mkptr(new inst::binary_op(std::move(left)
                                                    , scope->query_binary(pos, op, ltype, rtype)
                                                    , std::move(right))));
@@ -56,7 +76,7 @@ util::sptr<inst::expr_base const> binary_op::inst(util::sref<inst::scope> scope)
 util::sptr<inst::expr_base const> pre_unary_op::inst(util::sref<inst::scope> scope) const
 {
     util::sptr<inst::expr_base const> right = rhs->inst(scope);
-    inst::type const* rtype = right->typeof();
+    util::sref<inst::type const> rtype = right->typeof();
     return std::move(util::mkptr(
                 new inst::pre_unary_op(scope->query_pre_unary(pos, op, rtype), std::move(right))));
 }

@@ -3,6 +3,7 @@
 #include "symbol-table.h"
 #include "function.h"
 #include "node-base.h"
+#include "expr-nodes.h"
 #include "../instance/node-base.h"
 #include "../instance/scope.h"
 #include "../instance/variable.h"
@@ -45,6 +46,22 @@ util::sref<function> symbol_table::def_func(misc::pos_type const& pos
         error::func_shadow_external(func_in_external->pos, pos, name, params.size());
     }
     return insert_result.first->second;
+}
+
+util::sptr<expr_base const> symbol_table::query_call(misc::pos_type const& pos
+                                                   , std::string const& name
+                                                   , std::vector<util::sptr<expr_base const>> args) const
+{
+    util::sref<function> func = _query_func_or_null_if_nonexist(name, args.size());
+    if (bool(func)) {
+        return std::move(util::mkptr(new call(pos, func, std::move(args))));
+    }
+    auto local_ref = _var_defs.find(name);
+    if (_var_defs.end() != local_ref) {
+        return std::move(util::mkptr(new functor(pos, name, std::move(args))));
+    }
+    error::func_not_def(pos, name, args.size());
+    return std::move(util::mkptr(new call(pos, util::mkref(_fake_prototype), std::move(args))));
 }
 
 util::sref<function> symbol_table::query_func(misc::pos_type const& pos

@@ -16,7 +16,14 @@ util::sptr<expr_base const> general_scope::make_call(misc::pos_type const& pos
                                                    , std::string const& name
                                                    , std::vector<util::sptr<expr_base const>> args) const
 {
-    return std::move(util::mkptr(new call(pos, _symbols.query_func(pos, name, args.size()), std::move(args))));
+    return std::move(_symbols.query_call(pos, name, std::move(args)));
+}
+
+util::sptr<expr_base const> general_scope::make_func_reference(misc::pos_type const& pos
+                                                             , std::string const& name
+                                                             , int param_count) const
+{
+    return std::move(util::mkptr(new func_reference(pos, _symbols.query_func(pos, name, param_count))));
 }
 
 void general_scope::def_var(misc::pos_type const& pos, std::string const& name)

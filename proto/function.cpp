@@ -38,9 +38,9 @@ void function::_fill_param_names()
 
 util::sref<inst::function> function::inst(misc::pos_type const& pos
                                         , util::sref<inst::scope> ext_scope
-                                        , std::vector<inst::type const*> const& arg_types)
+                                        , std::vector<util::sref<inst::type const>> const& arg_types)
 {
-    std::map<std::string, inst::variable const> ext_vars = _bind_external_vars(pos, ext_scope);
+    std::map<std::string, inst::variable const> ext_vars(bind_external_vars(pos, ext_scope));
     auto find_result = _instance_cache.find(instance_info(ext_vars, arg_types));
     if (_instance_cache.end() != find_result) {
         util::sref<inst::function> instance = find_result->second;
@@ -71,7 +71,7 @@ util::sref<inst::function> function::inst(misc::pos_type const& pos
 }
 
 std::map<std::string, inst::variable const>
-    function::_bind_external_vars(misc::pos_type const& pos, util::sref<inst::scope const> ext_scope) const
+    function::bind_external_vars(misc::pos_type const& pos, util::sref<inst::scope const> ext_scope) const
 {
     return _symbols.bind_external_var_refs(pos, ext_scope);
 }
