@@ -59,7 +59,7 @@ util::sptr<inst::expr_base const> functor::inst(util::sref<inst::scope> scope) c
 
 util::sptr<inst::expr_base const> func_reference::inst(util::sref<inst::scope> scope) const
 {
-    return std::move(util::mkptr(new inst::func_reference(func, func->bind_external_vars(pos, scope))));
+    return std::move(util::mkptr(new inst::func_reference(pos, func, func->bind_external_vars(pos, scope))));
 }
 
 util::sptr<inst::expr_base const> binary_op::inst(util::sref<inst::scope> scope) const

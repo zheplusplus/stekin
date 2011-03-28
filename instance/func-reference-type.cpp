@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "func-reference-type.h"
 #include "../util/string.h"
 #include "../util/map-compare.h"
@@ -48,4 +50,33 @@ bool func_reference_type::lt_as_built_in(type const&) const
 util::sref<proto::function> func_reference_type::get_func_proto() const
 {
     return _func_proto;
+}
+
+std::map<std::string, variable const>
+    func_reference_type::_enclose_reference(std::map<std::string, variable const> const& cr
+                                          , misc::pos_type const& pos)
+{
+    std::map<std::string, variable const> map;
+    int offset = 0;
+    std::for_each(cr.begin()
+                , cr.end()
+                , [&](std::pair<std::string, variable const> const& reference)
+                  {
+                      map.insert(std::make_pair(reference.first
+                                              , variable(pos, reference.second.vtype, offset)));
+                      offset += reference.second.vtype->size;
+                  });
+    return map;
+}
+
+int func_reference_type::_calc_size(std::map<std::string, variable const> const& cr)
+{
+    int size = 0;
+    std::for_each(cr.begin()
+                , cr.end()
+                , [&](std::pair<std::string, variable const> const& reference)
+                  {
+                      size += reference.second.vtype->size;
+                  });
+    return size;
 }

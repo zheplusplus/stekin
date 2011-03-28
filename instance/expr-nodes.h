@@ -83,8 +83,10 @@ namespace inst {
     struct func_reference
         : public expr_base
     {
-        func_reference(util::sref<proto::function> func_proto, std::map<std::string, variable const> const& cr)
-            : _type(func_proto, cr)
+        func_reference(misc::pos_type const& reference_pos
+                     , util::sref<proto::function> func_proto
+                     , std::map<std::string, variable const> const& cr)
+            : _type(reference_pos, func_proto, cr)
         {}
 
         util::sref<type const> typeof() const;

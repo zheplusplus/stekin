@@ -2,16 +2,19 @@
 #define __STACKENGING_INSTANCE_FUNCTION_REFERENCE_TYPE_H__
 
 #include "type.h"
+#include "../misc/pos-type.h"
 
 namespace inst {
 
     struct func_reference_type
         : public type
     {
-        func_reference_type(util::sref<proto::function> func_proto
+        func_reference_type(misc::pos_type const& reference_pos
+                          , util::sref<proto::function> func_proto
                           , std::map<std::string, variable const> const& cr)
-            : type(0)
+            : type(_calc_size(cr))
             , context_references(cr)
+            , closed_references(std::move(_enclose_reference(cr, reference_pos)))
             , _func_proto(func_proto)
         {}
 
@@ -28,8 +31,13 @@ namespace inst {
         util::sref<proto::function> get_func_proto() const;
 
         std::map<std::string, variable const> const context_references;
+        std::map<std::string, variable const> const closed_references;
     private:
         util::sref<proto::function> const _func_proto;
+    private:
+        static std::map<std::string, variable const>
+            _enclose_reference(std::map<std::string, variable const> const& cr, misc::pos_type const& pos);
+        static int _calc_size(std::map<std::string, variable const> const& cr);
     };
 
 }
