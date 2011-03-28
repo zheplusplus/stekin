@@ -12,22 +12,22 @@ conjunction::conjunction(misc::pos_type const& p, util::sptr<expr_base const> l,
     : lhs(std::move(l))
     , rhs(std::move(r))
 {
-    check_condition_type(p, lhs->typeof());
-    check_condition_type(p, rhs->typeof());
+    lhs->typeof()->check_condition_type(p);
+    rhs->typeof()->check_condition_type(p);
 }
 
 disjunction::disjunction(misc::pos_type const& p, util::sptr<expr_base const> l, util::sptr<expr_base const> r)
     : lhs(std::move(l))
     , rhs(std::move(r))
 {
-    check_condition_type(p, lhs->typeof());
-    check_condition_type(p, rhs->typeof());
+    lhs->typeof()->check_condition_type(p);
+    rhs->typeof()->check_condition_type(p);
 }
 
 negation::negation(misc::pos_type const& p, util::sptr<expr_base const> r)
     : rhs(std::move(r))
 {
-    check_condition_type(p, rhs->typeof());
+    rhs->typeof()->check_condition_type(p);
 }
 
 util::sref<type const> int_literal::typeof() const

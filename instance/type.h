@@ -24,9 +24,11 @@ namespace inst {
         virtual bool eq_as_func_reference(util::sref<proto::function> lhs_func
                                         , std::map<std::string, variable const> const& rhs_cr) const;
 
-        virtual bool lt_as_built_in(type const& lhs) const;
+        virtual bool lt_as_built_in(type const& lhs) const = 0;
         virtual bool lt_as_func_reference(util::sref<proto::function> lhs_func
-                                        , std::map<std::string, variable const> const& rhs_cr) const;
+                                        , std::map<std::string, variable const> const& rhs_cr) const = 0;
+    public:
+        virtual void check_condition_type(misc::pos_type const& pos) const;
     protected:
         explicit type(int s)
             : size(s)
@@ -48,42 +50,18 @@ namespace inst {
         {}
 
         std::string const tname;
-
+    public:
         std::string name() const;
-
+    public:
         bool operator==(type const& rhs) const;
         bool operator<(type const& rhs) const;
         bool eq_as_built_in(type const& lhs) const;
         bool lt_as_built_in(type const& lhs) const;
+        bool lt_as_func_reference(util::sref<proto::function>
+                                , std::map<std::string, variable const> const&) const;
+    public:
+        void check_condition_type(misc::pos_type const& pos) const;
     };
-
-    struct func_reference_type
-        : public type
-    {
-        func_reference_type(util::sref<proto::function> func_proto
-                          , std::map<std::string, variable const> const& cr)
-            : type(0)
-            , context_references(cr)
-            , _func_proto(func_proto)
-        {}
-
-        std::string name() const;
-
-        bool operator==(type const& rhs) const;
-        bool operator<(type const& rhs) const;
-        bool eq_as_func_reference(util::sref<proto::function> lhs_func
-                                , std::map<std::string, variable const> const& rhs_cr) const;
-        bool lt_as_func_reference(util::sref<proto::function> lhs_func
-                                , std::map<std::string, variable const> const& rhs_cr) const;
-
-        util::sref<proto::function> get_func_proto() const;
-
-        std::map<std::string, variable const> const context_references;
-    private:
-        util::sref<proto::function> const _func_proto;
-    };
-
-    void check_condition_type(misc::pos_type const& pos, util::sref<type const> t);
 
 }
 

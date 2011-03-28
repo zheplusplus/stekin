@@ -5,7 +5,7 @@
 
 #include "node-base.h"
 #include "variable.h"
-#include "type.h"
+#include "func-reference-type.h"
 #include "fwd-decl.h"
 #include "../util/pointer.h"
 #include "../misc/platform.h"

@@ -15,7 +15,7 @@ branch::branch(misc::pos_type const& pos
     , consequence(std::move(c))
     , alternative(std::move(a))
 {
-    check_condition_type(pos, predicate->typeof());
+    predicate->typeof()->check_condition_type(pos);
 }
 
 void arithmetics::write() const
