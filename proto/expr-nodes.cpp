@@ -35,11 +35,13 @@ static util::sptr<inst::expr_base const> instantiate_function(
 {
     std::vector<util::sptr<inst::expr_base const>> arg_instances;
     std::vector<util::sref<inst::type const>> arg_types;
+    int offset = 0;
     std::for_each(args.begin()
                 , args.end()
                 , [&](util::sptr<expr_base const> const& expr)
                   {
-                      util::sptr<inst::expr_base const> arg(std::move(expr->inst(scope)));
+                      util::sptr<inst::expr_base const> arg(std::move(expr->inst_as_arg(scope, offset)));
+                      offset += arg->typeof()->size;
                       arg_types.push_back(arg->typeof());
                       arg_instances.push_back(std::move(arg));
                   });
@@ -59,7 +61,15 @@ util::sptr<inst::expr_base const> functor::inst(util::sref<inst::scope> scope) c
 
 util::sptr<inst::expr_base const> func_reference::inst(util::sref<inst::scope> scope) const
 {
-    return std::move(util::mkptr(new inst::func_reference(pos, func, func->bind_external_vars(pos, scope))));
+    return std::move(util::mkptr(new inst::func_reference(pos, func, 0, func->bind_external_vars(pos, scope))));
+}
+
+util::sptr<inst::expr_base const> func_reference::inst_as_arg(util::sref<inst::scope> scope, int offset) const
+{
+    return std::move(util::mkptr(new inst::func_reference(pos
+                                                        , func
+                                                        , offset
+                                                        , func->bind_external_vars(pos, scope))));
 }
 
 util::sptr<inst::expr_base const> binary_op::inst(util::sref<inst::scope> scope) const

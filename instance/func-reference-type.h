@@ -11,10 +11,11 @@ namespace inst {
     {
         func_reference_type(misc::pos_type const& reference_pos
                           , util::sref<proto::function> func_proto
+                          , int references_offset
                           , std::map<std::string, variable const> const& cr)
             : type(_calc_size(cr))
             , context_references(cr)
-            , closed_references(std::move(_enclose_reference(cr, reference_pos)))
+            , closed_references(std::move(_enclose_reference(reference_pos, references_offset, cr)))
             , _func_proto(func_proto)
         {}
 
@@ -35,8 +36,10 @@ namespace inst {
     private:
         util::sref<proto::function> const _func_proto;
     private:
-        static std::map<std::string, variable const>
-            _enclose_reference(std::map<std::string, variable const> const& cr, misc::pos_type const& pos);
+        static std::map<std::string, variable const> _enclose_reference(
+                        misc::pos_type const& pos
+                      , int references_offset
+                      , std::map<std::string, variable const> const& cr);
         static int _calc_size(std::map<std::string, variable const> const& cr);
     };
 

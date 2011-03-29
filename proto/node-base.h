@@ -11,6 +11,7 @@ namespace proto {
         virtual ~expr_base() {}
 
         virtual util::sptr<inst::expr_base const> inst(util::sref<inst::scope> sc) const = 0;
+        virtual util::sptr<inst::expr_base const> inst_as_arg(util::sref<inst::scope> sc, int offset) const;
 
         misc::pos_type const pos;
     protected:

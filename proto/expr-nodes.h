@@ -102,6 +102,7 @@ namespace proto {
         {}
 
         util::sptr<inst::expr_base const> inst(util::sref<inst::scope> scope) const;
+        util::sptr<inst::expr_base const> inst_as_arg(util::sref<inst::scope> sc, int offset) const;
 
         util::sref<function> const func;
     };

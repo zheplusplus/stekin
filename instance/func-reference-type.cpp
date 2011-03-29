@@ -52,12 +52,13 @@ util::sref<proto::function> func_reference_type::get_func_proto() const
     return _func_proto;
 }
 
-std::map<std::string, variable const>
-    func_reference_type::_enclose_reference(std::map<std::string, variable const> const& cr
-                                          , misc::pos_type const& pos)
+std::map<std::string, variable const> func_reference_type::_enclose_reference(
+                                            misc::pos_type const& pos
+                                          , int references_offset
+                                          , std::map<std::string, variable const> const& cr)
 {
     std::map<std::string, variable const> map;
-    int offset = 0;
+    int offset = references_offset;
     std::for_each(cr.begin()
                 , cr.end()
                 , [&](std::pair<std::string, variable const> const& reference)

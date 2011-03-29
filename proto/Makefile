@@ -8,6 +8,7 @@ proto:symbol-table.d \
       sub-scope.d \
       general-scope.d \
       block.d \
+      node-base.d \
       stmt-nodes.d \
       expr-nodes.d \
       inst-mediates.d \
