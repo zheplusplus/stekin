@@ -1,6 +1,7 @@
 #include <algorithm>
 
 #include "func-reference-type.h"
+#include "expr-nodes.h"
 #include "../util/string.h"
 #include "../util/map-compare.h"
 #include "../proto/function.h"
@@ -54,17 +55,17 @@ util::sref<proto::function> func_reference_type::get_func_proto() const
 
 std::map<std::string, variable const> func_reference_type::_enclose_reference(
                                             misc::pos_type const& pos
-                                          , int references_offset
+                                          , int level
                                           , std::map<std::string, variable const> const& cr)
 {
     std::map<std::string, variable const> map;
-    int offset = references_offset;
+    int offset = 0;
     std::for_each(cr.begin()
                 , cr.end()
                 , [&](std::pair<std::string, variable const> const& reference)
                   {
                       map.insert(std::make_pair(reference.first
-                                              , variable(pos, reference.second.vtype, offset)));
+                                              , variable(pos, reference.second.vtype, offset, level)));
                       offset += reference.second.vtype->size;
                   });
     return map;
@@ -80,4 +81,27 @@ int func_reference_type::_calc_size(std::map<std::string, variable const> const&
                       size += reference.second.vtype->size;
                   });
     return size;
+}
+
+util::sptr<inst::expr_base const> func_reference_type::call_func(
+            int level
+          , int stack_offset
+          , std::vector<util::sref<inst::type const>> const& arg_types
+          , std::vector<util::sptr<expr_base const>> args) const
+{
+    return std::move(util::mkptr(new call(_func_proto->inst(level, _adjust_offset(stack_offset), arg_types)
+                                        , std::move(args))));
+}
+
+std::map<std::string, variable const> func_reference_type::_adjust_offset(int stack_offset) const
+{
+    std::map<std::string, variable const> result;
+    std::for_each(closed_references.begin()
+                , closed_references.end()
+                , [&](std::pair<std::string, variable const> const& reference)
+                  {
+                      result.insert(std::make_pair(reference.first
+                                                 , reference.second.adjust_offset(stack_offset)));
+                  });
+    return result;
 }

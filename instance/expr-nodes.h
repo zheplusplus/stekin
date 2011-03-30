@@ -85,9 +85,9 @@ namespace inst {
     {
         func_reference(misc::pos_type const& reference_pos
                      , util::sref<proto::function> func_proto
-                     , int references_offset
+                     , int level
                      , std::map<std::string, variable const> const& cr)
-            : _type(reference_pos, func_proto, references_offset, cr)
+            : _type(reference_pos, func_proto, level, cr)
         {}
 
         util::sref<type const> typeof() const;

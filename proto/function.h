@@ -17,6 +17,9 @@ namespace proto {
         util::sref<inst::function> inst(misc::pos_type const& pos
                                       , util::sref<inst::scope> ext_scope
                                       , std::vector<util::sref<inst::type const>> const& arg_types);
+        util::sref<inst::function> inst(int level
+                                      , std::map<std::string, inst::variable const> const& ext_vars
+                                      , std::vector<util::sref<inst::type const>> const& arg_types);
 
         function(misc::pos_type const& ps
                , std::string const& func_name

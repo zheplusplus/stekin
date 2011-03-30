@@ -11,15 +11,20 @@ namespace inst {
     {
         func_reference_type(misc::pos_type const& reference_pos
                           , util::sref<proto::function> func_proto
-                          , int references_offset
+                          , int level
                           , std::map<std::string, variable const> const& cr)
             : type(_calc_size(cr))
             , context_references(cr)
-            , closed_references(std::move(_enclose_reference(reference_pos, references_offset, cr)))
+            , closed_references(std::move(_enclose_reference(reference_pos, level, cr)))
             , _func_proto(func_proto)
         {}
-
+    public:
         std::string name() const;
+    public:
+        util::sptr<inst::expr_base const> call_func(int level
+                                                  , int stack_offset
+                                                  , std::vector<util::sref<inst::type const>> const& arg_types
+                                                  , std::vector<util::sptr<expr_base const>> args) const;
 
         bool operator==(type const& rhs) const;
         bool operator<(type const& rhs) const;
@@ -38,9 +43,11 @@ namespace inst {
     private:
         static std::map<std::string, variable const> _enclose_reference(
                         misc::pos_type const& pos
-                      , int references_offset
+                      , int level
                       , std::map<std::string, variable const> const& cr);
         static int _calc_size(std::map<std::string, variable const> const& cr);
+
+        std::map<std::string, variable const> _adjust_offset(int stack_offset) const;
     };
 
 }

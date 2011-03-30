@@ -1,5 +1,7 @@
 #include "variable.h"
+#include "node-base.h"
 #include "type.h"
+#include "scope.h"
 #include "../output/statement-writer.h"
 
 using namespace inst;
@@ -25,22 +27,14 @@ bool variable::operator!=(variable const& rhs) const
     return !operator==(rhs);
 }
 
-void static_level::write(int offset, std::string const& name) const
+util::sptr<inst::expr_base const> variable::call_func(util::sref<inst::scope> scope
+                                                    , std::vector<util::sref<inst::type const>> const& arg_types
+                                                    , std::vector<util::sptr<expr_base const>> args) const
 {
-    output::ref_level(offset, level, name);
+    return std::move(vtype->call_func(scope->level(), stack_offset, arg_types, std::move(args)));
 }
 
-util::sptr<variable_level const> static_level::copy() const
+variable variable::adjust_offset(int offset) const
 {
-    return std::move(util::mkptr(new static_level(level)));
-}
-
-void current_level::write(int offset, std::string const& name) const
-{
-    output::ref_this_level(offset, name);
-}
-
-util::sptr<variable_level const> current_level::copy() const
-{
-    return std::move(util::mkptr(new current_level));
+    return variable(def_pos, vtype, stack_offset + offset, level);
 }

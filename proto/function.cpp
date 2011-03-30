@@ -40,7 +40,13 @@ util::sref<inst::function> function::inst(misc::pos_type const& pos
                                         , util::sref<inst::scope> ext_scope
                                         , std::vector<util::sref<inst::type const>> const& arg_types)
 {
-    std::map<std::string, inst::variable const> ext_vars(bind_external_vars(pos, ext_scope));
+    return inst(ext_scope->level(), bind_external_vars(pos, ext_scope), arg_types);
+}
+
+util::sref<inst::function> function::inst(int level
+                                        , std::map<std::string, inst::variable const> const& ext_vars
+                                        , std::vector<util::sref<inst::type const>> const& arg_types)
+{
     auto find_result = _instance_cache.find(instance_info(ext_vars, arg_types));
     if (_instance_cache.end() != find_result) {
         util::sref<inst::function> instance = find_result->second;
@@ -57,11 +63,10 @@ util::sref<inst::function> function::inst(misc::pos_type const& pos
     for (unsigned i = 0; i < arg_types.size(); ++i) {
         args.push_back(inst::arg_name_type_pair(param_names[i], arg_types[i]));
     }
-    util::sref<inst::function> instance
-                = inst::function::create_instance(ext_scope->level()
-                                                , args
-                                                , ext_vars
-                                                , hint_void_return);
+    util::sref<inst::function> instance = inst::function::create_instance(level
+                                                                        , args
+                                                                        , ext_vars
+                                                                        , hint_void_return);
     _instance_cache.insert(std::make_pair(instance_info(ext_vars, arg_types), instance));
 
     block_mediate body_mediate(_block.get_stmts(), instance);
