@@ -17,7 +17,8 @@ namespace inst {
         virtual std::string name() const = 0;
     public:
         virtual util::sptr<inst::expr_base const> call_func(
-                  int level
+                  misc::pos_type const& call_pos
+                , int level
                 , int stack_offset
                 , std::vector<util::sref<inst::type const>> const& arg_types
                 , std::vector<util::sptr<expr_base const>> args) const = 0;
@@ -60,7 +61,8 @@ namespace inst {
         std::string name() const;
     public:
         util::sptr<inst::expr_base const> call_func(
-                  int
+                  misc::pos_type const& call_pos
+                , int
                 , int
                 , std::vector<util::sref<inst::type const>> const&
                 , std::vector<util::sptr<expr_base const>>) const;

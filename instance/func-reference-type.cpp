@@ -84,7 +84,8 @@ int func_reference_type::_calc_size(std::map<std::string, variable const> const&
 }
 
 util::sptr<inst::expr_base const> func_reference_type::call_func(
-            int level
+            misc::pos_type const&
+          , int level
           , int stack_offset
           , std::vector<util::sref<inst::type const>> const& arg_types
           , std::vector<util::sptr<expr_base const>> args) const

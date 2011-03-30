@@ -58,6 +58,8 @@ namespace error {
 
     void cond_not_bool(misc::pos_type const& pos, std::string const& actual_type);
 
+    void request_variable_not_callable(misc::pos_type const& call_pos);
+
 }
 
 #endif /* __STACKENING_REPORT_ERRORS_H__ */

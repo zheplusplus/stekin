@@ -191,3 +191,10 @@ void error::cond_not_bool(misc::pos_type const& pos, std::string const& actual_t
     std::cerr << pos << std::endl;
     std::cerr << "    condition type is not boolean, actual type: " << actual_type << std::endl;
 }
+
+void error::request_variable_not_callable(misc::pos_type const& call_pos)
+{
+    _has_error = true;
+    std::cerr << call_pos << std::endl;
+    std::cerr << "    variable not callable" << std::endl;
+}

@@ -22,7 +22,8 @@ namespace inst {
             , level(lvl)
         {}
 
-        util::sptr<inst::expr_base const> call_func(util::sref<inst::scope> scope
+        util::sptr<inst::expr_base const> call_func(misc::pos_type const& call_pos
+                                                  , util::sref<inst::scope> scope
                                                   , std::vector<util::sref<inst::type const>> const& arg_types
                                                   , std::vector<util::sptr<expr_base const>> args) const;
 

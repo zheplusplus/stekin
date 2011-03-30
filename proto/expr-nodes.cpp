@@ -27,11 +27,11 @@ util::sptr<inst::expr_base const> reference::inst(util::sref<inst::scope> scope)
     return std::move(util::mkptr(new inst::reference(scope->query_var(pos, name))));
 }
 
+template <typename _CallMaker>
 static util::sptr<inst::expr_base const> instantiate_function(
-            misc::pos_type const& pos
-          , util::sref<function> const func
-          , std::vector<util::sptr<expr_base const>> const& args
-          , util::sref<inst::scope> scope)
+            std::vector<util::sptr<expr_base const>> const& args
+          , util::sref<inst::scope> scope
+          , _CallMaker call_maker)
 {
     std::vector<util::sptr<inst::expr_base const>> arg_instances;
     std::vector<util::sref<inst::type const>> arg_types;
@@ -43,18 +43,33 @@ static util::sptr<inst::expr_base const> instantiate_function(
                       arg_types.push_back(arg->typeof());
                       arg_instances.push_back(std::move(arg));
                   });
-    return std::move(util::mkptr(new inst::call(func->inst(pos, scope, arg_types), std::move(arg_instances))));
+    return std::move(call_maker(arg_types, std::move(arg_instances)));
 }
 
 util::sptr<inst::expr_base const> call::inst(util::sref<inst::scope> scope) const
 {
-    return std::move(instantiate_function(pos, func, args, scope));
+    return std::move(instantiate_function(
+                args
+              , scope
+              , [&](std::vector<util::sref<inst::type const>> const& arg_types
+                  , std::vector<util::sptr<inst::expr_base const>> args)
+                {
+                    return std::move(util::mkptr(new inst::call(func->inst(pos, scope, arg_types)
+                                                              , std::move(args))));
+                }));
 }
 
 util::sptr<inst::expr_base const> functor::inst(util::sref<inst::scope> scope) const
 {
-    util::sref<proto::function> func(scope->query_func_proto(pos, name, args.size()));
-    return std::move(instantiate_function(pos, func, args, scope));
+    return std::move(instantiate_function(
+                args
+              , scope
+              , [&](std::vector<util::sref<inst::type const>> const& arg_types
+                  , std::vector<util::sptr<inst::expr_base const>> args)
+                {
+                    return std::move(scope->query_var(pos, name)
+                                           .call_func(pos, scope, arg_types, std::move(args)));
+                }));
 }
 
 util::sptr<inst::expr_base const> func_reference::inst(util::sref<inst::scope> scope) const

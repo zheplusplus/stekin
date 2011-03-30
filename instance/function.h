@@ -20,10 +20,6 @@ namespace inst {
         variable def_var(misc::pos_type const& pos, util::sref<type const> vtype, std::string const& name);
         variable query_var(misc::pos_type const& pos, std::string const& name) const;
 
-        util::sref<proto::function> query_func_proto(misc::pos_type const& pos
-                                                   , std::string const& name
-                                                   , int param_count) const;
-
         void set_return_type(misc::pos_type const& pos, util::sref<type const> return_type);
         virtual util::sref<type const> get_return_type() const;
         virtual bool is_return_type_resolved() const;

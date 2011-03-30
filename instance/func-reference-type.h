@@ -21,7 +21,8 @@ namespace inst {
     public:
         std::string name() const;
     public:
-        util::sptr<inst::expr_base const> call_func(int level
+        util::sptr<inst::expr_base const> call_func(misc::pos_type const&
+                                                  , int level
                                                   , int stack_offset
                                                   , std::vector<util::sref<inst::type const>> const& arg_types
                                                   , std::vector<util::sptr<expr_base const>> args) const;

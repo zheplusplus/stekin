@@ -22,10 +22,6 @@ namespace inst {
                                , std::string const& name) = 0;
         virtual variable query_var(misc::pos_type const& pos, std::string const& name) const = 0;
 
-        virtual util::sref<proto::function> query_func_proto(misc::pos_type const& pos
-                                                           , std::string const& name
-                                                           , int param_count) const = 0;
-
         virtual void add_path(util::sref<mediate_base> path) = 0;
         virtual void inst_next_path() = 0;
         virtual bool has_more_path() const = 0;
