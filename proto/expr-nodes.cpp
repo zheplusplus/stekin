@@ -67,8 +67,7 @@ util::sptr<inst::expr_base const> functor::inst(util::sref<inst::scope> scope) c
               , [&](std::vector<util::sref<inst::type const>> const& arg_types
                   , std::vector<util::sptr<inst::expr_base const>> args)
                 {
-                    return std::move(scope->query_var(pos, name)
-                                           .call_func(pos, scope, arg_types, std::move(args)));
+                    return std::move(scope->query_var(pos, name).call_func(pos, arg_types, std::move(args)));
                 }));
 }
 

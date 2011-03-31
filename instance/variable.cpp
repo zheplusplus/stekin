@@ -28,14 +28,13 @@ bool variable::operator!=(variable const& rhs) const
 }
 
 util::sptr<inst::expr_base const> variable::call_func(misc::pos_type const& call_pos
-                                                    , util::sref<inst::scope> scope
                                                     , std::vector<util::sref<inst::type const>> const& arg_types
                                                     , std::vector<util::sptr<expr_base const>> args) const
 {
-    return std::move(vtype->call_func(call_pos, scope->level(), stack_offset, arg_types, std::move(args)));
+    return std::move(vtype->call_func(call_pos, level, stack_offset, arg_types, std::move(args)));
 }
 
-variable variable::adjust_offset(int offset) const
+variable variable::adjust_location(int offset_diff, int lvl) const
 {
-    return variable(def_pos, vtype, stack_offset + offset, level);
+    return variable(def_pos, vtype, stack_offset + offset_diff, lvl);
 }

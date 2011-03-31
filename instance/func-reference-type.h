@@ -49,7 +49,7 @@ namespace inst {
                       , std::map<std::string, variable const> const& cr);
         static int _calc_size(std::map<std::string, variable const> const& cr);
 
-        std::map<std::string, variable const> _adjust_offset(int stack_offset) const;
+        std::map<std::string, variable const> _adjust_vars(int stack_offset, int level) const;
     };
 
 }

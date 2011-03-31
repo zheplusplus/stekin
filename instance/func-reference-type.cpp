@@ -92,7 +92,7 @@ util::sptr<inst::expr_base const> func_reference_type::call_func(
           , std::vector<util::sref<inst::type const>> const& arg_types
           , std::vector<util::sptr<expr_base const>> args) const
 {
-    return std::move(util::mkptr(new call(_func_proto->inst(level, _adjust_offset(stack_offset), arg_types)
+    return std::move(util::mkptr(new call(_func_proto->inst(level, _adjust_vars(stack_offset, level), arg_types)
                                         , std::move(args))));
 }
 
@@ -113,7 +113,7 @@ void func_reference_type::write() const
                   });
 }
 
-std::map<std::string, variable const> func_reference_type::_adjust_offset(int stack_offset) const
+std::map<std::string, variable const> func_reference_type::_adjust_vars(int stack_offset, int level) const
 {
     std::map<std::string, variable const> result;
     std::for_each(closed_references.begin()
@@ -121,7 +121,7 @@ std::map<std::string, variable const> func_reference_type::_adjust_offset(int st
                 , [&](std::pair<std::string, variable const> const& reference)
                   {
                       result.insert(std::make_pair(reference.first
-                                                 , reference.second.adjust_offset(stack_offset)));
+                                                 , reference.second.adjust_location(stack_offset, level)));
                   });
     return result;
 }
