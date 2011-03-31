@@ -148,8 +148,9 @@ static std::list<output::stack_var_record> args_to_var_recs(std::list<inst::vari
                 , args.end()
                 , [&](inst::variable const& var)
                   {
-                      recs.push_back(
-                          output::stack_var_record(var.vtype->name(), var.stack_offset, var.vtype->size));
+                      recs.push_back(output::stack_var_record(var.vtype->exported_name()
+                                                            , var.stack_offset
+                                                            , var.level));
                   });
     return recs;
 }
@@ -160,7 +161,7 @@ void function::write_decls()
                 , func_inst_recs::instance.end()
                 , [&](util::sptr<function const> const& func)
                   {
-                      output::write_func_decl(func->get_return_type()->name()
+                      output::write_func_decl(func->get_return_type()->exported_name()
                                             , func.id()
                                             , args_to_var_recs(func->_symbols.get_args())
                                             , func->_symbols.level
@@ -174,7 +175,7 @@ void function::write_impls()
                 , func_inst_recs::instance.end()
                 , [&](util::sptr<function const> const& func)
                   {
-                      output::write_func_perform_impl(func->get_return_type()->name(), func.id());
+                      output::write_func_perform_impl(func->get_return_type()->exported_name(), func.id());
                       func->_block.write();
                   });
 }

@@ -7,8 +7,8 @@ namespace output {
 
     void return_kw();
     void return_nothing();
-    void ref_this_level(int offset, std::string const& type);
-    void ref_level(int offset, int level, std::string const& type);
+    void ref_this_level(int offset, std::string const& type_exported_name);
+    void ref_level(int offset, int level, std::string const& type_exported_name);
     void assign_sign();
 
     void write_int(int i);

@@ -10,7 +10,7 @@ std::string const HEAD_TEMPLATE(
 "\n"
 "typedef $INT_TYPE_NAME _stk_type_int;\n"
 "typedef $FLOAT_TYPE_NAME _stk_type_float;\n"
-"typedef $BOOLEAN_TYPE_NAME _stk_type_bool_1;\n"
+"typedef $BOOLEAN_TYPE_NAME _stk_type_1_byte;\n"
 "\n"
 );
 

@@ -14,6 +14,7 @@ namespace inst {
     struct type {
         int const size;
     public:
+        virtual std::string exported_name() const = 0;
         virtual std::string name() const = 0;
     public:
         virtual util::sptr<inst::expr_base const> call_func(
@@ -58,6 +59,7 @@ namespace inst {
 
         std::string const tname;
     public:
+        std::string exported_name() const;
         std::string name() const;
     public:
         util::sptr<inst::expr_base const> call_func(

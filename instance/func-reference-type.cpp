@@ -2,12 +2,19 @@
 
 #include "func-reference-type.h"
 #include "expr-nodes.h"
+#include "../output/name-mangler.h"
+#include "../output/func-writer.h"
 #include "../util/string.h"
 #include "../util/map-compare.h"
 #include "../proto/function.h"
 #include "../proto/node-base.h"
 
 using namespace inst;
+
+std::string func_reference_type::exported_name() const
+{
+    return output::form_func_reference_type(size);
+}
 
 std::string func_reference_type::name() const
 {
@@ -46,11 +53,6 @@ bool func_reference_type::lt_as_func_reference(util::sref<proto::function> lhs_f
 bool func_reference_type::lt_as_built_in(type const&) const
 {
     return true;
-}
-
-util::sref<proto::function> func_reference_type::get_func_proto() const
-{
-    return _func_proto;
 }
 
 std::map<std::string, variable const> func_reference_type::_enclose_reference(
@@ -92,6 +94,23 @@ util::sptr<inst::expr_base const> func_reference_type::call_func(
 {
     return std::move(util::mkptr(new call(_func_proto->inst(level, _adjust_offset(stack_offset), arg_types)
                                         , std::move(args))));
+}
+
+void func_reference_type::write() const
+{
+    output::construct_func_reference(exported_name());
+    int offset = 0;
+    std::for_each(context_references.begin()
+                , context_references.end()
+                , [&](std::pair<std::string, variable const> const& reference)
+                  {
+                      output::func_reference_next_variable(
+                                           offset
+                                         , output::stack_var_record(reference.second.vtype->exported_name()
+                                                                  , reference.second.stack_offset
+                                                                  , reference.second.level));
+                      offset += reference.second.vtype->size;
+                  });
 }
 
 std::map<std::string, variable const> func_reference_type::_adjust_offset(int stack_offset) const

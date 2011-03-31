@@ -2,6 +2,7 @@
 #include <algorithm>
 
 #include "func-writer.h"
+#include "statement-writer.h"
 #include "name-mangler.h"
 #include "../util/string.h"
 
@@ -42,7 +43,7 @@ static std::string form_args_decl(std::list<stack_var_record> const& params)
                 , params.end()
                 , [&](stack_var_record const& record)
                   {
-                      result += ", " + form_type(record.type) + " _stk_arg_" + util::str(i++);
+                      result += ", " + record.type + " _stk_arg_" + util::str(i++);
                   });
     return result;
 }
@@ -85,7 +86,7 @@ void output::write_func_decl(std::string const& ret_type_name
         util::replace_all(
         util::replace_all(
             FUNC_DECL
-                , "$FUNC_RET_TYPE", form_type(ret_type_name))
+                , "$FUNC_RET_TYPE", ret_type_name)
                 , "$FUNC_NAME", form_func_name(func_addr))
                 , "$ARGS_DECL", form_args_decl(params))
                 , "$COPY_ARGS", form_copy_args(params))
@@ -100,7 +101,7 @@ void output::write_func_perform_impl(std::string const& ret_type_name, util::id 
         util::replace_all(
         util::replace_all(
             FUNC_PERFORM_IMPL_BEGIN
-                , "$FUNC_RET_TYPE", form_type(ret_type_name))
+                , "$FUNC_RET_TYPE", ret_type_name)
                 , "$FUNC_NAME", form_func_name(func_addr))
     ;
 }
@@ -143,4 +144,16 @@ void output::write_main_end()
 void output::stk_main_func(util::id func_addr)
 {
     std::cout << "    " << form_func_name(func_addr) << "()._stk_perform();" << std::endl;
+}
+
+void output::construct_func_reference(std::string const& type_exported_name)
+{
+    std::cout << type_exported_name << "()";
+}
+
+void output::func_reference_next_variable(int offset, stack_var_record const& init)
+{
+    std::cout << (".push(" + util::str(offset) + ", ");
+    ref_level(init.offset, init.level, init.type);
+    std::cout << ')';
 }

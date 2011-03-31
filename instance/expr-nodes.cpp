@@ -102,7 +102,7 @@ void bool_literal::write() const
 
 void reference::write() const
 {
-    output::ref_level(var.stack_offset, var.level, typeof()->name());
+    output::ref_level(var.stack_offset, var.level, typeof()->exported_name());
 }
 
 void call::write() const
@@ -118,7 +118,10 @@ void call::write() const
     output::write_call_end();
 }
 
-void func_reference::write() const {}
+void func_reference::write() const
+{
+    _type.write();
+}
 
 void binary_op::write() const
 {

@@ -15,14 +15,14 @@ void output::return_nothing()
     end_of_statement();
 }
 
-void output::ref_this_level(int offset, std::string const& type)
+void output::ref_this_level(int offset, std::string const& type_exported_name)
 {
-    std::cout << "(*(" << form_type(type) << "*)(" << offset << " + (char*)(_stk_bases.this_base())))";
+    std::cout << "(*(" << type_exported_name << "*)(" << offset << " + (char*)(_stk_bases.this_base())))";
 }
 
-void output::ref_level(int offset, int level, std::string const& type)
+void output::ref_level(int offset, int level, std::string const& type_exported_name)
 {
-    std::cout << "(*(" << form_type(type) << "*)"
+    std::cout << "(*(" << type_exported_name << "*)"
                  "(" << offset << " + (char*)(_stk_bases._stk_ext_bases[" << level << "])))";
 }
 

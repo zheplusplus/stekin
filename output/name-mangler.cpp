@@ -13,3 +13,8 @@ std::string output::form_type(std::string const& type_name)
 {
     return "_stk_type_" + type_name;
 }
+
+std::string output::form_func_reference_type(int size)
+{
+    return "_stk_composite<" + util::str(size) + '>';
+}

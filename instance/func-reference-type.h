@@ -19,6 +19,7 @@ namespace inst {
             , _func_proto(func_proto)
         {}
     public:
+        std::string exported_name() const;
         std::string name() const;
     public:
         util::sptr<inst::expr_base const> call_func(misc::pos_type const&
@@ -34,11 +35,11 @@ namespace inst {
         bool lt_as_func_reference(util::sref<proto::function> lhs_func
                                 , std::map<std::string, variable const> const& rhs_cr) const;
         bool lt_as_built_in(type const&) const;
-
-        util::sref<proto::function> get_func_proto() const;
-
+    public:
         std::map<std::string, variable const> const context_references;
         std::map<std::string, variable const> const closed_references;
+    public:
+        void write() const;
     private:
         util::sref<proto::function> const _func_proto;
     private:

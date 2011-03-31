@@ -10,6 +10,7 @@ namespace output {
 
     std::string form_func_name(util::id func_name);
     std::string form_type(std::string const& type);
+    std::string form_func_reference_type(int size);
 
 }
 

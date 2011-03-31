@@ -1,5 +1,6 @@
 #include "type.h"
 #include "expr-nodes.h"
+#include "../output/name-mangler.h"
 #include "../report/errors.h"
 
 using namespace inst;
@@ -46,6 +47,11 @@ bool type::lt_as_func_reference(util::sref<proto::function>
 void type::check_condition_type(misc::pos_type const& pos) const
 {
     error::cond_not_bool(pos, name());
+}
+
+std::string built_in_primitive::exported_name() const
+{
+    return output::form_type(tname);
 }
 
 std::string built_in_primitive::name() const

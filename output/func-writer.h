@@ -11,12 +11,12 @@ namespace output {
     struct stack_var_record {
         std::string const type;
         int const offset;
-        int const size;
+        int const level;
 
-        stack_var_record(std::string const& t, int o, int s)
+        stack_var_record(std::string const& t, int o, int l)
             : type(t)
             , offset(o)
-            , size(s)
+            , level(l)
         {}
     };
 
@@ -35,6 +35,9 @@ namespace output {
     void write_main_begin();
     void write_main_end();
     void stk_main_func(util::id func_addr);
+
+    void construct_func_reference(std::string const& type_exported_name);
+    void func_reference_next_variable(int offset, stack_var_record const& init);
 
 }
 
