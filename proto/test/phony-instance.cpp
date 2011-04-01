@@ -6,20 +6,176 @@
 using namespace test;
 using namespace inst;
 
-type const* const type::BIT_VOID = &test::PROTO_TEST_VOID;
+util::sref<type const> const type::BIT_VOID(util::mkref(test::PROTO_TEST_VOID));
 static phony_func func;
 static bool test_func_inst_resolved = false;
 static int path_count = 0;
 
-void function::set_return_type(misc::pos_type const& pos, type const* t)
+bool type::operator!=(type const& rhs) const
+{
+    return !operator==(rhs);
+}
+
+bool type::eq_as_built_in(type const&) const
+{
+    return false;
+}
+
+bool type::eq_as_func_reference(util::sref<proto::function>, std::map<std::string, variable const> const&) const
+{
+    return false;
+}
+
+bool type::lt_as_built_in(type const&) const
+{
+    return false;
+}
+
+bool type::lt_as_func_reference(util::sref<proto::function>, std::map<std::string, variable const> const&) const
+{
+    return false;
+}
+
+std::string built_in_primitive::exported_name() const
+{
+    return tname;
+}
+
+std::string built_in_primitive::name() const
+{
+    return tname;
+}
+
+bool built_in_primitive::operator==(type const& rhs) const
+{
+    return this == &rhs;
+}
+
+bool built_in_primitive::operator<(type const& rhs) const
+{
+    return this < &rhs;
+}
+
+bool built_in_primitive::eq_as_built_in(type const& lhs) const
+{
+    return &lhs == this;
+}
+
+bool built_in_primitive::lt_as_built_in(type const& lhs) const
+{
+    return &lhs < this;
+}
+
+bool built_in_primitive::lt_as_func_reference(util::sref<proto::function>
+                                            , std::map<std::string, variable const> const&) const
+{
+    return false;
+}
+
+std::string func_reference_type::exported_name() const
+{
+    return "";
+}
+
+std::string func_reference_type::name() const
+{
+    return "";
+}
+
+bool func_reference_type::operator==(type const& rhs) const
+{
+    return this == &rhs;
+}
+
+bool func_reference_type::operator<(type const& rhs) const
+{
+    return this < &rhs;
+}
+
+bool func_reference_type::eq_as_func_reference(util::sref<proto::function>
+                                             , std::map<std::string, variable const> const&) const
+{
+    return false;
+}
+
+bool func_reference_type::lt_as_func_reference(util::sref<proto::function>
+                                             , std::map<std::string, variable const> const&) const
+{
+    return false;
+}
+
+bool func_reference_type::lt_as_built_in(type const&) const
+{
+    return false;
+}
+
+void type::check_condition_type(misc::pos_type const&) const {}
+void built_in_primitive::check_condition_type(misc::pos_type const&) const {}
+
+util::sptr<inst::expr_base const> func_reference_type::call_func(
+                  misc::pos_type const&
+                , int
+                , int
+                , std::vector<util::sref<inst::type const>> const&
+                , std::vector<util::sptr<expr_base const>>) const
+{
+    return std::move(util::sptr<inst::expr_base const>(NULL));
+}
+
+std::map<std::string, variable const> func_reference_type::_enclose_reference(
+                                            misc::pos_type const&
+                                          , int
+                                          , std::map<std::string, variable const> const& cr)
+{
+    return cr;
+}
+
+int func_reference_type::_calc_size(std::map<std::string, variable const> const&)
+{
+    return 0;
+}
+
+util::sptr<inst::expr_base const> built_in_primitive::call_func(
+                  misc::pos_type const&
+                , int
+                , int
+                , std::vector<util::sref<inst::type const>> const&
+                , std::vector<util::sptr<expr_base const>>) const
+{
+    return std::move(util::sptr<inst::expr_base const>(NULL));
+}
+
+util::sptr<inst::expr_base const> variable::call_func(misc::pos_type const&
+                                                    , std::vector<util::sref<inst::type const>> const&
+                                                    , std::vector<util::sptr<expr_base const>>) const
+{
+    return std::move(util::sptr<inst::expr_base const>(NULL));
+}
+
+bool variable::operator<(variable const& rhs) const
+{
+    return this < &rhs;
+}
+
+bool variable::operator==(variable const& rhs) const
+{
+    return this == &rhs;
+}
+
+bool variable::operator!=(variable const& rhs) const
+{
+    return !operator==(rhs);
+}
+
+void function::set_return_type(misc::pos_type const& pos, util::sref<type const> t)
 {
     test_func_inst_resolved = true;
     data_tree::actual_one()(pos, t == type::BIT_VOID ? SET_RETURN_TYPE_VOID : SET_RETURN_TYPE);
 }
 
-type const* function::get_return_type() const
+util::sref<type const> function::get_return_type() const
 {
-    return &PROTO_TEST_TYPE;
+    return util::mkref(PROTO_TEST_TYPE);
 }
 
 bool function::is_return_type_resolved() const
@@ -45,7 +201,7 @@ bool function::has_more_path() const
     return path_count > 0;
 }
 
-variable function::def_var(misc::pos_type const& pos, type const* vtype, std::string const&)
+variable function::def_var(misc::pos_type const& pos, util::sref<type const> vtype, std::string const&)
 {
     return variable(pos, vtype, 0, 0);
 }
@@ -53,19 +209,19 @@ variable function::def_var(misc::pos_type const& pos, type const* vtype, std::st
 variable function::query_var(misc::pos_type const& pos, std::string const& name) const
 {
     data_tree::actual_one()(pos, QUERY_VAR, name);
-    return variable(misc::pos_type(0), &test::PROTO_TEST_TYPE, 0, 0);
+    return variable(misc::pos_type(0), util::mkref(test::PROTO_TEST_TYPE), 0, 0);
 }
 
 operation const* scope::query_binary(misc::pos_type const& pos
                                    , std::string const& op
-                                   , type const*
-                                   , type const*) const
+                                   , util::sref<type const>
+                                   , util::sref<type const>) const
 {
     data_tree::actual_one()(pos, QUERY_BINARY_OP, op);
     return NULL;
 }
 
-operation const* scope::query_pre_unary(misc::pos_type const& pos, std::string const& op, type const*) const
+operation const* scope::query_pre_unary(misc::pos_type const& pos, std::string const& op, util::sref<type const>) const
 {
     data_tree::actual_one()(pos, QUERY_PRE_UNARY_OP, op);
     return NULL;
@@ -107,72 +263,77 @@ void block::add_stmt(util::sptr<stmt_base const>)
     data_tree::actual_one()(ADD_STMT_TO_BLOCK);
 }
 
-type const* int_literal::typeof() const
+util::sref<type const> int_literal::typeof() const
 {
     data_tree::actual_one()(INTEGER, util::str(value));
-    return &PROTO_TEST_TYPE;
+    return util::mkref(PROTO_TEST_TYPE);
 }
 
-type const* float_literal::typeof() const
+util::sref<type const> float_literal::typeof() const
 {
     data_tree::actual_one()(FLOATING, util::str(value));
-    return &PROTO_TEST_TYPE;
+    return util::mkref(PROTO_TEST_TYPE);
 }
 
-type const* bool_literal::typeof() const
+util::sref<type const> bool_literal::typeof() const
 {
     data_tree::actual_one()(BOOLEAN, value ? "true" : "false");
-    return &PROTO_TEST_TYPE;
+    return util::mkref(PROTO_TEST_TYPE);
 }
 
-type const* reference::typeof() const
+util::sref<type const> reference::typeof() const
 {
     data_tree::actual_one()(REFERENCE);
-    return &PROTO_TEST_TYPE;
+    return util::mkref(PROTO_TEST_TYPE);
 }
 
-type const* call::typeof() const
+util::sref<type const> call::typeof() const
 {
     data_tree::actual_one()(CALL, util::str(int(args.size())));
-    return &PROTO_TEST_TYPE;
+    return util::mkref(PROTO_TEST_TYPE);
 }
 
-type const* binary_op::typeof() const
+util::sref<type const> func_reference::typeof() const
+{
+    return util::mkref(PROTO_TEST_TYPE);
+}
+
+util::sref<type const> binary_op::typeof() const
 {
     data_tree::actual_one()(BINARY_OP);
     lhs->typeof();
     rhs->typeof();
-    return &PROTO_TEST_TYPE;
+    return util::mkref(PROTO_TEST_TYPE);
 }
 
-type const* pre_unary_op::typeof() const
+util::sref<type const> pre_unary_op::typeof() const
 {
     data_tree::actual_one()(PRE_UNARY_OP);
     rhs->typeof();
-    return &PROTO_TEST_TYPE;
+    return util::mkref(PROTO_TEST_TYPE);
 }
 
-type const* conjunction::typeof() const
+util::sref<type const> conjunction::typeof() const
 {
     data_tree::actual_one()(CONJUNCTION);
     lhs->typeof();
     rhs->typeof();
-    return &PROTO_TEST_TYPE;
+    return util::mkref(PROTO_TEST_TYPE);
 }
 
-type const* disjunction::typeof() const
+util::sref<type const> disjunction::typeof() const
 {
     data_tree::actual_one()(DISJUNCTION);
     lhs->typeof();
     rhs->typeof();
-    return &PROTO_TEST_TYPE;
+    return util::mkref(PROTO_TEST_TYPE);
 }
 
-type const* negation::typeof() const
+util::sref<type const> negation::typeof() const
 {
     data_tree::actual_one()(NEGATION);
     rhs->typeof();
-    return &PROTO_TEST_TYPE;
+    return util::mkref(PROTO_TEST_TYPE);
 }
 
 conjunction::conjunction(misc::pos_type const&, util::sptr<expr_base const> l, util::sptr<expr_base const> r)
@@ -203,6 +364,7 @@ void float_literal::write() const {}
 void bool_literal::write() const {}
 void reference::write() const {}
 void call::write() const {}
+void func_reference::write() const {}
 void binary_op::write() const {}
 void pre_unary_op::write() const {}
 void conjunction::write() const {}

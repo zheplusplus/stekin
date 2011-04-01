@@ -18,8 +18,8 @@ namespace test {
         {}
     };
 
-    extern inst::type const PROTO_TEST_TYPE;
-    extern inst::type const PROTO_TEST_VOID;
+    extern inst::built_in_primitive const PROTO_TEST_TYPE;
+    extern inst::built_in_primitive const PROTO_TEST_VOID;
 
     struct proto_data {
         misc::pos_type const pos;

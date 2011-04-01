@@ -29,6 +29,8 @@ static std::list<var_nondef_rec> var_nondefs;
 static std::list<na_binary_op_rec> na_binary_ops;
 static std::list<na_pre_unary_op_rec> na_pre_unary_ops;
 
+static std::list<variable_not_callable_rec> variable_not_callables;
+
 static bool has_err = false;
 
 void test::clear_err()
@@ -58,6 +60,8 @@ void test::clear_err()
     ret_type_conflict_recs.clear();
     ret_type_unresolvable_recs.clear();
     cond_not_bool_recs.clear();
+
+    variable_not_callables.clear();
 }
 
 void yyerror(std::string const&)
@@ -205,6 +209,12 @@ void error::cond_not_bool(misc::pos_type const& pos, std::string const& actual_t
     cond_not_bool_recs.push_back(cond_not_bool_rec(pos, actual_type));
 }
 
+void error::request_variable_not_callable(misc::pos_type const& call_pos)
+{
+    has_err = true;
+    variable_not_callables.push_back(variable_not_callable_rec(call_pos));
+}
+
 std::vector<tab_as_ind_rec> test::get_tab_as_ind_recs()
 {
     return std::vector<tab_as_ind_rec>(tab_as_ind_recs.begin(), tab_as_ind_recs.end());
@@ -299,4 +309,9 @@ std::vector<ret_type_unresolvable_rec> test::get_ret_type_unresolvables()
 std::vector<cond_not_bool_rec> test::get_cond_not_bools()
 {
     return std::vector<cond_not_bool_rec>(cond_not_bool_recs.begin(), cond_not_bool_recs.end());
+}
+
+std::vector<variable_not_callable_rec> test::get_variable_not_callables()
+{
+    return std::vector<variable_not_callable_rec>(variable_not_callables.begin(), variable_not_callables.end());
 }

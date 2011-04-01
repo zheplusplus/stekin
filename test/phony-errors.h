@@ -219,6 +219,14 @@ namespace test {
         {}
     };
 
+    struct variable_not_callable_rec {
+        misc::pos_type const call_pos;
+
+        explicit variable_not_callable_rec(misc::pos_type const& cp)
+            : call_pos(cp)
+        {}
+    };
+
     void clear_err();
 
     std::vector<tab_as_ind_rec> get_tab_as_ind_recs();
@@ -240,6 +248,7 @@ namespace test {
     std::vector<ret_type_conflict_rec> get_ret_type_conflicts();
     std::vector<ret_type_unresolvable_rec> get_ret_type_unresolvables();
     std::vector<cond_not_bool_rec> get_cond_not_bools();
+    std::vector<variable_not_callable_rec> get_variable_not_callables();
 
 }
 

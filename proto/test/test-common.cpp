@@ -3,8 +3,8 @@
 
 using namespace test;
 
-inst::type const test::PROTO_TEST_TYPE("proto_test_type", 1);
-inst::type const test::PROTO_TEST_VOID("proto_test_void", 0);
+inst::built_in_primitive const test::PROTO_TEST_TYPE("proto_test_type", 1);
+inst::built_in_primitive const test::PROTO_TEST_VOID("proto_test_void", 0);
 
 data_tree& data_tree::operator()(misc::pos_type const& pos, node_type const& type, std::string const& str)
 {

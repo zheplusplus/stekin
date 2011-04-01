@@ -121,6 +121,13 @@ util::sptr<expr_base const> general_scope::make_call(misc::pos_type const& pos
     return std::move(nullptr());
 }
 
+util::sptr<expr_base const> general_scope::make_func_reference(misc::pos_type const&
+                                                             , std::string const&
+                                                             , int) const
+{
+    return std::move(nullptr());
+}
+
 util::sptr<expr_base const> scope::make_binary(misc::pos_type const& pos
                                              , util::sptr<expr_base const>
                                              , std::string const& op

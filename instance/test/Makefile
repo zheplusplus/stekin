@@ -7,8 +7,12 @@ test:$(TESTDIR)/test-instance.out
 include $(WORKDIR)/Makefile
 include test/Makefile
 
-TEST_DEP=instance test-commons test-common.dt phony-output.dt
-TEST_OBJ=$(WORKDIR)/*.o $(TEST_COMMON_OBJ) $(TESTDIR)/test-common.o $(TESTDIR)/phony-output.o
+TEST_DEP=instance string.du test-commons test-common.dt phony-output.dt
+TEST_OBJ=$(WORKDIR)/*.o \
+         $(UTILDIR)/string.o \
+         $(TEST_COMMON_OBJ) \
+         $(TESTDIR)/test-common.o \
+         $(TESTDIR)/phony-output.o
 
 $(TESTDIR)/test-instance.out:$(TEST_DEP) \
                              test-expr-nodes.dt \

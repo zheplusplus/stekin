@@ -27,8 +27,7 @@ bool type::eq_as_built_in(type const&) const
     return false;
 }
 
-bool type::eq_as_func_reference(util::sref<proto::function>
-                              , std::map<std::string, variable const> const&) const
+bool type::eq_as_func_reference(util::sref<proto::function>, std::map<std::string, variable const> const&) const
 {
     return false;
 }
@@ -38,8 +37,7 @@ bool type::lt_as_built_in(type const&) const
     return false;
 }
 
-bool type::lt_as_func_reference(util::sref<proto::function>
-                              , std::map<std::string, variable const> const&) const
+bool type::lt_as_func_reference(util::sref<proto::function>, std::map<std::string, variable const> const&) const
 {
     return false;
 }

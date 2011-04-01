@@ -8,14 +8,14 @@
 
 namespace test {
 
-    extern inst::type const WORD;
-    extern inst::type const DWORD;
-    extern inst::type const HALFWORD;
+    extern inst::built_in_primitive const WORD;
+    extern inst::built_in_primitive const DWORD;
+    extern inst::built_in_primitive const HALFWORD;
 
     struct cond_type_expr
         : public inst::expr_base
     {
-        inst::type const* typeof() const
+        util::sref<inst::type const> typeof() const
         {
             return inst::type::BIT_BOOL;
         }
@@ -26,7 +26,7 @@ namespace test {
     struct void_type_expr
         : public inst::expr_base
     {
-        inst::type const* typeof() const
+        util::sref<inst::type const> typeof() const
         {
             return inst::type::BIT_VOID;
         }
@@ -37,7 +37,7 @@ namespace test {
     struct bad_type_expr
         : public inst::expr_base
     {
-        inst::type const* typeof() const
+        util::sref<inst::type const> typeof() const
         {
             return inst::type::BAD_TYPE;
         }
@@ -52,5 +52,8 @@ namespace test {
     };
 
 }
+
+std::ostream& operator<<(std::ostream& os, inst::variable const& var);
+std::ostream& operator<<(std::ostream& os, util::sref<inst::type const> type);
 
 #endif /* __STACKENING_INSTANCE_TEST_TEST_COMMON_H__ */
