@@ -35,7 +35,7 @@ namespace flchk {
         void add_branch_alt_only(misc::pos_type const& pos
                                , util::sptr<expr_base const> predicate
                                , util::sptr<filter> alternative);
-
+    public:
         virtual void def_var(misc::pos_type const& pos
                            , std::string const& name
                            , util::sptr<expr_base const> init);

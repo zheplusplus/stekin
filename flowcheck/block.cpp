@@ -53,3 +53,20 @@ void block::compile(util::sref<proto::scope> scope) const
                       scope->add_stmt(stmt->compile(scope));
                   });
 }
+
+void block::append(block following)
+{
+    std::for_each(following._funcs.begin()
+                , following._funcs.end()
+                , [&](util::sptr<function const>& func)
+                  {
+                      _funcs.push_back(std::move(func));
+                  });
+
+    std::for_each(following._stmts.begin()
+                , following._stmts.end()
+                , [&](util::sptr<stmt_base const>& stmt)
+                  {
+                      _stmts.push_back(std::move(stmt));
+                  });
+}

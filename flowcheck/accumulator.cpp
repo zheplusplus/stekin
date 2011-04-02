@@ -66,6 +66,12 @@ void accumulator::add_branch_alt_only(misc::pos_type const& pos
                                                    , std::move(alternative._block)))));
 }
 
+void accumulator::add_block(accumulator b)
+{
+    _block.append(std::move(b._block));
+    _set_self_terminated(std::move(b));
+}
+
 void accumulator::def_var(misc::pos_type const& pos, std::string const& name, util::sptr<expr_base const> init)
 {
     _check_not_terminated(pos);
@@ -130,4 +136,11 @@ void accumulator::_report_terminated(misc::pos_type const& pos)
 bool accumulator::_terminated() const
 {
     return bool(_termination_pos);
+}
+
+void accumulator::_set_self_terminated(accumulator term)
+{
+    _set_termination_by_sub_accumulator(term);
+    _error_reported = term._error_reported;
+    _termination_pos = std::move(term._termination_pos);
 }
