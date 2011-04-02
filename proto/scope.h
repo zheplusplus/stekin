@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <list>
+#include <gmpxx.h>
 
 #include "block.h"
 #include "fwd-decl.h"
@@ -15,8 +16,8 @@ namespace proto {
         virtual ~scope() {}
     public:
         util::sptr<expr_base const> make_bool(misc::pos_type const& pos, bool value) const;
-        util::sptr<expr_base const> make_int(misc::pos_type const& pos, std::string const& value) const;
-        util::sptr<expr_base const> make_float(misc::pos_type const& pos, std::string const& value) const;
+        util::sptr<expr_base const> make_int(misc::pos_type const& pos, mpz_class const& value) const;
+        util::sptr<expr_base const> make_float(misc::pos_type const& pos, mpf_class const& value) const;
         virtual util::sptr<expr_base const> make_ref(misc::pos_type const& pos, std::string const& name) = 0;
         virtual util::sptr<expr_base const> make_call(misc::pos_type const& pos
                                                     , std::string const& name

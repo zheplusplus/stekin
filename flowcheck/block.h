@@ -28,6 +28,7 @@ namespace flchk {
                     , std::vector<std::string> const& param_names
                     , block body
                     , bool contains_void_return);
+        void append(block following);
     private:
         std::list<util::sptr<stmt_base const>> _stmts;
         std::list<util::sptr<function const>> _funcs;

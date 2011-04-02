@@ -9,12 +9,12 @@ util::sptr<expr_base const> scope::make_bool(misc::pos_type const& pos, bool val
     return std::move(util::mkptr(new bool_literal(pos, value)));
 }
 
-util::sptr<expr_base const> scope::make_int(misc::pos_type const& pos, std::string const& value) const
+util::sptr<expr_base const> scope::make_int(misc::pos_type const& pos, mpz_class const& value) const
 {
     return std::move(util::mkptr(new int_literal(pos, value)));
 }
 
-util::sptr<expr_base const> scope::make_float(misc::pos_type const& pos, std::string const& value) const
+util::sptr<expr_base const> scope::make_float(misc::pos_type const& pos, mpf_class const& value) const
 {
     return std::move(util::mkptr(new float_literal(pos, value)));
 }

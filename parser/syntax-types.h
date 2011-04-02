@@ -2,7 +2,6 @@
 #define __STACKENING_PARSER_SYNTAX_TYPE_H__
 
 #include <string>
-#include <list>
 #include <vector>
 
 #include "../grammar/fwd-decl.h"
@@ -39,10 +38,10 @@ namespace parser {
 
         std::vector<std::string> get() const
         {
-            return std::vector<std::string>(_names.begin(), _names.end());
+            return _names;
         }
     private:
-        std::list<std::string> _names;
+        std::vector<std::string> _names;
     };
 
     struct arg_list {
@@ -52,12 +51,12 @@ namespace parser {
             return this;
         }
 
-        std::list<util::sptr<grammar::expr_base const>> deliver_args()
+        std::vector<util::sptr<grammar::expr_base const>> deliver_args()
         {
             return std::move(_params);
         }
     private:
-        std::list<util::sptr<grammar::expr_base const>> _params;
+        std::vector<util::sptr<grammar::expr_base const>> _params;
     };
 
 }
