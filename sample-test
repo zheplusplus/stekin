@@ -18,3 +18,4 @@ verify nest-func
 verify return-void
 verify pair
 verify vector-multi
+verify big-literals

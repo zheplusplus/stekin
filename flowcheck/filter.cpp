@@ -8,7 +8,7 @@ using namespace flchk;
 
 void filter::add_func_ret(misc::pos_type const& pos, util::sptr<expr_base const> ret_val)
 {
-    _accumulator.add_func_ret(pos, std::move(ret_val));
+    _accumulator.add_func_ret(pos, std::move(ret_val->fold()));
 }
 
 void filter::add_func_ret_nothing(misc::pos_type const& pos)
@@ -18,7 +18,7 @@ void filter::add_func_ret_nothing(misc::pos_type const& pos)
 
 void filter::add_arith(misc::pos_type const& pos, util::sptr<expr_base const> expr)
 {
-    _accumulator.add_arith(pos, std::move(expr));
+    _accumulator.add_arith(pos, std::move(expr->fold()));
 }
 
 void filter::add_branch(misc::pos_type const& pos
@@ -27,7 +27,7 @@ void filter::add_branch(misc::pos_type const& pos
                       , util::sptr<filter> alternative)
 {
     _accumulator.add_branch(pos
-                          , std::move(predicate)
+                          , std::move(predicate->fold())
                           , std::move(consequence->_accumulator)
                           , std::move(alternative->_accumulator));
 }
@@ -36,19 +36,19 @@ void filter::add_branch(misc::pos_type const& pos
                       , util::sptr<expr_base const> predicate
                       , util::sptr<filter> consequence)
 {
-    _accumulator.add_branch(pos, std::move(predicate), std::move(consequence->_accumulator));
+    _accumulator.add_branch(pos, std::move(predicate->fold()), std::move(consequence->_accumulator));
 }
 
 void filter::add_branch_alt_only(misc::pos_type const& pos
                                , util::sptr<expr_base const> predicate
                                , util::sptr<filter> alternative)
 {
-    _accumulator.add_branch_alt_only(pos, std::move(predicate), std::move(alternative->_accumulator));
+    _accumulator.add_branch_alt_only(pos, std::move(predicate->fold()), std::move(alternative->_accumulator));
 }
 
 void filter::def_var(misc::pos_type const& pos, std::string const& name, util::sptr<expr_base const> init)
 {
-    _accumulator.def_var(pos, name, std::move(init));
+    _accumulator.def_var(pos, name, std::move(init->fold()));
 }
 
 void filter::def_func(misc::pos_type const& pos

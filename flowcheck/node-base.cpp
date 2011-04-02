@@ -47,7 +47,7 @@ util::sptr<expr_base const> expr_base::as_rhs(misc::pos_type const& op_pos
                                             , std::string const& op_img
                                             , util::sptr<expr_base const> lhs) const
 {
-    return std::move(lhs->operate(op_pos, op_img, std::move(fold())));
+    return std::move(util::mkptr(new binary_op(op_pos, std::move(lhs), op_img, std::move(fold()))));
 }
 
 util::sptr<expr_base const> expr_base::as_rhs(misc::pos_type const& op_pos, std::string const& op_img) const

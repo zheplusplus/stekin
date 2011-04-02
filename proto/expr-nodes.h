@@ -14,8 +14,8 @@ namespace proto {
     struct bool_literal
         : public expr_base
     {
-        bool_literal(misc::pos_type const& ps, bool v)
-            : expr_base(ps)
+        bool_literal(misc::pos_type const& pos, bool v)
+            : expr_base(pos)
             , value(v)
         {}
 
@@ -27,9 +27,9 @@ namespace proto {
     struct int_literal
         : public expr_base
     {
-        int_literal(misc::pos_type const& ps, std::string const& image)
-            : expr_base(ps)
-            , value(image)
+        int_literal(misc::pos_type const& pos, mpz_class const& v)
+            : expr_base(pos)
+            , value(v)
         {}
 
         util::sptr<inst::expr_base const> inst(util::sref<inst::scope>) const; 
@@ -40,9 +40,9 @@ namespace proto {
     struct float_literal
         : public expr_base
     {
-        float_literal(misc::pos_type const& ps, std::string const& image)
-            : expr_base(ps)
-            , value(image)
+        float_literal(misc::pos_type const& pos, mpf_class const& v)
+            : expr_base(pos)
+            , value(v)
         {}
 
         util::sptr<inst::expr_base const> inst(util::sref<inst::scope>) const; 
@@ -53,8 +53,8 @@ namespace proto {
     struct reference
         : public expr_base
     {
-        reference(misc::pos_type const& ps, std::string const& n)
-            : expr_base(ps)
+        reference(misc::pos_type const& pos, std::string const& n)
+            : expr_base(pos)
             , name(n)
         {}
 
@@ -66,8 +66,8 @@ namespace proto {
     struct call
         : public expr_base
     {
-        call(misc::pos_type const& ps, util::sref<function> f, std::vector<util::sptr<expr_base const>> a)
-            : expr_base(ps)
+        call(misc::pos_type const& pos, util::sref<function> f, std::vector<util::sptr<expr_base const>> a)
+            : expr_base(pos)
             , func(f)
             , args(std::move(a))
         {}
@@ -81,8 +81,8 @@ namespace proto {
     struct functor
         : public expr_base
     {
-        functor(misc::pos_type const& ps, std::string const& n, std::vector<util::sptr<expr_base const>> a)
-            : expr_base(ps)
+        functor(misc::pos_type const& pos, std::string const& n, std::vector<util::sptr<expr_base const>> a)
+            : expr_base(pos)
             , name(n)
             , args(std::move(a))
         {}
@@ -96,8 +96,8 @@ namespace proto {
     struct func_reference
         : public expr_base
     {
-        func_reference(misc::pos_type const& ps, util::sref<function> f)
-            : expr_base(ps)
+        func_reference(misc::pos_type const& pos, util::sref<function> f)
+            : expr_base(pos)
             , func(f)
         {}
 
@@ -109,11 +109,11 @@ namespace proto {
     struct binary_op
         : public expr_base
     {
-        binary_op(misc::pos_type const& ps
+        binary_op(misc::pos_type const& pos
                 , util::sptr<expr_base const> l
                 , std::string const& o
                 , util::sptr<expr_base const> r)
-            : expr_base(ps)
+            : expr_base(pos)
             , lhs(std::move(l))
             , op(o)
             , rhs(std::move(r))
@@ -129,8 +129,8 @@ namespace proto {
     struct pre_unary_op
         : public expr_base
     {
-        pre_unary_op(misc::pos_type const& ps, std::string const& o, util::sptr<expr_base const> r)
-            : expr_base(ps)
+        pre_unary_op(misc::pos_type const& pos, std::string const& o, util::sptr<expr_base const> r)
+            : expr_base(pos)
             , op(o)
             , rhs(std::move(r))
         {}
@@ -144,8 +144,8 @@ namespace proto {
     struct conjunction
         : public expr_base
     {
-        conjunction(misc::pos_type const& ps, util::sptr<expr_base const> l, util::sptr<expr_base const> r)
-            : expr_base(ps)
+        conjunction(misc::pos_type const& pos, util::sptr<expr_base const> l, util::sptr<expr_base const> r)
+            : expr_base(pos)
             , lhs(std::move(l))
             , rhs(std::move(r))
         {}
@@ -159,8 +159,8 @@ namespace proto {
     struct disjunction
         : public expr_base
     {
-        disjunction(misc::pos_type const& ps, util::sptr<expr_base const> l, util::sptr<expr_base const> r)
-            : expr_base(ps)
+        disjunction(misc::pos_type const& pos, util::sptr<expr_base const> l, util::sptr<expr_base const> r)
+            : expr_base(pos)
             , lhs(std::move(l))
             , rhs(std::move(r))
         {}
@@ -174,8 +174,8 @@ namespace proto {
     struct negation
         : public expr_base
     {
-        negation(misc::pos_type const& ps, util::sptr<expr_base const> r)
-            : expr_base(ps)
+        negation(misc::pos_type const& pos, util::sptr<expr_base const> r)
+            : expr_base(pos)
             , rhs(std::move(r))
         {}
 
