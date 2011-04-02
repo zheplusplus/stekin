@@ -2,7 +2,7 @@
 #define __STAKCENING_FLOW_CHECK_EXPRESSION_NODES_H__
 
 #include <string>
-#include <list>
+#include <vector>
 
 #include "node-base.h"
 #include "../util/pointer.h"
@@ -19,6 +19,10 @@ namespace flchk {
         {}
 
         util::sptr<proto::expr_base const> compile(util::sref<proto::scope> scope) const;
+        bool is_literal() const;
+        bool bool_value() const;
+        util::sptr<expr_base const> fold() const;
+        std::string type_name() const;
 
         std::string const op_img;
         util::sptr<expr_base const> const rhs;
@@ -38,6 +42,10 @@ namespace flchk {
         {}
 
         util::sptr<proto::expr_base const> compile(util::sref<proto::scope> scope) const;
+        bool is_literal() const;
+        bool bool_value() const;
+        std::string type_name() const;
+        util::sptr<expr_base const> fold() const;
 
         util::sptr<expr_base const> const lhs;
         std::string const op_img;
@@ -54,6 +62,10 @@ namespace flchk {
         {}
 
         util::sptr<proto::expr_base const> compile(util::sref<proto::scope> scope) const;
+        bool is_literal() const;
+        bool bool_value() const;
+        std::string type_name() const;
+        util::sptr<expr_base const> fold() const;
 
         util::sptr<expr_base const> const lhs;
         util::sptr<expr_base const> const rhs;
@@ -69,6 +81,10 @@ namespace flchk {
         {}
 
         util::sptr<proto::expr_base const> compile(util::sref<proto::scope> scope) const;
+        bool is_literal() const;
+        bool bool_value() const;
+        std::string type_name() const;
+        util::sptr<expr_base const> fold() const;
 
         util::sptr<expr_base const> const lhs;
         util::sptr<expr_base const> const rhs;
@@ -83,6 +99,10 @@ namespace flchk {
         {}
 
         util::sptr<proto::expr_base const> compile(util::sref<proto::scope> scope) const;
+        bool is_literal() const;
+        bool bool_value() const;
+        std::string type_name() const;
+        util::sptr<expr_base const> fold() const;
 
         util::sptr<expr_base const> const rhs;
     };
@@ -96,6 +116,8 @@ namespace flchk {
         {}
 
         util::sptr<proto::expr_base const> compile(util::sref<proto::scope> scope) const;
+        std::string type_name() const;
+        util::sptr<expr_base const> fold() const;
 
         std::string const name;
     };
@@ -103,55 +125,126 @@ namespace flchk {
     struct bool_literal
         : public expr_base
     {
-        bool_literal(misc::pos_type const& pos, bool val)
+        bool_literal(misc::pos_type const& pos, bool v)
             : expr_base(pos)
-            , value(val)
+            , value(v)
         {}
 
         util::sptr<proto::expr_base const> compile(util::sref<proto::scope> scope) const;
+        bool is_literal() const;
+        bool bool_value() const;
+        std::string type_name() const;
+        util::sptr<expr_base const> fold() const;
+
+        util::sptr<expr_base const> operate(misc::pos_type const& op_pos
+                                          , std::string const& op_img
+                                          , mpz_class const&) const;
+        util::sptr<expr_base const> operate(misc::pos_type const& op_pos
+                                          , std::string const& op_img
+                                          , mpf_class const&) const;
+        util::sptr<expr_base const> operate(misc::pos_type const& op_pos
+                                          , std::string const& op_img
+                                          , bool rhs) const;
+
+        util::sptr<expr_base const> as_rhs(misc::pos_type const& op_pos
+                                         , std::string const& op_img
+                                         , util::sptr<expr_base const> lhs) const;
+        util::sptr<expr_base const> as_rhs(misc::pos_type const& op_pos, std::string const& op_img) const;
 
         bool const value;
+    public:
+        static util::sptr<expr_base const> mkbool(bool value);
     };
 
     struct int_literal
         : public expr_base
     {
-        int_literal(misc::pos_type const& pos, std::string const& val)
+        int_literal(misc::pos_type const& pos, std::string const& image)
             : expr_base(pos)
-            , value(val)
+            , value(image)
+        {}
+
+        int_literal(misc::pos_type const& pos, mpz_class const& v)
+            : expr_base(pos)
+            , value(v)
         {}
 
         util::sptr<proto::expr_base const> compile(util::sref<proto::scope> scope) const;
+        bool is_literal() const;
+        bool bool_value() const;
+        std::string type_name() const;
+        util::sptr<expr_base const> fold() const;
 
-        std::string const value;
+        util::sptr<expr_base const> operate(misc::pos_type const& op_pos
+                                          , std::string const& op_img
+                                          , mpz_class const& rhs) const;
+        util::sptr<expr_base const> operate(misc::pos_type const& op_pos
+                                          , std::string const& op_img
+                                          , mpf_class const& rhs) const;
+        util::sptr<expr_base const> operate(misc::pos_type const& op_pos
+                                          , std::string const& op_img
+                                          , bool) const;
+
+        util::sptr<expr_base const> as_rhs(misc::pos_type const& op_pos
+                                         , std::string const& op_img
+                                         , util::sptr<expr_base const> lhs) const;
+        util::sptr<expr_base const> as_rhs(misc::pos_type const& op_pos, std::string const& op_img) const;
+
+        mpz_class const value;
     };
 
     struct float_literal
         : public expr_base
     {
-        float_literal(misc::pos_type const& pos, std::string const& val)
+        float_literal(misc::pos_type const& pos, std::string const& image)
             : expr_base(pos)
-            , value(val)
+            , value(image)
+        {}
+
+        float_literal(misc::pos_type const& pos, mpf_class const& v)
+            : expr_base(pos)
+            , value(v)
         {}
 
         util::sptr<proto::expr_base const> compile(util::sref<proto::scope> scope) const;
+        bool is_literal() const;
+        bool bool_value() const;
+        std::string type_name() const;
+        util::sptr<expr_base const> fold() const;
 
-        std::string const value;
+        util::sptr<expr_base const> operate(misc::pos_type const& op_pos
+                                          , std::string const& op_img
+                                          , mpz_class const& rhs) const;
+        util::sptr<expr_base const> operate(misc::pos_type const& op_pos
+                                          , std::string const& op_img
+                                          , mpf_class const& rhs) const;
+        util::sptr<expr_base const> operate(misc::pos_type const& op_pos
+                                          , std::string const& op_img
+                                          , bool) const;
+
+        util::sptr<expr_base const> as_rhs(misc::pos_type const& op_pos
+                                         , std::string const& op_img
+                                         , util::sptr<expr_base const> lhs) const;
+        util::sptr<expr_base const> as_rhs(misc::pos_type const& op_pos, std::string const& op_img) const;
+
+        mpf_class const value;
     };
 
     struct call
         : public expr_base
     {
-        call(misc::pos_type const& pos, std::string const& n, std::list<util::sptr<expr_base const>> a)
+        call(misc::pos_type const& pos, std::string const& n, std::vector<util::sptr<expr_base const>> a)
             : expr_base(pos)
             , name(n)
             , args(std::move(a))
         {}
 
         util::sptr<proto::expr_base const> compile(util::sref<proto::scope> scope) const;
+        std::string type_name() const;
+        util::sptr<expr_base const> fold() const;
 
         std::string const name;
-        std::list<util::sptr<expr_base const>> const args;
+        std::vector<util::sptr<expr_base const>> const args;
     };
 
     struct func_reference
@@ -164,6 +257,8 @@ namespace flchk {
         {}
 
         util::sptr<proto::expr_base const> compile(util::sref<proto::scope> scope) const;
+        std::string type_name() const;
+        util::sptr<expr_base const> fold() const;
 
         std::string const name;
         int const param_count;
