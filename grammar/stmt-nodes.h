@@ -20,7 +20,7 @@ namespace grammar {
 
         void compile(util::sref<flchk::filter> filter) const;
 
-        util::sptr<expr_base const> expr;
+        util::sptr<expr_base const> const expr;
     };
 
     struct branch
@@ -35,7 +35,7 @@ namespace grammar {
 
         void compile(util::sref<flchk::filter> filter) const;
 
-        util::sptr<expr_base const> predicate;
+        util::sptr<expr_base const> const predicate;
         block const consequence;
         block const alternative;
     };
@@ -51,7 +51,7 @@ namespace grammar {
 
         void compile(util::sref<flchk::filter> filter) const;
 
-        util::sptr<expr_base const> predicate;
+        util::sptr<expr_base const> const predicate;
         block const consequence;
     };
 
@@ -66,7 +66,7 @@ namespace grammar {
 
         void compile(util::sref<flchk::filter> filter) const;
 
-        util::sptr<expr_base const> predicate;
+        util::sptr<expr_base const> const predicate;
         block const alternative;
     };
 

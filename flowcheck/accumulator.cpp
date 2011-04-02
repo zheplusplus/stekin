@@ -141,6 +141,8 @@ bool accumulator::_terminated() const
 void accumulator::_set_self_terminated(accumulator term)
 {
     _set_termination_by_sub_accumulator(term);
-    _error_reported = term._error_reported;
     _termination_pos = std::move(term._termination_pos);
+    if (bool(_termination_pos)) {
+        _error_reported = true;
+    }
 }

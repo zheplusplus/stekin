@@ -627,14 +627,17 @@ util::sptr<proto::expr_base const> call::compile(util::sref<proto::scope> scope)
 
 std::string call::type_name() const
 {
+    if (args.empty()) {
+        return "(call(" + name + "))";
+    }
     std::string args_names;
     std::for_each(args.begin()
                 , args.end()
                 , [&](util::sptr<expr_base const> const& arg)
                   {
-                      args_names += arg->type_name();
+                      args_names += (arg->type_name() + ", ");
                   });
-    return "(call(" + name + ")(" + args_names + "))";
+    return "(call(" + name + ")(" + args_names.substr(0, args_names.length() - 2) + "))";
 }
 
 util::sptr<expr_base const> call::fold() const
