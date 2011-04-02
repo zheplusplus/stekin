@@ -10,18 +10,30 @@ namespace grammar {
     struct stmt_base {
         misc::pos_type const pos;
 
-        virtual void compile(util::sref<flchk::filter> scope) = 0;
+        virtual void compile(util::sref<flchk::filter> scope) const = 0;
 
         virtual ~stmt_base() {}
     protected:
-        stmt_base(misc::pos_type const& ps)
+        explicit stmt_base(misc::pos_type const& ps)
             : pos(ps)
         {}
 
         stmt_base(stmt_base const&) = delete;
     };
 
-    typedef flchk::expr_base expr_base;
+    struct expr_base {
+        misc::pos_type const pos;
+
+        virtual util::sptr<flchk::expr_base const> compile() const = 0;
+
+        virtual ~expr_base() {}
+    protected:
+        explicit expr_base(misc::pos_type const& ps)
+            : pos(ps)
+        {}
+
+        expr_base(expr_base const&) = delete;
+    };
 
 }
 
