@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <vector>
 #include <map>
+#include <sstream>
 
 #include "test-common.h"
 #include "../../proto/stmt-nodes.h"
@@ -95,15 +96,17 @@ util::sptr<expr_base const> scope::make_bool(misc::pos_type const& pos, bool val
     return std::move(nullptr());
 }
 
-util::sptr<expr_base const> scope::make_int(misc::pos_type const& pos, std::string const& value) const
+util::sptr<expr_base const> scope::make_int(misc::pos_type const& pos, mpz_class const& value) const
 {
-    data_tree::actual_one()(pos, INTEGER, value);
+    data_tree::actual_one()(pos, INTEGER, value.get_str());
     return std::move(nullptr());
 }
 
-util::sptr<expr_base const> scope::make_float(misc::pos_type const& pos, std::string const& value) const
+util::sptr<expr_base const> scope::make_float(misc::pos_type const& pos, mpf_class const& value) const
 {
-    data_tree::actual_one()(pos, FLOATING, value);
+    std::stringstream ss;
+    ss << value;
+    data_tree::actual_one()(pos, FLOATING, ss.str());
     return std::move(nullptr());
 }
 

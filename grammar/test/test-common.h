@@ -1,6 +1,7 @@
 #ifndef __STACKENING_GRAMMAR_TEST_TEST_COMMON_H__
 #define __STACKENING_GRAMMAR_TEST_TEST_COMMON_H__
 
+#include "../node-base.h"
 #include "../../flowcheck/node-base.h"
 #include "../../misc/pos-type.h"
 #include "../../test/data-node.h"
@@ -51,6 +52,17 @@ namespace test {
         data_tree& operator()(misc::pos_type const& pos, node_type const& type);
     };
 
+    extern node_type const BOOLEAN;
+    extern node_type const INTEGER;
+    extern node_type const FLOATING;
+    extern node_type const REFERENCE;
+
+    extern node_type const BINARY_OP;
+    extern node_type const PRE_UNARY_OP;
+
+    extern node_type const CALL;
+    extern node_type const FUNC_REFERENCE;
+
     extern node_type const VAR_DEF;
     extern node_type const VAR_DEF_FILTERED;
     extern node_type const ARITHMETICS;
@@ -70,22 +82,8 @@ namespace test {
     {
         void SetUp();
         void TearDown();
-
-        util::sptr<flchk::expr_base const> mkexpr() const;
     };
 
-    struct phony_expr
-        : public flchk::expr_base
-    {
-        phony_expr()
-            : expr_base(misc::pos_type(0))
-        {}
-
-        util::sptr<proto::expr_base const> compile(util::sref<proto::scope>) const
-        {
-            return std::move(util::sptr<proto::expr_base const>(NULL));
-        }
-    };
 }
 
 std::ostream& operator<<(std::ostream& os, test::grammar_data const& data);

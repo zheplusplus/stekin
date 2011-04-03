@@ -41,27 +41,27 @@ TEST_F(ScopeTest, ExprNodesCreation)
 
     scope->make_bool(pos, true)->inst(*inst_scope)->typeof();
     scope->make_bool(pos, false)->inst(*inst_scope)->typeof();
-    scope->make_int(pos, "0")->inst(*inst_scope)->typeof();
-    scope->make_int(pos, "2048")->inst(*inst_scope)->typeof();
-    scope->make_float(pos, "21.36")->inst(*inst_scope)->typeof();
-    scope->make_float(pos, "0.0")->inst(*inst_scope)->typeof();
+    scope->make_int(pos, 0)->inst(*inst_scope)->typeof();
+    scope->make_int(pos, 2048)->inst(*inst_scope)->typeof();
+    scope->make_float(pos, 21.36)->inst(*inst_scope)->typeof();
+    scope->make_float(pos, 0.0)->inst(*inst_scope)->typeof();
     scope->make_ref(pos, "zero")->inst(*inst_scope)->typeof();
     scope->make_ref(pos, "one")->inst(*inst_scope)->typeof();
-    scope->make_binary(pos, std::move(scope->make_int(pos, "1")), "+", std::move(scope->make_bool(pos, true)))
+    scope->make_binary(pos, std::move(scope->make_int(pos, 1)), "+", std::move(scope->make_bool(pos, true)))
          ->inst(*inst_scope)
          ->typeof();
-    scope->make_binary(pos, std::move(scope->make_int(pos, "4")), "<=", std::move(scope->make_bool(pos, false)))
+    scope->make_binary(pos, std::move(scope->make_int(pos, 4)), "<=", std::move(scope->make_bool(pos, false)))
          ->inst(*inst_scope)
          ->typeof();
-    scope->make_pre_unary(pos, "-", std::move(scope->make_float(pos, "0.9")))->inst(*inst_scope)->typeof();
-    scope->make_pre_unary(pos, "+", std::move(scope->make_float(pos, "1.6")))->inst(*inst_scope)->typeof();
-    scope->make_conj(pos, std::move(scope->make_int(pos, "25")), std::move(scope->make_bool(pos, true)))
+    scope->make_pre_unary(pos, "-", std::move(scope->make_float(pos, 0.9)))->inst(*inst_scope)->typeof();
+    scope->make_pre_unary(pos, "+", std::move(scope->make_float(pos, 1.6)))->inst(*inst_scope)->typeof();
+    scope->make_conj(pos, std::move(scope->make_int(pos, 25)), std::move(scope->make_bool(pos, true)))
          ->inst(*inst_scope)
          ->typeof();
-    scope->make_disj(pos, std::move(scope->make_bool(pos, false)), std::move(scope->make_int(pos, "36")))
+    scope->make_disj(pos, std::move(scope->make_bool(pos, false)), std::move(scope->make_int(pos, 36)))
          ->inst(*inst_scope)
          ->typeof();
-    scope->make_nega(pos, std::move(scope->make_int(pos, "49")))->inst(*inst_scope)->typeof();
+    scope->make_nega(pos, std::move(scope->make_int(pos, 49)))->inst(*inst_scope)->typeof();
     ASSERT_FALSE(error::has_error());
 
     data_tree::expect_one()

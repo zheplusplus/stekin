@@ -49,7 +49,7 @@ TEST_F(FuncNCallTest, NoBranchRecursionFunc)
 
     reset_func(false);
     func->add_stmt(std::move(
-                util::mkptr(new proto::func_ret(pos, std::move(func->make_int(pos, "20110127"))))));
+                util::mkptr(new proto::func_ret(pos, std::move(func->make_int(pos, 20110127))))));
     func->inst(pos, *inst_scope, std::vector<util::sref<inst::type const>>());
     ASSERT_FALSE(error::has_error());
 
@@ -94,11 +94,11 @@ TEST_F(FuncNCallTest, FuncWithBranchRecursion)
     ASSERT_FALSE(error::has_error());
     test_func->add_stmt(std::move(
                 util::mkptr(new proto::branch(pos
-                                            , std::move(test_func->make_int(pos, "1"))
+                                            , std::move(test_func->make_int(pos, 1))
                                             , std::move(sub_scope0->deliver())
                                             , std::move(sub_scope1->deliver())))));
     test_func->add_stmt(std::move(
-                util::mkptr(new proto::func_ret(pos, std::move(test_func->make_int(pos, "1"))))));
+                util::mkptr(new proto::func_ret(pos, std::move(test_func->make_int(pos, 1))))));
 
     test_func->inst(pos, *inst_scope, std::vector<util::sref<inst::type const>>());
     ASSERT_FALSE(error::has_error());
@@ -135,7 +135,7 @@ TEST_F(FuncNCallTest, CouldNotResolve)
 
     test_func->add_stmt(std::move(
                 util::mkptr(new proto::branch(pos
-                                            , std::move(test_func->make_int(pos, "1"))
+                                            , std::move(test_func->make_int(pos, 1))
                                             , std::move(sub_scope0->deliver())
                                             , std::move(sub_scope1->deliver())))));
 

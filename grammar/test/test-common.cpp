@@ -39,6 +39,17 @@ std::ostream& operator<<(std::ostream& os, grammar_data const& data)
     return -1 == data.func_arg_size ? (os << data.pos) : (os << data.pos << " arg size=" << data.func_arg_size);
 }
 
+node_type const test::BOOLEAN("boolean");
+node_type const test::INTEGER("integer");
+node_type const test::FLOATING("floating");
+node_type const test::REFERENCE("reference");
+
+node_type const test::BINARY_OP("binary operation");
+node_type const test::PRE_UNARY_OP("prefix unary operation");
+
+node_type const test::CALL("call");
+node_type const test::FUNC_REFERENCE("function reference");
+
 node_type const test::VAR_DEF("var def");
 node_type const test::VAR_DEF_FILTERED("var def filtered");
 node_type const test::ARITHMETICS("arithmetics");
@@ -61,9 +72,4 @@ void grammar_test::SetUp()
 void grammar_test::TearDown()
 {
     data_tree::verify();
-}
-
-util::sptr<flchk::expr_base const> grammar_test::mkexpr() const
-{
-    return std::move(util::mkptr(new phony_expr));
 }

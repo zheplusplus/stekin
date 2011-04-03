@@ -1,4 +1,4 @@
-#include <list>
+#include <vector>
 #include <gtest/gtest.h>
 
 #include "test-common.h"
@@ -33,10 +33,10 @@ TEST_F(ExprNodesTest, Literals)
     data_tree::expect_one()
     (SCOPE)
         (pos, INTEGER, "20110116")
-        (pos, FLOATING, "19.50")
+        (pos, FLOATING, "19.5")
         (pos, BOOLEAN, "true")
         (pos, INTEGER, "441499")
-        (pos, FLOATING, "0.1950")
+        (pos, FLOATING, "0.195")
         (pos, BOOLEAN, "false")
     ;
 }
@@ -86,7 +86,7 @@ TEST_F(ExprNodesTest, Operations)
     flchk::disjunction disj(pos
                           , std::move(util::mkptr(new flchk::bool_literal(pos, false)))
                           , std::move(util::mkptr(new flchk::int_literal(pos, "2"))));
-    flchk::negation nega(pos, std::move(util::mkptr(new flchk::float_literal(pos, "1954.0112"))));
+    flchk::negation nega(pos, std::move(util::mkptr(new flchk::float_literal(pos, "1954.01"))));
 
     binary0.compile(*scope);
     binary1.compile(*scope);
@@ -104,7 +104,7 @@ TEST_F(ExprNodesTest, Operations)
             (pos, INTEGER, "2357111317")
             (pos, FLOATING, "1.12358")
         (pos, BINARY_OP, "<=")
-            (pos, FLOATING, ".13")
+            (pos, FLOATING, "0.13")
         (pos, PRE_UNARY_OP, "+")
                 (pos, INTEGER, "1")
                 (pos, VAR_REF, "wasureru")
@@ -116,7 +116,7 @@ TEST_F(ExprNodesTest, Operations)
             (pos, INTEGER, "2")
             (pos, BOOLEAN, "false")
         (pos, BINARY_OP, "||")
-            (pos, FLOATING, "1954.0112")
+            (pos, FLOATING, "1954.01")
         (pos, PRE_UNARY_OP, "!")
     ;
 }
@@ -126,7 +126,7 @@ TEST_F(ExprNodesTest, Calls)
     misc::pos_type pos(3);
     util::sptr<proto::scope> scope(std::move(new proto::global_scope));
 
-    std::list<util::sptr<flchk::expr_base const>> params;
+    std::vector<util::sptr<flchk::expr_base const>> params;
     flchk::call call0(pos, "fib", std::move(params));
 
     params.push_back(std::move(util::mkptr(new flchk::bool_literal(pos, false))));

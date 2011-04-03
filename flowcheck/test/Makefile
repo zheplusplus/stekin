@@ -7,8 +7,8 @@ test:$(TESTDIR)/test-flowcheck.out
 include $(WORKDIR)/Makefile
 include test/Makefile
 
-TEST_DEP=flowcheck test-commons phony-proto.dt test-common.dt
-TEST_OBJ=$(WORKDIR)/*.o $(TEST_COMMON_OBJ) $(TESTDIR)/phony-proto.o $(TESTDIR)/test-common.o
+TEST_DEP=flowcheck string.du test-commons phony-proto.dt test-common.dt
+TEST_OBJ=$(WORKDIR)/*.o $(UTILDIR)/string.o $(TEST_COMMON_OBJ) $(TESTDIR)/phony-proto.o $(TESTDIR)/test-common.o
 
 $(TESTDIR)/test-flowcheck.out:$(TEST_DEP) \
                               test-expr-nodes.dt

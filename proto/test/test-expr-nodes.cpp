@@ -23,10 +23,10 @@ TEST_F(ExprNodesTest, Literals)
     misc::pos_type pos(1);
     proto::bool_literal bool0(pos, true);
     proto::bool_literal bool1(pos, false);
-    proto::int_literal int0(pos, "0");
-    proto::int_literal int1(pos, "1048576");
-    proto::float_literal float0(pos, "0.4321");
-    proto::float_literal float1(pos, "1234.56");
+    proto::int_literal int0(pos, 0);
+    proto::int_literal int1(pos, 1048576);
+    proto::float_literal float0(pos, 0.4321);
+    proto::float_literal float1(pos, 1234.56);
 
     bool0.inst(*inst_scope)->typeof();
     bool1.inst(*inst_scope)->typeof();
@@ -67,7 +67,7 @@ TEST_F(ExprNodesTest, Operations)
 {
     misc::pos_type pos(3);
     proto::binary_op bin(pos
-                       , std::move(util::mkptr(new proto::int_literal(pos, "20110122")))
+                       , std::move(util::mkptr(new proto::int_literal(pos, 20110122)))
                        , "+"
                        , std::move(util::mkptr(new proto::reference(pos, "littleBird"))));
     proto::pre_unary_op preu(pos
@@ -104,8 +104,8 @@ TEST_F(ExprNodesTest, Logic)
                           , std::move(util::mkptr(new proto::bool_literal(pos, true)))
                           , std::move(util::mkptr(new proto::bool_literal(pos, false))));
     proto::disjunction disj(pos
-                          , std::move(util::mkptr(new proto::int_literal(pos, "198765432")))
-                          , std::move(util::mkptr(new proto::int_literal(pos, "0"))));
+                          , std::move(util::mkptr(new proto::int_literal(pos, 198765432)))
+                          , std::move(util::mkptr(new proto::int_literal(pos, 0))));
     proto::negation nega(pos, std::move(util::mkptr(new proto::bool_literal(pos, true))));
 
     conj.inst(*inst_scope)->typeof();
