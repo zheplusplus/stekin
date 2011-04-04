@@ -4,9 +4,7 @@
 What is Stac..., oh forget the name, and why it's called so?
 ------------------------------------------------------------
 
-Stackening 程序设计语言是这个编程语言泛滥的时代中又一个*编译型*程序设计语言.
-
-Stackening 这个名字是对新世纪福音战士新剧场版第三部取名为 Quickening 的*吐槽*.
+Stackening 程序设计语言是这个编程语言泛滥的时代中又一个**编译型**程序设计语言.
 
 下一个版本的目标之一是换一个短一点名字, 这样在写 README 时就不必为这么长的单词补齐下面的等号了. 因此现在就不给 ASCII Art Logo 了.
 
@@ -16,7 +14,7 @@ It aims at what?
 简单.
 从以下方面: 设计, 编码, 配置.
 
-* 设计: 设计文档请等待
+* 设计: 整体架构文档见 https://github.com/neuront/stackening/wiki/ModulesAndArchitecture
 * 编码: 模块组织紧凑; 函数短小, 参数个数少; 类成员/接口少; 类继承层次少; 能多态就不分支/选择; 容错而不使用异常
 * 配置: 不依赖配置复杂的库
 
@@ -25,18 +23,23 @@ What is needed and how to build it?
 
 ### 编译源代码需要
 
-* GCC 4.5.x (C++ 0x Lambda, std::unique_ptr 支持) (注: 使用 GCC 4.7.0 experimental 可能导致 g++ 崩溃)
+* GCC 4.5.x (C++ 0x Lambda, `std::unique_ptr`, Move Semantic 支持) (注: 使用 GCC 4.7.0 experimental 可能导致 g++ 崩溃)
 * gawk 3.1.x (AWK)
 * flex 2.5.x (词法分析)
 * bison 2.4.x (语法分析)
+* GMP 5.x (高精度算术库, 用于字面常量折叠优化)
 
 以上配置如需改变, 请修改源码目录中的 misc/mf-template.mk, parser/lex-script, parser/syn-script
+
+在 Stackening 源代码目录下执行 `make` 来编译.
 
 ### 编译单元测试需要
 * GoogleTest 1.5.x
 * POSIX Thread 支持 (GoogleTest 依赖)
 
 不进行单元测试没关系, 并且当下单元测试覆盖率并不高
+
+在 Stackening 源代码目录下执行 `make runtest` 进行测试.
 
 ### 编译后端代码
 Stackening 没有独立的后端, 它将生成 C++ 代码, 然后使用 g++ 编译这些代码生成可执行程序, 所以需要 GCC 4.3+ 进行后端编译, 此处的配置在源码目录的 stk.sh 中
@@ -62,7 +65,7 @@ Stackening 是编译型语言, 其语法形式是抄袭完全动态的 Python �
 * `=` 符号的作用是比较两侧操作数相等, 而不是赋值
 
 ### 嵌套函数定义
-Stackening 允许函数嵌套定义, 并且内层定义的函数可以直接引用外层函数中定义的局部变量, 但是不如 Python 的内部函数, Stackening 不允许返回一个函数. (下一版本将增加此特性)
+Stackening 允许函数嵌套定义, 并且内层定义的函数可以直接引用外层函数中定义的局部变量.
 
 ### `ifnot` 分支
 对于条件成立时什么也不用做而条件不成立的时候需要忙活的分支, 如果不希望在条件前面打上碍眼的感叹号, 可以尝试这种分支语句.
@@ -80,6 +83,32 @@ samples 目录下有很多样例可以参考. 其中 samples/errors 目录下的
 
 很抱歉, 语言规范还没有.
 
+The End Of Stackening
+---------------------
+最近一次合并到主干的代码包括下列特性
+
+简单的**闭包**函数被引入了. 由于 Stackening 支持多个函数同名但参数个数不相同, 因此引用函数必须在函数名之后加上 `@参数个数`. (闭包的实现非常暴力) 你可以在 samples/pair.stkn, samples/vector-multi.stkn 中看到简单的闭包使用样例.
+
+编译器最基本的**字面常量运算折叠**被引入 `flowcheck` 模块, 它依赖 GNU 多精度 (GNU Multiple Precision, GMP) 库.
+
+这次更新将是 Stackening 的终结, 下一个版本项目名字将改变.
+
+What will be added / changed next, except the replace of the ball-ache name?
+----------------------------------------------------------------------------
+主要
+
+设计: 修正现在 `instance` 和 `proto` 就 `proto::function` 而互相依赖的问题; 封装 GMP 中的 `mpz_class`, `mpf_class`
+
+功能: 引用函数时, 如果函数不存在重载, 那么可以直接使用函数名引用函数, 无须加上 `@参数个数`;
+
+测试: 完善测试案例;
+
+可选
+
+设计: 符号表作为单独的库模块实现;
+
+配置: `util`, `misc` 输出为 lib 进行链接.
+
 Contributing
 ------------
 
@@ -88,4 +117,4 @@ Contributing
 3. Commit your changes (`git commit -a -m "I have add some kick-ass features, or I have fixed some ball-ache bugs."`)
 4. Push to the branch (`git push origin stackening_my_own`)
 5. Create an *Issue* with a link to your branch
-6. Enjoy being f__cked by People's Daily and wait
+6. Enjoy tsundere by Kagami Sama and wait
