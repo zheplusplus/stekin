@@ -5,7 +5,6 @@ test:$(TESTDIR)/test-proto.out
 	$(TESTDIR)/test-proto.out
 
 include $(WORKDIR)/Makefile
-include test/Makefile
 
 WORK_OBJ=$(WORKDIR)/scope.o \
          $(WORKDIR)/general-scope.o \
@@ -18,13 +17,11 @@ WORK_OBJ=$(WORKDIR)/scope.o \
          $(WORKDIR)/symbol-table.o
 
 TEST_DEP=proto \
-         test-commons \
          phony-instance.dt \
          test-common.dt \
          test-general-scope.dt \
          test-func-and-call.dt
 TEST_OBJ=$(WORK_OBJ) \
-         $(TEST_COMMON_OBJ) \
          $(TESTDIR)/phony-instance.o \
          $(TESTDIR)/test-common.o
 

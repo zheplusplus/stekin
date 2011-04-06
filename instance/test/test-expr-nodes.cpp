@@ -2,6 +2,7 @@
 
 #include "test-common.h"
 #include "../expr-nodes.h"
+#include "../../test/common.h"
 #include "../../test/phony-errors.h"
 
 using namespace test;

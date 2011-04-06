@@ -5,10 +5,9 @@ test:$(TESTDIR)/test-grammar.out
 	$(TESTDIR)/test-grammar.out
 
 include $(WORKDIR)/Makefile
-include test/Makefile
 
-TEST_DEP=grammar test-commons phony-flowcheck.dt test-common.dt
-TEST_OBJ=$(WORKDIR)/*.o $(TEST_COMMON_OBJ) $(TESTDIR)/phony-flowcheck.o $(TESTDIR)/test-common.o
+TEST_DEP=grammar phony-flowcheck.dt test-common.dt
+TEST_OBJ=$(WORKDIR)/*.o $(TESTDIR)/phony-flowcheck.o $(TESTDIR)/test-common.o
 
 $(TESTDIR)/test-grammar.out:$(TEST_DEP) \
                             test-stmt-nodes.dt \

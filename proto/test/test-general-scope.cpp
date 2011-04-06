@@ -5,6 +5,7 @@
 #include "../symbol-table.h"
 #include "../function.h"
 #include "../stmt-nodes.h"
+#include "../../test/common.h"
 #include "../../test/phony-errors.h"
 
 using namespace test;

@@ -8,7 +8,7 @@ MKTMP=tmp.mk
 
 LIB_DIR=libs
 LIBS=-lgmp -lgmpxx -L$(LIB_DIR) -lstkn
-TEST_LIBS=$(LIBS) -lgtest -lgtest_main -lpthread
+TEST_LIBS=-lgmp -lgmpxx -L$(LIB_DIR) -lstkntest -lstkn -lgtest -lgtest_main -lpthread
 
 SAMPLEDIR=samples
 ERRSAMPLEDIR=$(SAMPLEDIR)/errors
@@ -23,10 +23,4 @@ ERRSAMPLEDIR=$(SAMPLEDIR)/errors
 	echo -n "$(TESTDIR)/" > $(MKTMP)
 	$(RESOLVE_DEP) $< >> $(MKTMP)
 	echo "	$(CC) $< $(CFLAGS) -o $(TESTDIR)/$*.o" >> $(MKTMP)
-	make -f $(MKTMP)
-
-%.dtc:test/%.cpp
-	echo -n "test/" > $(MKTMP)
-	$(RESOLVE_DEP) $< >> $(MKTMP)
-	echo "	$(CC) $< $(CFLAGS) -o test/$*.o" >> $(MKTMP)
 	make -f $(MKTMP)

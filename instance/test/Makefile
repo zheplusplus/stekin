@@ -5,11 +5,9 @@ test:$(TESTDIR)/test-instance.out
 	$(TESTDIR)/test-instance.out
 
 include $(WORKDIR)/Makefile
-include test/Makefile
 
-TEST_DEP=instance test-commons test-common.dt phony-output.dt
+TEST_DEP=instance test-common.dt phony-output.dt
 TEST_OBJ=$(WORKDIR)/*.o \
-         $(TEST_COMMON_OBJ) \
          $(TESTDIR)/test-common.o \
          $(TESTDIR)/phony-output.o
 

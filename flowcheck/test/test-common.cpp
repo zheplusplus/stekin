@@ -1,4 +1,5 @@
 #include "test-common.h"
+#include "../../test/common.h"
 #include "../../test/phony-errors.h"
 #include "../../instance/node-base.h"
 

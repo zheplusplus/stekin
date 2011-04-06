@@ -3,6 +3,7 @@
 #include "test-common.h"
 #include "../stmt-nodes.h"
 #include "../block.h"
+#include "../../test/common.h"
 #include "../../test/phony-errors.h"
 
 using namespace test;

@@ -27,8 +27,7 @@ libs:
 	make -f util/Makefile
 	make -f misc/Makefile
 
-runtest:all
-	make -f test/Makefile
+runtest:all test-libs
 	make -f util/test/Makefile
 	make -f parser/test/Makefile
 	make -f grammar/test/Makefile
@@ -36,6 +35,10 @@ runtest:all
 	make -f proto/test/Makefile
 	make -f instance/test/Makefile
 	./sample-test
+
+test-libs:
+	mkdir -p libs
+	make -f test/Makefile
 
 clean:
 	make -f util/Makefile clean

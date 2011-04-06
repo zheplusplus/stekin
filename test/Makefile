@@ -1,8 +1,9 @@
+WORKDIR=test
+
 include misc/mf-template.mk
 
-TEST_COMMON_OBJ=test/phony-errors.o test/phony-warnings.o
-
-test-commons:phony-errors.dtc phony-warnings.dtc
+test-commons:phony-errors.d phony-warnings.d common.d
+	$(AR) $(LIB_DIR)/libstkntest.a test/*.o
 
 clean:
 	rm -f $(WORKDIR)/*.o

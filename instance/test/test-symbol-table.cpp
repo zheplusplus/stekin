@@ -6,6 +6,7 @@
 #include "../variable.h"
 #include "../../misc/platform.h"
 #include "../../misc/pos-type.h"
+#include "../../test/common.h"
 #include "../../test/phony-errors.h"
 
 using namespace test;

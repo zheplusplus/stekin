@@ -1,13 +1,12 @@
 WORKDIR=parser
 TESTDIR=$(WORKDIR)/test
 
-TEST_DEP=parser test-commons phony-grammar.dt test-common.dt
-TEST_OBJ=$(WORKDIR)/*.o $(TEST_COMMON_OBJ) $(TESTDIR)/phony-grammar.o $(TESTDIR)/test-common.o
+TEST_DEP=parser phony-grammar.dt test-common.dt
+TEST_OBJ=$(WORKDIR)/*.o $(TESTDIR)/phony-grammar.o $(TESTDIR)/test-common.o
 
 runtest:test-empty test-err-tab-as-ind test-err-inv-chars test-err-bad-indent test-mix
 
 include $(WORKDIR)/Makefile
-include test/Makefile
 
 test-empty:$(TESTDIR)/test-empty.out $(SAMPLEDIR)/empty.stkn
 	$(TESTDIR)/test-empty.out < $(SAMPLEDIR)/empty.stkn

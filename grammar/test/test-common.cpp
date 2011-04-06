@@ -3,6 +3,7 @@
 #include "../../flowcheck/node-base.h"
 #include "../../flowcheck/function.h"
 #include "../../proto/node-base.h"
+#include "../../test/common.h"
 #include "../../test/phony-errors.h"
 
 using namespace test;
