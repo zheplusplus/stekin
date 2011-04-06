@@ -1,5 +1,4 @@
 WORKDIR=proto
-UTILDIR=util
 TESTDIR=$(WORKDIR)/test
 
 test:$(TESTDIR)/test-proto.out
@@ -18,17 +17,13 @@ WORK_OBJ=$(WORKDIR)/scope.o \
          $(WORKDIR)/inst-mediates.o \
          $(WORKDIR)/symbol-table.o
 
-UTIL_OBJ=$(UTILDIR)/string.o
-
 TEST_DEP=proto \
-         string.du \
          test-commons \
          phony-instance.dt \
          test-common.dt \
          test-general-scope.dt \
          test-func-and-call.dt
 TEST_OBJ=$(WORK_OBJ) \
-         $(UTILDIR)/string.o \
          $(TEST_COMMON_OBJ) \
          $(TESTDIR)/phony-instance.o \
          $(TESTDIR)/test-common.o
@@ -36,14 +31,14 @@ TEST_OBJ=$(WORK_OBJ) \
 $(TESTDIR)/test-proto.out:$(TEST_DEP) \
                           test-symbol-table.dt \
                           test-expr-nodes.dt
-	$(LINK) $(TEST_LIBS) $(TEST_OBJ) \
+	$(LINK) $(TEST_OBJ) \
 	        $(TESTDIR)/test-symbol-table.o \
 	        $(TESTDIR)/test-expr-nodes.o \
 	        $(TESTDIR)/test-general-scope.o \
 	        $(TESTDIR)/test-func-and-call.o \
+	        $(TEST_LIBS) \
 	     -o $(TESTDIR)/test-proto.out
 
 cleant:clean
-	rm -f $(UTILDIR)/string.o
 	rm -f $(TESTDIR)/*.o
 	rm -f $(TESTDIR)/*.out

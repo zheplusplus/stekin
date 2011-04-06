@@ -14,10 +14,11 @@ $(TESTDIR)/test-grammar.out:$(TEST_DEP) \
                             test-stmt-nodes.dt \
                             test-acceptor.dt \
                             test-clause-builder.dt
-	$(LINK) $(TEST_LIBS) $(TEST_OBJ) \
+	$(LINK) $(TEST_OBJ) \
 	        $(TESTDIR)/test-stmt-nodes.o \
 	        $(TESTDIR)/test-acceptor.o \
 	        $(TESTDIR)/test-clause-builder.o \
+	        $(TEST_LIBS) \
 	     -o $(TESTDIR)/test-grammar.out
 
 cleant:clean

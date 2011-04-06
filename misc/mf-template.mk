@@ -1,13 +1,14 @@
 CC=g++ -c -std=c++0x
 RESOLVE_DEP=g++ -MM
-LINK=g++ $(LIBS)
-UTILDIR=util
+LINK=g++
+AR=ar rcs
 
 CFLAGS=-Wall -Wextra -Werror
 MKTMP=tmp.mk
 
-LIBS=-lgmp -lgmpxx
-TEST_LIBS=-lgtest -lgtest_main -lpthread
+LIB_DIR=libs
+LIBS=-lgmp -lgmpxx -L$(LIB_DIR) -lstkn
+TEST_LIBS=$(LIBS) -lgtest -lgtest_main -lpthread
 
 SAMPLEDIR=samples
 ERRSAMPLEDIR=$(SAMPLEDIR)/errors
@@ -16,12 +17,6 @@ ERRSAMPLEDIR=$(SAMPLEDIR)/errors
 	echo -n "$(WORKDIR)/" > $(MKTMP)
 	$(RESOLVE_DEP) $< >> $(MKTMP)
 	echo "	$(CC) $< $(CFLAGS) -o $(WORKDIR)/$*.o" >> $(MKTMP)
-	make -f $(MKTMP)
-
-%.du:$(UTILDIR)/%.cpp
-	echo -n "$(UTILDIR)/" > $(MKTMP)
-	$(RESOLVE_DEP) $< >> $(MKTMP)
-	echo "	$(CC) $< $(CFLAGS) -o $(UTILDIR)/$*.o" >> $(MKTMP)
 	make -f $(MKTMP)
 
 %.dt:$(TESTDIR)/%.cpp

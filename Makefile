@@ -2,8 +2,7 @@ WORKDIR=.
 
 include misc/mf-template.mk
 
-all:main.d head-writer.d
-	make -f util/Makefile
+all:main.d head-writer.d libs
 	make -f report/Makefile
 	make -f parser/Makefile
 	make -f grammar/Makefile
@@ -12,7 +11,6 @@ all:main.d head-writer.d
 	make -f instance/Makefile
 	make -f output/Makefile
 	$(LINK) main.o \
-	        util/*.o \
 	        report/*.o \
 	        parser/*.o \
 	        grammar/*.o \
@@ -20,8 +18,14 @@ all:main.d head-writer.d
 	        proto/*.o \
 	        instance/*.o \
 	        output/*.o \
+	        $(LIBS) \
 	     -o stk-core.out
-	$(LINK) head-writer.o util/string.o -o head-writer.out
+	$(LINK) head-writer.o -o head-writer.out $(LIBS)
+
+libs:
+	mkdir -p libs
+	make -f util/Makefile
+	make -f misc/Makefile
 
 runtest:all
 	make -f test/Makefile
@@ -35,6 +39,7 @@ runtest:all
 
 clean:
 	make -f util/Makefile clean
+	make -f misc/Makefile clean
 	make -f report/Makefile clean
 	make -f parser/Makefile clean
 	make -f grammar/Makefile clean
@@ -47,6 +52,7 @@ clean:
 	rm -f tmp.*
 	rm -f *.o
 	rm -f *.out
+	rm -rf $(LIB_DIR)
 
 cleant:clean
 	make -f test/Makefile clean

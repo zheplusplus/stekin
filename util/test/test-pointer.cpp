@@ -7,17 +7,10 @@ TEST(Pointer, Id)
 {
     ASSERT_EQ("0", util::id(NULL).str());
 
-    std::stringstream os0;
-    ASSERT_EQ("0", (os0 << util::id(NULL)).str());
-
     std::stringstream os1;
     util::id id_os(&os1);
     os1 << &os1;
     ASSERT_EQ(os1.str(), id_os.str());
-
-    std::stringstream os2;
-    os2 << id_os;
-    ASSERT_EQ(os2.str(), id_os.str());
 }
 
 TEST(Pointer, SRef)
@@ -59,7 +52,7 @@ TEST(Pointer, SRef)
 
     std::stringstream os4;
     util::sref<int const> ref(&x);
-    os4 << ref.id();
+    os4 << &x;
     ASSERT_EQ(os4.str(), ref.id().str());
 
     ASSERT_EQ("0", util::sref<int const>(NULL).id().str());

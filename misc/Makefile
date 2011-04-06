@@ -1,10 +1,9 @@
-WORKDIR=util
+WORKDIR=misc
 
 include misc/mf-template.mk
 
-util:string.d pointer.d
+misc:pos-type.d platform.d
 	$(AR) $(LIB_DIR)/libstkn.a $(WORKDIR)/*.o
 
 clean:
 	rm -f $(WORKDIR)/*.o
-

@@ -1,28 +1,22 @@
 #ifndef __STACKENING_MISCELLANY_POSITION_TYPE_H__
 #define __STACKENING_MISCELLANY_POSITION_TYPE_H__
 
+#include <string>
+
 namespace misc {
 
     struct pos_type {
         int const line;
 
-        explicit pos_type(int ln)
-            : line(ln)
+        explicit pos_type(int l)
+            : line(l)
         {}
 
-        bool operator==(pos_type const& rhs) const
-        {
-            return line == rhs.line;
-        }
+        std::string str() const;
+
+        bool operator==(pos_type const& rhs) const;
     };
 
-}
-
-template <typename _OS>
-_OS& operator<<(_OS& os, misc::pos_type const& pos)
-{
-    os << "Line: " << pos.line;
-    return os;
 }
 
 #endif /* __STACKENING_MISCELLANY_POSITION_TYPE_H__ */

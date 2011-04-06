@@ -4,3 +4,4 @@ parser/syn.hpp
 *.o
 *.out
 tmp.*
+libs

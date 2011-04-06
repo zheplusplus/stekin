@@ -3,7 +3,6 @@
 
 #include <memory>
 #include <string>
-#include <sstream>
 
 namespace util {
 
@@ -12,34 +11,11 @@ namespace util {
             : _id(i)
         {}
 
-        template <typename _OS>
-        _OS& print(_OS& os) const
-        {
-            os << _id;
-            return os;
-        }
+        std::string str() const;
 
-        std::string str() const
-        {
-            std::stringstream os;
-            os << _id;
-            return os.str();
-        }
-
-        bool operator<(id const& rhs) const
-        {
-            return _id < rhs._id;
-        }
-
-        bool operator==(id const& rhs) const
-        {
-            return _id == rhs._id;
-        }
-
-        bool operator!=(id const& rhs) const
-        {
-            return !operator==(rhs);
-        }
+        bool operator<(id const& rhs) const;
+        bool operator==(id const& rhs) const;
+        bool operator!=(id const& rhs) const;
     private:
         void const* const _id;
     };
@@ -156,6 +132,11 @@ namespace util {
             return util::id(base_type::get());
         }
 
+        std::string str() const
+        {
+            return id().str();
+        }
+
         _RawType cp() const
         {
             return *base_type::get();
@@ -182,12 +163,6 @@ namespace util {
         return sref<_RawType>(&obj);
     }
 
-}
-
-template <typename _OS>
-_OS& operator<<(_OS& os, util::id id)
-{
-    return id.print(os);
 }
 
 template <typename _OS, typename _RawType>

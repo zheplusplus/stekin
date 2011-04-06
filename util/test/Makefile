@@ -1,18 +1,18 @@
-WORKDIR=$(UTILDIR)
-TESTDIR=$(UTILDIR)/test
+WORKDIR=util
+TESTDIR=$(WORKDIR)/test
 
 include misc/mf-template.mk
 
 test:$(TESTDIR)/test-utilities.out
 	$(TESTDIR)/test-utilities.out
 
-include $(UTILDIR)/Makefile
+include $(WORKDIR)/Makefile
 
 $(TESTDIR)/test-utilities.out:util test-map-compare.dt test-string.dt test-pointer.dt
-	$(LINK) $(TEST_LIBS) $(UTILDIR)/*.o \
-	        $(TESTDIR)/test-map-compare.o \
+	$(LINK) $(TESTDIR)/test-map-compare.o \
 	        $(TESTDIR)/test-string.o \
 	        $(TESTDIR)/test-pointer.o \
+	        $(TEST_LIBS) \
 	     -o $(TESTDIR)/test-utilities.out
 
 cleant:
