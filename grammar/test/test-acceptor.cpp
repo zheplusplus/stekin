@@ -19,6 +19,7 @@ struct test_acceptor
 {
     test_acceptor()
         : grammar::acceptor(misc::pos_type(0))
+        , filter(new flchk::filter)
     {}
 
     void accept_stmt(util::sptr<grammar::stmt_base const> s)
@@ -40,11 +41,12 @@ struct test_acceptor
         if (bool(func)) {
             block.add_func(std::move(func));
         }
-        block.compile(std::move(util::mkmptr(new flchk::filter)));
+        filter = std::move(block.compile(std::move(filter)));
     }
 
     util::sptr<grammar::stmt_base const> stmt;
     util::sptr<grammar::function const> func;
+    util::sptr<flchk::filter> filter;
 
     void deliver_to(util::sref<grammar::acceptor>) {}
 };
@@ -105,28 +107,52 @@ TEST_F(AcceptorTest, IfAcceptor)
     ASSERT_TRUE(bool(receiver.stmt));
     ASSERT_FALSE(bool(receiver.func));
     receiver.compile();
+    receiver.filter->deliver().compile(nulscope);
 
     data_tree::expect_one()
-                (pos, REFERENCE, "Raynor")
-            (pos, VAR_DEF_FILTERED, "Hyperion")
-            (pos, RETURN_NOTHING)
+        (BLOCK_BEGIN)
+        (pos_head, BRANCH)
         (pos_head, INTEGER, "0")
-        (pos_head, BRANCH)
+        (CONSEQUENCE)
+            (BLOCK_BEGIN)
+            (pos, RETURN_NOTHING)
+            (BLOCK_END)
+        (ALTERNATIVE)
+            (BLOCK_BEGIN)
+            (pos, VAR_DEF, std::string("Hyperion") + ' ' + VAR_DEF_FILTERED.type_img)
+                (pos, REFERENCE, "Raynor")
+            (BLOCK_END)
 
-                (pos, REFERENCE, "Karrigan")
-            (pos, RETURN)
-        (pos_head, INTEGER, "1")
         (pos_head, BRANCH_CONSQ_ONLY)
+        (pos_head, INTEGER, "1")
+        (CONSEQUENCE)
+            (BLOCK_BEGIN)
+            (pos, RETURN)
+                (pos, REFERENCE, "Karrigan")
+            (BLOCK_END)
 
-                (pos, BOOLEAN, "false")
-            (pos, ARITHMETICS)
+        (pos_head, BRANCH)
         (pos_head, INTEGER, "2")
-        (pos_head, BRANCH)
-
-                (pos, FLOATING, "20.54")
+        (CONSEQUENCE)
+            (BLOCK_BEGIN)
             (pos, ARITHMETICS)
-        (pos_head, INTEGER, "3")
+                (pos, BOOLEAN, "false")
+            (BLOCK_END)
+        (ALTERNATIVE)
+            (BLOCK_BEGIN)
+            (BLOCK_END)
+
         (pos_head, BRANCH)
+        (pos_head, INTEGER, "3")
+        (CONSEQUENCE)
+            (BLOCK_BEGIN)
+            (BLOCK_END)
+        (ALTERNATIVE)
+            (BLOCK_BEGIN)
+            (pos, ARITHMETICS)
+                (pos, FLOATING, "20.54")
+            (BLOCK_END)
+        (BLOCK_END)
     ;
     ASSERT_FALSE(error::has_error());
 }
@@ -163,14 +189,20 @@ TEST_F(AcceptorTest, IfNotAcceptor)
     ASSERT_TRUE(bool(receiver.stmt));
     ASSERT_FALSE(bool(receiver.func));
     receiver.compile();
+    receiver.filter->deliver().compile(nulscope);
 
     data_tree::expect_one()
-                (pos, INTEGER, "60")
-            (pos, VAR_DEF_FILTERED, "SCV")
-                (pos, REFERENCE, "Marine")
-            (pos, ARITHMETICS)
-        (pos, BOOLEAN, "false")
+        (BLOCK_BEGIN)
         (pos, BRANCH_ALTER_ONLY)
+        (pos, BOOLEAN, "false")
+        (ALTERNATIVE)
+            (BLOCK_BEGIN)
+            (pos, VAR_DEF, std::string("SCV") + ' ' + VAR_DEF_FILTERED.type_img)
+                (pos, INTEGER, "60")
+            (pos, ARITHMETICS)
+                (pos, REFERENCE, "Marine")
+            (BLOCK_END)
+        (BLOCK_END)
     ;
     ASSERT_FALSE(error::has_error());
 
@@ -199,15 +231,20 @@ TEST_F(AcceptorTest, FuncAcceptor)
     ASSERT_FALSE(bool(receiver.stmt));
     ASSERT_TRUE(bool(receiver.func));
     receiver.compile();
+    receiver.filter->deliver().compile(nulscope);
 
     data_tree::expect_one()
-                (pos, FLOATING, "21.37")
-            (pos, ARITHMETICS)
-                (pos, INTEGER, "20110116")
-            (pos, VAR_DEF, "SonOfKorhal")
+        (BLOCK_BEGIN)
         (pos, FUNC_DEF, "func1")
             (pos, PARAMETER, "Duke")
             (pos, PARAMETER, "Duran")
+            (BLOCK_BEGIN)
+            (pos, ARITHMETICS)
+                (pos, FLOATING, "21.37")
+            (pos, VAR_DEF, "SonOfKorhal")
+                (pos, INTEGER, "20110116")
+            (BLOCK_END)
+        (BLOCK_END)
     ;
     ASSERT_FALSE(error::has_error());
 
@@ -242,20 +279,26 @@ TEST_F(AcceptorTest, FuncAccNested)
     ASSERT_FALSE(bool(receiver.stmt));
     ASSERT_TRUE(bool(receiver.func));
     receiver.compile();
+    receiver.filter->deliver().compile(nulscope);
 
     data_tree::expect_one()
-                    (pos, REFERENCE, "goliath")
-                (pos, ARITHMETICS)
-            (pos, FUNC_DEF, "funca")
-                (pos, PARAMETER, "vulture")
-
-                (pos, FLOATING, "22.15")
-            (pos, ARITHMETICS)
-                (pos, REFERENCE, "wraith")
-            (pos, VAR_DEF, "medic")
+        (BLOCK_BEGIN)
         (pos, FUNC_DEF, "funca")
             (pos, PARAMETER, "firebat")
             (pos, PARAMETER, "ghost")
+            (BLOCK_BEGIN)
+            (pos, FUNC_DEF, "funca")
+                (pos, PARAMETER, "vulture")
+                (BLOCK_BEGIN)
+                (pos, ARITHMETICS)
+                    (pos, REFERENCE, "goliath")
+                (BLOCK_END)
+            (pos, ARITHMETICS)
+                (pos, FLOATING, "22.15")
+            (pos, VAR_DEF, "medic")
+                (pos, REFERENCE, "wraith")
+            (BLOCK_END)
+        (BLOCK_END)
     ;
     ASSERT_FALSE(error::has_error());
 }

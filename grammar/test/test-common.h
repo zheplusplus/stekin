@@ -9,6 +9,8 @@
 
 namespace test {
 
+    extern util::sref<proto::scope> const nulscope;
+
     struct grammar_data {
         misc::pos_type const pos;
         int const func_arg_size;
@@ -76,6 +78,11 @@ namespace test {
     extern node_type const BRANCH;
     extern node_type const BRANCH_CONSQ_ONLY;
     extern node_type const BRANCH_ALTER_ONLY;
+    extern node_type const CONSEQUENCE;
+    extern node_type const ALTERNATIVE;
+
+    extern node_type const BLOCK_BEGIN;
+    extern node_type const BLOCK_END;
 
     struct grammar_test
         : public testing::Test

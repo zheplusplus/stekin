@@ -34,16 +34,20 @@ TEST_F(ClauseBuilderTest, AcceptorStackNext)
                                                                   , std::move(grammar::block())))));
     ASSERT_FALSE(error::has_error());
     grammar::block block0(std::move(stack0.pack_all()));
-    block0.compile(std::move(util::mkmptr(new flchk::filter)));
+    block0.compile(std::move(util::mkmptr(new flchk::filter)))->deliver().compile(nulscope);
 
     data_tree::expect_one()
+        (BLOCK_BEGIN)
         (item_pos, FUNC_DEF, "skull")
             (item_pos, PARAMETER, "chipped")
+            (BLOCK_BEGIN)
+            (BLOCK_END)
 
-            (item_pos, REFERENCE, "emerald")
         (item_pos, VAR_DEF, "ruby")
-            (item_pos, REFERENCE, "ruby")
+            (item_pos, REFERENCE, "emerald")
         (item_pos, VAR_DEF, "topiz")
+            (item_pos, REFERENCE, "ruby")
+        (BLOCK_END)
     ;
 
     misc::pos_type err_pos0(101);
@@ -85,17 +89,21 @@ TEST_F(ClauseBuilderTest, AcceptorStackAdd)
                             util::mkptr(new grammar::reference(item_pos, "buriza_do_kyanon"))))))); 
     ASSERT_FALSE(error::has_error());
     grammar::block block0(std::move(stack0.pack_all()));
-    block0.compile(std::move(util::mkmptr(new flchk::filter)));
+    block0.compile(std::move(util::mkmptr(new flchk::filter)))->deliver().compile(nulscope);
 
     data_tree::expect_one()
-                (item_pos, REFERENCE, "kuko_shakaku")
-            (item_pos, VAR_DEF, "cedar_bow")
-                (item_pos, REFERENCE, "buriza_do_kyanon")
-            (item_pos, ARITHMETICS)
+        (BLOCK_BEGIN)
         (acc_pos, FUNC_DEF, "witherstring")
+            (BLOCK_BEGIN)
+            (item_pos, VAR_DEF, "cedar_bow")
+                (item_pos, REFERENCE, "kuko_shakaku")
+            (item_pos, ARITHMETICS)
+                (item_pos, REFERENCE, "buriza_do_kyanon")
+            (BLOCK_END)
 
-            (item_pos, REFERENCE, "eaglehorn")
         (item_pos, ARITHMETICS)
+            (item_pos, REFERENCE, "eaglehorn")
+        (BLOCK_END)
     ;
 
     grammar::acceptor_stack stack1;
@@ -138,17 +146,25 @@ TEST_F(ClauseBuilderTest, AcceptorStackMatchElse)
                             util::mkptr(new grammar::reference(item_pos, "magewrath"))))))); 
     ASSERT_FALSE(error::has_error());
     grammar::block block0(std::move(stack0.pack_all()));
-    block0.compile(std::move(util::mkmptr(new flchk::filter)));
+    block0.compile(std::move(util::mkmptr(new flchk::filter)))->deliver().compile(nulscope);
 
     data_tree::expect_one()
-            (item_pos, REFERENCE, "roguesbow")
+        (BLOCK_BEGIN)
         (item_pos, ARITHMETICS)
-                (item_pos, REFERENCE, "magewrath")
+            (item_pos, REFERENCE, "roguesbow")
+        (acc_pos, BRANCH)
+        (item_pos, REFERENCE, "stormstrike")
+        (CONSEQUENCE)
+            (BLOCK_BEGIN)
             (item_pos, ARITHMETICS)
                 (item_pos, REFERENCE, "witchwild_string")
+            (BLOCK_END)
+        (ALTERNATIVE)
+            (BLOCK_BEGIN)
             (item_pos, ARITHMETICS)
-        (item_pos, REFERENCE, "stormstrike")
-        (acc_pos, BRANCH)
+                (item_pos, REFERENCE, "magewrath")
+            (BLOCK_END)
+        (BLOCK_END)
     ;
 
     grammar::acceptor_stack stack1;
@@ -189,32 +205,50 @@ TEST_F(ClauseBuilderTest, ClauseBuilder)
     builder0.add_function(0, item_pos1, "goldenstrike_arch", std::vector<std::string>({ "amn", "tir" }));
         builder0.add_arith(1, std::move(util::mkptr(new grammar::reference(item_pos1, "widowmaker"))));
 
-    builder0.build_and_clear();
+    builder0.build_and_clear().compile(nulscope);
     ASSERT_FALSE(error::has_error());
 
     data_tree::expect_one()
-                (item_pos1, REFERENCE, "widowmaker")
-            (item_pos1, ARITHMETICS)
+        (BLOCK_BEGIN)
         (item_pos1, FUNC_DEF, "goldenstrike_arch")
             (item_pos1, PARAMETER, "amn")
             (item_pos1, PARAMETER, "tir")
+            (BLOCK_BEGIN)
+            (item_pos1, ARITHMETICS)
+                (item_pos1, REFERENCE, "widowmaker")
+            (BLOCK_END)
 
-                (item_pos0, REFERENCE, "skystrike")
-                (item_pos0, BRANCH_ALTER_ONLY)
-            (item_pos2, REFERENCE, "cliffkiller")
-            (item_pos2, BRANCH_ALTER_ONLY)
-
+        (item_pos0, BRANCH)
+        (item_pos0, BOOLEAN, "true")
+        (CONSEQUENCE)
+            (BLOCK_BEGIN)
+            (item_pos1, VAR_DEF, std::string("wind_force") + ' ' + VAR_DEF_FILTERED.type_img)
                 (item_pos1, INTEGER, "13571")
-            (item_pos1, VAR_DEF_FILTERED, "wind_force")
 
-                    (item_pos0, FLOATING, "0.000123")
-                (item_pos0, RETURN)
-            (item_pos2, REFERENCE, "raven_claw")
             (item_pos2, BRANCH_ALTER_ONLY)
+            (item_pos2, REFERENCE, "raven_claw")
+            (ALTERNATIVE)
+                (BLOCK_BEGIN)
+                (item_pos0, RETURN)
+                    (item_pos0, FLOATING, "0.000123")
+                (BLOCK_END)
 
             (item_pos1, RETURN_NOTHING)
-        (item_pos0, BOOLEAN, "true")
-        (item_pos0, BRANCH)
+            (BLOCK_END)
+        (ALTERNATIVE)
+            (BLOCK_BEGIN)
+            (item_pos2, BRANCH_ALTER_ONLY)
+            (item_pos2, REFERENCE, "cliffkiller")
+            (ALTERNATIVE)
+                (BLOCK_BEGIN)
+                (item_pos0, BRANCH_ALTER_ONLY)
+                (item_pos0, REFERENCE, "skystrike")
+                (ALTERNATIVE)
+                    (BLOCK_BEGIN)
+                    (BLOCK_END)
+                (BLOCK_END)
+            (BLOCK_END)
+        (BLOCK_END)
     ;
 
     grammar::clause_builder builder1;

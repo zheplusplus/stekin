@@ -8,6 +8,8 @@
 
 using namespace test;
 
+util::sref<proto::scope> const test::nulscope(NULL);
+
 data_tree& data_tree::operator()(misc::pos_type const& pos, node_type const& type, std::string const& str)
 {
     base_type::operator()(type, grammar_data(pos), str);
@@ -64,6 +66,11 @@ node_type const test::PARAMETER("parameter");
 node_type const test::BRANCH("branch");
 node_type const test::BRANCH_CONSQ_ONLY("branch consequence only");
 node_type const test::BRANCH_ALTER_ONLY("branch alternative only");
+node_type const test::CONSEQUENCE("consequence");
+node_type const test::ALTERNATIVE("alternative");
+
+node_type const test::BLOCK_BEGIN("block begin");
+node_type const test::BLOCK_END("block end");
 
 void grammar_test::SetUp()
 {

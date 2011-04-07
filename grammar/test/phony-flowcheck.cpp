@@ -3,77 +3,80 @@
 
 #include "test-common.h"
 #include "../../flowcheck/filter.h"
+#include "../../flowcheck/accumulator.h"
+#include "../../flowcheck/block.h"
 #include "../../flowcheck/expr-nodes.h"
+#include "../../flowcheck/stmt-nodes.h"
 #include "../../flowcheck/function.h"
 #include "../../proto/node-base.h"
 
 using namespace test;
 using namespace flchk;
 
-static util::sref<proto::scope> nulscope(NULL);
+namespace {
 
-static util::sptr<proto::expr_base const> nul_proto_expr()
-{
-    return std::move(util::sptr<proto::expr_base const>(NULL));
+    util::sptr<proto::stmt_base const> nul_proto_stmt()
+    {
+        return std::move(util::sptr<proto::stmt_base const>(NULL));
+    }
+
+    util::sptr<proto::expr_base const> nul_proto_expr()
+    {
+        return std::move(util::sptr<proto::expr_base const>(NULL));
+    }
+
+    util::sptr<flchk::expr_base const> nul_flchk_expr()
+    {
+        return std::move(util::sptr<flchk::expr_base const>(NULL));
+    }
+
+    struct branch_consequence
+        : public stmt_base
+    {
+        branch_consequence(misc::pos_type const& pos, util::sptr<expr_base const> p, block c)
+            : stmt_base(pos)
+            , predicate(std::move(p))
+            , consequence(std::move(c))
+        {}
+
+        util::sptr<proto::stmt_base const> compile(util::sref<proto::scope>) const
+        {
+            data_tree::actual_one()(pos, BRANCH_CONSQ_ONLY);
+            predicate->compile(nulscope);
+            data_tree::actual_one()(CONSEQUENCE);
+            consequence.compile(nulscope);
+            return std::move(nul_proto_stmt());
+        }
+
+        util::sptr<expr_base const> const predicate;
+        block const consequence;
+    };
+
+    struct branch_alternative
+        : public stmt_base
+    {
+        branch_alternative(misc::pos_type const& pos, util::sptr<expr_base const> p, block a)
+            : stmt_base(pos)
+            , predicate(std::move(p))
+            , alternative(std::move(a))
+        {}
+
+        util::sptr<proto::stmt_base const> compile(util::sref<proto::scope>) const
+        {
+            data_tree::actual_one()(pos, BRANCH_ALTER_ONLY);
+            predicate->compile(nulscope);
+            data_tree::actual_one()(ALTERNATIVE);
+            alternative.compile(nulscope);
+            return std::move(nul_proto_stmt());
+        }
+
+        util::sptr<expr_base const> const predicate;
+        block const alternative;
+    };
+
 }
 
-static util::sptr<flchk::expr_base const> nul_flchk_expr()
-{
-    return std::move(util::sptr<flchk::expr_base const>(NULL));
-}
-
-void filter::add_func_ret(misc::pos_type const& pos, util::sptr<expr_base const> ret_val)
-{
-    ret_val->compile(nulscope);
-    data_tree::actual_one()(pos, RETURN);
-}
-
-void filter::add_func_ret_nothing(misc::pos_type const& pos)
-{
-    data_tree::actual_one()(pos, RETURN_NOTHING);
-}
-
-void filter::add_arith(misc::pos_type const& pos, util::sptr<expr_base const> arith)
-{
-    arith->compile(nulscope);
-    data_tree::actual_one()(pos, ARITHMETICS);
-}
-
-void filter::add_branch(misc::pos_type const& pos
-                      , util::sptr<expr_base const> predicate
-                      , util::sptr<filter>
-                      , util::sptr<filter>)
-{
-    predicate->compile(nulscope);
-    data_tree::actual_one()(pos, BRANCH);
-}
-
-void filter::add_branch(misc::pos_type const& pos, util::sptr<expr_base const> predicate, util::sptr<filter>)
-{
-    predicate->compile(nulscope);
-    data_tree::actual_one()(pos, BRANCH_CONSQ_ONLY);
-}
-
-void filter::add_branch_alt_only(misc::pos_type const& pos
-                               , util::sptr<expr_base const> predicate
-                               , util::sptr<filter>)
-{
-    predicate->compile(nulscope);
-    data_tree::actual_one()(pos, BRANCH_ALTER_ONLY);
-}
-
-void filter::def_var(misc::pos_type const& pos
-                   , std::string const& name
-                   , util::sptr<expr_base const> init)
-{
-    init->compile(nulscope);
-    data_tree::actual_one()(pos, VAR_DEF, name);
-}
-
-void filter::def_func(misc::pos_type const& pos
-                    , std::string const& name
-                    , std::vector<std::string> const& param_names
-                    , util::sptr<filter>)
+void function::compile(util::sref<proto::scope>) const
 {
     data_tree::actual_one()(pos, FUNC_DEF, name);
     std::for_each(param_names.begin()
@@ -82,33 +85,217 @@ void filter::def_func(misc::pos_type const& pos
                   {
                       data_tree::actual_one()(pos, PARAMETER, param);
                   });
+    body.compile(nulscope);
+}
+
+void block::add_stmt(util::sptr<stmt_base const> stmt)
+{
+    _stmts.push_back(std::move(stmt));
+}
+
+void block::def_func(misc::pos_type const& pos
+                   , std::string const& name
+                   , std::vector<std::string> const& param_names
+                   , block body
+                   , bool)
+{
+    _funcs.push_back(std::move(util::mkptr(new function(pos
+                                                      , name
+                                                      , param_names
+                                                      , std::move(body)
+                                                      , false))));
+}
+
+void block::compile(util::sref<proto::scope>) const 
+{
+    data_tree::actual_one()(BLOCK_BEGIN);
+    std::for_each(_funcs.begin()
+                , _funcs.end()
+                , [&](util::sptr<function const> const& func)
+                  {
+                      func->compile(nulscope);
+                  });
+
+    std::for_each(_stmts.begin()
+                , _stmts.end()
+                , [&](util::sptr<stmt_base const> const& stmt)
+                  {
+                      stmt->compile(nulscope);
+                  });
+    data_tree::actual_one()(BLOCK_END);
+}
+
+void accumulator::add_func_ret(misc::pos_type const& pos, util::sptr<expr_base const> ret_val)
+{
+    _block.add_stmt(std::move(util::mkptr(new func_ret(pos, std::move(ret_val)))));
+}
+
+void accumulator::add_func_ret_nothing(misc::pos_type const& pos)
+{
+    _block.add_stmt(std::move(util::mkptr(new func_ret_nothing(pos))));
+}
+
+void accumulator::add_arith(misc::pos_type const& pos, util::sptr<expr_base const> expr)
+{
+    _block.add_stmt(std::move(util::mkptr(new arithmetics(pos, std::move(expr)))));
+}
+
+void accumulator::add_branch(misc::pos_type const& pos
+                           , util::sptr<expr_base const> predicate
+                           , accumulator consequence
+                           , accumulator alternative)
+{
+    _block.add_stmt(std::move(util::mkptr(new branch(pos
+                                                   , std::move(predicate)
+                                                   , std::move(consequence.deliver())
+                                                   , std::move(alternative.deliver())))));
+}
+
+void accumulator::add_branch(misc::pos_type const& pos
+                           , util::sptr<expr_base const> predicate
+                           , accumulator consequence)
+{
+    _block.add_stmt(std::move(util::mkptr(new branch_consequence(pos
+                                                               , std::move(predicate)
+                                                               , std::move(consequence._block)))));
+}
+
+void accumulator::add_branch_alt_only(misc::pos_type const& pos
+                                    , util::sptr<expr_base const> predicate
+                                    , accumulator alternative)
+{
+    _block.add_stmt(std::move(util::mkptr(new branch_alternative(pos
+                                                               , std::move(predicate)
+                                                               , std::move(alternative._block)))));
+}
+
+void accumulator::def_var(misc::pos_type const& pos, std::string const& name, util::sptr<expr_base const> init)
+{
+    _block.add_stmt(std::move(util::mkptr(new var_def(pos, name, std::move(init)))));
+}
+
+void accumulator::def_func(misc::pos_type const& pos
+                         , std::string const& name
+                         , std::vector<std::string> const& param_names
+                         , accumulator body)
+{
+    _block.def_func(pos, name, param_names, std::move(body._block), false);
+}
+
+block accumulator::deliver()
+{
+    return std::move(_block);
+}
+
+void filter::add_func_ret(misc::pos_type const& pos, util::sptr<expr_base const> ret_val)
+{
+    _accumulator.add_func_ret(pos, std::move(ret_val));
+}
+
+void filter::add_func_ret_nothing(misc::pos_type const& pos)
+{
+    _accumulator.add_func_ret_nothing(pos);
+}
+
+void filter::add_arith(misc::pos_type const& pos, util::sptr<expr_base const> expr)
+{
+    _accumulator.add_arith(pos, std::move(expr));
+}
+
+void filter::add_branch(misc::pos_type const& pos
+                      , util::sptr<expr_base const> predicate
+                      , util::sptr<filter> consequence
+                      , util::sptr<filter> alternative)
+{
+    _accumulator.add_branch(pos
+                          , std::move(predicate)
+                          , std::move(consequence->_accumulator)
+                          , std::move(alternative->_accumulator));
+}
+
+void filter::add_branch(misc::pos_type const& pos
+                      , util::sptr<expr_base const> predicate
+                      , util::sptr<filter> consequence)
+{
+    _accumulator.add_branch(pos, std::move(predicate), std::move(consequence->_accumulator));
+}
+
+void filter::add_branch_alt_only(misc::pos_type const& pos
+                               , util::sptr<expr_base const> predicate
+                               , util::sptr<filter> alternative)
+{
+    _accumulator.add_branch_alt_only(pos, std::move(predicate), std::move(alternative->_accumulator));
+}
+
+void filter::def_var(misc::pos_type const& pos, std::string const& name, util::sptr<expr_base const> init)
+{
+    _accumulator.def_var(pos, name, std::move(init));
+}
+
+void filter::def_func(misc::pos_type const& pos
+                    , std::string const& name
+                    , std::vector<std::string> const& param_names
+                    , util::sptr<filter> body)
+{
+    _accumulator.def_func(pos, name, param_names, std::move(body->_accumulator));
 }
 
 block filter::deliver()
 {
-    return std::move(block());
+    return std::move(_accumulator.deliver());
 }
 
 void symbol_def_filter::def_var(misc::pos_type const& pos
                               , std::string const& name
                               , util::sptr<expr_base const> init)
 {
-    init->compile(nulscope);
-    data_tree::actual_one()(pos, VAR_DEF_FILTERED, name);
+    filter::def_var(pos, name + ' ' + VAR_DEF_FILTERED.type_img, std::move(init));
 }
 
 void symbol_def_filter::def_func(misc::pos_type const& pos
                                , std::string const& name
                                , std::vector<std::string> const& param_names
-                               , util::sptr<filter>)
+                               , util::sptr<filter> body)
 {
-    data_tree::actual_one()(pos, FUNC_DEF_FILTERED, name);
-    std::for_each(param_names.begin()
-                , param_names.end()
-                , [&](std::string const& param)
-                  {
-                      data_tree::actual_one()(pos, PARAMETER, param);
-                  });
+    filter::def_func(pos, name + ' ' + FUNC_DEF_FILTERED.type_img, param_names, std::move(body));
+}
+
+util::sptr<proto::stmt_base const> arithmetics::compile(util::sref<proto::scope>) const 
+{
+    data_tree::actual_one()(pos, ARITHMETICS);
+    expr->compile(nulscope);
+    return std::move(nul_proto_stmt());
+}
+
+util::sptr<proto::stmt_base const> branch::compile(util::sref<proto::scope>) const 
+{
+    data_tree::actual_one()(pos, BRANCH);
+    predicate->compile(nulscope);
+    data_tree::actual_one()(CONSEQUENCE);
+    consequence.compile(nulscope);
+    data_tree::actual_one()(ALTERNATIVE);
+    alternative.compile(nulscope);
+    return std::move(nul_proto_stmt());
+}
+
+util::sptr<proto::stmt_base const> var_def::compile(util::sref<proto::scope>) const 
+{
+    data_tree::actual_one()(pos, VAR_DEF, name);
+    init->compile(nulscope);
+    return std::move(nul_proto_stmt());
+}
+
+util::sptr<proto::stmt_base const> func_ret::compile(util::sref<proto::scope>) const 
+{
+    data_tree::actual_one()(pos, RETURN);
+    ret_val->compile(nulscope);
+    return std::move(nul_proto_stmt());
+}
+
+util::sptr<proto::stmt_base const> func_ret_nothing::compile(util::sref<proto::scope>) const
+{
+    data_tree::actual_one()(pos, RETURN_NOTHING);
+    return std::move(nul_proto_stmt());
 }
 
 util::sptr<proto::expr_base const> pre_unary_op::compile(util::sref<proto::scope>) const

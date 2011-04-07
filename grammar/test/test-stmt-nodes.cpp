@@ -23,12 +23,15 @@ TEST_F(StmtNodesTest, Arithmetics)
     grammar::arithmetics arith1(pos, std::move(util::mkptr(new grammar::bool_literal(pos, false))));
     arith0.compile(*filter);
     arith1.compile(*filter);
+    filter->deliver().compile(nulscope);
 
     data_tree::expect_one()
+        (BLOCK_BEGIN)
+        (pos, ARITHMETICS)
             (pos, INTEGER, "1840")
         (pos, ARITHMETICS)
             (pos, BOOLEAN, "false")
-        (pos, ARITHMETICS)
+        (BLOCK_END)
     ;
 }
 
@@ -40,12 +43,15 @@ TEST_F(StmtNodesTest, VarDef)
     grammar::var_def def1(pos, "Asuka", std::move(util::mkptr(new grammar::reference(pos, "tsundere"))));
     def0.compile(*filter);
     def1.compile(*filter);
+    filter->deliver().compile(nulscope);
 
     data_tree::expect_one()
-            (pos, FLOATING, "18.47")
+        (BLOCK_BEGIN)
         (pos, VAR_DEF, "Shinji")
-            (pos, REFERENCE, "tsundere")
+            (pos, FLOATING, "18.47")
         (pos, VAR_DEF, "Asuka")
+            (pos, REFERENCE, "tsundere")
+        (BLOCK_END)
     ;
 }
 
@@ -57,11 +63,14 @@ TEST_F(StmtNodesTest, Returns)
     grammar::func_ret_nothing ret1(pos);
     ret0.compile(*filter);
     ret1.compile(*filter);
+    filter->deliver().compile(nulscope);
 
     data_tree::expect_one()
-            (pos, REFERENCE, "KaworuNagisa")
+        (BLOCK_BEGIN)
         (pos, RETURN)
+            (pos, REFERENCE, "KaworuNagisa")
         (pos, RETURN_NOTHING)
+        (BLOCK_END)
     ;
 }
 
@@ -74,44 +83,14 @@ TEST_F(StmtNodesTest, Block)
                 util::mkptr(new grammar::var_def(pos, "Misato", std::move(
                             util::mkptr(new grammar::reference(pos, "Katsuragi")))))));
     block.add_stmt(std::move(util::mkptr(new grammar::func_ret_nothing(pos))));
-    block.compile(std::move(util::mkmptr(new flchk::filter)));
+    block.compile(std::move(filter))->deliver().compile(nulscope);
 
     data_tree::expect_one()
-            (pos, REFERENCE, "Katsuragi")
+        (BLOCK_BEGIN)
         (pos, VAR_DEF, "Misato")
+            (pos, REFERENCE, "Katsuragi")
         (pos, RETURN_NOTHING)
-    ;
-}
-
-TEST_F(StmtNodesTest, BlockMove)
-{
-    misc::pos_type pos(5);
-    util::sptr<flchk::filter> filter_a(std::move(util::mkmptr(new flchk::filter)));
-    grammar::block block0;
-    block0.add_stmt(std::move(
-                util::mkptr(new grammar::var_def(pos, "Akagi", std::move(
-                            util::mkptr(new grammar::reference(pos, "Ibuki")))))));
-    block0.add_stmt(std::move(util::mkptr(new grammar::func_ret_nothing(pos))));
-    block0.compile(std::move(util::mkmptr(new flchk::filter)));
-
-    data_tree::expect_one()
-            (pos, REFERENCE, "Ibuki")
-        (pos, VAR_DEF, "Akagi")
-        (pos, RETURN_NOTHING)
-    ;
-    data_tree::verify();
-
-    grammar::block block1(std::move(block0));
-    util::sptr<flchk::filter> filter_b(std::move(util::mkmptr(new flchk::filter)));
-    block0.compile(std::move(util::mkmptr(new flchk::filter)));
-    data_tree::verify();
-
-    util::sptr<flchk::filter> filter_c(std::move(util::mkmptr(new flchk::filter)));
-    block1.compile(std::move(util::mkmptr(new flchk::filter)));
-    data_tree::expect_one()
-            (pos, REFERENCE, "Ibuki")
-        (pos, VAR_DEF, "Akagi")
-        (pos, RETURN_NOTHING)
+        (BLOCK_END)
     ;
 }
 
@@ -129,10 +108,9 @@ TEST_F(StmtNodesTest, Branch)
     block0.add_stmt(std::move(util::mkptr(
                 new grammar::arithmetics(pos, std::move(util::mkptr(new grammar::reference(pos, "Kaji")))))));
     block0.add_stmt(std::move(util::mkptr(new grammar::func_ret_nothing(pos))));
-    grammar::branch(pos
-                  , std::move(util::mkptr(new grammar::bool_literal(pos, false)))
-                  , std::move(block0)
-                  , std::move(grammar::block()))
+    grammar::branch_cons_only(pos
+                            , std::move(util::mkptr(new grammar::bool_literal(pos, false)))
+                            , std::move(block0))
         .compile(*filter);
 
     grammar::block block1;
@@ -140,10 +118,9 @@ TEST_F(StmtNodesTest, Branch)
                 util::mkptr(new grammar::arithmetics(pos, std::move(
                             util::mkptr(new grammar::reference(pos, "Ryoji")))))));
     block1.add_stmt(std::move(util::mkptr(new grammar::func_ret_nothing(pos))));
-    grammar::branch(pos
-                  , std::move(util::mkptr(new grammar::bool_literal(pos, true)))
-                  , std::move(grammar::block())
-                  , std::move(block1))
+    grammar::branch_alt_only(pos
+                           , std::move(util::mkptr(new grammar::bool_literal(pos, true)))
+                           , std::move(block1))
         .compile(*filter);
 
     grammar::block block2;
@@ -160,30 +137,51 @@ TEST_F(StmtNodesTest, Branch)
                   , std::move(block2)
                   , std::move(block3))
         .compile(*filter);
+    filter->deliver().compile(nulscope);
 
     data_tree::expect_one()
-        (pos, BOOLEAN, "true")
+        (BLOCK_BEGIN)
         (pos, BRANCH)
+        (pos, BOOLEAN, "true")
+        (CONSEQUENCE)
+            (BLOCK_BEGIN)
+            (BLOCK_END)
+        (ALTERNATIVE)
+            (BLOCK_BEGIN)
+            (BLOCK_END)
 
+        (pos, BRANCH_CONSQ_ONLY)
+        (pos, BOOLEAN, "false")
+        (CONSEQUENCE)
+            (BLOCK_BEGIN)
+            (pos, ARITHMETICS)
                 (pos, REFERENCE, "Kaji")
-            (pos, ARITHMETICS)
             (pos, RETURN_NOTHING)
-        (pos, BOOLEAN, "false")
-        (pos, BRANCH)
+            (BLOCK_END)
 
-                (pos, REFERENCE, "Ryoji")
-            (pos, ARITHMETICS)
-            (pos, RETURN_NOTHING)
+        (pos, BRANCH_ALTER_ONLY)
         (pos, BOOLEAN, "true")
-        (pos, BRANCH)
-
-                (pos, REFERENCE, "betsuni")
-            (pos, RETURN)
-                (pos, INTEGER, "7")
+        (ALTERNATIVE)
+            (BLOCK_BEGIN)
             (pos, ARITHMETICS)
+                (pos, REFERENCE, "Ryoji")
             (pos, RETURN_NOTHING)
-        (pos, BOOLEAN, "false")
+            (BLOCK_END)
+
         (pos, BRANCH)
+        (pos, BOOLEAN, "false")
+        (CONSEQUENCE)
+            (BLOCK_BEGIN)
+            (pos, ARITHMETICS)
+                (pos, INTEGER, "7")
+            (pos, RETURN_NOTHING)
+            (BLOCK_END)
+        (ALTERNATIVE)
+            (BLOCK_BEGIN)
+            (pos, RETURN)
+                (pos, REFERENCE, "betsuni")
+            (BLOCK_END)
+        (BLOCK_END)
     ;
 }
 
@@ -204,18 +202,24 @@ TEST_F(StmtNodesTest, Functions)
                           , std::vector<std::string>({ "Konata", "Kagami", "Tsukasa", "Miyuki" })
                           , std::move(body));
     func1.compile(*filter);
+    filter->deliver().compile(nulscope);
 
     data_tree::expect_one()
+        (BLOCK_BEGIN)
         (pos, FUNC_DEF, "func0")
-
-                (pos, REFERENCE, "Kuroi")
-            (pos, ARITHMETICS)
-            (pos, RETURN_NOTHING)
+            (BLOCK_BEGIN)
+            (BLOCK_END)
         (pos, FUNC_DEF, "func1")
             (pos, PARAMETER, "Konata")
             (pos, PARAMETER, "Kagami")
             (pos, PARAMETER, "Tsukasa")
             (pos, PARAMETER, "Miyuki")
+            (BLOCK_BEGIN)
+            (pos, ARITHMETICS)
+                (pos, REFERENCE, "Kuroi")
+            (pos, RETURN_NOTHING)
+            (BLOCK_END)
+        (BLOCK_END)
     ;
 }
 
@@ -246,23 +250,29 @@ TEST_F(StmtNodesTest, Mixed)
                          , std::vector<std::string>({ "Suzumiya", "Koizumi", "Nagato", "Asahina" })
                          , std::move(body));
     func.compile(*filter);
+    filter->deliver().compile(nulscope);
 
     data_tree::expect_one()
-                    (pos, INTEGER, "9")
-                (pos, ARITHMETICS)
-
-            (pos, FUNC_DEF, "funcn")
-                (pos, PARAMETER, "SOS")
-
-            (pos, FUNC_DEF, "funcn")
-
-                (pos, REFERENCE, "Kyon")
-            (pos, ARITHMETICS)
-            (pos, RETURN_NOTHING)
+        (BLOCK_BEGIN)
         (pos, FUNC_DEF, "funco")
             (pos, PARAMETER, "Suzumiya")
             (pos, PARAMETER, "Koizumi")
             (pos, PARAMETER, "Nagato")
             (pos, PARAMETER, "Asahina")
+            (BLOCK_BEGIN)
+            (pos, FUNC_DEF, "funcn")
+                (pos, PARAMETER, "SOS")
+                (BLOCK_BEGIN)
+                (pos, ARITHMETICS)
+                    (pos, INTEGER, "9")
+                (BLOCK_END)
+            (pos, FUNC_DEF, "funcn")
+                (BLOCK_BEGIN)
+                (BLOCK_END)
+            (pos, ARITHMETICS)
+                (pos, REFERENCE, "Kyon")
+            (pos, RETURN_NOTHING)
+            (BLOCK_END)
+        (BLOCK_END)
     ;
 }
