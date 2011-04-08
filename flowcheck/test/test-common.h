@@ -9,6 +9,8 @@
 
 namespace test {
 
+    extern util::sref<inst::scope> const nul_inst_scope;
+
     struct flowcheck_data {
         misc::pos_type const pos;
         int const func_arg_size;
@@ -65,6 +67,8 @@ namespace test {
     extern node_type const BINARY_OP;
     extern node_type const PRE_UNARY_OP;
     extern node_type const CALL;
+    extern node_type const FUNCTOR;
+    extern node_type const FUNC_REFERENCE;
 
     extern node_type const VAR_REF;
     extern node_type const VAR_DEF;
@@ -77,7 +81,9 @@ namespace test {
     extern node_type const FUNC_DECL;
     extern node_type const PARAMETER;
 
-    extern node_type const SCOPE;
+    extern node_type const SCOPE_BEGIN;
+    extern node_type const SCOPE_END;
+
     extern node_type const BRANCH;
 
     struct flowcheck_test
