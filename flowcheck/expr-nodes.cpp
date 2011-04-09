@@ -248,7 +248,7 @@ namespace {
     };
     binary_op_implement<mod_binary> mod_binary_obj;
 
-    std::map<std::string, util::sref<literal_binary_operation const>> make_op_map()
+    std::map<std::string, util::sref<literal_binary_operation const>> make_cmp_op_map()
     {
         std::map<std::string, util::sref<literal_binary_operation const>> map;
         map.insert(std::make_pair("<", util::mkref(lt_binary_obj)));
@@ -257,6 +257,12 @@ namespace {
         map.insert(std::make_pair(">", util::mkref(gt_binary_obj)));
         map.insert(std::make_pair("=", util::mkref(eq_binary_obj)));
         map.insert(std::make_pair("!=", util::mkref(ne_binary_obj)));
+        return map;
+    }
+
+    std::map<std::string, util::sref<literal_binary_operation const>> make_op_map()
+    {
+        std::map<std::string, util::sref<literal_binary_operation const>> map(make_cmp_op_map());
         map.insert(std::make_pair("+", util::mkref(add_binary_obj)));
         map.insert(std::make_pair("-", util::mkref(sub_binary_obj)));
         map.insert(std::make_pair("*", util::mkref(mul_binary_obj)));
@@ -265,7 +271,8 @@ namespace {
         return map;
     }
 
-    std::map<std::string, util::sref<literal_binary_operation const>> const COMPARE_OPS(make_op_map());
+    std::map<std::string, util::sref<literal_binary_operation const>> const COMPARE_OPS(make_cmp_op_map());
+    std::map<std::string, util::sref<literal_binary_operation const>> const ALL_OPS(make_op_map());
 
 }
 
@@ -307,7 +314,11 @@ bool binary_op::is_literal() const
 
 bool binary_op::bool_value() const
 {
-    return false;
+    if (COMPARE_OPS.end() == COMPARE_OPS.find(op_img)) {
+        error::cond_not_bool(pos, type_name());
+        return false;
+    }
+    return fold()->bool_value();
 }
 
 std::string binary_op::type_name() const
@@ -513,14 +524,14 @@ util::sptr<expr_base const> int_literal::operate(misc::pos_type const& op_pos
                                                , std::string const& op_img
                                                , mpz_class const& rhs) const
 {
-    return std::move(COMPARE_OPS.find(op_img)->second->operate(op_pos, value, rhs));
+    return std::move(ALL_OPS.find(op_img)->second->operate(op_pos, value, rhs));
 }
 
 util::sptr<expr_base const> int_literal::operate(misc::pos_type const& op_pos
                                                , std::string const& op_img
                                                , mpf_class const& rhs) const
 {
-    return std::move(COMPARE_OPS.find(op_img)->second->operate(op_pos, value, rhs));
+    return std::move(ALL_OPS.find(op_img)->second->operate(op_pos, value, rhs));
 }
 
 util::sptr<expr_base const> int_literal::operate(misc::pos_type const& op_pos
@@ -576,14 +587,14 @@ util::sptr<expr_base const> float_literal::operate(misc::pos_type const& op_pos
                                                  , std::string const& op_img
                                                  , mpz_class const& rhs) const
 {
-    return std::move(COMPARE_OPS.find(op_img)->second->operate(op_pos, value, rhs));
+    return std::move(ALL_OPS.find(op_img)->second->operate(op_pos, value, rhs));
 }
 
 util::sptr<expr_base const> float_literal::operate(misc::pos_type const& op_pos
                                                  , std::string const& op_img
                                                  , mpf_class const& rhs) const
 {
-    return std::move(COMPARE_OPS.find(op_img)->second->operate(op_pos, value, rhs));
+    return std::move(ALL_OPS.find(op_img)->second->operate(op_pos, value, rhs));
 }
 
 util::sptr<expr_base const> float_literal::operate(misc::pos_type const& op_pos

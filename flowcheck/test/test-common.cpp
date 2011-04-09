@@ -6,6 +6,8 @@
 
 using namespace test;
 
+util::sref<inst::scope> const test::nul_inst_scope(NULL);
+
 data_tree& data_tree::operator()(misc::pos_type const& pos, node_type const& type, std::string const& str)
 {
     base_type::operator()(type, flowcheck_data(pos), str);
@@ -48,9 +50,11 @@ node_type const test::FLOATING("floating");
 node_type const test::BINARY_OP("binary operation");
 node_type const test::PRE_UNARY_OP("prefix unary operation");
 node_type const test::CALL("call");
+node_type const test::FUNC_REFERENCE("func reference");
+node_type const test::REFERENCE("var reference");
 
-node_type const test::VAR_REF("var reference");
 node_type const test::VAR_DEF("var definition");
+node_type const test::SCOPE_VAR_DEF("scope var definition");
 
 node_type const test::STATEMENT("statement");
 node_type const test::ARITHMETICS("arithmetics");
@@ -60,7 +64,9 @@ node_type const test::RETURN_NOTHING("return nothing");
 node_type const test::FUNC_DECL("func decl");
 node_type const test::PARAMETER("parameter");
 
-node_type const test::SCOPE("scope");
+node_type const test::SCOPE_BEGIN("scope begin");
+node_type const test::SCOPE_END("scope end");
+
 node_type const test::BRANCH("branch");
 
 void flowcheck_test::SetUp()

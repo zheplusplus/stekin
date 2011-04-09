@@ -4,6 +4,7 @@
 
 #include "test-common.h"
 #include "../../proto/stmt-nodes.h"
+#include "../../proto/expr-nodes.h"
 #include "../../proto/scope.h"
 #include "../../proto/general-scope.h"
 #include "../../proto/global-scope.h"
@@ -17,16 +18,26 @@ using namespace proto;
 
 namespace {
 
-    util::sref<symbol_table> nullsymbols()
+    util::sref<symbol_table> nul_symbols()
     {
-        return util::sref<symbol_table>(0);
+        return util::sref<symbol_table>(NULL);
+    }
+
+    util::sptr<inst::mediate_base> nul_mediate()
+    {
+        return std::move(util::sptr<inst::mediate_base>(NULL));
+    }
+
+    util::sptr<inst::expr_base const> nul_inst_expr()
+    {
+        return std::move(util::sptr<inst::expr_base const>(NULL));
     }
 
     std::list<util::sptr<function>> func_entities;
 
-    util::sptr<expr_base const> nullptr()
+    util::sptr<expr_base const> nul_proto_expr()
     {
-        return std::move(util::sptr<expr_base const>(0));
+        return std::move(util::sptr<expr_base const>(NULL));
     }
 
     util::sptr<scope> mkscope()
@@ -39,7 +50,7 @@ namespace {
     {
         util::sptr<inst::mediate_base> inst(util::sref<inst::scope>) const
         {
-            return std::move(util::sptr<inst::mediate_base>(NULL));
+            return std::move(nul_mediate());
         }
     };
 
@@ -48,134 +59,231 @@ namespace {
 
 }
 
-void block::add_stmt(util::sptr<stmt_base const>) {}
+void block::add_stmt(util::sptr<stmt_base const> stmt)
+{
+    _stmts.push_back(std::move(stmt));
+}
 
 util::sptr<inst::mediate_base> block::inst(util::sref<inst::scope>) const
 {
-    return std::move(util::sptr<inst::mediate_base>(NULL));
+    data_tree::actual_one()(SCOPE_BEGIN);
+    std::for_each(_stmts.begin()
+                , _stmts.end()
+                , [&](util::sptr<stmt_base const> const& stmt)
+                  {
+                      stmt->inst(nul_inst_scope);
+                  });
+    data_tree::actual_one()(SCOPE_END);
+    return std::move(nul_mediate());
 }
 
 block scope::deliver()
 {
-    return std::move(block());
+    return std::move(_block);
 }
 
 util::sptr<inst::mediate_base> func_ret::inst(util::sref<inst::scope>) const
 {
     data_tree::actual_one()(pos, RETURN);
-    return std::move(util::sptr<inst::mediate_base>(NULL));
+    ret_val->inst(nul_inst_scope);
+    return std::move(nul_mediate());
 }
 
 util::sptr<inst::mediate_base> func_ret_nothing::inst(util::sref<inst::scope>) const
 {
     data_tree::actual_one()(pos, RETURN_NOTHING);
-    return std::move(util::sptr<inst::mediate_base>(NULL));
+    return std::move(nul_mediate());
 }
 
 util::sptr<inst::mediate_base> var_def::inst(util::sref<inst::scope>) const
 {
-    data_tree::actual_one()(pos, VAR_DEF);
-    return std::move(util::sptr<inst::mediate_base>(NULL));
+    data_tree::actual_one()(pos, VAR_DEF, name);
+    init->inst(nul_inst_scope);
+    return std::move(nul_mediate());
 }
 
 util::sptr<inst::mediate_base> branch::inst(util::sref<inst::scope>) const
 {
     data_tree::actual_one()(pos, BRANCH);
-    return std::move(util::sptr<inst::mediate_base>(NULL));
+    _predicate->inst(nul_inst_scope);
+    _consequence.inst(nul_inst_scope);
+    _alternative.inst(nul_inst_scope);
+    return std::move(nul_mediate());
 }
 
 util::sptr<inst::mediate_base> arithmetics::inst(util::sref<inst::scope>) const
 {
     data_tree::actual_one()(pos, ARITHMETICS);
-    return std::move(util::sptr<inst::mediate_base>(NULL));
+    expr->inst(nul_inst_scope);
+    return std::move(nul_mediate());
+}
+
+util::sptr<inst::expr_base const> bool_literal::inst(util::sref<inst::scope>) const
+{
+    data_tree::actual_one()(pos, BOOLEAN, util::str(value));
+    return std::move(nul_inst_expr());
+}
+
+util::sptr<inst::expr_base const> int_literal::inst(util::sref<inst::scope>) const
+{
+    data_tree::actual_one()(pos, INTEGER, util::str(value));
+    return std::move(nul_inst_expr());
+}
+
+util::sptr<inst::expr_base const> float_literal::inst(util::sref<inst::scope>) const
+{
+    data_tree::actual_one()(pos, FLOATING, util::str(value));
+    return std::move(nul_inst_expr());
+}
+
+util::sptr<inst::expr_base const> reference::inst(util::sref<inst::scope>) const
+{
+    data_tree::actual_one()(pos, REFERENCE, name);
+    return std::move(nul_inst_expr());
+}
+
+util::sptr<inst::expr_base const> call::inst(util::sref<inst::scope>) const
+{
+    data_tree::actual_one()(pos, CALL, func->name, args.size(), false);
+    std::for_each(args.begin()
+                , args.end()
+                , [&](util::sptr<expr_base const> const& arg)
+                  {
+                      arg->inst(nul_inst_scope);
+                  });
+    return std::move(nul_inst_expr());
+}
+
+util::sptr<inst::expr_base const> func_reference::inst(util::sref<inst::scope>) const
+{
+    data_tree::actual_one()(pos, FUNC_REFERENCE, func->name, func->param_names.size(), false);
+    return std::move(nul_inst_expr());
+}
+
+util::sptr<inst::expr_base const> binary_op::inst(util::sref<inst::scope>) const
+{
+    data_tree::actual_one()(pos, BINARY_OP, op);
+    lhs->inst(nul_inst_scope);
+    rhs->inst(nul_inst_scope);
+    return std::move(nul_inst_expr());
+}
+
+util::sptr<inst::expr_base const> pre_unary_op::inst(util::sref<inst::scope>) const
+{
+    data_tree::actual_one()(pos, PRE_UNARY_OP, op);
+    rhs->inst(nul_inst_scope);
+    return std::move(nul_inst_expr());
+}
+
+util::sptr<inst::expr_base const> conjunction::inst(util::sref<inst::scope>) const
+{
+    data_tree::actual_one()(pos, BINARY_OP, "&&");
+    lhs->inst(nul_inst_scope);
+    rhs->inst(nul_inst_scope);
+    return std::move(nul_inst_expr());
+}
+
+util::sptr<inst::expr_base const> disjunction::inst(util::sref<inst::scope>) const
+{
+    data_tree::actual_one()(pos, BINARY_OP, "||");
+    lhs->inst(nul_inst_scope);
+    rhs->inst(nul_inst_scope);
+    return std::move(nul_inst_expr());
+}
+
+util::sptr<inst::expr_base const> negation::inst(util::sref<inst::scope>) const
+{
+    data_tree::actual_one()(pos, PRE_UNARY_OP, "!");
+    rhs->inst(nul_inst_scope);
+    return std::move(nul_inst_expr());
 }
 
 util::sptr<expr_base const> scope::make_bool(misc::pos_type const& pos, bool value) const
 {
-    data_tree::actual_one()(pos, BOOLEAN, util::str(value));
-    return std::move(nullptr());
+    return std::move(util::mkptr(new bool_literal(pos, value)));
 }
 
 util::sptr<expr_base const> scope::make_int(misc::pos_type const& pos, mpz_class const& value) const
 {
-    data_tree::actual_one()(pos, INTEGER, util::str(value));
-    return std::move(nullptr());
+    return std::move(util::mkptr(new int_literal(pos, value)));
 }
 
 util::sptr<expr_base const> scope::make_float(misc::pos_type const& pos, mpf_class const& value) const
 {
-    data_tree::actual_one()(pos, FLOATING, util::str(value));
-    return std::move(nullptr());
+    return std::move(util::mkptr(new float_literal(pos, value)));
+}
+
+util::sptr<expr_base const> scope::make_binary(misc::pos_type const& pos
+                                             , util::sptr<expr_base const> lhs
+                                             , std::string const& op
+                                             , util::sptr<expr_base const> rhs) const
+{
+    return std::move(util::mkptr(new binary_op(pos, std::move(lhs), op, std::move(rhs))));
+}
+
+util::sptr<expr_base const> scope::make_pre_unary(misc::pos_type const& pos
+                                                , std::string const& op
+                                                , util::sptr<expr_base const> rhs) const
+{
+    return std::move(util::mkptr(new pre_unary_op(pos, op, std::move(rhs))));
+}
+
+util::sptr<expr_base const> scope::make_conj(misc::pos_type const& pos
+                                           , util::sptr<expr_base const> lhs
+                                           , util::sptr<expr_base const> rhs) const
+{
+    return std::move(util::mkptr(new conjunction(pos, std::move(lhs), std::move(rhs))));
+}
+
+util::sptr<expr_base const> scope::make_disj(misc::pos_type const& pos
+                                           , util::sptr<expr_base const> lhs
+                                           , util::sptr<expr_base const> rhs) const
+{
+    return std::move(util::mkptr(new disjunction(pos, std::move(lhs), std::move(rhs))));
+}
+
+util::sptr<expr_base const> scope::make_nega(misc::pos_type const& pos, util::sptr<expr_base const> rhs) const
+{
+    return std::move(util::mkptr(new negation(pos, std::move(rhs))));
+}
+
+void scope::add_stmt(util::sptr<stmt_base const> stmt)
+{
+    _block.add_stmt(std::move(stmt));
 }
 
 util::sptr<expr_base const> general_scope::make_ref(misc::pos_type const& pos, std::string const& name)
 {
-    data_tree::actual_one()(pos, VAR_REF, name);
-    return std::move(nullptr());
+    return std::move(util::mkptr(new reference(pos, name)));
 }
 
 util::sptr<expr_base const> general_scope::make_call(misc::pos_type const& pos
                                                    , std::string const& name
                                                    , std::vector<util::sptr<expr_base const>> args) const
 {
-    data_tree::actual_one()(pos, CALL, name, args.size(), false);
-    return std::move(nullptr());
+    func_entities.push_back(std::move(util::mkmptr(new function(pos
+                                                              , name
+                                                              , std::vector<std::string>(args.size())
+                                                              , util::mkref(phony_symbols)
+                                                              , false))));
+    return std::move(util::mkptr(new call(pos, *func_entities.back(), std::move(args))));
 }
 
-util::sptr<expr_base const> general_scope::make_func_reference(misc::pos_type const&
-                                                             , std::string const&
-                                                             , int) const
+util::sptr<expr_base const> general_scope::make_func_reference(misc::pos_type const& pos
+                                                             , std::string const& name
+                                                             , int param_count) const
 {
-    return std::move(nullptr());
-}
-
-util::sptr<expr_base const> scope::make_binary(misc::pos_type const& pos
-                                             , util::sptr<expr_base const>
-                                             , std::string const& op
-                                             , util::sptr<expr_base const>) const
-{
-    data_tree::actual_one()(pos, BINARY_OP, op);
-    return std::move(nullptr());
-}
-
-util::sptr<expr_base const> scope::make_pre_unary(misc::pos_type const& pos
-                                                , std::string const& op
-                                                , util::sptr<expr_base const>) const
-{
-    data_tree::actual_one()(pos, PRE_UNARY_OP, op);
-    return std::move(nullptr());
-}
-
-util::sptr<expr_base const> scope::make_conj(misc::pos_type const& pos
-                                           , util::sptr<expr_base const>
-                                           , util::sptr<expr_base const>) const
-{
-    data_tree::actual_one()(pos, BINARY_OP, "&&");
-    return std::move(nullptr());
-}
-
-util::sptr<expr_base const> scope::make_disj(misc::pos_type const& pos
-                                           , util::sptr<expr_base const>
-                                           , util::sptr<expr_base const>) const
-{
-    data_tree::actual_one()(pos, BINARY_OP, "||");
-    return std::move(nullptr());
-}
-
-util::sptr<expr_base const> scope::make_nega(misc::pos_type const& pos, util::sptr<expr_base const>) const
-{
-    data_tree::actual_one()(pos, PRE_UNARY_OP, "!");
-    return std::move(nullptr());
-}
-
-void scope::add_stmt(util::sptr<stmt_base const>)
-{
-    data_tree::actual_one()(STATEMENT);
+    func_entities.push_back(std::move(util::mkmptr(new function(pos
+                                                              , name
+                                                              , std::vector<std::string>(param_count)
+                                                              , util::mkref(phony_symbols)
+                                                              , false))));
+    return std::move(util::mkptr(new func_reference(pos, *func_entities.back())));
 }
 
 void general_scope::def_var(misc::pos_type const& pos, std::string const& name)
 {
-    data_tree::actual_one()(pos, VAR_DEF, name);
+    data_tree::actual_one()(pos, SCOPE_VAR_DEF, name);
 }
 
 util::sptr<scope> general_scope::create_branch_scope()
@@ -203,17 +311,17 @@ util::sref<function> general_scope::declare(misc::pos_type const& pos
     return *func_entities.back();
 }
 
-global_scope::global_scope()
-{
-    data_tree::actual_one()(SCOPE);
-}
+global_scope::global_scope() {}
 
 function::function(misc::pos_type const& p
-                 , std::string const&
-                 , std::vector<std::string> const&
+                 , std::string const& n
+                 , std::vector<std::string> const& params
                  , util::sref<symbol_table const>
-                 , bool)
+                 , bool func_hint_void_return)
     : pos(p)
+    , name(n)
+    , param_names(params)
+    , hint_void_return(func_hint_void_return)
 {
     func_scope_entities.push_back(std::move(mkscope()));
 }
