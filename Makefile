@@ -2,7 +2,7 @@ WORKDIR=.
 
 include misc/mf-template.mk
 
-all:main.d head-writer.d libs
+all:main.d head-writer.d lib
 	make -f report/Makefile
 	make -f parser/Makefile
 	make -f grammar/Makefile
@@ -22,12 +22,12 @@ all:main.d head-writer.d libs
 	     -o stk-core.out
 	$(LINK) head-writer.o -o head-writer.out $(LIBS)
 
-libs:
+lib:
 	mkdir -p libs
 	make -f util/Makefile
 	make -f misc/Makefile
 
-runtest:all test-libs
+runtest:all test-lib
 	make -f util/test/Makefile
 	make -f parser/test/Makefile
 	make -f grammar/test/Makefile
@@ -36,7 +36,7 @@ runtest:all test-libs
 	make -f instance/test/Makefile
 	./sample-test
 
-test-libs:
+test-lib:
 	mkdir -p libs
 	make -f test/Makefile
 

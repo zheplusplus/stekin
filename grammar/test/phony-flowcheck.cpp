@@ -1,5 +1,4 @@
 #include <algorithm>
-#include <sstream>
 
 #include "test-common.h"
 #include "../../flowcheck/filter.h"
@@ -9,6 +8,7 @@
 #include "../../flowcheck/stmt-nodes.h"
 #include "../../flowcheck/function.h"
 #include "../../proto/node-base.h"
+#include "../../util/string.h"
 
 using namespace test;
 using namespace flchk;
@@ -336,21 +336,19 @@ util::sptr<proto::expr_base const> reference::compile(util::sref<proto::scope>) 
 
 util::sptr<proto::expr_base const> bool_literal::compile(util::sref<proto::scope>) const
 {
-    data_tree::actual_one()(pos, BOOLEAN, value ? "true" : "false");
+    data_tree::actual_one()(pos, BOOLEAN, util::str(value));
     return std::move(nul_proto_expr());
 }
 
 util::sptr<proto::expr_base const> int_literal::compile(util::sref<proto::scope>) const
 {
-    data_tree::actual_one()(pos, INTEGER, value.get_str());
+    data_tree::actual_one()(pos, INTEGER, util::str(value));
     return std::move(nul_proto_expr());
 }
 
 util::sptr<proto::expr_base const> float_literal::compile(util::sref<proto::scope>) const
 {
-    std::stringstream ss;
-    ss << value;
-    data_tree::actual_one()(pos, FLOATING, ss.str());
+    data_tree::actual_one()(pos, FLOATING, util::str(value));
     return std::move(nul_proto_expr());
 }
 

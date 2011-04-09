@@ -7,8 +7,8 @@ CFLAGS=-Wall -Wextra -Werror
 MKTMP=tmp.mk
 
 LIB_DIR=libs
-LIBS=-lgmp -lgmpxx -L$(LIB_DIR) -lstkn
-TEST_LIBS=-lgmp -lgmpxx -L$(LIB_DIR) -lstkntest -lstkn -lgtest -lgtest_main -lpthread
+LIBS=-L$(LIB_DIR) -lstkn -lgmp -lgmpxx
+TEST_LIBS=-L$(LIB_DIR) -lstkntest -lstkn -lgtest -lgtest_main -lpthread -lgmp -lgmpxx
 
 SAMPLEDIR=samples
 ERRSAMPLEDIR=$(SAMPLEDIR)/errors

@@ -1,14 +1,13 @@
 #include <sstream>
 
 #include "pointer.h"
+#include "string.h"
 
 using namespace util;
 
 std::string id::str() const
 {
-    std::stringstream ss;
-    ss << _id;
-    return ss.str();
+    return util::str(_id);
 }
 
 bool id::operator<(id const& rhs) const

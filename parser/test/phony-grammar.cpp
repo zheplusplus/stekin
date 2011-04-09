@@ -72,7 +72,7 @@ util::sptr<flchk::expr_base const> reference::compile() const
 
 util::sptr<flchk::expr_base const> bool_literal::compile() const
 {
-    data_tree::actual_one()(pos, BOOLEAN, value ? "true" : "false");
+    data_tree::actual_one()(pos, BOOLEAN, util::str(value));
     return std::move(nullptr());;
 }
 

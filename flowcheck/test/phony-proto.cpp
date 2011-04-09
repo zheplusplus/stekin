@@ -1,7 +1,6 @@
 #include <algorithm>
 #include <vector>
 #include <map>
-#include <sstream>
 
 #include "test-common.h"
 #include "../../proto/stmt-nodes.h"
@@ -11,6 +10,7 @@
 #include "../../proto/function.h"
 #include "../../instance/node-base.h"
 #include "../../instance/inst-mediate.h"
+#include "../../util/string.h"
 
 using namespace test;
 using namespace proto;
@@ -92,21 +92,19 @@ util::sptr<inst::mediate_base> arithmetics::inst(util::sref<inst::scope>) const
 
 util::sptr<expr_base const> scope::make_bool(misc::pos_type const& pos, bool value) const
 {
-    data_tree::actual_one()(pos, BOOLEAN, value ? "true" : "false");
+    data_tree::actual_one()(pos, BOOLEAN, util::str(value));
     return std::move(nullptr());
 }
 
 util::sptr<expr_base const> scope::make_int(misc::pos_type const& pos, mpz_class const& value) const
 {
-    data_tree::actual_one()(pos, INTEGER, value.get_str());
+    data_tree::actual_one()(pos, INTEGER, util::str(value));
     return std::move(nullptr());
 }
 
 util::sptr<expr_base const> scope::make_float(misc::pos_type const& pos, mpf_class const& value) const
 {
-    std::stringstream ss;
-    ss << value;
-    data_tree::actual_one()(pos, FLOATING, ss.str());
+    data_tree::actual_one()(pos, FLOATING, util::str(value));
     return std::move(nullptr());
 }
 

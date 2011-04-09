@@ -277,7 +277,7 @@ util::sref<type const> float_literal::typeof() const
 
 util::sref<type const> bool_literal::typeof() const
 {
-    data_tree::actual_one()(BOOLEAN, value ? "true" : "false");
+    data_tree::actual_one()(BOOLEAN, util::str(value));
     return util::mkref(PROTO_TEST_TYPE);
 }
 

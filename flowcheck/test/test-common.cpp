@@ -2,6 +2,7 @@
 #include "../../test/common.h"
 #include "../../test/phony-errors.h"
 #include "../../instance/node-base.h"
+#include "../../util/string.h"
 
 using namespace test;
 
@@ -38,7 +39,7 @@ std::ostream& operator<<(std::ostream& os, flowcheck_data const& data)
     return -1 == data.func_arg_size
         ? (os << data.pos)
         : (os << data.pos << " arg size=" << data.func_arg_size
-                          << " returning void=" << (data.func_hint_ret_void ? "true" : "false"));
+                          << " returning void=" << util::str(data.func_hint_ret_void));
 }
 
 node_type const test::BOOLEAN("boolean");

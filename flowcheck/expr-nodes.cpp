@@ -1,6 +1,5 @@
 #include <algorithm>
 #include <map>
-#include <sstream>
 
 #include "expr-nodes.h"
 #include "../util/string.h"
@@ -437,7 +436,7 @@ bool bool_literal::bool_value() const
 
 std::string bool_literal::type_name() const
 {
-    return "(bool(" + std::string(value ? "true" : "false") + "))";
+    return "(bool(" + util::str(value) + "))";
 }
 
 util::sptr<expr_base const> bool_literal::fold() const
@@ -502,7 +501,7 @@ bool int_literal::bool_value() const
 
 std::string int_literal::type_name() const
 {
-    return "(int(" + value.get_str() + "))";
+    return "(int(" + util::str(value) + "))";
 }
 
 util::sptr<expr_base const> int_literal::fold() const
@@ -565,9 +564,7 @@ bool float_literal::bool_value() const
 
 std::string float_literal::type_name() const
 {
-    std::stringstream ss;
-    ss << value;
-    return "(float(" + ss.str() + "))";
+    return "(float(" + util::str(value) + "))";
 }
 
 util::sptr<expr_base const> float_literal::fold() const
