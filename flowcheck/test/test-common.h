@@ -67,11 +67,11 @@ namespace test {
     extern node_type const BINARY_OP;
     extern node_type const PRE_UNARY_OP;
     extern node_type const CALL;
-    extern node_type const FUNCTOR;
     extern node_type const FUNC_REFERENCE;
+    extern node_type const REFERENCE;
 
-    extern node_type const VAR_REF;
     extern node_type const VAR_DEF;
+    extern node_type const SCOPE_VAR_DEF;
 
     extern node_type const STATEMENT;
     extern node_type const ARITHMETICS;

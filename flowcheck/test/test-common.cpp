@@ -49,11 +49,11 @@ node_type const test::FLOATING("floating");
 node_type const test::BINARY_OP("binary operation");
 node_type const test::PRE_UNARY_OP("prefix unary operation");
 node_type const test::CALL("call");
-node_type const test::FUNCTOR("functor");
 node_type const test::FUNC_REFERENCE("func reference");
+node_type const test::REFERENCE("var reference");
 
-node_type const test::VAR_REF("var reference");
 node_type const test::VAR_DEF("var definition");
+node_type const test::SCOPE_VAR_DEF("scope var definition");
 
 node_type const test::STATEMENT("statement");
 node_type const test::ARITHMETICS("arithmetics");

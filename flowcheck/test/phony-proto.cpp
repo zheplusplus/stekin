@@ -140,25 +140,13 @@ util::sptr<inst::expr_base const> float_literal::inst(util::sref<inst::scope>) c
 
 util::sptr<inst::expr_base const> reference::inst(util::sref<inst::scope>) const
 {
-    data_tree::actual_one()(pos, VAR_REF, name);
+    data_tree::actual_one()(pos, REFERENCE, name);
     return std::move(nul_inst_expr());
 }
 
 util::sptr<inst::expr_base const> call::inst(util::sref<inst::scope>) const
 {
     data_tree::actual_one()(pos, CALL, func->name, args.size(), false);
-    std::for_each(args.begin()
-                , args.end()
-                , [&](util::sptr<expr_base const> const& arg)
-                  {
-                      arg->inst(nul_inst_scope);
-                  });
-    return std::move(nul_inst_expr());
-}
-
-util::sptr<inst::expr_base const> functor::inst(util::sref<inst::scope>) const
-{
-    data_tree::actual_one()(pos, FUNCTOR, name, args.size(), false);
     std::for_each(args.begin()
                 , args.end()
                 , [&](util::sptr<expr_base const> const& arg)
@@ -297,7 +285,7 @@ util::sptr<expr_base const> general_scope::make_func_reference(misc::pos_type co
 
 void general_scope::def_var(misc::pos_type const& pos, std::string const& name)
 {
-    data_tree::actual_one()(pos, VAR_DEF, name);
+    data_tree::actual_one()(pos, SCOPE_VAR_DEF, name);
 }
 
 util::sptr<scope> general_scope::create_branch_scope()
