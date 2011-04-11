@@ -235,6 +235,7 @@ namespace test {
     std::vector<else_not_match_rec> get_else_not_matches();
     std::vector<if_matched_rec> get_if_matcheds();
     std::vector<excess_ind_rec> get_excess_inds();
+    std::vector<flow_terminated_rec> get_flow_terminated_recs();
     std::vector<func_forbidden_rec> get_forbidden_funcs();
     std::vector<forbid_def_rec> get_forbid_var_defs();
     std::vector<var_redef_rec> get_local_redefs();

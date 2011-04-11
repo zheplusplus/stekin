@@ -36,7 +36,7 @@ namespace test {
     void clear_warn();
 
     std::vector<consq_branch_terminated_rec> get_consq_branch_terminated();
-    std::vector<consq_branch_terminated_rec> get_consq_branch_terminated();
+    std::vector<alter_branch_terminated_rec> get_alter_branch_terminated();
     std::vector<both_branches_terminated_rec> get_both_branches_terminated();
 
 }

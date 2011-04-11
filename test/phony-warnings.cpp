@@ -32,19 +32,19 @@ void warning::one_or_two_branches_terminated(
                 alter_branch_terminated_rec(alter_term_pos_or_null_if_not_term.cp()));
 }
 
-std::vector<consq_branch_terminated_rec> get_consq_branch_terminated()
+std::vector<consq_branch_terminated_rec> test::get_consq_branch_terminated()
 {
     return std::vector<consq_branch_terminated_rec>(consq_branch_terminated_recs.begin()
                                                   , consq_branch_terminated_recs.end());
 }
 
-std::vector<alter_branch_terminated_rec> get_alter_branch_terminated()
+std::vector<alter_branch_terminated_rec> test::get_alter_branch_terminated()
 {
     return std::vector<alter_branch_terminated_rec>(alter_branch_terminated_recs.begin()
                                                   , alter_branch_terminated_recs.end());
 }
 
-std::vector<both_branches_terminated_rec> get_both_branches_terminated()
+std::vector<both_branches_terminated_rec> test::get_both_branches_terminated()
 {
     return std::vector<both_branches_terminated_rec>(both_branches_terminated_recs.begin()
                                                    , both_branches_terminated_recs.end());

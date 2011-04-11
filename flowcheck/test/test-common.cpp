@@ -1,6 +1,7 @@
 #include "test-common.h"
 #include "../../test/common.h"
 #include "../../test/phony-errors.h"
+#include "../../test/phony-warnings.h"
 #include "../../instance/node-base.h"
 #include "../../util/string.h"
 
@@ -72,6 +73,7 @@ node_type const test::BRANCH("branch");
 void flowcheck_test::SetUp()
 {
     clear_err();
+    clear_warn();
 }
 
 void flowcheck_test::TearDown()

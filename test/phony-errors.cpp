@@ -245,6 +245,11 @@ std::vector<excess_ind_rec> test::get_excess_inds()
     return std::vector<excess_ind_rec>(excess_ind_recs.begin(), excess_ind_recs.end());
 }
 
+std::vector<flow_terminated_rec> test::get_flow_terminated_recs()
+{
+    return std::vector<flow_terminated_rec>(flow_terminated_recs.begin(), flow_terminated_recs.end());
+}
+
 std::vector<func_forbidden_rec> test::get_forbidden_funcs()
 {
     return std::vector<func_forbidden_rec>(forbidden_func_recs.begin(), forbidden_func_recs.end());
