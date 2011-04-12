@@ -13,19 +13,19 @@
 
 namespace proto {
 
-    struct func_signature {
-        std::string const name;
-        int const param_count;
-
-        func_signature(std::string const& n, int const pc)
+    struct overloads {
+        explicit overloads(std::string const& n)
             : name(n)
-            , param_count(pc)
         {}
 
-        bool operator<(func_signature const& rhs) const
-        {
-            return name == rhs.name ? param_count < rhs.param_count : name < rhs.name;
-        }
+        std::string const name;
+    public:
+        util::sref<function> query_or_null_if_nonexist(int param_count) const;
+        void declare(util::sref<function> func);
+        int count() const;
+        util::sref<function> first() const;
+    private:
+        std::map<int, util::sref<function> const> _funcs;
     };
 
     struct symbol_table {
@@ -45,12 +45,12 @@ namespace proto {
             : level(rhs.level)
             , _external_var_refs(rhs._external_var_refs)
             , _var_defs(rhs._var_defs)
-            , _funcs(rhs._funcs)
+            , _overloads(rhs._overloads)
             , _func_entities(std::move(rhs._func_entities))
             , _external_or_null_on_global(rhs._external_or_null_on_global)
         {}
 
-        void ref_var(misc::pos_type const& pos, std::string const& name);
+        util::sptr<expr_base const> ref_var(misc::pos_type const& pos, std::string const& name);
         void def_var(misc::pos_type const& pos, std::string const& name);
         util::sref<function> def_func(misc::pos_type const& pos
                                     , std::string const& name
@@ -67,10 +67,13 @@ namespace proto {
     private:
         std::map<std::string, std::list<misc::pos_type>> _external_var_refs;
         std::map<std::string, misc::pos_type> _var_defs;
-        std::map<func_signature, util::sref<function> const> _funcs;
-        std::list<function> _func_entities;
-        util::sref<symbol_table const> const _external_or_null_on_global;
 
+        std::list<overloads> _overloads;
+        std::list<function> _func_entities;
+
+        util::sref<symbol_table const> const _external_or_null_on_global;
+    private:
+        util::sref<overloads> _find_overloads(std::string const& name);
         util::sref<function> _query_func_or_null_if_nonexist(std::string const& name, int param_count) const;
         util::sref<function> _query_func_in_external_or_null_if_nonexist(std::string const& name
                                                                        , int param_count) const;

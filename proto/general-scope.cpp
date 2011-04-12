@@ -8,8 +8,7 @@ using namespace proto;
 
 util::sptr<expr_base const> general_scope::make_ref(misc::pos_type const& pos, std::string const& name)
 {
-    _symbols.ref_var(pos, name);
-    return std::move(util::mkptr(new reference(pos, name)));
+    return std::move(_symbols.ref_var(pos, name));
 }
 
 util::sptr<expr_base const> general_scope::make_call(misc::pos_type const& pos
