@@ -42,6 +42,9 @@ std::ostream& operator<<(std::ostream& os, grammar_data const& data)
     return -1 == data.func_arg_size ? (os << data.pos) : (os << data.pos << " arg size=" << data.func_arg_size);
 }
 
+std::string const test::VAR_DEF_FILTERED(" var def filtered");
+std::string const test::FUNC_DEF_FILTERED(" func def filtered");
+
 node_type const test::BOOLEAN("boolean");
 node_type const test::INTEGER("integer");
 node_type const test::FLOATING("floating");
@@ -54,13 +57,11 @@ node_type const test::CALL("call");
 node_type const test::FUNC_REFERENCE("function reference");
 
 node_type const test::VAR_DEF("var def");
-node_type const test::VAR_DEF_FILTERED("var def filtered");
 node_type const test::ARITHMETICS("arithmetics");
 node_type const test::RETURN("return");
 node_type const test::RETURN_NOTHING("return nothing");
 
 node_type const test::FUNC_DEF("func def");
-node_type const test::FUNC_DEF_FILTERED("func def filtered");
 node_type const test::PARAMETER("parameter");
 
 node_type const test::BRANCH("branch");
