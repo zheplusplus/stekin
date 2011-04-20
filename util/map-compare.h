@@ -1,5 +1,5 @@
-#ifndef __STACKENING_UTILITY_MAP_COMPARE_H__
-#define __STACKENING_UTILITY_MAP_COMPARE_H__
+#ifndef __STEKIN_UTILITY_MAP_COMPARE_H__
+#define __STEKIN_UTILITY_MAP_COMPARE_H__
 
 #include <map>
 #include <algorithm>
@@ -35,4 +35,4 @@ namespace util {
 
 }
 
-#endif /* __STACKENING_UTILITY_MAP_COMPARE_H__ */
+#endif /* __STEKIN_UTILITY_MAP_COMPARE_H__ */

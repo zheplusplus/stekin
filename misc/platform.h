@@ -1,5 +1,5 @@
-#ifndef __STACKENING_MISCELLANY_PLATFORM_H__
-#define __STACKENING_MISCELLANY_PLATFORM_H__
+#ifndef __STEKIN_MISCELLANY_PLATFORM_H__
+#define __STEKIN_MISCELLANY_PLATFORM_H__
 
 #include <string>
 
@@ -72,4 +72,4 @@ namespace platform {
 
 }
 
-#endif /* __STACKENING_MISCELLANY_PLATFORM_H__ */
+#endif /* __STEKIN_MISCELLANY_PLATFORM_H__ */

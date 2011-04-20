@@ -1,5 +1,5 @@
-#ifndef __STACKENING_GRAMMAR_CLAUSE_BUILDER_H__
-#define __STACKENING_GRAMMAR_CLAUSE_BUILDER_H__
+#ifndef __STEKIN_GRAMMAR_CLAUSE_BUILDER_H__
+#define __STEKIN_GRAMMAR_CLAUSE_BUILDER_H__
 
 #include <list>
 #include <vector>
@@ -72,4 +72,4 @@ namespace grammar {
 
 }
 
-#endif /* __STACKENING_GRAMMAR_CLAUSE_BUILDER_H__ */
+#endif /* __STEKIN_GRAMMAR_CLAUSE_BUILDER_H__ */

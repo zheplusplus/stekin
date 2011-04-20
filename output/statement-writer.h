@@ -1,5 +1,5 @@
-#ifndef __STACKENING_OUTPUT_STATEMENT_WRITER_H__
-#define __STACKENING_OUTPUT_STATEMENT_WRITER_H__
+#ifndef __STEKIN_OUTPUT_STATEMENT_WRITER_H__
+#define __STEKIN_OUTPUT_STATEMENT_WRITER_H__
 
 #include <string>
 
@@ -31,4 +31,4 @@ namespace output {
 
 }
 
-#endif /* __STACKENING_OUTPUT_STATEMENT_WRITER_H__ */
+#endif /* __STEKIN_OUTPUT_STATEMENT_WRITER_H__ */

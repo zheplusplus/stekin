@@ -53,7 +53,7 @@
 
 %%
 
-stackening:
+root:
     stmt_list
 ;
 

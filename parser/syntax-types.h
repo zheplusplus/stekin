@@ -1,5 +1,5 @@
-#ifndef __STACKENING_PARSER_SYNTAX_TYPE_H__
-#define __STACKENING_PARSER_SYNTAX_TYPE_H__
+#ifndef __STEKIN_PARSER_SYNTAX_TYPE_H__
+#define __STEKIN_PARSER_SYNTAX_TYPE_H__
 
 #include <string>
 #include <vector>
@@ -61,4 +61,4 @@ namespace parser {
 
 }
 
-#endif /* __STACKENING_PARSER_SYNTAX_TYPE_H__ */
+#endif /* __STEKIN_PARSER_SYNTAX_TYPE_H__ */

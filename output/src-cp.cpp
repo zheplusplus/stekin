@@ -79,7 +79,7 @@ std::ostream& operator<<(std::ostream& os, _stk_type_void)
 template <int _Size>
 std::ostream& operator<<(std::ostream& os, _stk_composite<_Size> const& composite)
 {
-    return os << "Stackening Composite (" << _Size << ')';
+    return os << "Stekin Composite (" << _Size << ')';
 }
 
 template <int _Level>

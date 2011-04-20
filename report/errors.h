@@ -1,5 +1,5 @@
-#ifndef __STACKENING_REPORT_ERRORS_H__
-#define __STACKENING_REPORT_ERRORS_H__
+#ifndef __STEKIN_REPORT_ERRORS_H__
+#define __STEKIN_REPORT_ERRORS_H__
 
 #include <list>
 #include <string>
@@ -59,4 +59,4 @@ namespace error {
 
 }
 
-#endif /* __STACKENING_REPORT_ERRORS_H__ */
+#endif /* __STEKIN_REPORT_ERRORS_H__ */

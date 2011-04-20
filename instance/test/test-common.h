@@ -1,5 +1,5 @@
-#ifndef __STACKENING_INSTANCE_TEST_TEST_COMMON_H__
-#define __STACKENING_INSTANCE_TEST_TEST_COMMON_H__
+#ifndef __STEKIN_INSTANCE_TEST_TEST_COMMON_H__
+#define __STEKIN_INSTANCE_TEST_TEST_COMMON_H__
 
 #include <gtest/gtest.h>
 
@@ -56,4 +56,4 @@ namespace test {
 std::ostream& operator<<(std::ostream& os, inst::variable const& var);
 std::ostream& operator<<(std::ostream& os, util::sref<inst::type const> type);
 
-#endif /* __STACKENING_INSTANCE_TEST_TEST_COMMON_H__ */
+#endif /* __STEKIN_INSTANCE_TEST_TEST_COMMON_H__ */

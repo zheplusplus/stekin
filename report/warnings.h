@@ -1,5 +1,5 @@
-#ifndef __STACKENING_REPORT_WARNINGS_H__
-#define __STACKENING_REPORT_WARNINGS_H__
+#ifndef __STEKIN_REPORT_WARNINGS_H__
+#define __STEKIN_REPORT_WARNINGS_H__
 
 #include "../util/pointer.h"
 #include "../misc/pos-type.h"
@@ -11,4 +11,4 @@ namespace warning {
 
 }
 
-#endif /* __STACKENING_REPORT_WARNINGS_H__ */
+#endif /* __STEKIN_REPORT_WARNINGS_H__ */

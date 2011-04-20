@@ -1,5 +1,5 @@
-#ifndef __STACKENING_PROTO_TEST_TEST_COMMON_H__
-#define __STACKENING_PROTO_TEST_TEST_COMMON_H__
+#ifndef __STEKIN_PROTO_TEST_TEST_COMMON_H__
+#define __STEKIN_PROTO_TEST_TEST_COMMON_H__
 
 #include "../../instance/node-base.h"
 #include "../../instance/type.h"
@@ -104,4 +104,4 @@ namespace test {
 
 std::ostream& operator<<(std::ostream& os, test::proto_data const& data);
 
-#endif /* __STACKENING_PROTO_TEST_TEST_COMMON_H__ */
+#endif /* __STEKIN_PROTO_TEST_TEST_COMMON_H__ */

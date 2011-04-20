@@ -1,5 +1,5 @@
-#ifndef __STACKENING_GRAMMAR_TEST_TEST_COMMON_H__
-#define __STACKENING_GRAMMAR_TEST_TEST_COMMON_H__
+#ifndef __STEKIN_GRAMMAR_TEST_TEST_COMMON_H__
+#define __STEKIN_GRAMMAR_TEST_TEST_COMMON_H__
 
 #include "../node-base.h"
 #include "../../flowcheck/node-base.h"
@@ -96,4 +96,4 @@ namespace test {
 
 std::ostream& operator<<(std::ostream& os, test::grammar_data const& data);
 
-#endif /* __STACKENING_GRAMMAR_TEST_TEST_COMMON_H__ */
+#endif /* __STEKIN_GRAMMAR_TEST_TEST_COMMON_H__ */

@@ -1,5 +1,5 @@
-#ifndef __STACKENING_TEST_DATA_NODE_H__
-#define __STACKENING_TEST_DATA_NODE_H__
+#ifndef __STEKIN_TEST_DATA_NODE_H__
+#define __STEKIN_TEST_DATA_NODE_H__
 
 #include <string>
 #include <ostream>
@@ -116,4 +116,4 @@ std::ostream& operator<<(std::ostream& os, test::data_node_templ<_NodeData> cons
                                                                       << ":: sub data: " << node.sub_data;
 }
 
-#endif /* __STACKENING_TEST_DATA_NODE_H__ */
+#endif /* __STEKIN_TEST_DATA_NODE_H__ */

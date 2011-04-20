@@ -1,5 +1,5 @@
-#ifndef __STACKENING_INSTNACE_SCOPE_H__
-#define __STACKENING_INSTNACE_SCOPE_H__
+#ifndef __STEKIN_INSTNACE_SCOPE_H__
+#define __STEKIN_INSTNACE_SCOPE_H__
 
 #include <string>
 
@@ -45,4 +45,4 @@ namespace inst {
 
 }
 
-#endif /* __STACKENING_INSTNACE_SCOPE_H__ */
+#endif /* __STEKIN_INSTNACE_SCOPE_H__ */

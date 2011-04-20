@@ -1,5 +1,5 @@
-#ifndef __STACKENING_INSTANCE_SYMBOL_TABLE_H__ 
-#define __STACKENING_INSTANCE_SYMBOL_TABLE_H__
+#ifndef __STEKIN_INSTANCE_SYMBOL_TABLE_H__ 
+#define __STEKIN_INSTANCE_SYMBOL_TABLE_H__
 
 #include <string>
 #include <map>
@@ -56,4 +56,4 @@ namespace inst {
 
 }
 
-#endif /* __STACKENING_INSTANCE_SYMBOL_TABLE_H__ */
+#endif /* __STEKIN_INSTANCE_SYMBOL_TABLE_H__ */

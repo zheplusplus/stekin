@@ -1,5 +1,5 @@
-#ifndef __STACKENING_INSTANCE_VARIABLE_H__ 
-#define __STACKENING_INSTANCE_VARIABLE_H__ 
+#ifndef __STEKIN_INSTANCE_VARIABLE_H__ 
+#define __STEKIN_INSTANCE_VARIABLE_H__ 
 
 #include <vector>
 
@@ -35,4 +35,4 @@ namespace inst {
 
 }
 
-#endif /* __STACKENING_INSTANCE_VARIABLE_H__ */
+#endif /* __STEKIN_INSTANCE_VARIABLE_H__ */

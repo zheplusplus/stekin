@@ -1,5 +1,5 @@
-#ifndef __STACKENING_PARSER_LEX_INCLUDE_H__
-#define __STACKENING_PARSER_LEX_INCLUDE_H__
+#ifndef __STEKIN_PARSER_LEX_INCLUDE_H__
+#define __STEKIN_PARSER_LEX_INCLUDE_H__
 
 #include <string>
 
@@ -9,4 +9,4 @@
 #include "syn.hpp"
 #include "../report/errors.h"
 
-#endif /* __STACKENING_PARSER_LEX_INCLUDE_H__ */
+#endif /* __STEKIN_PARSER_LEX_INCLUDE_H__ */

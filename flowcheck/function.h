@@ -1,5 +1,5 @@
-#ifndef __STACKENING_FLOW_CHECK_FUNCTION_H__
-#define __STACKENING_FLOW_CHECK_FUNCTION_H__
+#ifndef __STEKIN_FLOW_CHECK_FUNCTION_H__
+#define __STEKIN_FLOW_CHECK_FUNCTION_H__
 
 #include <string>
 #include <vector>
@@ -35,4 +35,4 @@ namespace flchk {
 
 }
 
-#endif /* __STACKENING_FLOW_CHECK_FUNCTION_H__ */
+#endif /* __STEKIN_FLOW_CHECK_FUNCTION_H__ */

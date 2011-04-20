@@ -1,5 +1,5 @@
-#ifndef __STACKENING_INSTANCE_BLOCK_H__
-#define __STACKENING_INSTANCE_BLOCK_H__
+#ifndef __STEKIN_INSTANCE_BLOCK_H__
+#define __STEKIN_INSTANCE_BLOCK_H__
 
 #include <list>
 
@@ -28,4 +28,4 @@ namespace inst {
 
 }
 
-#endif /* __STACKENING_INSTANCE_BLOCK_H__ */
+#endif /* __STEKIN_INSTANCE_BLOCK_H__ */

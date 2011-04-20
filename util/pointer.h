@@ -1,5 +1,5 @@
-#ifndef __STACKENING_UTILITY_POINTER_H__
-#define __STACKENING_UTILITY_POINTER_H__
+#ifndef __STEKIN_UTILITY_POINTER_H__
+#define __STEKIN_UTILITY_POINTER_H__
 
 #include <memory>
 #include <string>
@@ -171,4 +171,4 @@ _OS& operator<<(_OS& os, util::sref<_RawType> ref)
     return ref.print(os);
 }
 
-#endif /* __STACKENING_UTILITY_POINTER_H__ */
+#endif /* __STEKIN_UTILITY_POINTER_H__ */

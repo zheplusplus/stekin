@@ -5,7 +5,7 @@
 
 using namespace inst;
 
-static built_in_primitive const BAD_TYPE_DEF("*BAD STACKENING TYPE*", 0);
+static built_in_primitive const BAD_TYPE_DEF("*BAD STEKIN TYPE*", 0);
 static built_in_primitive const VOID("void", 0);
 static built_in_primitive const BOOL("bool", 1);
 static built_in_primitive const INT("int", 4);

@@ -1,5 +1,5 @@
-#ifndef __STACKENING_PROTO_BLOCK_H__
-#define __STACKENING_PROTO_BLOCK_H__
+#ifndef __STEKIN_PROTO_BLOCK_H__
+#define __STEKIN_PROTO_BLOCK_H__
 
 #include <list>
 
@@ -27,4 +27,4 @@ namespace proto {
 
 }
 
-#endif /* __STACKENING_PROTO_BLOCK_H__ */
+#endif /* __STEKIN_PROTO_BLOCK_H__ */

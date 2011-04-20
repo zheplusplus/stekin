@@ -1,5 +1,5 @@
-#ifndef __STACKENING_PROTO_SYMBOL_TABLE_H__
-#define __STACKENING_PROTO_SYMBOL_TABLE_H__
+#ifndef __STEKIN_PROTO_SYMBOL_TABLE_H__
+#define __STEKIN_PROTO_SYMBOL_TABLE_H__
 
 #include <string>
 #include <map>
@@ -90,4 +90,4 @@ namespace proto {
 
 }
 
-#endif /* __STACKENING_PROTO_SYMBOL_TABLE_H__ */
+#endif /* __STEKIN_PROTO_SYMBOL_TABLE_H__ */

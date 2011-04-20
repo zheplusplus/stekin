@@ -1,5 +1,5 @@
-#ifndef __STACKENING_PARSER_YY_MISC_H__
-#define __STACKENING_PARSER_YY_MISC_H__
+#ifndef __STEKIN_PARSER_YY_MISC_H__
+#define __STEKIN_PARSER_YY_MISC_H__
 
 #include <string>
 
@@ -27,4 +27,4 @@ namespace parser {
 
 }
 
-#endif /* __STACKENING_PARSER_YY_MISC_H__ */
+#endif /* __STEKIN_PARSER_YY_MISC_H__ */

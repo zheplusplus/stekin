@@ -1,5 +1,5 @@
-#ifndef __STACKENING_PARSER_TEST_TEST_COMMON_H__
-#define __STACKENING_PARSER_TEST_TEST_COMMON_H__
+#ifndef __STEKIN_PARSER_TEST_TEST_COMMON_H__
+#define __STEKIN_PARSER_TEST_TEST_COMMON_H__
 
 #include "../../misc/pos-type.h"
 #include "../../test/data-node.h"
@@ -78,4 +78,4 @@ namespace test {
 
 std::ostream& operator<<(std::ostream& os, test::parser_data const& data);
 
-#endif /* __STACKENING_PARSER_TEST_TEST_COMMON_H__ */
+#endif /* __STEKIN_PARSER_TEST_TEST_COMMON_H__ */

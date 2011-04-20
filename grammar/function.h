@@ -1,5 +1,5 @@
-#ifndef __STACKENING_GRAMMAR_FUNCTION_H__
-#define __STACKENING_GRAMMAR_FUNCTION_H__
+#ifndef __STEKIN_GRAMMAR_FUNCTION_H__
+#define __STEKIN_GRAMMAR_FUNCTION_H__
 
 #include <string>
 #include <vector>
@@ -31,4 +31,4 @@ namespace grammar {
 
 }
 
-#endif /* __STACKENING_GRAMMAR_FUNCTION_H__ */
+#endif /* __STEKIN_GRAMMAR_FUNCTION_H__ */

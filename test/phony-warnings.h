@@ -1,5 +1,5 @@
-#ifndef __STACKENING_TEST_PHONY_WARNINGS_H__
-#define __STACKENING_TEST_PHONY_WARNINGS_H__
+#ifndef __STEKIN_TEST_PHONY_WARNINGS_H__
+#define __STEKIN_TEST_PHONY_WARNINGS_H__
 
 #include <vector>
 
@@ -41,4 +41,4 @@ namespace test {
 
 }
 
-#endif /* __STACKENING_TEST_PHONY_WARNINGS_H__ */
+#endif /* __STEKIN_TEST_PHONY_WARNINGS_H__ */

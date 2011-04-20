@@ -1,5 +1,5 @@
-#ifndef __STACKENING_INSTANCE_STATEMENT_NODES_H__
-#define __STACKENING_INSTANCE_STATEMENT_NODES_H__
+#ifndef __STEKIN_INSTANCE_STATEMENT_NODES_H__
+#define __STEKIN_INSTANCE_STATEMENT_NODES_H__
 
 #include "node-base.h"
 #include "../util/pointer.h"
@@ -68,4 +68,4 @@ namespace inst {
 
 }
 
-#endif /* __STACKENING_INSTANCE_STATEMENT_NODES_H__ */
+#endif /* __STEKIN_INSTANCE_STATEMENT_NODES_H__ */

@@ -1,5 +1,5 @@
-#ifndef __STACKENING_TEST_COMMON_H__
-#define __STACKENING_TEST_COMMON_H__
+#ifndef __STEKIN_TEST_COMMON_H__
+#define __STEKIN_TEST_COMMON_H__
 
 #include <ostream>
 
@@ -11,4 +11,4 @@ namespace test {
 
 }
 
-#endif /* __STACKENING_TEST_COMMON_H__ */
+#endif /* __STEKIN_TEST_COMMON_H__ */

@@ -1,5 +1,5 @@
-#ifndef __STACKENING_PROTO_FUNCTION_TEMPLATE_H__
-#define __STACKENING_PROTO_FUNCTION_TEMPLATE_H__
+#ifndef __STEKIN_PROTO_FUNCTION_TEMPLATE_H__
+#define __STEKIN_PROTO_FUNCTION_TEMPLATE_H__
 
 #include <list>
 #include <map>
@@ -65,4 +65,4 @@ namespace proto {
 
 }
 
-#endif /* __STACKENING_PROTO_FUNCTION_TEMPLATE_H__ */
+#endif /* __STEKIN_PROTO_FUNCTION_TEMPLATE_H__ */

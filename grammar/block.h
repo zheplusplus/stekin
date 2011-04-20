@@ -1,5 +1,5 @@
-#ifndef __STACKENING_GRAMMAR_BLOCK_H__
-#define __STACKENING_GRAMMAR_BLOCK_H__
+#ifndef __STEKIN_GRAMMAR_BLOCK_H__
+#define __STEKIN_GRAMMAR_BLOCK_H__
 
 #include <list>
 
@@ -30,4 +30,4 @@ namespace grammar {
 
 }
 
-#endif /* __STACKENING_GRAMMAR_BLOCK_H__ */
+#endif /* __STEKIN_GRAMMAR_BLOCK_H__ */

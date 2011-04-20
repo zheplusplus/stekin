@@ -1,5 +1,5 @@
-#ifndef __STACKENING_PARSER_SYN_INCLUDE_H__
-#define __STACKENING_PARSER_SYN_INCLUDE_H__
+#ifndef __STEKIN_PARSER_SYN_INCLUDE_H__
+#define __STEKIN_PARSER_SYN_INCLUDE_H__
 
 #include <list>
 #include <vector>
@@ -13,4 +13,4 @@
 #include "../util/pointer.h"
 #include "../report/errors.h"
 
-#endif /* __STACKENING_PARSER_SYN_INCLUDE_H__ */
+#endif /* __STEKIN_PARSER_SYN_INCLUDE_H__ */

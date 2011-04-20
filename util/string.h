@@ -1,5 +1,5 @@
-#ifndef __STACKENING_UTILITY_STRING_H__
-#define __STACKENING_UTILITY_STRING_H__
+#ifndef __STEKIN_UTILITY_STRING_H__
+#define __STEKIN_UTILITY_STRING_H__
 
 #include <string>
 #include <gmpxx.h>
@@ -17,4 +17,4 @@ namespace util {
 
 }
 
-#endif /* __STACKENING_UTILITY_STRING_H__ */
+#endif /* __STEKIN_UTILITY_STRING_H__ */

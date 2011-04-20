@@ -1,5 +1,5 @@
-#ifndef __STACKENING_INSTANCE_INSTANTIATE_MEDIATE_H__
-#define __STACKENING_INSTANCE_INSTANTIATE_MEDIATE_H__
+#ifndef __STEKIN_INSTANCE_INSTANTIATE_MEDIATE_H__
+#define __STEKIN_INSTANCE_INSTANTIATE_MEDIATE_H__
 
 #include "fwd-decl.h"
 #include "../util/pointer.h"
@@ -17,4 +17,4 @@ namespace inst {
 
 }
 
-#endif /* __STACKENING_INSTANCE_INSTANTIATE_MEDIATE_H__ */
+#endif /* __STEKIN_INSTANCE_INSTANTIATE_MEDIATE_H__ */

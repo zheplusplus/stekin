@@ -1,5 +1,5 @@
-#ifndef __STACKENING_GRAMMAR_ACCEPTOR_H__
-#define __STACKENING_GRAMMAR_ACCEPTOR_H__
+#ifndef __STEKIN_GRAMMAR_ACCEPTOR_H__
+#define __STEKIN_GRAMMAR_ACCEPTOR_H__
 
 #include "node-base.h"
 #include "function.h"
@@ -91,4 +91,4 @@ namespace grammar {
 
 }
 
-#endif /* __STACKENING_GRAMMAR_ACCEPTOR_H__ */
+#endif /* __STEKIN_GRAMMAR_ACCEPTOR_H__ */
