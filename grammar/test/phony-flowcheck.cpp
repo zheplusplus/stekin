@@ -249,7 +249,7 @@ void symbol_def_filter::def_var(misc::pos_type const& pos
                               , std::string const& name
                               , util::sptr<expr_base const> init)
 {
-    filter::def_var(pos, name + ' ' + VAR_DEF_FILTERED.type_img, std::move(init));
+    filter::def_var(pos, name + VAR_DEF_FILTERED, std::move(init));
 }
 
 void symbol_def_filter::def_func(misc::pos_type const& pos
@@ -257,7 +257,7 @@ void symbol_def_filter::def_func(misc::pos_type const& pos
                                , std::vector<std::string> const& param_names
                                , util::sptr<filter> body)
 {
-    filter::def_func(pos, name + ' ' + FUNC_DEF_FILTERED.type_img, param_names, std::move(body));
+    filter::def_func(pos, name + FUNC_DEF_FILTERED, param_names, std::move(body));
 }
 
 util::sptr<proto::stmt_base const> arithmetics::compile(util::sref<proto::scope>) const 

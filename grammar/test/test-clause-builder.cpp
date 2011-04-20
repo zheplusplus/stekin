@@ -222,7 +222,7 @@ TEST_F(ClauseBuilderTest, ClauseBuilder)
         (item_pos0, BOOLEAN, "true")
         (CONSEQUENCE)
             (BLOCK_BEGIN)
-            (item_pos1, VAR_DEF, std::string("wind_force") + ' ' + VAR_DEF_FILTERED.type_img)
+            (item_pos1, VAR_DEF, "wind_force" + VAR_DEF_FILTERED)
                 (item_pos1, INTEGER, "13571")
 
             (item_pos2, BRANCH_ALTER_ONLY)

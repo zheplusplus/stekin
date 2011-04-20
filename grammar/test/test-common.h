@@ -54,6 +54,9 @@ namespace test {
         data_tree& operator()(misc::pos_type const& pos, node_type const& type);
     };
 
+    extern std::string const VAR_DEF_FILTERED;
+    extern std::string const FUNC_DEF_FILTERED;
+
     extern node_type const BOOLEAN;
     extern node_type const INTEGER;
     extern node_type const FLOATING;
@@ -66,13 +69,11 @@ namespace test {
     extern node_type const FUNC_REFERENCE;
 
     extern node_type const VAR_DEF;
-    extern node_type const VAR_DEF_FILTERED;
     extern node_type const ARITHMETICS;
     extern node_type const RETURN;
     extern node_type const RETURN_NOTHING;
 
     extern node_type const FUNC_DEF;
-    extern node_type const FUNC_DEF_FILTERED;
     extern node_type const PARAMETER;
 
     extern node_type const BRANCH;
