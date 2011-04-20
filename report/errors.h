@@ -30,14 +30,11 @@ namespace error {
                           , std::list<misc::pos_type> const& ref_positions
                           , std::string const& name);
 
-    void func_already_in_local(misc::pos_type const& prev_def_pos
-                             , misc::pos_type const& this_def_pos
-                             , std::string const& name
-                             , int param_count);
-    void func_shadow_external(misc::pos_type const& prev_def_pos
-                            , misc::pos_type const& this_def_pos
-                            , std::string const& name
-                            , int param_count);
+    void func_reference_ambiguous(misc::pos_type const& pos, std::string const& name);
+    void func_already_def(misc::pos_type const& prev_def_pos
+                        , misc::pos_type const& this_def_pos
+                        , std::string const& name
+                        , int param_count);
     void func_not_def(misc::pos_type const& ref_pos, std::string const& name, int param_count);
 
     void var_not_def(misc::pos_type const& ref_pos, std::string const& name);

@@ -108,28 +108,23 @@ void error::var_ref_before_def(misc::pos_type const& def_pos
                   });
 }
 
-void error::func_already_in_local(misc::pos_type const& prev_def_pos
-                                , misc::pos_type const& this_def_pos
-                                , std::string const& name
-                                , int param_count)
+void error::func_reference_ambiguous(misc::pos_type const& pos, std::string const& name)
 {
     _has_error = true;
-    std::cerr << this_def_pos.str() << std::endl;
-    std::cerr << "    function `" << name << "' with " << param_count << " parameter(s) already defined."
-              << std::endl;
-    std::cerr << "    see previous definition in local space at Line " << prev_def_pos.str() << std::endl;
+    std::cerr << pos.str() << std::endl;
+    std::cerr << "    reference function of  `" << name << "' is ambiguous." << std::endl;
 }
 
-void error::func_shadow_external(misc::pos_type const& prev_def_pos
-                               , misc::pos_type const& this_def_pos
-                               , std::string const& name
-                               , int param_count)
+void error::func_already_def(misc::pos_type const& prev_def_pos
+                           , misc::pos_type const& this_def_pos
+                           , std::string const& name
+                           , int param_count)
 {
     _has_error = true;
     std::cerr << this_def_pos.str() << std::endl;
     std::cerr << "    function `" << name << "' with " << param_count << " parameter(s) already defined."
               << std::endl;
-    std::cerr << "    see previous definition in external space at " << prev_def_pos.str() << std::endl;
+    std::cerr << "    see previous definition at " << prev_def_pos.str() << std::endl;
 }
 
 void error::func_not_def(misc::pos_type const& ref_pos, std::string const& name, int param_count)

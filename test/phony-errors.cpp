@@ -18,8 +18,7 @@ static std::list<func_forbidden_rec> forbidden_func_recs;
 static std::list<forbid_def_rec> forbid_var_def_recs;
 static std::list<var_redef_rec> local_redefs;
 static std::list<invalid_ref_rec> invalid_refs;
-static std::list<func_redef_rec> local_func_redefs;
-static std::list<func_redef_rec> func_shadow_external_recs;
+static std::list<func_redef_rec> func_redefs;
 static std::list<func_nondef_rec> func_nondefs;
 
 static std::list<ret_type_conflict_rec> ret_type_conflict_recs;
@@ -50,8 +49,7 @@ void test::clear_err()
     forbid_var_def_recs.clear();
     local_redefs.clear();
     invalid_refs.clear();
-    local_func_redefs.clear();
-    func_shadow_external_recs.clear();
+    func_redefs.clear();
     func_nondefs.clear();
 
     var_nondefs.clear();
@@ -144,22 +142,13 @@ void error::var_ref_before_def(misc::pos_type const& def_pos
     invalid_refs.push_back(invalid_ref_rec(ref_positions.begin(), ref_positions.end(), def_pos, name));
 }
 
-void error::func_already_in_local(misc::pos_type const& prev_def_pos
-                                , misc::pos_type const& this_def_pos
-                                , std::string const& name
-                                , int param_count)
+void error::func_already_def(misc::pos_type const& prev_def_pos
+                           , misc::pos_type const& this_def_pos
+                           , std::string const& name
+                           , int param_count)
 {
     has_err = true;
-    local_func_redefs.push_back(func_redef_rec(prev_def_pos, this_def_pos, name, param_count));
-}
-
-void error::func_shadow_external(misc::pos_type const& prev_def_pos
-                               , misc::pos_type const& this_def_pos
-                               , std::string const& name
-                               , int param_count)
-{
-    has_err = true;
-    func_shadow_external_recs.push_back(func_redef_rec(prev_def_pos, this_def_pos, name, param_count));
+    func_redefs.push_back(func_redef_rec(prev_def_pos, this_def_pos, name, param_count));
 }
 
 void error::func_not_def(misc::pos_type const& call_pos, std::string const& name, int param_count)
@@ -270,14 +259,9 @@ std::vector<invalid_ref_rec> test::get_invalid_refs()
     return std::vector<invalid_ref_rec>(invalid_refs.begin(), invalid_refs.end());
 }
 
-std::vector<func_redef_rec> test::get_local_func_redefs()
+std::vector<func_redef_rec> test::get_func_redefs()
 {
-    return std::vector<func_redef_rec>(local_func_redefs.begin(), local_func_redefs.end());
-}
-
-std::vector<func_redef_rec> test::get_func_shadow_external()
-{
-    return std::vector<func_redef_rec>(func_shadow_external_recs.begin(), func_shadow_external_recs.end());
+    return std::vector<func_redef_rec>(func_redefs.begin(), func_redefs.end());
 }
 
 std::vector<func_nondef_rec> test::get_func_nondefs()

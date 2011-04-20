@@ -11,7 +11,19 @@
 
 using namespace proto;
 
-util::sref<function> overloads::query_or_null_if_nonexist(int param_count) const
+static std::vector<util::sref<function>> append_funcs(std::vector<util::sref<function>> a
+                                                    , std::vector<util::sref<function>> b)
+{
+    std::for_each(b.begin()
+                , b.end()
+                , [&](util::sref<function> f)
+                  {
+                      a.push_back(f);
+                  });
+    return std::move(a);
+}
+
+util::sref<function> overloads::overload::query_or_null_if_nonexist(int param_count) const
 {
     auto func = _funcs.find(param_count);
     if (_funcs.end() == func) {
@@ -20,32 +32,94 @@ util::sref<function> overloads::query_or_null_if_nonexist(int param_count) const
     return func->second;
 }
 
+void overloads::overload::declare(util::sref<function> func)
+{
+    _funcs.insert(std::make_pair(func->param_names.size(), func));
+}
+
+std::vector<util::sref<function>> overloads::overload::all() const
+{
+    std::vector<util::sref<function>> result_funcs;
+    std::for_each(_funcs.begin()
+                , _funcs.end()
+                , [&](std::pair<int, util::sref<function>> const& func)
+                  {
+                      result_funcs.push_back(func.second);
+                  });
+    return result_funcs;
+}
+
+std::vector<util::sref<function>> overloads::all_funcs_of_name(std::string const& name) const
+{
+    std::vector<util::sref<function>> external_funcs_of_name(
+                                bool(_external_overloads_or_null_on_global)
+                              ? (_external_overloads_or_null_on_global->all_funcs_of_name(name))
+                              : (std::vector<util::sref<function>>()));
+    util::sref<overload const> o = _overload_by_name_or_null_if_nonexist(name);
+    if (bool(o)) {
+        return append_funcs(std::move(external_funcs_of_name), o->all());
+    }
+    return append_funcs(std::move(external_funcs_of_name), std::vector<util::sref<function>>());
+}
+
+util::sref<function> overloads::query_or_null_if_nonexist(std::string const& name, int param_count) const
+{
+    util::sref<overload const> o = _overload_by_name_or_null_if_nonexist(name);
+    if (bool(o)) {
+        util::sref<function> f = o->query_or_null_if_nonexist(param_count);
+        if (bool(f)) {
+            return f;
+        }
+    }
+    if (bool(_external_overloads_or_null_on_global)) {
+        return _external_overloads_or_null_on_global->query_or_null_if_nonexist(name, param_count);
+    }
+    return util::sref<function>(NULL);
+}
+
 void overloads::declare(util::sref<function> func)
 {
-    auto insert_result = _funcs.insert(std::make_pair(func->param_names.size(), func));
-    if (!insert_result.second) {
-        error::func_already_in_local(insert_result.first->second->pos
-                                   , func->pos
-                                   , func->name
-                                   , func->param_names.size());
+    _overload_by_name(func->name)->declare(func);
+}
+
+util::sref<overloads::overload> overloads::_overload_by_name(std::string const& name)
+{
+    auto i = std::find_if(_overloads.begin()
+                        , _overloads.end()
+                        , [&](overload const& o)
+                          {
+                              return name == o.name;
+                          });
+    if (i != _overloads.end()) {
+        return util::mkref(*i);
     }
+    _overloads.push_back(overload(name));
+    return util::mkref(_overloads.back());
 }
 
-int overloads::count() const
+util::sref<overloads::overload const>
+        overloads::_overload_by_name_or_null_if_nonexist(std::string const& name) const
 {
-    return int(_funcs.size());
-}
-
-util::sref<function> overloads::first() const
-{
-    return _funcs.begin()->second;
+    auto i = std::find_if(_overloads.begin()
+                        , _overloads.end()
+                        , [&](overload const& o)
+                          {
+                              return name == o.name;
+                          });
+    if (i != _overloads.end()) {
+        return util::mkref(*i);
+    }
+    return util::sref<overload const>(NULL);
 }
 
 util::sptr<expr_base const> symbol_table::ref_var(misc::pos_type const& pos, std::string const& name)
 {
-    util::sref<overloads> ov = _find_overloads(name);
-    if (1 == ov->count()) {
-        return std::move(util::mkptr(new func_reference(pos, ov->first())));
+    std::vector<util::sref<function>> all_funcs = _overloads.all_funcs_of_name(name);
+    if (!all_funcs.empty()) {
+        if (all_funcs.size() > 1) {
+            error::func_reference_ambiguous(pos, name);
+        }
+        return std::move(util::mkptr(new func_reference(pos, all_funcs[0])));
     }
 
     if (_var_defs.end() == _var_defs.find(name)) {
@@ -71,14 +145,14 @@ util::sref<function> symbol_table::def_func(misc::pos_type const& pos
                                           , std::vector<std::string> const& params
                                           , bool hint_void_return)
 {
-    util::sref<function> func_in_external = _query_func_in_external_or_null_if_nonexist(name, params.size());
-    if (bool(func_in_external)) {
-        error::func_shadow_external(func_in_external->pos, pos, name, params.size());
-        return func_in_external;
+    util::sref<function> func = _overloads.query_or_null_if_nonexist(name, params.size());
+    if (bool(func)) {
+        error::func_already_def(func->pos, pos, name, params.size());
+        return func;
     }
 
     _func_entities.push_back(std::move(function(pos, name, params, util::mkref(*this), hint_void_return)));
-    _find_overloads(name)->declare(util::mkref(_func_entities.back()));
+    _overloads.declare(util::mkref(_func_entities.back()));
     return util::mkref(_func_entities.back());
 }
 
@@ -86,7 +160,7 @@ util::sptr<expr_base const> symbol_table::query_call(misc::pos_type const& pos
                                                    , std::string const& name
                                                    , std::vector<util::sptr<expr_base const>> args) const
 {
-    util::sref<function> func = _query_func_or_null_if_nonexist(name, args.size());
+    util::sref<function> func = _overloads.query_or_null_if_nonexist(name, args.size());
     if (bool(func)) {
         return std::move(util::mkptr(new call(pos, func, std::move(args))));
     }
@@ -102,7 +176,7 @@ util::sref<function> symbol_table::query_func(misc::pos_type const& pos
                                             , std::string const& name
                                             , int param_count) const
 {
-    util::sref<function> func = _query_func_or_null_if_nonexist(name, param_count);
+    util::sref<function> func = _overloads.query_or_null_if_nonexist(name, param_count);
     if (bool(func)) {
         return func;
     }
@@ -122,47 +196,6 @@ std::map<std::string, inst::variable const>
                       result.insert(std::make_pair(ref.first, ext_scope->query_var(pos, ref.first)));
                   });
     return result;
-}
-
-util::sref<overloads> symbol_table::_find_overloads(std::string const& name)
-{
-    auto ov = std::find_if(_overloads.begin()
-                         , _overloads.end()
-                         , [&](overloads const& o)
-                           {
-                               return o.name == name;
-                           });
-    if (ov == _overloads.end()) {
-        _overloads.push_back(overloads(name));
-        return util::mkref(_overloads.back());
-    }
-    return util::mkref(*ov);
-}
-
-util::sref<function> symbol_table::_query_func_or_null_if_nonexist(std::string const& name
-                                                                 , int param_count) const
-{
-    auto ov = std::find_if(_overloads.begin()
-                         , _overloads.end()
-                         , [&](overloads const& o)
-                           {
-                               return o.name == name;
-                           });
-    if (ov != _overloads.end()) {
-        util::sref<function> func = ov->query_or_null_if_nonexist(param_count);
-        if (bool(func)) {
-            return func;
-        }
-    }
-    return _query_func_in_external_or_null_if_nonexist(name, param_count);
-}
-
-util::sref<function> symbol_table::_query_func_in_external_or_null_if_nonexist(std::string const& name
-                                                                             , int param_count) const
-{
-    return bool(_external_or_null_on_global)
-              ? _external_or_null_on_global->_query_func_or_null_if_nonexist(name, param_count)
-              : util::sref<function>(0);
 }
 
 static symbol_table fake_symbols;
