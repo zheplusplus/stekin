@@ -23,7 +23,7 @@ What is needed and how to build it?
 
 ### 编译源代码需要
 
-* GCC 4.5.x (C++ 0x Lambda, `std::unique_ptr`, Move Semantic 支持) (注: 使用 GCC 4.7.0 experimental 可能导致 g++ 崩溃)
+* GCC 4.5.x (C++ 2011 标准中的 Lambda, `std::unique_ptr`, Move Semantic 支持) (注: 使用 GCC 4.7.0 experimental 可能导致 g++ 崩溃)
 * gawk 3.1.x (AWK)
 * flex 2.5.x (词法分析)
 * bison 2.4.x (语法分析)
@@ -85,11 +85,9 @@ samples 目录下有很多样例可以参考. 其中 samples/errors 目录下的
 
 The End Of Stackening
 ---------------------
-最近一次合并到主干的代码包括下列特性
+最后一次合并到主干的代码包括下列特性
 
-简单的**闭包**函数被引入了. 由于 Stackening 支持多个函数同名但参数个数不相同, 因此引用函数必须在函数名之后加上 `@参数个数`. (闭包的实现非常暴力) 你可以在 samples/pair.stkn, samples/vector-multi.stkn 中看到简单的闭包使用样例.
-
-编译器最基本的**字面常量运算折叠**被引入 `flowcheck` 模块, 它依赖 GNU 多精度 (GNU Multiple Precision, GMP) 库.
+简单的**闭包**函数被引入了. 由于 Stackening 支持多个函数重载同名但参数个数不相同, 如果闭包引用的函数有重载, 那么引用函数必须在函数名之后加上 `@参数个数`. (闭包的实现非常暴力) 你可以在 samples/pair.stkn, samples/vector-multi.stkn 中看到简单的闭包使用样例.
 
 这次更新将是 Stackening 的终结, 下一个版本项目名字将改变.
 
@@ -97,17 +95,13 @@ What will be added / changed next, except the replace of the ball-ache name?
 ----------------------------------------------------------------------------
 主要
 
-设计: 修正现在 `instance` 和 `proto` 就 `proto::function` 而互相依赖的问题; 封装 GMP 中的 `mpz_class`, `mpf_class`
-
-功能: 引用函数时, 如果函数不存在重载, 那么可以直接使用函数名引用函数, 无须加上 `@参数个数`;
+设计: 修正现在 `instance` 和 `proto` 就 `proto::function` 而互相依赖的问题;
 
 测试: 完善测试案例;
 
 可选
 
 设计: 符号表作为单独的库模块实现;
-
-配置: `util`, `misc` 输出为 lib 进行链接.
 
 Contributing
 ------------
