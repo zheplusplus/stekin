@@ -40,9 +40,7 @@ std::string util::str(bool b)
 
 std::string util::str(void const* p)
 {
-    std::stringstream ss;
-    ss << p;
-    return ss.str();
+    return str_from_something(p);
 }
 
 std::string util::str(mpz_class const& z)
@@ -52,7 +50,5 @@ std::string util::str(mpz_class const& z)
 
 std::string util::str(mpf_class const& f)
 {
-    std::stringstream ss;
-    ss << f;
-    return ss.str();
+    return str_from_something(f);
 }
