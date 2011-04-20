@@ -59,6 +59,7 @@ node_type const test::REFERENCE("reference");
 node_type const test::BINARY_OP("binary operation");
 node_type const test::PRE_UNARY_OP("prefix unary operation");
 node_type const test::CALL("call");
+node_type const test::FUNC_REFERENCE("func reference");
 node_type const test::CONJUNCTION("conjunction");
 node_type const test::DISJUNCTION("disjunction");
 node_type const test::NEGATION("negation");

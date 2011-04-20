@@ -18,6 +18,7 @@ static std::list<func_forbidden_rec> forbidden_func_recs;
 static std::list<forbid_def_rec> forbid_var_def_recs;
 static std::list<var_redef_rec> local_redefs;
 static std::list<invalid_ref_rec> invalid_refs;
+static std::list<func_ref_ambiguous_rec> ambiguous_refs;
 static std::list<func_redef_rec> func_redefs;
 static std::list<func_nondef_rec> func_nondefs;
 
@@ -142,6 +143,12 @@ void error::var_ref_before_def(misc::pos_type const& def_pos
     invalid_refs.push_back(invalid_ref_rec(ref_positions.begin(), ref_positions.end(), def_pos, name));
 }
 
+void error::func_reference_ambiguous(misc::pos_type const& pos, std::string const& name)
+{
+    has_err =true;
+    ambiguous_refs.push_back(func_ref_ambiguous_rec(pos, name));
+}
+
 void error::func_already_def(misc::pos_type const& prev_def_pos
                            , misc::pos_type const& this_def_pos
                            , std::string const& name
@@ -257,6 +264,11 @@ std::vector<var_redef_rec> test::get_local_redefs()
 std::vector<invalid_ref_rec> test::get_invalid_refs()
 {
     return std::vector<invalid_ref_rec>(invalid_refs.begin(), invalid_refs.end());
+}
+
+std::vector<func_ref_ambiguous_rec> test::get_ambiguous_refs()
+{
+    return std::vector<func_ref_ambiguous_rec>(ambiguous_refs.begin(), ambiguous_refs.end());
 }
 
 std::vector<func_redef_rec> test::get_func_redefs()

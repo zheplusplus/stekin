@@ -295,6 +295,7 @@ util::sref<type const> call::typeof() const
 
 util::sref<type const> func_reference::typeof() const
 {
+    data_tree::actual_one()(FUNC_REFERENCE);
     return util::mkref(PROTO_TEST_TYPE);
 }
 

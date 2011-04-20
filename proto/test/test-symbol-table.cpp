@@ -271,12 +271,8 @@ TEST_F(SymbolTableTest, RedefFunc)
     param_names = { "a", "b" };
     symbols->def_func(err_pos0, "f0", param_names, true);
     ASSERT_TRUE(error::has_error());
-    std::vector<func_redef_rec> local_redefs = get_local_func_redefs();
-    ASSERT_EQ(1, local_redefs.size());
-    ASSERT_EQ(pos, local_redefs[0].prev_def_pos);
-    ASSERT_EQ(err_pos0, local_redefs[0].this_def_pos);
-    ASSERT_EQ("f0", local_redefs[0].name);
-    ASSERT_EQ(2, local_redefs[0].param_count);
+    std::vector<func_redef_rec> redefs = get_func_redefs();
+    ASSERT_EQ(1, redefs.size());
 
     proto::symbol_table inner_symbols(ref_sym());
     param_names = { "a", "b" };
@@ -285,13 +281,16 @@ TEST_F(SymbolTableTest, RedefFunc)
     param_names = { "a", "b", "c" };
     inner_symbols.def_func(err_pos1, "f1", param_names, true);
 
-    std::vector<func_redef_rec> extern_shadow_defs = get_func_shadow_external();
-    ASSERT_EQ(1, extern_shadow_defs.size());
-    ASSERT_EQ(1, local_redefs.size());
-    ASSERT_EQ(pos, extern_shadow_defs[0].prev_def_pos);
-    ASSERT_EQ(err_pos1, extern_shadow_defs[0].this_def_pos);
-    ASSERT_EQ("f1", extern_shadow_defs[0].name);
-    ASSERT_EQ(3, extern_shadow_defs[0].param_count);
+    redefs = get_func_redefs();
+    ASSERT_EQ(2, redefs.size());
+    ASSERT_EQ(pos, redefs[0].prev_def_pos);
+    ASSERT_EQ(err_pos0, redefs[0].this_def_pos);
+    ASSERT_EQ("f0", redefs[0].name);
+    ASSERT_EQ(2, redefs[0].param_count);
+    ASSERT_EQ(pos, redefs[1].prev_def_pos);
+    ASSERT_EQ(err_pos1, redefs[1].this_def_pos);
+    ASSERT_EQ("f1", redefs[1].name);
+    ASSERT_EQ(3, redefs[1].param_count);
 }
 
 TEST_F(SymbolTableTest, NondefFunc)
@@ -326,4 +325,55 @@ TEST_F(SymbolTableTest, NondefFunc)
     ASSERT_EQ(err_pos1, func_nondefs[1].call_pos);
     ASSERT_EQ("f1", func_nondefs[1].name);
     ASSERT_EQ(2, func_nondefs[1].param_count);
+}
+
+TEST_F(SymbolTableTest, References)
+{
+    misc::pos_type pos(11);
+    util::sptr<inst::scope> inst_scope(new phony_func);
+
+    symbols->def_var(pos, "otonashi");
+    symbols->def_var(pos, "tachibana");
+    ASSERT_FALSE(error::has_error());
+    std::vector<std::string> param_names;
+    param_names = { "yuzuru", "kanade" };
+    symbols->def_func(pos, "sss", param_names, true);
+
+    symbols->ref_var(pos, "otonashi")->inst(*inst_scope)->typeof();
+    symbols->ref_var(pos, "sss")->inst(*inst_scope)->typeof();
+    symbols->ref_var(pos, "tachibana")->inst(*inst_scope)->typeof();
+    ASSERT_FALSE(error::has_error());
+
+    data_tree::expect_one()
+        (pos, QUERY_VAR, "otonashi")
+        (REFERENCE)
+        (FUNC_REFERENCE)
+        (pos, QUERY_VAR, "tachibana")
+        (REFERENCE)
+    ;
+}
+
+TEST_F(SymbolTableTest, FuncRefAmbiguous)
+{
+    misc::pos_type pos(12);
+    misc::pos_type err_pos0(1200);
+    misc::pos_type err_pos1(1201);
+    std::vector<std::string> param_names;
+    param_names = { "nakamura" };
+    symbols->def_func(pos, "guild", param_names, true);
+    symbols->def_func(pos, "guild", std::vector<std::string>(), true);
+    symbols->def_func(pos, "girl_dead_monster", std::vector<std::string>(), true);
+    proto::symbol_table inner_symbols(ref_sym());
+    param_names = { "yui", "iwasawa", "sekine" };
+    symbols->def_func(pos, "girl_dead_monster", param_names, true);
+
+    symbols->ref_var(err_pos0, "guild");
+    ASSERT_TRUE(error::has_error());
+    symbols->ref_var(err_pos1, "girl_dead_monster");
+    ASSERT_TRUE(error::has_error());
+    ASSERT_EQ(2, get_ambiguous_refs().size());
+    ASSERT_EQ("guild", get_ambiguous_refs()[0].name);
+    ASSERT_EQ(err_pos0, get_ambiguous_refs()[0].ref_pos);
+    ASSERT_EQ("girl_dead_monster", get_ambiguous_refs()[1].name);
+    ASSERT_EQ(err_pos1, get_ambiguous_refs()[1].ref_pos);
 }

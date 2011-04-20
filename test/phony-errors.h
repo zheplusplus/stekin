@@ -107,6 +107,16 @@ namespace test {
         {}
     };
 
+    struct func_ref_ambiguous_rec {
+        misc::pos_type const ref_pos;
+        std::string const name;
+
+        func_ref_ambiguous_rec(misc::pos_type const& rpos, std::string const& n)
+            : ref_pos(rpos)
+            , name(n)
+        {}
+    };
+
     struct func_redef_rec {
         misc::pos_type const prev_def_pos;
         misc::pos_type const this_def_pos;
@@ -240,6 +250,7 @@ namespace test {
     std::vector<forbid_def_rec> get_forbid_var_defs();
     std::vector<var_redef_rec> get_local_redefs();
     std::vector<invalid_ref_rec> get_invalid_refs();
+    std::vector<func_ref_ambiguous_rec> get_ambiguous_refs();
     std::vector<func_redef_rec> get_func_redefs();
     std::vector<func_nondef_rec> get_func_nondefs();
     std::vector<var_nondef_rec> get_nondefs();

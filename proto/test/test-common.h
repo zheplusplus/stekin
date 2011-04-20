@@ -80,6 +80,7 @@ namespace test {
     extern node_type const BINARY_OP;
     extern node_type const PRE_UNARY_OP;
     extern node_type const CALL;
+    extern node_type const FUNC_REFERENCE;
     extern node_type const CONJUNCTION;
     extern node_type const DISJUNCTION;
     extern node_type const NEGATION;
