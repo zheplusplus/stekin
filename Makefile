@@ -19,7 +19,7 @@ all:main.d head-writer.d lib
 	        instance/*.o \
 	        output/*.o \
 	        $(LIBS) \
-	     -o stk-core.out
+	     -o stkn-core.out
 	$(LINK) head-writer.o -o head-writer.out $(LIBS)
 
 lib:
@@ -34,7 +34,7 @@ runtest:all test-lib
 	make -f flowcheck/test/Makefile
 	make -f proto/test/Makefile
 	make -f instance/test/Makefile
-	./sample-test
+	./sample-test.sh
 
 test-lib:
 	mkdir -p libs
