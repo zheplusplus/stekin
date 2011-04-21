@@ -165,34 +165,34 @@ TEST_F(QueryOperationTest, BadOperation)
     result = inst::operation::query_binary(
             misc::position(10), "%", inst::type::BIT_FLOAT, inst::type::BIT_FLOAT);
     ASSERT_TRUE(error::has_error());
-    ASSERT_EQ(1, get_na_binary_ops().size());
-    ASSERT_EQ(misc::position(10), get_na_binary_ops()[0].pos);
-    ASSERT_EQ("%", get_na_binary_ops()[0].op_img);
-    ASSERT_EQ(inst::type::BIT_FLOAT->name(), get_na_binary_ops()[0].rhst_name);
+    ASSERT_EQ(1, getNABinaryOps().size());
+    ASSERT_EQ(misc::position(10), getNABinaryOps()[0].pos);
+    ASSERT_EQ("%", getNABinaryOps()[0].op_img);
+    ASSERT_EQ(inst::type::BIT_FLOAT->name(), getNABinaryOps()[0].rhst_name);
     clear_err();
 
     result = inst::operation::query_binary(misc::position(11), "<", inst::type::BIT_INT, inst::type::BIT_FLOAT);
     ASSERT_TRUE(error::has_error());
-    ASSERT_EQ(1, get_na_binary_ops().size());
-    ASSERT_EQ(misc::position(11), get_na_binary_ops()[0].pos);
-    ASSERT_EQ("<", get_na_binary_ops()[0].op_img);
-    ASSERT_EQ(inst::type::BIT_INT->name(), get_na_binary_ops()[0].lhst_name);
-    ASSERT_EQ(inst::type::BIT_FLOAT->name(), get_na_binary_ops()[0].rhst_name);
+    ASSERT_EQ(1, getNABinaryOps().size());
+    ASSERT_EQ(misc::position(11), getNABinaryOps()[0].pos);
+    ASSERT_EQ("<", getNABinaryOps()[0].op_img);
+    ASSERT_EQ(inst::type::BIT_INT->name(), getNABinaryOps()[0].lhst_name);
+    ASSERT_EQ(inst::type::BIT_FLOAT->name(), getNABinaryOps()[0].rhst_name);
     clear_err();
 
     result = inst::operation::query_binary(misc::position(12), "+", inst::type::BIT_INT, inst::type::BIT_BOOL);
     ASSERT_TRUE(error::has_error());
-    ASSERT_EQ(1, get_na_binary_ops().size());
-    ASSERT_EQ(misc::position(12), get_na_binary_ops()[0].pos);
-    ASSERT_EQ("+", get_na_binary_ops()[0].op_img);
-    ASSERT_EQ(inst::type::BIT_INT->name(), get_na_binary_ops()[0].lhst_name);
-    ASSERT_EQ(inst::type::BIT_BOOL->name(), get_na_binary_ops()[0].rhst_name);
+    ASSERT_EQ(1, getNABinaryOps().size());
+    ASSERT_EQ(misc::position(12), getNABinaryOps()[0].pos);
+    ASSERT_EQ("+", getNABinaryOps()[0].op_img);
+    ASSERT_EQ(inst::type::BIT_INT->name(), getNABinaryOps()[0].lhst_name);
+    ASSERT_EQ(inst::type::BIT_BOOL->name(), getNABinaryOps()[0].rhst_name);
     clear_err();
 
     result = inst::operation::query_pre_unary(misc::position(13), "-", inst::type::BIT_VOID);
     ASSERT_TRUE(error::has_error());
-    ASSERT_EQ(1, get_na_pre_unary_ops().size());
-    ASSERT_EQ(misc::position(13), get_na_pre_unary_ops()[0].pos);
-    ASSERT_EQ("-", get_na_pre_unary_ops()[0].op_img);
-    ASSERT_EQ(inst::type::BIT_VOID->name(), get_na_pre_unary_ops()[0].rhst_name);
+    ASSERT_EQ(1, getNAPreUnaryOps().size());
+    ASSERT_EQ(misc::position(13), getNAPreUnaryOps()[0].pos);
+    ASSERT_EQ("-", getNAPreUnaryOps()[0].op_img);
+    ASSERT_EQ(inst::type::BIT_VOID->name(), getNAPreUnaryOps()[0].rhst_name);
 }

@@ -26,7 +26,7 @@ namespace proto {
         util::sptr<Expression const> make_call(misc::position const& pos
                                             , std::string const& name
                                             , std::vector<util::sptr<Expression const>> args) const;
-        util::sptr<Expression const> make_func_reference(misc::position const& pos
+        util::sptr<Expression const> make_FuncReference(misc::position const& pos
                                                       , std::string const& name
                                                       , int param_count) const;
 

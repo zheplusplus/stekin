@@ -146,12 +146,12 @@ void output::stk_main_func(util::id func_addr)
     std::cout << "    " << form_func_name(func_addr) << "()._stk_perform();" << std::endl;
 }
 
-void output::construct_func_reference(std::string const& type_exported_name)
+void output::construct_FuncReference(std::string const& type_exported_name)
 {
     std::cout << type_exported_name << "()";
 }
 
-void output::func_reference_next_variable(int offset, stack_var_record const& init)
+void output::FuncReference_next_variable(int offset, stack_var_record const& init)
 {
     std::cout << (".push(" + util::str(offset) + ", ");
     ref_level(init.offset, init.level, init.type);

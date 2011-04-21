@@ -108,7 +108,7 @@ void error::var_ref_before_def(misc::position const& def_pos
                   });
 }
 
-void error::func_reference_ambiguous(misc::position const& pos, std::string const& name)
+void error::FuncReference_ambiguous(misc::position const& pos, std::string const& name)
 {
     _has_error = true;
     std::cerr << pos.str() << std::endl;
@@ -142,7 +142,7 @@ void error::var_not_def(misc::position const& ref_pos, std::string const& name)
     std::cerr << "    variable `" << name << "' not defined in context." << std::endl;
 }
 
-void error::binary_op_not_avai(misc::position const& pos
+void error::BinaryOp_not_avai(misc::position const& pos
                              , std::string const& op_img
                              , std::string const& lhst_name
                              , std::string const& rhst_name)
@@ -153,7 +153,7 @@ void error::binary_op_not_avai(misc::position const& pos
               << " for type `" << lhst_name << "' and `" << rhst_name << "'." << std::endl;
 }
 
-void error::pre_unary_op_not_avai(misc::position const& pos
+void error::PreUnaryOp_not_avai(misc::position const& pos
                                 , std::string const& op_img
                                 , std::string const& rhst_name)
 {

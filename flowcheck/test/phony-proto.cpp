@@ -154,13 +154,13 @@ util::sptr<inst::Expression const> call::inst(util::sref<inst::scope>) const
     return std::move(nul_inst_expr());
 }
 
-util::sptr<inst::Expression const> func_reference::inst(util::sref<inst::scope>) const
+util::sptr<inst::Expression const> FuncReference::inst(util::sref<inst::scope>) const
 {
     data_tree::actual_one()(pos, FUNC_REFERENCE, func->name, func->param_names.size(), false);
     return std::move(nul_inst_expr());
 }
 
-util::sptr<inst::Expression const> binary_op::inst(util::sref<inst::scope>) const
+util::sptr<inst::Expression const> BinaryOp::inst(util::sref<inst::scope>) const
 {
     data_tree::actual_one()(pos, BINARY_OP, op);
     lhs->inst(nul_inst_scope);
@@ -168,14 +168,14 @@ util::sptr<inst::Expression const> binary_op::inst(util::sref<inst::scope>) cons
     return std::move(nul_inst_expr());
 }
 
-util::sptr<inst::Expression const> pre_unary_op::inst(util::sref<inst::scope>) const
+util::sptr<inst::Expression const> PreUnaryOp::inst(util::sref<inst::scope>) const
 {
     data_tree::actual_one()(pos, PRE_UNARY_OP, op);
     rhs->inst(nul_inst_scope);
     return std::move(nul_inst_expr());
 }
 
-util::sptr<inst::Expression const> conjunction::inst(util::sref<inst::scope>) const
+util::sptr<inst::Expression const> Conjunction::inst(util::sref<inst::scope>) const
 {
     data_tree::actual_one()(pos, BINARY_OP, "&&");
     lhs->inst(nul_inst_scope);
@@ -183,7 +183,7 @@ util::sptr<inst::Expression const> conjunction::inst(util::sref<inst::scope>) co
     return std::move(nul_inst_expr());
 }
 
-util::sptr<inst::Expression const> disjunction::inst(util::sref<inst::scope>) const
+util::sptr<inst::Expression const> Disjunction::inst(util::sref<inst::scope>) const
 {
     data_tree::actual_one()(pos, BINARY_OP, "||");
     lhs->inst(nul_inst_scope);
@@ -191,7 +191,7 @@ util::sptr<inst::Expression const> disjunction::inst(util::sref<inst::scope>) co
     return std::move(nul_inst_expr());
 }
 
-util::sptr<inst::Expression const> negation::inst(util::sref<inst::scope>) const
+util::sptr<inst::Expression const> Negation::inst(util::sref<inst::scope>) const
 {
     data_tree::actual_one()(pos, PRE_UNARY_OP, "!");
     rhs->inst(nul_inst_scope);
@@ -218,33 +218,33 @@ util::sptr<Expression const> scope::make_binary(misc::position const& pos
                                              , std::string const& op
                                              , util::sptr<Expression const> rhs) const
 {
-    return std::move(util::mkptr(new binary_op(pos, std::move(lhs), op, std::move(rhs))));
+    return std::move(util::mkptr(new BinaryOp(pos, std::move(lhs), op, std::move(rhs))));
 }
 
 util::sptr<Expression const> scope::make_pre_unary(misc::position const& pos
                                                 , std::string const& op
                                                 , util::sptr<Expression const> rhs) const
 {
-    return std::move(util::mkptr(new pre_unary_op(pos, op, std::move(rhs))));
+    return std::move(util::mkptr(new PreUnaryOp(pos, op, std::move(rhs))));
 }
 
 util::sptr<Expression const> scope::make_conj(misc::position const& pos
                                            , util::sptr<Expression const> lhs
                                            , util::sptr<Expression const> rhs) const
 {
-    return std::move(util::mkptr(new conjunction(pos, std::move(lhs), std::move(rhs))));
+    return std::move(util::mkptr(new Conjunction(pos, std::move(lhs), std::move(rhs))));
 }
 
 util::sptr<Expression const> scope::make_disj(misc::position const& pos
                                            , util::sptr<Expression const> lhs
                                            , util::sptr<Expression const> rhs) const
 {
-    return std::move(util::mkptr(new disjunction(pos, std::move(lhs), std::move(rhs))));
+    return std::move(util::mkptr(new Disjunction(pos, std::move(lhs), std::move(rhs))));
 }
 
 util::sptr<Expression const> scope::make_nega(misc::position const& pos, util::sptr<Expression const> rhs) const
 {
-    return std::move(util::mkptr(new negation(pos, std::move(rhs))));
+    return std::move(util::mkptr(new Negation(pos, std::move(rhs))));
 }
 
 void scope::add_stmt(util::sptr<Statement const> stmt)
@@ -269,7 +269,7 @@ util::sptr<Expression const> general_scope::make_call(misc::position const& pos
     return std::move(util::mkptr(new call(pos, *func_entities.back(), std::move(args))));
 }
 
-util::sptr<Expression const> general_scope::make_func_reference(misc::position const& pos
+util::sptr<Expression const> general_scope::make_FuncReference(misc::position const& pos
                                                              , std::string const& name
                                                              , int param_count) const
 {
@@ -278,7 +278,7 @@ util::sptr<Expression const> general_scope::make_func_reference(misc::position c
                                                               , std::vector<std::string>(param_count)
                                                               , util::mkref(phony_symbols)
                                                               , false))));
-    return std::move(util::mkptr(new func_reference(pos, *func_entities.back())));
+    return std::move(util::mkptr(new FuncReference(pos, *func_entities.back())));
 }
 
 void general_scope::def_var(misc::position const& pos, std::string const& name)

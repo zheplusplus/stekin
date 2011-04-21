@@ -80,10 +80,10 @@ namespace inst {
         std::vector<util::sptr<Expression const>> args;
     };
 
-    struct func_reference
+    struct FuncReference
         : public Expression
     {
-        func_reference(misc::position const& reference_pos
+        FuncReference(misc::position const& reference_pos
                      , util::sref<proto::Function> func_proto
                      , int level
                      , std::map<std::string, variable const> const& cr)
@@ -93,13 +93,13 @@ namespace inst {
         util::sref<type const> typeof() const;
         void write() const;
     private:
-        func_reference_type const _type;
+        FuncReferenceType const _type;
     };
 
-    struct binary_op
+    struct BinaryOp
         : public Expression
     {
-        binary_op(util::sptr<Expression const> l, operation const* o, util::sptr<Expression const> r)
+        BinaryOp(util::sptr<Expression const> l, operation const* o, util::sptr<Expression const> r)
             : lhs(std::move(l))
             , op(o)
             , rhs(std::move(r))
@@ -113,10 +113,10 @@ namespace inst {
         util::sptr<Expression const> const rhs;
     };
 
-    struct pre_unary_op
+    struct PreUnaryOp
         : public Expression
     {
-        pre_unary_op(operation const* o, util::sptr<Expression const> r)
+        PreUnaryOp(operation const* o, util::sptr<Expression const> r)
             : op(o)
             , rhs(std::move(r))
         {}
@@ -128,10 +128,10 @@ namespace inst {
         util::sptr<Expression const> const rhs;
     };
 
-    struct conjunction
+    struct Conjunction
         : public Expression
     {
-        conjunction(misc::position const& p, util::sptr<Expression const> l, util::sptr<Expression const> r);
+        Conjunction(misc::position const& p, util::sptr<Expression const> l, util::sptr<Expression const> r);
 
         util::sref<type const> typeof() const;
         void write() const;
@@ -140,10 +140,10 @@ namespace inst {
         util::sptr<Expression const> const rhs;
     };
 
-    struct disjunction
+    struct Disjunction
         : public Expression
     {
-        disjunction(misc::position const& p, util::sptr<Expression const> l, util::sptr<Expression const> r);
+        Disjunction(misc::position const& p, util::sptr<Expression const> l, util::sptr<Expression const> r);
 
         util::sref<type const> typeof() const;
         void write() const;
@@ -152,10 +152,10 @@ namespace inst {
         util::sptr<Expression const> const rhs;
     };
 
-    struct negation
+    struct Negation
         : public Expression
     {
-        explicit negation(misc::position const& p, util::sptr<Expression const> r);
+        explicit Negation(misc::position const& p, util::sptr<Expression const> r);
 
         util::sref<type const> typeof() const;
         void write() const;

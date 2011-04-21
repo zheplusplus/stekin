@@ -298,31 +298,31 @@ util::sptr<proto::Statement const> func_ret_nothing::compile(util::sref<proto::s
     return std::move(nul_proto_stmt());
 }
 
-util::sptr<proto::Expression const> pre_unary_op::compile(util::sref<proto::scope>) const
+util::sptr<proto::Expression const> PreUnaryOp::compile(util::sref<proto::scope>) const
 {
     data_tree::actual_one()(pos, PRE_UNARY_OP, op_img);
     return std::move(nul_proto_expr());
 }
 
-util::sptr<proto::Expression const> binary_op::compile(util::sref<proto::scope>) const
+util::sptr<proto::Expression const> BinaryOp::compile(util::sref<proto::scope>) const
 {
     data_tree::actual_one()(pos, BINARY_OP, op_img);
     return std::move(nul_proto_expr());
 }
 
-util::sptr<proto::Expression const> conjunction::compile(util::sref<proto::scope>) const
+util::sptr<proto::Expression const> Conjunction::compile(util::sref<proto::scope>) const
 {
     data_tree::actual_one()(pos, BINARY_OP, "&&");
     return std::move(nul_proto_expr());
 }
 
-util::sptr<proto::Expression const> disjunction::compile(util::sref<proto::scope>) const
+util::sptr<proto::Expression const> Disjunction::compile(util::sref<proto::scope>) const
 {
     data_tree::actual_one()(pos, BINARY_OP, "||");
     return std::move(nul_proto_expr());
 }
 
-util::sptr<proto::Expression const> negation::compile(util::sref<proto::scope>) const
+util::sptr<proto::Expression const> Negation::compile(util::sref<proto::scope>) const
 {
     data_tree::actual_one()(pos, PRE_UNARY_OP, "!");
     return std::move(nul_proto_expr());
@@ -364,7 +364,7 @@ util::sptr<proto::Expression const> call::compile(util::sref<proto::scope> s) co
     return std::move(nul_proto_expr());
 }
 
-util::sptr<proto::Expression const> func_reference::compile(util::sref<proto::scope>) const
+util::sptr<proto::Expression const> FuncReference::compile(util::sref<proto::scope>) const
 {
     data_tree::actual_one()(pos, FUNC_REFERENCE, name, param_count);
     return std::move(nul_proto_expr());
@@ -411,102 +411,102 @@ util::sptr<Expression const> Expression::as_rhs(misc::position const&, std::stri
     return std::move(nul_flchk_expr());
 }
 
-bool pre_unary_op::is_literal() const
+bool PreUnaryOp::is_literal() const
 {
     return false;
 }
 
-bool pre_unary_op::bool_value() const
+bool PreUnaryOp::bool_value() const
 {
     return false;
 }
 
-std::string pre_unary_op::type_name() const
+std::string PreUnaryOp::type_name() const
 {
     return "";
 }
 
-util::sptr<Expression const> pre_unary_op::fold() const
+util::sptr<Expression const> PreUnaryOp::fold() const
 {
     return std::move(nul_flchk_expr());
 }
 
-bool binary_op::is_literal() const
+bool BinaryOp::is_literal() const
 {
     return false;
 }
 
-bool binary_op::bool_value() const
+bool BinaryOp::bool_value() const
 {
     return false;
 }
 
-std::string binary_op::type_name() const
+std::string BinaryOp::type_name() const
 {
     return "";
 }
 
-util::sptr<Expression const> binary_op::fold() const
+util::sptr<Expression const> BinaryOp::fold() const
 {
     return std::move(nul_flchk_expr());
 }
 
-bool conjunction::is_literal() const
+bool Conjunction::is_literal() const
 {
     return false;
 }
 
-bool conjunction::bool_value() const
+bool Conjunction::bool_value() const
 {
     return false;
 }
 
-std::string conjunction::type_name() const
+std::string Conjunction::type_name() const
 {
     return "";
 }
 
-util::sptr<Expression const> conjunction::fold() const
+util::sptr<Expression const> Conjunction::fold() const
 {
     return std::move(nul_flchk_expr());
 }
 
-bool disjunction::is_literal() const
+bool Disjunction::is_literal() const
 {
     return false;
 }
 
-bool disjunction::bool_value() const
+bool Disjunction::bool_value() const
 {
     return false;
 }
 
-std::string disjunction::type_name() const
+std::string Disjunction::type_name() const
 {
     return "";
 }
 
-util::sptr<Expression const> disjunction::fold() const
+util::sptr<Expression const> Disjunction::fold() const
 {
     return std::move(nul_flchk_expr());
 }
 
-bool negation::is_literal() const
+bool Negation::is_literal() const
 {
     return false;
 }
 
-bool negation::bool_value() const
+bool Negation::bool_value() const
 {
     return false;
 }
 
-std::string negation::type_name() const
+std::string Negation::type_name() const
 {
     return "";
 }
 
-util::sptr<Expression const> negation::fold() const
+util::sptr<Expression const> Negation::fold() const
 {
     return std::move(nul_flchk_expr());
 }
@@ -684,12 +684,12 @@ util::sptr<Expression const> call::fold() const
     return std::move(nul_flchk_expr());
 }
 
-std::string func_reference::type_name() const
+std::string FuncReference::type_name() const
 {
     return "";
 }
 
-util::sptr<Expression const> func_reference::fold() const
+util::sptr<Expression const> FuncReference::fold() const
 {
     return std::move(nul_flchk_expr());
 }

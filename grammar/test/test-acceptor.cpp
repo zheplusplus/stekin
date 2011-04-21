@@ -14,11 +14,11 @@
 
 using namespace test;
 
-struct test_acceptor
-    : public grammar::acceptor
+struct TestAcceptor
+    : public grammar::Acceptor
 {
-    test_acceptor()
-        : grammar::acceptor(misc::position(0))
+    TestAcceptor()
+        : grammar::Acceptor(misc::position(0))
         , filter(new flchk::filter)
     {}
 
@@ -48,7 +48,7 @@ struct test_acceptor
     util::sptr<grammar::Function const> func;
     util::sptr<flchk::filter> filter;
 
-    void deliver_to(util::sref<grammar::acceptor>) {}
+    void deliver_to(util::sref<grammar::Acceptor>) {}
 };
 
 typedef grammar_test AcceptorTest;
@@ -58,52 +58,52 @@ TEST_F(AcceptorTest, IfAcceptor)
     misc::position pos(1);
     misc::position pos_head(100);
     misc::position pos_else(101);
-    test_acceptor receiver;
+    TestAcceptor receiver;
 
-    grammar::if_acceptor acceptor_a(pos_head, std::move(util::mkptr(new grammar::IntLiteral(pos_head, "0"))));
-    acceptor_a.accept_stmt(std::move(util::mkptr(new grammar::func_ret_nothing(pos))));
+    grammar::IfAcceptor Acceptor_a(pos_head, std::move(util::mkptr(new grammar::IntLiteral(pos_head, "0"))));
+    Acceptor_a.accept_stmt(std::move(util::mkptr(new grammar::func_ret_nothing(pos))));
 
-    acceptor_a.accept_else(pos_else);
+    Acceptor_a.accept_else(pos_else);
     ASSERT_FALSE(error::has_error());
-    acceptor_a.accept_stmt(std::move(
+    Acceptor_a.accept_stmt(std::move(
                 util::mkptr(new grammar::var_def(pos, "Hyperion", std::move(
                             util::mkptr(new grammar::reference(pos, "Raynor")))))));
 
-    acceptor_a.deliver_to(util::mkref(receiver));
+    Acceptor_a.deliver_to(util::mkref(receiver));
     ASSERT_TRUE(bool(receiver.stmt));
     ASSERT_FALSE(bool(receiver.func));
     receiver.compile();
 
-    grammar::if_acceptor acceptor_b(pos_head, std::move(util::mkptr(new grammar::IntLiteral(pos_head, "1"))));
-    acceptor_b.accept_stmt(std::move(
+    grammar::IfAcceptor Acceptor_b(pos_head, std::move(util::mkptr(new grammar::IntLiteral(pos_head, "1"))));
+    Acceptor_b.accept_stmt(std::move(
                 util::mkptr(new grammar::func_ret(pos, std::move(
                             util::mkptr(new grammar::reference(pos, "Karrigan")))))));
 
-    acceptor_b.deliver_to(util::mkref(receiver));
+    Acceptor_b.deliver_to(util::mkref(receiver));
     ASSERT_TRUE(bool(receiver.stmt));
     ASSERT_FALSE(bool(receiver.func));
     receiver.compile();
 
-    grammar::if_acceptor acceptor_c(pos_head, std::move(util::mkptr(new grammar::IntLiteral(pos_head, "2"))));
-    acceptor_c.accept_stmt(std::move(
+    grammar::IfAcceptor Acceptor_c(pos_head, std::move(util::mkptr(new grammar::IntLiteral(pos_head, "2"))));
+    Acceptor_c.accept_stmt(std::move(
                 util::mkptr(new grammar::arithmetics(pos, std::move(
                             util::mkptr(new grammar::BoolLiteral(pos, false)))))));
-    acceptor_c.accept_else(pos_else);
+    Acceptor_c.accept_else(pos_else);
     ASSERT_FALSE(error::has_error());
 
-    acceptor_c.deliver_to(util::mkref(receiver));
+    Acceptor_c.deliver_to(util::mkref(receiver));
     ASSERT_TRUE(bool(receiver.stmt));
     ASSERT_FALSE(bool(receiver.func));
     receiver.compile();
 
-    grammar::if_acceptor acceptor_d(pos_head, std::move(util::mkptr(new grammar::IntLiteral(pos_head, "3"))));
-    acceptor_d.accept_else(pos_else);
+    grammar::IfAcceptor Acceptor_d(pos_head, std::move(util::mkptr(new grammar::IntLiteral(pos_head, "3"))));
+    Acceptor_d.accept_else(pos_else);
     ASSERT_FALSE(error::has_error());
-    acceptor_d.accept_stmt(std::move(
+    Acceptor_d.accept_stmt(std::move(
                 util::mkptr(new grammar::arithmetics(pos, std::move(
                             util::mkptr(new grammar::FloatLiteral(pos, "20.54")))))));
 
-    acceptor_d.deliver_to(util::mkref(receiver));
+    Acceptor_d.deliver_to(util::mkref(receiver));
     ASSERT_TRUE(bool(receiver.stmt));
     ASSERT_FALSE(bool(receiver.func));
     receiver.compile();
@@ -162,10 +162,10 @@ TEST_F(AcceptorTest, IfAcceptorError)
     misc::position pos(2);
     misc::position pos_head(200);
     misc::position pos_else(201);
-    grammar::if_acceptor acceptor_a(pos_head, std::move(util::mkptr(new grammar::IntLiteral(pos_head, "0"))));
-    acceptor_a.accept_else(pos);
+    grammar::IfAcceptor Acceptor_a(pos_head, std::move(util::mkptr(new grammar::IntLiteral(pos_head, "0"))));
+    Acceptor_a.accept_else(pos);
     ASSERT_FALSE(error::has_error());
-    acceptor_a.accept_else(pos_else);
+    Acceptor_a.accept_else(pos_else);
     ASSERT_TRUE(error::has_error());
     ASSERT_EQ(1, get_if_matcheds().size());
     ASSERT_EQ(pos, get_if_matcheds()[0].prev_pos);
@@ -175,9 +175,9 @@ TEST_F(AcceptorTest, IfAcceptorError)
 TEST_F(AcceptorTest, IfNotAcceptor)
 {
     misc::position pos(3);
-    test_acceptor receiver;
+    TestAcceptor receiver;
 
-    grammar::ifnot_acceptor ifnot_acc0(pos, std::move(util::mkptr(new grammar::BoolLiteral(pos, false))));
+    grammar::IfnotAcceptor ifnot_acc0(pos, std::move(util::mkptr(new grammar::BoolLiteral(pos, false))));
     ifnot_acc0.accept_stmt(std::move(
                 util::mkptr(new grammar::var_def(pos, "SCV", std::move(
                             util::mkptr(new grammar::IntLiteral(pos, "60")))))));
@@ -207,7 +207,7 @@ TEST_F(AcceptorTest, IfNotAcceptor)
     ASSERT_FALSE(error::has_error());
 
     misc::position pos_else(20);
-    grammar::ifnot_acceptor ifnot_acc1(pos, std::move(util::mkptr(new grammar::BoolLiteral(pos, true))));
+    grammar::IfnotAcceptor ifnot_acc1(pos, std::move(util::mkptr(new grammar::BoolLiteral(pos, true))));
     ifnot_acc1.accept_else(pos_else);
     ASSERT_TRUE(error::has_error());
     ASSERT_EQ(1, get_else_not_matches().size());
@@ -217,9 +217,9 @@ TEST_F(AcceptorTest, IfNotAcceptor)
 TEST_F(AcceptorTest, FuncAcceptor)
 {
     misc::position pos(5);
-    test_acceptor receiver;
+    TestAcceptor receiver;
 
-    grammar::Function_acceptor func_acc0(pos, "func1", std::vector<std::string>({ "Duke", "Duran" }));
+    grammar::FunctionAcceptor func_acc0(pos, "func1", std::vector<std::string>({ "Duke", "Duran" }));
     func_acc0.accept_stmt(std::move(
                 util::mkptr(new grammar::arithmetics(pos, std::move(
                             util::mkptr(new grammar::FloatLiteral(pos, "21.37")))))));
@@ -249,7 +249,7 @@ TEST_F(AcceptorTest, FuncAcceptor)
     ASSERT_FALSE(error::has_error());
 
     misc::position pos_else(10);
-    grammar::Function_acceptor func_acc1(pos, "func2", std::vector<std::string>({ "Mengsk" }));
+    grammar::FunctionAcceptor func_acc1(pos, "func2", std::vector<std::string>({ "Mengsk" }));
     func_acc1.accept_else(pos_else);
     ASSERT_TRUE(error::has_error());
     ASSERT_EQ(1, get_else_not_matches().size());
@@ -259,9 +259,9 @@ TEST_F(AcceptorTest, FuncAcceptor)
 TEST_F(AcceptorTest, FuncAccNested)
 {
     misc::position pos(5);
-    test_acceptor receiver;
+    TestAcceptor receiver;
 
-    grammar::Function_acceptor func_acc0(pos, "funca", std::vector<std::string>({ "firebat", "ghost" }));
+    grammar::FunctionAcceptor func_acc0(pos, "funca", std::vector<std::string>({ "firebat", "ghost" }));
     func_acc0.accept_stmt(std::move(
                 util::mkptr(new grammar::arithmetics(pos, std::move(
                             util::mkptr(new grammar::FloatLiteral(pos, "22.15")))))));
@@ -269,7 +269,7 @@ TEST_F(AcceptorTest, FuncAccNested)
                 util::mkptr(new grammar::var_def(pos, "medic", std::move(
                             util::mkptr(new grammar::reference(pos, "wraith")))))));
 
-    grammar::Function_acceptor func_acc1(pos, "funca", std::vector<std::string>({ "vulture" }));
+    grammar::FunctionAcceptor func_acc1(pos, "funca", std::vector<std::string>({ "vulture" }));
     func_acc1.accept_stmt(std::move(
                 util::mkptr(new grammar::arithmetics(pos, std::move(
                             util::mkptr(new grammar::reference(pos, "goliath")))))));

@@ -11,7 +11,7 @@ TEST(Syntax, ErrTabAsIndent)
 {
     yyparse();
     ASSERT_TRUE(error::has_error());
-    std::vector<tab_as_ind_rec> recs = get_tab_as_ind_recs();
+    std::vector<TabAsIndRec> recs = getTabAsIndents();
     ASSERT_EQ(3, recs.size());
 
     EXPECT_EQ(misc::position(2), recs[0].pos);

@@ -5,32 +5,32 @@
 
 using namespace grammar;
 
-util::sptr<flchk::Expression const> pre_unary_op::compile() const
+util::sptr<flchk::Expression const> PreUnaryOp::compile() const
 {
-    return std::move(util::mkptr(new flchk::pre_unary_op(pos, op_img, std::move(rhs->compile()))));
+    return std::move(util::mkptr(new flchk::PreUnaryOp(pos, op_img, std::move(rhs->compile()))));
 }
 
-util::sptr<flchk::Expression const> binary_op::compile() const
+util::sptr<flchk::Expression const> BinaryOp::compile() const
 {
-    return std::move(util::mkptr(new flchk::binary_op(pos
+    return std::move(util::mkptr(new flchk::BinaryOp(pos
                                                     , std::move(lhs->compile())
                                                     , op_img
                                                     , std::move(rhs->compile()))));
 }
 
-util::sptr<flchk::Expression const> conjunction::compile() const
+util::sptr<flchk::Expression const> Conjunction::compile() const
 {
-    return std::move(util::mkptr(new flchk::conjunction(pos, lhs->compile(), rhs->compile())));
+    return std::move(util::mkptr(new flchk::Conjunction(pos, lhs->compile(), rhs->compile())));
 }
 
-util::sptr<flchk::Expression const> disjunction::compile() const
+util::sptr<flchk::Expression const> Disjunction::compile() const
 {
-    return std::move(util::mkptr(new flchk::disjunction(pos, lhs->compile(), rhs->compile())));
+    return std::move(util::mkptr(new flchk::Disjunction(pos, lhs->compile(), rhs->compile())));
 }
 
-util::sptr<flchk::Expression const> negation::compile() const
+util::sptr<flchk::Expression const> Negation::compile() const
 {
-    return std::move(util::mkptr(new flchk::negation(pos, rhs->compile())));
+    return std::move(util::mkptr(new flchk::Negation(pos, rhs->compile())));
 }
 
 util::sptr<flchk::Expression const> reference::compile() const
@@ -66,7 +66,7 @@ util::sptr<flchk::Expression const> call::compile() const
     return std::move(util::mkptr(new flchk::call(pos, name, std::move(arguments))));
 }
 
-util::sptr<flchk::Expression const> func_reference::compile() const
+util::sptr<flchk::Expression const> FuncReference::compile() const
 {
-    return std::move(util::mkptr(new flchk::func_reference(pos, name, param_count)));
+    return std::move(util::mkptr(new flchk::FuncReference(pos, name, param_count)));
 }

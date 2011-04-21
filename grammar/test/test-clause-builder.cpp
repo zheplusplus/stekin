@@ -21,7 +21,7 @@ TEST_F(ClauseBuilderTest, AcceptorStackNext)
     misc::position item_pos(1);
     misc::position acc_pos(100);
 
-    grammar::acceptor_stack stack0;
+    grammar::AcceptorStack stack0;
     stack0.next_stmt(0, std::move(
                 util::mkptr(new grammar::var_def(item_pos, "ruby", std::move(
                             util::mkptr(new grammar::reference(item_pos, "emerald")))))));
@@ -74,11 +74,11 @@ TEST_F(ClauseBuilderTest, AcceptorStackAdd)
     misc::position item_pos(2);
     misc::position acc_pos(100);
 
-    grammar::acceptor_stack stack0;
+    grammar::AcceptorStack stack0;
     stack0.next_stmt(0, std::move(
                 util::mkptr(new grammar::arithmetics(item_pos, std::move(
                             util::mkptr(new grammar::reference(item_pos, "eaglehorn")))))));
-    stack0.add(0, std::move(util::mkmptr(new grammar::Function_acceptor(acc_pos
+    stack0.add(0, std::move(util::mkmptr(new grammar::FunctionAcceptor(acc_pos
                                                                       , "witherstring"
                                                                       , std::vector<std::string>()))));
     stack0.next_stmt(1, std::move(
@@ -106,8 +106,8 @@ TEST_F(ClauseBuilderTest, AcceptorStackAdd)
         (BLOCK_END)
     ;
 
-    grammar::acceptor_stack stack1;
-    stack1.add(0, std::move(util::mkmptr(new grammar::Function_acceptor(acc_pos
+    grammar::AcceptorStack stack1;
+    stack1.add(0, std::move(util::mkmptr(new grammar::FunctionAcceptor(acc_pos
                                                                       , "witherstring"
                                                                       , std::vector<std::string>()))));
     stack1.next_stmt(1, std::move(
@@ -130,11 +130,11 @@ TEST_F(ClauseBuilderTest, AcceptorStackMatchElse)
     misc::position acc_pos(210);
     misc::position else_pos(211);
 
-    grammar::acceptor_stack stack0;
+    grammar::AcceptorStack stack0;
     stack0.next_stmt(0, std::move(
                 util::mkptr(new grammar::arithmetics(item_pos, std::move(
                             util::mkptr(new grammar::reference(item_pos, "roguesbow")))))));
-    stack0.add(0, std::move(util::mkmptr(new grammar::if_acceptor(
+    stack0.add(0, std::move(util::mkmptr(new grammar::IfAcceptor(
                           acc_pos
                         , util::mkptr(new grammar::reference(item_pos, "stormstrike"))))));
     stack0.next_stmt(1, std::move(
@@ -167,11 +167,11 @@ TEST_F(ClauseBuilderTest, AcceptorStackMatchElse)
         (BLOCK_END)
     ;
 
-    grammar::acceptor_stack stack1;
+    grammar::AcceptorStack stack1;
     stack1.next_stmt(0, std::move(
                 util::mkptr(new grammar::arithmetics(item_pos, std::move(
                             util::mkptr(new grammar::reference(item_pos, "roguesbow")))))));
-    stack1.add(0, std::move(util::mkmptr(new grammar::if_acceptor(
+    stack1.add(0, std::move(util::mkmptr(new grammar::IfAcceptor(
                           acc_pos
                         , util::mkptr(new grammar::reference(item_pos, "stormstrike"))))));
     stack1.next_stmt(1, std::move(
@@ -192,7 +192,7 @@ TEST_F(ClauseBuilderTest, ClauseBuilder)
     misc::position item_pos1(5);
     misc::position item_pos2(6);
 
-    grammar::clause_builder builder0;
+    grammar::ClauseBuilder builder0;
     builder0.add_if(0, std::move(util::mkptr(new grammar::BoolLiteral(item_pos0, true))));
         builder0.add_var_def(1, "wind_force", std::move(util::mkptr(new grammar::IntLiteral(item_pos1
                                                                                            , "13571"))));
@@ -251,7 +251,7 @@ TEST_F(ClauseBuilderTest, ClauseBuilder)
         (BLOCK_END)
     ;
 
-    grammar::clause_builder builder1;
+    grammar::ClauseBuilder builder1;
     builder1.add_if(0, std::move(util::mkptr(new grammar::BoolLiteral(item_pos0, true))));
     builder1.add_var_def(0, "wind_force", std::move(util::mkptr(new grammar::IntLiteral(item_pos1, "13571"))));
     builder1.add_else(0, item_pos2);

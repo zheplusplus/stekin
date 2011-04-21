@@ -19,7 +19,7 @@ namespace parser {
 
     int const SPACES_PER_INDENT = 4;
 
-    extern grammar::clause_builder builder;
+    extern grammar::ClauseBuilder builder;
     extern int last_indent;
 
     misc::position here();

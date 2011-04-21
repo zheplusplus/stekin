@@ -24,33 +24,33 @@ util::sptr<Expression const> scope::make_binary(misc::position const& pos
                                              , std::string const& op
                                              , util::sptr<Expression const> rhs) const
 {
-    return std::move(util::mkptr(new binary_op(pos, std::move(lhs), op, std::move(rhs))));
+    return std::move(util::mkptr(new BinaryOp(pos, std::move(lhs), op, std::move(rhs))));
 }
 
 util::sptr<Expression const> scope::make_pre_unary(misc::position const& pos
                                                 , std::string const& op
                                                 , util::sptr<Expression const> rhs) const
 {
-    return std::move(util::mkptr(new pre_unary_op(pos, op, std::move(rhs))));
+    return std::move(util::mkptr(new PreUnaryOp(pos, op, std::move(rhs))));
 }
 
 util::sptr<Expression const> scope::make_conj(misc::position const& pos
                                            , util::sptr<Expression const> lhs
                                            , util::sptr<Expression const> rhs) const
 {
-    return std::move(util::mkptr(new conjunction(pos, std::move(lhs), std::move(rhs))));
+    return std::move(util::mkptr(new Conjunction(pos, std::move(lhs), std::move(rhs))));
 }
 
 util::sptr<Expression const> scope::make_disj(misc::position const& pos
                                            , util::sptr<Expression const> lhs
                                            , util::sptr<Expression const> rhs) const
 {
-    return std::move(util::mkptr(new disjunction(pos, std::move(lhs), std::move(rhs))));
+    return std::move(util::mkptr(new Disjunction(pos, std::move(lhs), std::move(rhs))));
 }
 
 util::sptr<Expression const> scope::make_nega(misc::position const& pos, util::sptr<Expression const> rhs) const
 {
-    return std::move(util::mkptr(new negation(pos, std::move(rhs))));
+    return std::move(util::mkptr(new Negation(pos, std::move(rhs))));
 }
 
 void scope::add_stmt(util::sptr<Statement const> stmt)

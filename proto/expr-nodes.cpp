@@ -71,48 +71,48 @@ util::sptr<inst::Expression const> functor::inst(util::sref<inst::scope> scope) 
                 }));
 }
 
-util::sptr<inst::Expression const> func_reference::inst(util::sref<inst::scope> scope) const
+util::sptr<inst::Expression const> FuncReference::inst(util::sref<inst::scope> scope) const
 {
-    return std::move(util::mkptr(new inst::func_reference(pos   
+    return std::move(util::mkptr(new inst::FuncReference(pos   
                                                         , func
                                                         , scope->level()
                                                         , func->bind_external_vars(pos, scope))));
 }
 
-util::sptr<inst::Expression const> binary_op::inst(util::sref<inst::scope> scope) const
+util::sptr<inst::Expression const> BinaryOp::inst(util::sref<inst::scope> scope) const
 {
     util::sptr<inst::Expression const> left = lhs->inst(scope);
     util::sptr<inst::Expression const> right = rhs->inst(scope);
     util::sref<inst::type const> ltype = left->typeof();
     util::sref<inst::type const> rtype = right->typeof();
-    return std::move(util::mkptr(new inst::binary_op(std::move(left)
+    return std::move(util::mkptr(new inst::BinaryOp(std::move(left)
                                                    , scope->query_binary(pos, op, ltype, rtype)
                                                    , std::move(right))));
 }
 
-util::sptr<inst::Expression const> pre_unary_op::inst(util::sref<inst::scope> scope) const
+util::sptr<inst::Expression const> PreUnaryOp::inst(util::sref<inst::scope> scope) const
 {
     util::sptr<inst::Expression const> right = rhs->inst(scope);
     util::sref<inst::type const> rtype = right->typeof();
     return std::move(util::mkptr(
-                new inst::pre_unary_op(scope->query_pre_unary(pos, op, rtype), std::move(right))));
+                new inst::PreUnaryOp(scope->query_pre_unary(pos, op, rtype), std::move(right))));
 }
 
-util::sptr<inst::Expression const> conjunction::inst(util::sref<inst::scope> scope) const
+util::sptr<inst::Expression const> Conjunction::inst(util::sref<inst::scope> scope) const
 {
-    return std::move(util::mkptr(new inst::conjunction(pos
+    return std::move(util::mkptr(new inst::Conjunction(pos
                                                      , std::move(lhs->inst(scope))
                                                      , std::move(rhs->inst(scope)))));
 }
 
-util::sptr<inst::Expression const> disjunction::inst(util::sref<inst::scope> scope) const
+util::sptr<inst::Expression const> Disjunction::inst(util::sref<inst::scope> scope) const
 {
-    return std::move(util::mkptr(new inst::disjunction(pos
+    return std::move(util::mkptr(new inst::Disjunction(pos
                                                      , std::move(lhs->inst(scope))
                                                      , std::move(rhs->inst(scope)))));
 }
 
-util::sptr<inst::Expression const> negation::inst(util::sref<inst::scope> scope) const
+util::sptr<inst::Expression const> Negation::inst(util::sref<inst::scope> scope) const
 {
-    return std::move(util::mkptr(new inst::negation(pos, std::move(rhs->inst(scope)))));
+    return std::move(util::mkptr(new inst::Negation(pos, std::move(rhs->inst(scope)))));
 }

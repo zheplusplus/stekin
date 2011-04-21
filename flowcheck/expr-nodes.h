@@ -9,10 +9,10 @@
 
 namespace flchk {
 
-    struct pre_unary_op
+    struct PreUnaryOp
         : public Expression
     {
-        pre_unary_op(misc::position const& pos, std::string const& op, util::sptr<Expression const> r)
+        PreUnaryOp(misc::position const& pos, std::string const& op, util::sptr<Expression const> r)
             : Expression(pos)
             , op_img(op)
             , rhs(std::move(r))
@@ -28,10 +28,10 @@ namespace flchk {
         util::sptr<Expression const> const rhs;
     };
 
-    struct binary_op
+    struct BinaryOp
         : public Expression
     {
-        binary_op(misc::position const& pos
+        BinaryOp(misc::position const& pos
                 , util::sptr<Expression const> l
                 , std::string const& op
                 , util::sptr<Expression const> r)
@@ -52,10 +52,10 @@ namespace flchk {
         util::sptr<Expression const> const rhs;
     };
 
-    struct conjunction
+    struct Conjunction
         : public Expression
     {
-        conjunction(misc::position const& pos, util::sptr<Expression const> l, util::sptr<Expression const> r)
+        Conjunction(misc::position const& pos, util::sptr<Expression const> l, util::sptr<Expression const> r)
             : Expression(pos)
             , lhs(std::move(l))
             , rhs(std::move(r))
@@ -71,10 +71,10 @@ namespace flchk {
         util::sptr<Expression const> const rhs;
     };
 
-    struct disjunction
+    struct Disjunction
         : public Expression
     {
-        disjunction(misc::position const& pos, util::sptr<Expression const> l, util::sptr<Expression const> r)
+        Disjunction(misc::position const& pos, util::sptr<Expression const> l, util::sptr<Expression const> r)
             : Expression(pos)
             , lhs(std::move(l))
             , rhs(std::move(r))
@@ -90,10 +90,10 @@ namespace flchk {
         util::sptr<Expression const> const rhs;
     };
 
-    struct negation
+    struct Negation
         : public Expression
     {
-        negation(misc::position const& pos, util::sptr<Expression const> r)
+        Negation(misc::position const& pos, util::sptr<Expression const> r)
             : Expression(pos)
             , rhs(std::move(r))
         {}
@@ -247,10 +247,10 @@ namespace flchk {
         std::vector<util::sptr<Expression const>> const args;
     };
 
-    struct func_reference
+    struct FuncReference
         : public Expression
     {
-        func_reference(misc::position const& pos, std::string const& n, int pc)
+        FuncReference(misc::position const& pos, std::string const& n, int pc)
             : Expression(pos)
             , name(n)
             , param_count(pc)

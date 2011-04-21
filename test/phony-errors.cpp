@@ -4,10 +4,10 @@
 
 using namespace test;
 
-static std::list<tab_as_ind_rec> tab_as_ind_recs;
+static std::list<TabAsIndRec> TabAsIndRecs;
 
-static std::list<bad_indent_rec> bad_indent_recs;
-static std::list<inv_char_rec> inv_char_recs;
+static std::list<BadIndentRec> BadIndentRecs;
+static std::list<InvCharRec> InvCharRecs;
 
 static std::list<else_not_match_rec> else_not_matches_recs;
 static std::list<if_matched_rec> if_matcheds_recs;
@@ -26,8 +26,8 @@ static std::list<ret_type_conflict_rec> ret_type_conflict_recs;
 static std::list<ret_type_unresolvable_rec> ret_type_unresolvable_recs;
 static std::list<cond_not_bool_rec> cond_not_bool_recs;
 static std::list<var_nondef_rec> var_nondefs;
-static std::list<na_binary_op_rec> na_binary_ops;
-static std::list<na_pre_unary_op_rec> na_pre_unary_ops;
+static std::list<NABinaryOpRec> na_BinaryOps;
+static std::list<NAPreUnaryOpRec> na_PreUnaryOps;
 
 static std::list<variable_not_callable_rec> variable_not_callables;
 
@@ -37,9 +37,9 @@ void test::clear_err()
 {
     has_err = false;
 
-    tab_as_ind_recs.clear();
-    bad_indent_recs.clear();
-    inv_char_recs.clear();
+    TabAsIndRecs.clear();
+    BadIndentRecs.clear();
+    InvCharRecs.clear();
 
     else_not_matches_recs.clear();
     if_matcheds_recs.clear();
@@ -54,8 +54,8 @@ void test::clear_err()
     func_nondefs.clear();
 
     var_nondefs.clear();
-    na_binary_ops.clear();
-    na_pre_unary_ops.clear();
+    na_BinaryOps.clear();
+    na_PreUnaryOps.clear();
     ret_type_conflict_recs.clear();
     ret_type_unresolvable_recs.clear();
     cond_not_bool_recs.clear();
@@ -76,19 +76,19 @@ bool error::has_error()
 void error::tab_as_indent(misc::position const& pos)
 {
     has_err = true;
-    tab_as_ind_recs.push_back(tab_as_ind_rec(pos));
+    TabAsIndRecs.push_back(TabAsIndRec(pos));
 }
 
 void error::bad_indent(misc::position const& pos)
 {
     has_err = true;
-    bad_indent_recs.push_back(bad_indent_rec(pos));
+    BadIndentRecs.push_back(BadIndentRec(pos));
 }
 
 void error::invalid_char(misc::position const& pos, int character)
 {
     has_err = true;
-    inv_char_recs.push_back(inv_char_rec(pos, character));
+    InvCharRecs.push_back(InvCharRec(pos, character));
 }
 
 void error::else_not_match_if(misc::position const& pos)
@@ -143,7 +143,7 @@ void error::var_ref_before_def(misc::position const& def_pos
     invalid_refs.push_back(invalid_ref_rec(ref_positions.begin(), ref_positions.end(), def_pos, name));
 }
 
-void error::func_reference_ambiguous(misc::position const& pos, std::string const& name)
+void error::FuncReference_ambiguous(misc::position const& pos, std::string const& name)
 {
     has_err =true;
     ambiguous_refs.push_back(func_ref_ambiguous_rec(pos, name));
@@ -170,19 +170,19 @@ void error::var_not_def(misc::position const& ref_pos, std::string const& name)
     var_nondefs.push_back(var_nondef_rec(ref_pos, name));
 }
 
-void error::binary_op_not_avai(misc::position const& pos
+void error::BinaryOp_not_avai(misc::position const& pos
                              , std::string const& op_img
                              , std::string const& lhst
                              , std::string const& rhst)
 {
     has_err = true;
-    na_binary_ops.push_back(na_binary_op_rec(pos, op_img, lhst, rhst));
+    na_BinaryOps.push_back(NABinaryOpRec(pos, op_img, lhst, rhst));
 }
 
-void error::pre_unary_op_not_avai(misc::position const& pos, std::string const& op_img, std::string const& rhst)
+void error::PreUnaryOp_not_avai(misc::position const& pos, std::string const& op_img, std::string const& rhst)
 {
     has_err = true;
-    na_pre_unary_ops.push_back(na_pre_unary_op_rec(pos, op_img, rhst));
+    na_PreUnaryOps.push_back(NAPreUnaryOpRec(pos, op_img, rhst));
 }
 
 void error::conflict_return_type(misc::position const& this_pos
@@ -211,19 +211,19 @@ void error::request_variable_not_callable(misc::position const& call_pos)
     variable_not_callables.push_back(variable_not_callable_rec(call_pos));
 }
 
-std::vector<tab_as_ind_rec> test::get_tab_as_ind_recs()
+std::vector<TabAsIndRec> test::getTabAsIndents()
 {
-    return std::vector<tab_as_ind_rec>(tab_as_ind_recs.begin(), tab_as_ind_recs.end());
+    return std::vector<TabAsIndRec>(TabAsIndRecs.begin(), TabAsIndRecs.end());
 }
 
-std::vector<bad_indent_rec> test::get_bad_indent_recs()
+std::vector<BadIndentRec> test::getBadIndents()
 {
-    return std::vector<bad_indent_rec>(bad_indent_recs.begin(), bad_indent_recs.end());
+    return std::vector<BadIndentRec>(BadIndentRecs.begin(), BadIndentRecs.end());
 }
 
-std::vector<inv_char_rec> test::get_inv_char_recs()
+std::vector<InvCharRec> test::getInvCharRecs()
 {
-    return std::vector<inv_char_rec>(inv_char_recs.begin(), inv_char_recs.end());
+    return std::vector<InvCharRec>(InvCharRecs.begin(), InvCharRecs.end());
 }
 
 std::vector<else_not_match_rec> test::get_else_not_matches()
@@ -286,14 +286,14 @@ std::vector<var_nondef_rec> test::get_nondefs()
     return std::vector<var_nondef_rec>(var_nondefs.begin(), var_nondefs.end());
 }
 
-std::vector<na_binary_op_rec> test::get_na_binary_ops()
+std::vector<NABinaryOpRec> test::getNABinaryOps()
 {
-    return std::vector<na_binary_op_rec>(na_binary_ops.begin(), na_binary_ops.end());
+    return std::vector<NABinaryOpRec>(na_BinaryOps.begin(), na_BinaryOps.end());
 }
 
-std::vector<na_pre_unary_op_rec> test::get_na_pre_unary_ops()
+std::vector<NAPreUnaryOpRec> test::getNAPreUnaryOps()
 {
-    return std::vector<na_pre_unary_op_rec>(na_pre_unary_ops.begin(), na_pre_unary_ops.end());
+    return std::vector<NAPreUnaryOpRec>(na_PreUnaryOps.begin(), na_PreUnaryOps.end());
 }
 
 std::vector<ret_type_conflict_rec> test::get_ret_type_conflicts()

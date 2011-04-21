@@ -22,7 +22,7 @@ namespace proto {
         virtual util::sptr<Expression const> make_call(misc::position const& pos
                                                     , std::string const& name
                                                     , std::vector<util::sptr<Expression const>> args) const = 0;
-        virtual util::sptr<Expression const> make_func_reference(misc::position const& pos
+        virtual util::sptr<Expression const> make_FuncReference(misc::position const& pos
                                                               , std::string const& name
                                                               , int param_count) const = 0;
         util::sptr<Expression const> make_binary(misc::position const& pos

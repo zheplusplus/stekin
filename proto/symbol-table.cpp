@@ -117,9 +117,9 @@ util::sptr<Expression const> symbol_table::ref_var(misc::position const& pos, st
     std::vector<util::sref<Function>> all_funcs = _overloads.all_funcs_of_name(name);
     if (!all_funcs.empty()) {
         if (all_funcs.size() > 1) {
-            error::func_reference_ambiguous(pos, name);
+            error::FuncReference_ambiguous(pos, name);
         }
-        return std::move(util::mkptr(new func_reference(pos, all_funcs[0])));
+        return std::move(util::mkptr(new FuncReference(pos, all_funcs[0])));
     }
 
     if (_var_defs.end() == _var_defs.find(name)) {

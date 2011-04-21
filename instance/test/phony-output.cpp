@@ -27,10 +27,10 @@ void output::branch_else() {}
 void output::Block_begin() {}
 void output::Block_end() {}
 void output::end_of_statement() {}
-void output::construct_func_reference(std::string const&) {}
-void output::func_reference_next_variable(int, stack_var_record const&) {}
+void output::construct_FuncReference(std::string const&) {}
+void output::FuncReference_next_variable(int, stack_var_record const&) {}
 
-std::string output::form_func_reference_type(int)
+std::string output::form_FuncReferenceType(int)
 {
     return "";
 }

@@ -11,7 +11,7 @@ TEST(Syntax, BadIndentation)
 {
     yyparse();
     ASSERT_TRUE(error::has_error());
-    std::vector<bad_indent_rec> recs = get_bad_indent_recs();
+    std::vector<BadIndentRec> recs = getBadIndents();
     ASSERT_EQ(3, recs.size());
 
     EXPECT_EQ(misc::position(1), recs[0].pos);

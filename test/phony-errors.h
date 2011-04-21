@@ -7,24 +7,24 @@
 
 namespace test {
 
-    struct tab_as_ind_rec {
-        explicit tab_as_ind_rec(misc::position const& ps)
+    struct TabAsIndRec {
+        explicit TabAsIndRec(misc::position const& ps)
             : pos(ps)
         {}
 
         misc::position const pos;
     };
 
-    struct bad_indent_rec {
-        explicit bad_indent_rec(misc::position const& ps)
+    struct BadIndentRec {
+        explicit BadIndentRec(misc::position const& ps)
             : pos(ps)
         {}
 
         misc::position const pos;
     };
 
-    struct inv_char_rec {
-        inv_char_rec(misc::position const& ps, int ch)
+    struct InvCharRec {
+        InvCharRec(misc::position const& ps, int ch)
             : pos(ps)
             , character(ch)
         {}
@@ -166,13 +166,13 @@ namespace test {
         {}
     };
 
-    struct na_binary_op_rec {
+    struct NABinaryOpRec {
         misc::position const pos;
         std::string const op_img;
         std::string const lhst_name;
         std::string const rhst_name;
 
-        na_binary_op_rec(misc::position const& ps
+        NABinaryOpRec(misc::position const& ps
                        , std::string const& op
                        , std::string const& lhst
                        , std::string const& rhst)
@@ -183,12 +183,12 @@ namespace test {
         {}
     };
 
-    struct na_pre_unary_op_rec {
+    struct NAPreUnaryOpRec {
         misc::position const pos;
         std::string const op_img;
         std::string const rhst_name;
 
-        na_pre_unary_op_rec(misc::position const& ps, std::string const& op, std::string const& rhst)
+        NAPreUnaryOpRec(misc::position const& ps, std::string const& op, std::string const& rhst)
             : pos(ps)
             , op_img(op)
             , rhst_name(rhst)
@@ -239,9 +239,9 @@ namespace test {
 
     void clear_err();
 
-    std::vector<tab_as_ind_rec> get_tab_as_ind_recs();
-    std::vector<bad_indent_rec> get_bad_indent_recs();
-    std::vector<inv_char_rec> get_inv_char_recs();
+    std::vector<TabAsIndRec> getTabAsIndents();
+    std::vector<BadIndentRec> getBadIndents();
+    std::vector<InvCharRec> getInvCharRecs();
     std::vector<else_not_match_rec> get_else_not_matches();
     std::vector<if_matched_rec> get_if_matcheds();
     std::vector<excess_ind_rec> get_excess_inds();
@@ -254,8 +254,8 @@ namespace test {
     std::vector<func_redef_rec> get_func_redefs();
     std::vector<func_nondef_rec> get_func_nondefs();
     std::vector<var_nondef_rec> get_nondefs();
-    std::vector<na_binary_op_rec> get_na_binary_ops();
-    std::vector<na_pre_unary_op_rec> get_na_pre_unary_ops();
+    std::vector<NABinaryOpRec> getNABinaryOps();
+    std::vector<NAPreUnaryOpRec> getNAPreUnaryOps();
     std::vector<ret_type_conflict_rec> get_ret_type_conflicts();
     std::vector<ret_type_unresolvable_rec> get_ret_type_unresolvables();
     std::vector<cond_not_bool_rec> get_cond_not_bools();

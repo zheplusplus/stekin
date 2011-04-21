@@ -21,7 +21,7 @@ bool type::eq_as_built_in(type const&) const
     return false;
 }
 
-bool type::eq_as_func_reference(util::sref<proto::Function>, std::map<std::string, variable const> const&) const
+bool type::eq_as_FuncReference(util::sref<proto::Function>, std::map<std::string, variable const> const&) const
 {
     return false;
 }
@@ -31,7 +31,7 @@ bool type::lt_as_built_in(type const&) const
     return false;
 }
 
-bool type::lt_as_func_reference(util::sref<proto::Function>, std::map<std::string, variable const> const&) const
+bool type::lt_as_FuncReference(util::sref<proto::Function>, std::map<std::string, variable const> const&) const
 {
     return false;
 }
@@ -66,45 +66,45 @@ bool built_in_primitive::lt_as_built_in(type const& lhs) const
     return &lhs < this;
 }
 
-bool built_in_primitive::lt_as_func_reference(util::sref<proto::Function>
+bool built_in_primitive::lt_as_FuncReference(util::sref<proto::Function>
                                             , std::map<std::string, variable const> const&) const
 {
     return false;
 }
 
-std::string func_reference_type::exported_name() const
+std::string FuncReferenceType::exported_name() const
 {
     return "";
 }
 
-std::string func_reference_type::name() const
+std::string FuncReferenceType::name() const
 {
     return "";
 }
 
-bool func_reference_type::operator==(type const& rhs) const
+bool FuncReferenceType::operator==(type const& rhs) const
 {
     return this == &rhs;
 }
 
-bool func_reference_type::operator<(type const& rhs) const
+bool FuncReferenceType::operator<(type const& rhs) const
 {
     return this < &rhs;
 }
 
-bool func_reference_type::eq_as_func_reference(util::sref<proto::Function>
+bool FuncReferenceType::eq_as_FuncReference(util::sref<proto::Function>
                                              , std::map<std::string, variable const> const&) const
 {
     return false;
 }
 
-bool func_reference_type::lt_as_func_reference(util::sref<proto::Function>
+bool FuncReferenceType::lt_as_FuncReference(util::sref<proto::Function>
                                              , std::map<std::string, variable const> const&) const
 {
     return false;
 }
 
-bool func_reference_type::lt_as_built_in(type const&) const
+bool FuncReferenceType::lt_as_built_in(type const&) const
 {
     return false;
 }
@@ -112,7 +112,7 @@ bool func_reference_type::lt_as_built_in(type const&) const
 void type::check_condition_type(misc::position const&) const {}
 void built_in_primitive::check_condition_type(misc::position const&) const {}
 
-util::sptr<inst::Expression const> func_reference_type::call_func(
+util::sptr<inst::Expression const> FuncReferenceType::call_func(
                   misc::position const&
                 , int
                 , int
@@ -122,7 +122,7 @@ util::sptr<inst::Expression const> func_reference_type::call_func(
     return std::move(util::sptr<inst::Expression const>(NULL));
 }
 
-std::map<std::string, variable const> func_reference_type::_enclose_reference(
+std::map<std::string, variable const> FuncReferenceType::_enclose_reference(
                                             misc::position const&
                                           , int
                                           , std::map<std::string, variable const> const& cr)
@@ -130,7 +130,7 @@ std::map<std::string, variable const> func_reference_type::_enclose_reference(
     return cr;
 }
 
-int func_reference_type::_calc_size(std::map<std::string, variable const> const&)
+int FuncReferenceType::_calc_size(std::map<std::string, variable const> const&)
 {
     return 0;
 }
@@ -293,13 +293,13 @@ util::sref<type const> call::typeof() const
     return util::mkref(PROTO_TEST_TYPE);
 }
 
-util::sref<type const> func_reference::typeof() const
+util::sref<type const> FuncReference::typeof() const
 {
     data_tree::actual_one()(FUNC_REFERENCE);
     return util::mkref(PROTO_TEST_TYPE);
 }
 
-util::sref<type const> binary_op::typeof() const
+util::sref<type const> BinaryOp::typeof() const
 {
     data_tree::actual_one()(BINARY_OP);
     lhs->typeof();
@@ -307,14 +307,14 @@ util::sref<type const> binary_op::typeof() const
     return util::mkref(PROTO_TEST_TYPE);
 }
 
-util::sref<type const> pre_unary_op::typeof() const
+util::sref<type const> PreUnaryOp::typeof() const
 {
     data_tree::actual_one()(PRE_UNARY_OP);
     rhs->typeof();
     return util::mkref(PROTO_TEST_TYPE);
 }
 
-util::sref<type const> conjunction::typeof() const
+util::sref<type const> Conjunction::typeof() const
 {
     data_tree::actual_one()(CONJUNCTION);
     lhs->typeof();
@@ -322,7 +322,7 @@ util::sref<type const> conjunction::typeof() const
     return util::mkref(PROTO_TEST_TYPE);
 }
 
-util::sref<type const> disjunction::typeof() const
+util::sref<type const> Disjunction::typeof() const
 {
     data_tree::actual_one()(DISJUNCTION);
     lhs->typeof();
@@ -330,24 +330,24 @@ util::sref<type const> disjunction::typeof() const
     return util::mkref(PROTO_TEST_TYPE);
 }
 
-util::sref<type const> negation::typeof() const
+util::sref<type const> Negation::typeof() const
 {
     data_tree::actual_one()(NEGATION);
     rhs->typeof();
     return util::mkref(PROTO_TEST_TYPE);
 }
 
-conjunction::conjunction(misc::position const&, util::sptr<Expression const> l, util::sptr<Expression const> r)
+Conjunction::Conjunction(misc::position const&, util::sptr<Expression const> l, util::sptr<Expression const> r)
     : lhs(std::move(l))
     , rhs(std::move(r))
 {}
 
-disjunction::disjunction(misc::position const&, util::sptr<Expression const> l, util::sptr<Expression const> r)
+Disjunction::Disjunction(misc::position const&, util::sptr<Expression const> l, util::sptr<Expression const> r)
     : lhs(std::move(l))
     , rhs(std::move(r))
 {}
 
-negation::negation(misc::position const&, util::sptr<Expression const> r)
+Negation::Negation(misc::position const&, util::sptr<Expression const> r)
     : rhs(std::move(r))
 {}
 
@@ -365,12 +365,12 @@ void FloatLiteral::write() const {}
 void BoolLiteral::write() const {}
 void reference::write() const {}
 void call::write() const {}
-void func_reference::write() const {}
-void binary_op::write() const {}
-void pre_unary_op::write() const {}
-void conjunction::write() const {}
-void disjunction::write() const {}
-void negation::write() const {}
+void FuncReference::write() const {}
+void BinaryOp::write() const {}
+void PreUnaryOp::write() const {}
+void Conjunction::write() const {}
+void Disjunction::write() const {}
+void Negation::write() const {}
 void arithmetics::write() const {}
 void branch::write() const {}
 void initialization::write() const {}

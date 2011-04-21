@@ -6,10 +6,10 @@
 
 namespace inst {
 
-    struct func_reference_type
+    struct FuncReferenceType
         : public type
     {
-        func_reference_type(misc::position const& reference_pos
+        FuncReferenceType(misc::position const& reference_pos
                           , util::sref<proto::Function> func_proto
                           , int level
                           , std::map<std::string, variable const> const& cr)
@@ -30,9 +30,9 @@ namespace inst {
 
         bool operator==(type const& rhs) const;
         bool operator<(type const& rhs) const;
-        bool eq_as_func_reference(util::sref<proto::Function> lhs_func
+        bool eq_as_FuncReference(util::sref<proto::Function> lhs_func
                                 , std::map<std::string, variable const> const& rhs_cr) const;
-        bool lt_as_func_reference(util::sref<proto::Function> lhs_func
+        bool lt_as_FuncReference(util::sref<proto::Function> lhs_func
                                 , std::map<std::string, variable const> const& rhs_cr) const;
         bool lt_as_built_in(type const&) const;
     public:

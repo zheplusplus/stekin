@@ -195,7 +195,7 @@ ref:
     |
     ident '@' INT_LITERAL
     {
-        $$ = new grammar::func_reference($1->pos, $1->id, atoi(yytext));
+        $$ = new grammar::FuncReference($1->pos, $1->id, atoi(yytext));
         delete $1;
     }
 ;
@@ -210,7 +210,7 @@ ident:
 cond:
     cond OR conj_cond
     {
-        $$ = new grammar::disjunction($1->pos, std::move(util::mkptr($1)), std::move(util::mkptr($3)));
+        $$ = new grammar::Disjunction($1->pos, std::move(util::mkptr($1)), std::move(util::mkptr($3)));
     }
     |
     conj_cond
@@ -222,7 +222,7 @@ cond:
 conj_cond:
     conj_cond AND nega_cond
     {
-        $$ = new grammar::conjunction($1->pos, std::move(util::mkptr($1)), std::move(util::mkptr($3)));
+        $$ = new grammar::Conjunction($1->pos, std::move(util::mkptr($1)), std::move(util::mkptr($3)));
     }
     |
     nega_cond
@@ -234,7 +234,7 @@ conj_cond:
 nega_cond:
     '!' comp
     {
-        $$ = new grammar::negation($2->pos, std::move(util::mkptr($2)));
+        $$ = new grammar::Negation($2->pos, std::move(util::mkptr($2)));
     }
     |
     comp
@@ -246,7 +246,7 @@ nega_cond:
 comp:
     comp cmp_op expr
     {
-        $$ = new grammar::binary_op($1->pos, std::move(util::mkptr($1)), $2->img, std::move(util::mkptr($3)));
+        $$ = new grammar::BinaryOp($1->pos, std::move(util::mkptr($1)), $2->img, std::move(util::mkptr($3)));
         delete $2;
     }
     |
@@ -259,7 +259,7 @@ comp:
 expr:
     expr add_op term
     {
-        $$ = new grammar::binary_op($1->pos, std::move(util::mkptr($1)), $2->img, std::move(util::mkptr($3)));
+        $$ = new grammar::BinaryOp($1->pos, std::move(util::mkptr($1)), $2->img, std::move(util::mkptr($3)));
         delete $2;
     }
     |
@@ -272,7 +272,7 @@ expr:
 term:
     term mul_op unary_factor
     {
-        $$ = new grammar::binary_op($1->pos, std::move(util::mkptr($1)), $2->img, std::move(util::mkptr($3)));
+        $$ = new grammar::BinaryOp($1->pos, std::move(util::mkptr($1)), $2->img, std::move(util::mkptr($3)));
         delete $2;
     }
     |
@@ -285,7 +285,7 @@ term:
 unary_factor:
     pm_sign factor
     {
-        $$ = new grammar::pre_unary_op($2->pos, $1->img, std::move(util::mkptr($2)));
+        $$ = new grammar::PreUnaryOp($2->pos, $1->img, std::move(util::mkptr($2)));
         delete $1;
     }
     |

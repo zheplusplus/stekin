@@ -8,7 +8,7 @@
 
 using namespace inst;
 
-conjunction::conjunction(misc::position const& p, util::sptr<Expression const> l, util::sptr<Expression const> r)
+Conjunction::Conjunction(misc::position const& p, util::sptr<Expression const> l, util::sptr<Expression const> r)
     : lhs(std::move(l))
     , rhs(std::move(r))
 {
@@ -16,7 +16,7 @@ conjunction::conjunction(misc::position const& p, util::sptr<Expression const> l
     rhs->typeof()->check_condition_type(p);
 }
 
-disjunction::disjunction(misc::position const& p, util::sptr<Expression const> l, util::sptr<Expression const> r)
+Disjunction::Disjunction(misc::position const& p, util::sptr<Expression const> l, util::sptr<Expression const> r)
     : lhs(std::move(l))
     , rhs(std::move(r))
 {
@@ -24,7 +24,7 @@ disjunction::disjunction(misc::position const& p, util::sptr<Expression const> l
     rhs->typeof()->check_condition_type(p);
 }
 
-negation::negation(misc::position const& p, util::sptr<Expression const> r)
+Negation::Negation(misc::position const& p, util::sptr<Expression const> r)
     : rhs(std::move(r))
 {
     rhs->typeof()->check_condition_type(p);
@@ -55,32 +55,32 @@ util::sref<type const> call::typeof() const
     return func->get_return_type();
 }
 
-util::sref<type const> func_reference::typeof() const
+util::sref<type const> FuncReference::typeof() const
 {
     return util::mkref(_type);
 }
 
-util::sref<type const> binary_op::typeof() const
+util::sref<type const> BinaryOp::typeof() const
 {
     return op->ret_type;
 }
 
-util::sref<type const> pre_unary_op::typeof() const
+util::sref<type const> PreUnaryOp::typeof() const
 {
     return op->ret_type;
 }
 
-util::sref<type const> conjunction::typeof() const
+util::sref<type const> Conjunction::typeof() const
 {
     return type::BIT_BOOL;
 }
 
-util::sref<type const> disjunction::typeof() const
+util::sref<type const> Disjunction::typeof() const
 {
     return type::BIT_BOOL;
 }
 
-util::sref<type const> negation::typeof() const
+util::sref<type const> Negation::typeof() const
 {
     return type::BIT_BOOL;
 }
@@ -118,12 +118,12 @@ void call::write() const
     output::write_call_end();
 }
 
-void func_reference::write() const
+void FuncReference::write() const
 {
     _type.write();
 }
 
-void binary_op::write() const
+void BinaryOp::write() const
 {
     output::begin_expr();
     lhs->write();
@@ -132,7 +132,7 @@ void binary_op::write() const
     output::end_expr();
 }
 
-void pre_unary_op::write() const
+void PreUnaryOp::write() const
 {
     output::begin_expr();
     output::write_operator(op->op_img);
@@ -140,7 +140,7 @@ void pre_unary_op::write() const
     output::end_expr();
 }
 
-void conjunction::write() const
+void Conjunction::write() const
 {
     output::begin_expr();
     lhs->write();
@@ -149,7 +149,7 @@ void conjunction::write() const
     output::end_expr();
 }
 
-void disjunction::write() const
+void Disjunction::write() const
 {
     output::begin_expr();
     lhs->write();
@@ -158,7 +158,7 @@ void disjunction::write() const
     output::end_expr();
 }
 
-void negation::write() const
+void Negation::write() const
 {
     output::begin_expr();
     output::write_operator("!");

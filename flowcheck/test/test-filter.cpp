@@ -23,8 +23,8 @@ TEST_F(FilterTest, FilterNormal)
     misc::position pos(1);
     util::sptr<proto::scope> scope(std::move(new proto::global_scope));
 
-    util::sptr<flchk::binary_op> binary(
-            new flchk::binary_op(pos
+    util::sptr<flchk::BinaryOp> binary(
+            new flchk::BinaryOp(pos
                                , std::move(util::mkptr(new flchk::IntLiteral(pos, "1")))
                                , "+"
                                , std::move(util::mkptr(new flchk::FloatLiteral(pos, "235.7")))));
@@ -180,8 +180,8 @@ TEST_F(FilterTest, TwoPathBranchFoldedOnFalse)
     misc::position pos(6);
     util::sptr<proto::scope> scope(std::move(new proto::global_scope));
 
-    util::sptr<flchk::binary_op> binary(
-            new flchk::binary_op(pos
+    util::sptr<flchk::BinaryOp> binary(
+            new flchk::BinaryOp(pos
                                , std::move(util::mkptr(new flchk::IntLiteral(pos, "2048")))
                                , ">"
                                , std::move(util::mkptr(new flchk::FloatLiteral(pos, "11235.8")))));
@@ -218,8 +218,8 @@ TEST_F(FilterTest, TwoPathBranchFoldedOnTrue)
     misc::position pos(7);
     util::sptr<proto::scope> scope(std::move(new proto::global_scope));
 
-    util::sptr<flchk::binary_op> binary(
-            new flchk::binary_op(pos
+    util::sptr<flchk::BinaryOp> binary(
+            new flchk::BinaryOp(pos
                                , std::move(util::mkptr(new flchk::IntLiteral(pos, "2048")))
                                , "<"
                                , std::move(util::mkptr(new flchk::FloatLiteral(pos, "11235.8")))));
@@ -256,8 +256,8 @@ TEST_F(FilterTest, IfNotFoldedOnFalse)
     misc::position pos(8);
     util::sptr<proto::scope> scope(std::move(new proto::global_scope));
 
-    util::sptr<flchk::binary_op> binary(
-            new flchk::binary_op(pos
+    util::sptr<flchk::BinaryOp> binary(
+            new flchk::BinaryOp(pos
                                , std::move(util::mkptr(new flchk::IntLiteral(pos, "2048")))
                                , ">"
                                , std::move(util::mkptr(new flchk::FloatLiteral(pos, "11235.8")))));
@@ -290,8 +290,8 @@ TEST_F(FilterTest, IfNotFoldedOnTrue)
     misc::position pos(8);
     util::sptr<proto::scope> scope(std::move(new proto::global_scope));
 
-    util::sptr<flchk::binary_op> binary(
-            new flchk::binary_op(pos
+    util::sptr<flchk::BinaryOp> binary(
+            new flchk::BinaryOp(pos
                                , std::move(util::mkptr(new flchk::IntLiteral(pos, "2048")))
                                , "<"
                                , std::move(util::mkptr(new flchk::FloatLiteral(pos, "11235.8")))));

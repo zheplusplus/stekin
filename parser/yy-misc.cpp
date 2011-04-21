@@ -9,7 +9,7 @@ int yywrap(void)
     return 1;
 }
 
-grammar::clause_builder parser::builder;
+grammar::ClauseBuilder parser::builder;
 int parser::last_indent = 0;
 
 misc::position parser::here()

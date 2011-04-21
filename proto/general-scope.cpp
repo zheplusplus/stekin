@@ -18,11 +18,11 @@ util::sptr<Expression const> general_scope::make_call(misc::position const& pos
     return std::move(_symbols.query_call(pos, name, std::move(args)));
 }
 
-util::sptr<Expression const> general_scope::make_func_reference(misc::position const& pos
+util::sptr<Expression const> general_scope::make_FuncReference(misc::position const& pos
                                                              , std::string const& name
                                                              , int param_count) const
 {
-    return std::move(util::mkptr(new func_reference(pos, _symbols.query_func(pos, name, param_count))));
+    return std::move(util::mkptr(new FuncReference(pos, _symbols.query_func(pos, name, param_count))));
 }
 
 void general_scope::def_var(misc::position const& pos, std::string const& name)

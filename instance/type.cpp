@@ -27,7 +27,7 @@ bool type::eq_as_built_in(type const&) const
     return false;
 }
 
-bool type::eq_as_func_reference(util::sref<proto::Function>, std::map<std::string, variable const> const&) const
+bool type::eq_as_FuncReference(util::sref<proto::Function>, std::map<std::string, variable const> const&) const
 {
     return false;
 }
@@ -37,7 +37,7 @@ bool type::lt_as_built_in(type const&) const
     return false;
 }
 
-bool type::lt_as_func_reference(util::sref<proto::Function>, std::map<std::string, variable const> const&) const
+bool type::lt_as_FuncReference(util::sref<proto::Function>, std::map<std::string, variable const> const&) const
 {
     return false;
 }
@@ -77,7 +77,7 @@ bool built_in_primitive::lt_as_built_in(type const& lhs) const
     return &lhs < this;
 }
 
-bool built_in_primitive::lt_as_func_reference(util::sref<proto::Function>
+bool built_in_primitive::lt_as_FuncReference(util::sref<proto::Function>
                                             , std::map<std::string, variable const> const&) const
 {
     return false;

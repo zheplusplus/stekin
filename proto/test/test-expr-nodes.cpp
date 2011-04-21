@@ -66,11 +66,11 @@ TEST_F(ExprNodesTest, Reference)
 TEST_F(ExprNodesTest, Operations)
 {
     misc::position pos(3);
-    proto::binary_op bin(pos
+    proto::BinaryOp bin(pos
                        , std::move(util::mkptr(new proto::IntLiteral(pos, 20110122)))
                        , "+"
                        , std::move(util::mkptr(new proto::reference(pos, "littleBird"))));
-    proto::pre_unary_op preu(pos
+    proto::PreUnaryOp preu(pos
                            , "-"
                            , std::move(util::mkptr(new proto::reference(pos, "uninstall"))));
 
@@ -100,13 +100,13 @@ TEST_F(ExprNodesTest, Operations)
 TEST_F(ExprNodesTest, Logic)
 {
     misc::position pos(4);
-    proto::conjunction conj(pos
+    proto::Conjunction conj(pos
                           , std::move(util::mkptr(new proto::BoolLiteral(pos, true)))
                           , std::move(util::mkptr(new proto::BoolLiteral(pos, false))));
-    proto::disjunction disj(pos
+    proto::Disjunction disj(pos
                           , std::move(util::mkptr(new proto::IntLiteral(pos, 198765432)))
                           , std::move(util::mkptr(new proto::IntLiteral(pos, 0))));
-    proto::negation nega(pos, std::move(util::mkptr(new proto::BoolLiteral(pos, true))));
+    proto::Negation nega(pos, std::move(util::mkptr(new proto::BoolLiteral(pos, true))));
 
     conj.inst(*inst_scope)->typeof();
     disj.inst(*inst_scope)->typeof();

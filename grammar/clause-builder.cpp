@@ -10,151 +10,151 @@ using namespace grammar;
 
 namespace {
 
-    struct dummy_acceptor
-        : public acceptor
+    struct DummyAcceptor
+        : public Acceptor
     {
-        dummy_acceptor()
-            : acceptor(misc::position(-1))
+        DummyAcceptor()
+            : Acceptor(misc::position(-1))
         {}
 
         void accept_stmt(util::sptr<Statement const>) {}
         void accept_func(util::sptr<Function const>) {}
-        void deliver_to(util::sref<acceptor>) {}
+        void deliver_to(util::sref<Acceptor>) {}
     };
 
 }
 
-void acceptor_stack::add(int level, util::sptr<acceptor> acc)
+void AcceptorStack::add(int level, util::sptr<Acceptor> acc)
 {
     _prepare_level(level, acc->pos);
-    _acceptors.push_back(std::move(acc));
+    _Acceptors.push_back(std::move(acc));
 }
 
-void acceptor_stack::next_stmt(int level, util::sptr<Statement const> stmt)
+void AcceptorStack::next_stmt(int level, util::sptr<Statement const> stmt)
 {
     _prepare_level(level, stmt->pos);
-    _acceptors.back()->accept_stmt(std::move(stmt));
+    _Acceptors.back()->accept_stmt(std::move(stmt));
 }
 
-void acceptor_stack::next_func(int level, util::sptr<Function const> func)
+void AcceptorStack::next_func(int level, util::sptr<Function const> func)
 {
     _prepare_level(level, func->pos);
-    _acceptors.back()->accept_func(std::move(func));
+    _Acceptors.back()->accept_func(std::move(func));
 }
 
-void acceptor_stack::match_else(int level, misc::position const& pos)
+void AcceptorStack::match_else(int level, misc::position const& pos)
 {
     _prepare_level(level + 1, pos);
-    _acceptors.back()->accept_else(pos);
+    _Acceptors.back()->accept_else(pos);
 }
 
-void acceptor_stack::_fill_to(int level, misc::position const& pos)
+void AcceptorStack::_fill_to(int level, misc::position const& pos)
 {
-    if (int(_acceptors.size()) <= level) {
+    if (int(_Acceptors.size()) <= level) {
         error::excessive_indent(pos);
-        while (int(_acceptors.size()) <= level) {
-            _acceptors.push_back(std::move(util::mkmptr(new dummy_acceptor)));
+        while (int(_Acceptors.size()) <= level) {
+            _Acceptors.push_back(std::move(util::mkmptr(new DummyAcceptor)));
         }
     }
 }
 
-void acceptor_stack::_shrink_to(int level)
+void AcceptorStack::_shrink_to(int level)
 {
-    while (level + 1 < int(_acceptors.size())) {
-        util::sptr<acceptor> deliverer(std::move(_acceptors.back()));
-        _acceptors.pop_back();
-        deliverer->deliver_to(*_acceptors.back());
+    while (level + 1 < int(_Acceptors.size())) {
+        util::sptr<Acceptor> deliverer(std::move(_Acceptors.back()));
+        _Acceptors.pop_back();
+        deliverer->deliver_to(*_Acceptors.back());
     }
 }
 
-void acceptor_stack::_prepare_level(int level, misc::position const& pos)
+void AcceptorStack::_prepare_level(int level, misc::position const& pos)
 {
     _fill_to(level, pos);
     _shrink_to(level);
 }
 
-Block acceptor_stack::pack_all()
+Block AcceptorStack::pack_all()
 {
     _shrink_to(0);
     return std::move(_packer->pack());
 }
 
-acceptor_stack::acceptor_stack()
-    : _packer(_prepare_first_acceptor())
+AcceptorStack::AcceptorStack()
+    : _packer(_prepare_first_Acceptor())
 {}
 
-util::sref<acceptor_stack::acceptor_of_pack> acceptor_stack::_prepare_first_acceptor()
+util::sref<AcceptorStack::AcceptorOfPack> AcceptorStack::_prepare_first_Acceptor()
 {
-    util::sptr<acceptor_of_pack> packer(new acceptor_of_pack);
-    util::sref<acceptor_of_pack> ref = *packer;
-    _acceptors.push_back(std::move(packer));
+    util::sptr<AcceptorOfPack> packer(new AcceptorOfPack);
+    util::sref<AcceptorOfPack> ref = *packer;
+    _Acceptors.push_back(std::move(packer));
     return ref;
 }
 
-void acceptor_stack::acceptor_of_pack::accept_stmt(util::sptr<Statement const> stmt)
+void AcceptorStack::AcceptorOfPack::accept_stmt(util::sptr<Statement const> stmt)
 {
     _pack.add_stmt(std::move(stmt));
 }
 
-void acceptor_stack::acceptor_of_pack::accept_func(util::sptr<Function const> func)
+void AcceptorStack::AcceptorOfPack::accept_func(util::sptr<Function const> func)
 {
     _pack.add_func(std::move(func));
 }
 
-Block acceptor_stack::acceptor_of_pack::pack()
+Block AcceptorStack::AcceptorOfPack::pack()
 {
     return std::move(_pack);
 }
 
-void clause_builder::add_arith(int indent_len, util::sptr<Expression const> arith)
+void ClauseBuilder::add_arith(int indent_len, util::sptr<Expression const> arith)
 {
     misc::position pos(arith->pos);
     _stack.next_stmt(indent_len, std::move(util::mkptr(new arithmetics(pos, std::move(arith)))));
 }
 
-void clause_builder::add_var_def(int indent_len, std::string const& name, util::sptr<Expression const> init)
+void ClauseBuilder::add_var_def(int indent_len, std::string const& name, util::sptr<Expression const> init)
 {
     misc::position pos(init->pos);
     _stack.next_stmt(indent_len, std::move(util::mkptr(new var_def(pos, name, std::move(init)))));
 }
 
-void clause_builder::add_return(int indent_len, util::sptr<Expression const> ret_val)
+void ClauseBuilder::add_return(int indent_len, util::sptr<Expression const> ret_val)
 {
     misc::position pos(ret_val->pos);
     _stack.next_stmt(indent_len, std::move(util::mkptr(new func_ret(pos, std::move(ret_val)))));
 }
 
-void clause_builder::add_return_nothing(int indent_len, misc::position const& pos)
+void ClauseBuilder::add_return_nothing(int indent_len, misc::position const& pos)
 {
     _stack.next_stmt(indent_len, std::move(util::mkptr(new func_ret_nothing(pos))));
 }
 
-void clause_builder::add_Function(int indent_len
+void ClauseBuilder::add_Function(int indent_len
                                 , misc::position const& pos
                                 , std::string const& name
                                 , std::vector<std::string> const& params)
 {
-    _stack.add(indent_len, std::move(util::mkmptr(new Function_acceptor(pos, name, params))));
+    _stack.add(indent_len, std::move(util::mkmptr(new FunctionAcceptor(pos, name, params))));
 }
 
-void clause_builder::add_if(int indent_len, util::sptr<Expression const> condition)
+void ClauseBuilder::add_if(int indent_len, util::sptr<Expression const> condition)
 {
     misc::position pos(condition->pos);
-    _stack.add(indent_len, std::move(util::mkmptr(new if_acceptor(pos, std::move(condition)))));
+    _stack.add(indent_len, std::move(util::mkmptr(new IfAcceptor(pos, std::move(condition)))));
 }
 
-void clause_builder::add_ifnot(int indent_len, util::sptr<Expression const> condition)
+void ClauseBuilder::add_ifnot(int indent_len, util::sptr<Expression const> condition)
 {
     misc::position pos(condition->pos);
-    _stack.add(indent_len, std::move(util::mkmptr(new ifnot_acceptor(pos, std::move(condition)))));
+    _stack.add(indent_len, std::move(util::mkmptr(new IfnotAcceptor(pos, std::move(condition)))));
 }
 
-void clause_builder::add_else(int indent_len, misc::position const& pos)
+void ClauseBuilder::add_else(int indent_len, misc::position const& pos)
 {
     _stack.match_else(indent_len, pos);
 }
 
-flchk::Block clause_builder::build_and_clear()
+flchk::Block ClauseBuilder::build_and_clear()
 {
     return std::move(_stack.pack_all().compile(std::move(util::mkmptr(new flchk::filter)))->deliver());
 }

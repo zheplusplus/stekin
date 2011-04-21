@@ -30,7 +30,7 @@ namespace error {
                           , std::list<misc::position> const& ref_positions
                           , std::string const& name);
 
-    void func_reference_ambiguous(misc::position const& pos, std::string const& name);
+    void FuncReference_ambiguous(misc::position const& pos, std::string const& name);
     void func_already_def(misc::position const& prev_def_pos
                         , misc::position const& this_def_pos
                         , std::string const& name
@@ -39,11 +39,11 @@ namespace error {
 
     void var_not_def(misc::position const& ref_pos, std::string const& name);
 
-    void binary_op_not_avai(misc::position const& pos
+    void BinaryOp_not_avai(misc::position const& pos
                           , std::string const& op_img
                           , std::string const& lhst_name
                           , std::string const& rhst_name);
-    void pre_unary_op_not_avai(misc::position const& pos
+    void PreUnaryOp_not_avai(misc::position const& pos
                              , std::string const& op_img
                              , std::string const& rhst_name);
 

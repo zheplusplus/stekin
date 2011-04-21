@@ -43,10 +43,10 @@ namespace {
 
     struct bad_op_exception {};
 
-    struct binary_op_map {
-        static binary_op_map const& instance()
+    struct BinaryOp_map {
+        static BinaryOp_map const& instance()
         {
-            static binary_op_map inst;
+            static BinaryOp_map inst;
             return inst;
         }
 
@@ -74,13 +74,13 @@ namespace {
             return third_stage->second;
         }
     private:
-        binary_op_map& add(std::string const& op_id, util::sref<type const> lhs, util::sref<type const> rhs, operation const* oper)
+        BinaryOp_map& add(std::string const& op_id, util::sref<type const> lhs, util::sref<type const> rhs, operation const* oper)
         {
             _map[op_id][lhs][rhs] = oper;
             return *this;
         }
     private:
-        binary_op_map()
+        BinaryOp_map()
         {
             (*this)
                 .add("+", type::BIT_INT, type::BIT_INT, &BIT_INT_ADD)
@@ -113,10 +113,10 @@ namespace {
         std::map<std::string, std::map<util::sref<type const>, std::map<util::sref<type const>, operation const*>>> _map;
     };
 
-    struct pre_unary_op_map {
-        static pre_unary_op_map const& instance()
+    struct PreUnaryOp_map {
+        static PreUnaryOp_map const& instance()
         {
-            static pre_unary_op_map inst;
+            static PreUnaryOp_map inst;
             return inst;
         }
 
@@ -139,13 +139,13 @@ namespace {
             return second_stage->second;
         }
     private:
-        pre_unary_op_map& add(std::string const& op_id, util::sref<type const> rhs, operation const* oper)
+        PreUnaryOp_map& add(std::string const& op_id, util::sref<type const> rhs, operation const* oper)
         {
             _map[op_id][rhs] = oper;
             return *this;
         }
     private:
-        pre_unary_op_map()
+        PreUnaryOp_map()
         {
             (*this)
                 .add("+", type::BIT_INT, &BIT_POSI_INT)
@@ -167,9 +167,9 @@ operation const* operation::query_binary(misc::position const& pos
                                        , util::sref<type const> rhs)
 {
     try {
-        return binary_op_map::instance().query(op, lhs, rhs);
+        return BinaryOp_map::instance().query(op, lhs, rhs);
     } catch (bad_op_exception) {
-        error::binary_op_not_avai(pos, op, lhs->name(), rhs->name());
+        error::BinaryOp_not_avai(pos, op, lhs->name(), rhs->name());
         return &BAD_OPERATION;
     }
 }
@@ -179,9 +179,9 @@ operation const* operation::query_pre_unary(misc::position const& pos
                                           , util::sref<type const> rhs)
 {
     try {
-        return pre_unary_op_map::instance().query(op, rhs);
+        return PreUnaryOp_map::instance().query(op, rhs);
     } catch (bad_op_exception) {
-        error::pre_unary_op_not_avai(pos, op, rhs->name());
+        error::PreUnaryOp_not_avai(pos, op, rhs->name());
         return &BAD_OPERATION;
     }
 }

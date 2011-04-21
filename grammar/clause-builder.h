@@ -12,8 +12,8 @@
 
 namespace grammar {
 
-    struct acceptor_stack {
-        void add(int level, util::sptr<acceptor> acc);
+    struct AcceptorStack {
+        void add(int level, util::sptr<Acceptor> acc);
 
         void next_stmt(int level, util::sptr<Statement const> stmt);
         void next_func(int level, util::sptr<Function const> func);
@@ -22,36 +22,36 @@ namespace grammar {
 
         Block pack_all();
 
-        acceptor_stack();
+        AcceptorStack();
     private:
         void _fill_to(int level, misc::position const& pos);
         void _shrink_to(int level);
         void _prepare_level(int level, misc::position const& pos);
     private:
-        struct acceptor_of_pack
-            : public acceptor
+        struct AcceptorOfPack
+            : public Acceptor
         {
-            acceptor_of_pack()
-                : acceptor(misc::position(-1))
+            AcceptorOfPack()
+                : Acceptor(misc::position(-1))
             {}
 
             void accept_stmt(util::sptr<Statement const> stmt);
             void accept_func(util::sptr<Function const> func);
 
-            void deliver_to(util::sref<acceptor>) {}
+            void deliver_to(util::sref<Acceptor>) {}
 
             Block pack();
         private:
             Block _pack;
         };
 
-        std::list<util::sptr<acceptor>> _acceptors;
-        util::sref<acceptor_of_pack> const _packer;
+        std::list<util::sptr<Acceptor>> _Acceptors;
+        util::sref<AcceptorOfPack> const _packer;
 
-        util::sref<acceptor_of_pack> _prepare_first_acceptor();
+        util::sref<AcceptorOfPack> _prepare_first_Acceptor();
     };
 
-    struct clause_builder {
+    struct ClauseBuilder {
         void add_arith(int indent_len, util::sptr<Expression const> arith);
         void add_var_def(int indent_len, std::string const& name, util::sptr<Expression const> init);
         void add_return(int indent_len, util::sptr<Expression const> ret_val);
@@ -67,7 +67,7 @@ namespace grammar {
 
         flchk::Block build_and_clear();
     private:
-        acceptor_stack _stack;
+        AcceptorStack _stack;
     };
 
 }

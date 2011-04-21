@@ -8,34 +8,34 @@
 
 namespace grammar {
 
-    struct acceptor {
+    struct Acceptor {
         virtual void accept_func(util::sptr<Function const> func) = 0;
         virtual void accept_stmt(util::sptr<Statement const> stmt) = 0;
-        virtual void deliver_to(util::sref<acceptor> acc) = 0;
+        virtual void deliver_to(util::sref<Acceptor> acc) = 0;
 
         virtual void accept_else(misc::position const& else_pos);
 
-        virtual ~acceptor() {}
+        virtual ~Acceptor() {}
 
         misc::position const pos;
     protected:
-        explicit acceptor(misc::position const& ps)
+        explicit Acceptor(misc::position const& ps)
             : pos(ps)
         {}
 
-        acceptor(acceptor const&) = delete;
+        Acceptor(Acceptor const&) = delete;
     };
 
-    struct if_acceptor
-        : public acceptor
+    struct IfAcceptor
+        : public Acceptor
     {
         void accept_func(util::sptr<Function const> func);
         void accept_stmt(util::sptr<Statement const> stmt);
-        void deliver_to(util::sref<acceptor> acc);
+        void deliver_to(util::sref<Acceptor> acc);
         void accept_else(misc::position const& else_pos);
 
-        if_acceptor(misc::position const& pos, util::sptr<Expression const> predicate)
-            : acceptor(pos)
+        IfAcceptor(misc::position const& pos, util::sptr<Expression const> predicate)
+            : Acceptor(pos)
             , _predicate(std::move(predicate))
             , _current_branch(&_consequence)
         {}
@@ -51,15 +51,15 @@ namespace grammar {
         Block _alternative;
     };
 
-    struct ifnot_acceptor
-        : public acceptor
+    struct IfnotAcceptor
+        : public Acceptor
     {
         void accept_func(util::sptr<Function const> func);
         void accept_stmt(util::sptr<Statement const> stmt);
-        void deliver_to(util::sref<acceptor> acc);
+        void deliver_to(util::sref<Acceptor> acc);
 
-        ifnot_acceptor(misc::position const& pos, util::sptr<Expression const> predicate)
-            : acceptor(pos)
+        IfnotAcceptor(misc::position const& pos, util::sptr<Expression const> predicate)
+            : Acceptor(pos)
             , _predicate(std::move(predicate))
         {}
     private:
@@ -68,17 +68,17 @@ namespace grammar {
         Block _alternative;
     };
 
-    struct Function_acceptor
-        : public acceptor
+    struct FunctionAcceptor
+        : public Acceptor
     {
         void accept_func(util::sptr<Function const> func);
         void accept_stmt(util::sptr<Statement const> stmt);
-        void deliver_to(util::sref<acceptor> acc);
+        void deliver_to(util::sref<Acceptor> acc);
 
-        Function_acceptor(misc::position const& pos
+        FunctionAcceptor(misc::position const& pos
                         , std::string const& func_name
                         , std::vector<std::string> const& params)
-            : acceptor(pos)
+            : Acceptor(pos)
             , name(func_name)
             , param_names(params)
         {}
