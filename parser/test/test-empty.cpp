@@ -7,5 +7,5 @@
 TEST(Syntax, Empty)
 {
     yyparse();
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
 }

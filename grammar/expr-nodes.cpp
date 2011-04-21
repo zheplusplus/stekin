@@ -33,7 +33,7 @@ util::sptr<flchk::Expression const> Negation::compile() const
     return std::move(util::mkptr(new flchk::Negation(pos, rhs->compile())));
 }
 
-util::sptr<flchk::Expression const> reference::compile() const
+util::sptr<flchk::Expression const> Reference::compile() const
 {
     return std::move(util::mkptr(new flchk::reference(pos, name)));
 }
@@ -53,7 +53,7 @@ util::sptr<flchk::Expression const> FloatLiteral::compile() const
     return std::move(util::mkptr(new flchk::FloatLiteral(pos, value)));
 }
 
-util::sptr<flchk::Expression const> call::compile() const
+util::sptr<flchk::Expression const> Call::compile() const
 {
     std::vector<util::sptr<flchk::Expression const>> arguments;
     arguments.reserve(args.size());

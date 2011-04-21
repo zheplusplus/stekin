@@ -51,7 +51,7 @@ namespace parser {
             return this;
         }
 
-        std::vector<util::sptr<grammar::Expression const>> deliver_args()
+        std::vector<util::sptr<grammar::Expression const>> deliver()
         {
             return std::move(_params);
         }

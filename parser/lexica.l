@@ -20,14 +20,14 @@
 
 ^[ ]+ {
     if (0 != yyleng % parser::SPACES_PER_INDENT) {
-        error::bad_indent(parser::here());
+        error::badIndent(parser::here());
     }
     parser::last_indent = yyleng / parser::SPACES_PER_INDENT;
     return INDENT;
 }
 
 ^[ |\t]+ {
-    error::tab_as_indent(parser::here());
+    error::tabAsIndent(parser::here());
     return INDENT;
 }
 
@@ -99,6 +99,6 @@ false {
 }
 
 . {
-    error::invalid_char(parser::here(), *yytext);
+    error::invalidChar(parser::here(), *yytext);
 }
 %%

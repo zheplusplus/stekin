@@ -10,7 +10,7 @@ using namespace test;
 TEST(Syntax, ErrTabAsIndent)
 {
     yyparse();
-    ASSERT_TRUE(error::has_error());
+    ASSERT_TRUE(error::hasError());
     std::vector<TabAsIndRec> recs = getTabAsIndents();
     ASSERT_EQ(3, recs.size());
 

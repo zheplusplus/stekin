@@ -40,20 +40,20 @@ TEST_F(FuncNCallTest, NoBranchRecursionFunc)
 {
     misc::position pos(1);
     func->inst(pos, *inst_scope, std::vector<util::sref<inst::type const>>());
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
 
     reset_func(true);
     func->add_stmt(std::move(util::mkptr(new proto::func_ret_nothing(pos))));
     func->inst(pos, *inst_scope, std::vector<util::sref<inst::type const>>());
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
 
     reset_func(false);
     func->add_stmt(std::move(
                 util::mkptr(new proto::func_ret(pos, std::move(func->make_int(pos, 20110127))))));
     func->inst(pos, *inst_scope, std::vector<util::sref<inst::type const>>());
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
 
-    data_tree::expect_one()
+    DataTree::expectOne()
         (INIT_AS_VOID_RET)
         (ADD_PATH)
         (NEXT_PATH)
@@ -91,7 +91,7 @@ TEST_F(FuncNCallTest, FuncWithBranchRecursion)
                                           , "test_func"
                                           , std::move(std::vector<util::sptr<proto::Expression const>>()))));
     sub_scope0->add_stmt(std::move(util::mkptr(new proto::func_ret(pos, std::move(recursive_call)))));
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
     test_func->add_stmt(std::move(
                 util::mkptr(new proto::branch(pos
                                             , std::move(test_func->make_int(pos, 1))
@@ -101,9 +101,9 @@ TEST_F(FuncNCallTest, FuncWithBranchRecursion)
                 util::mkptr(new proto::func_ret(pos, std::move(test_func->make_int(pos, 1))))));
 
     test_func->inst(pos, *inst_scope, std::vector<util::sref<inst::type const>>());
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
 
-    data_tree::expect_one()
+    DataTree::expectOne()
         (ADD_PATH)
         (NEXT_PATH)
         (ADD_PATH)
@@ -144,12 +144,12 @@ TEST_F(FuncNCallTest, CouldNotResolve)
                                          , "test_func"
                                          , std::move(std::vector<util::sptr<proto::Expression const>>()))));
     test_func->add_stmt(std::move(util::mkptr(new proto::func_ret(pos, std::move(recursive_call)))));
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
 
     test_func->inst(pos, *inst_scope, std::vector<util::sref<inst::type const>>());
-    ASSERT_TRUE(error::has_error());
+    ASSERT_TRUE(error::hasError());
 
-    data_tree::expect_one()
+    DataTree::expectOne()
         (ADD_PATH)
         (NEXT_PATH)
         (ADD_PATH)

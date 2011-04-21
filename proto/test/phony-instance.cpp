@@ -170,7 +170,7 @@ bool variable::operator!=(variable const& rhs) const
 void Function::set_return_type(misc::position const& pos, util::sref<type const> t)
 {
     test_func_inst_resolved = true;
-    data_tree::actual_one()(pos, t == type::BIT_VOID ? SET_RETURN_TYPE_VOID : SET_RETURN_TYPE);
+    DataTree::actualOne()(pos, t == type::BIT_VOID ? SET_RETURN_TYPE_VOID : SET_RETURN_TYPE);
 }
 
 util::sref<type const> Function::get_return_type() const
@@ -180,19 +180,19 @@ util::sref<type const> Function::get_return_type() const
 
 bool Function::is_return_type_resolved() const
 {
-    data_tree::actual_one()(QUERY_RETURN_TYPE_RESOLVE_STATUS);
+    DataTree::actualOne()(QUERY_RETURN_TYPE_RESOLVE_STATUS);
     return test_func_inst_resolved ;
 }
 
 void Function::add_path(util::sref<mediate_base>)
 {
-    data_tree::actual_one()(ADD_PATH);
+    DataTree::actualOne()(ADD_PATH);
     ++path_count;
 }
 
 void Function::inst_next_path()
 {
-    data_tree::actual_one()(NEXT_PATH);
+    DataTree::actualOne()(NEXT_PATH);
     --path_count;
 }
 
@@ -208,7 +208,7 @@ variable Function::def_var(misc::position const& pos, util::sref<type const> vty
 
 variable Function::query_var(misc::position const& pos, std::string const& name) const
 {
-    data_tree::actual_one()(pos, QUERY_VAR, name);
+    DataTree::actualOne()(pos, QUERY_VAR, name);
     return variable(misc::position(0), util::mkref(test::PROTO_TEST_TYPE), 0, 0);
 }
 
@@ -217,19 +217,19 @@ operation const* scope::query_binary(misc::position const& pos
                                    , util::sref<type const>
                                    , util::sref<type const>) const
 {
-    data_tree::actual_one()(pos, QUERY_BINARY_OP, op);
+    DataTree::actualOne()(pos, QUERY_BINARY_OP, op);
     return NULL;
 }
 
 operation const* scope::query_pre_unary(misc::position const& pos, std::string const& op, util::sref<type const>) const
 {
-    data_tree::actual_one()(pos, QUERY_PRE_UNARY_OP, op);
+    DataTree::actualOne()(pos, QUERY_PRE_UNARY_OP, op);
     return NULL;
 }
 
 void scope::add_stmt(util::sptr<Statement const>)
 {
-    data_tree::actual_one()(ADD_STMT_TO_SCOPE);
+    DataTree::actualOne()(ADD_STMT_TO_SCOPE);
 }
 
 int Function::level() const
@@ -253,55 +253,55 @@ util::sref<Function> Function::create_instance(int
     path_count = 0;
     if (has_void_returns) {
         test_func_inst_resolved = true;
-        data_tree::actual_one()(INIT_AS_VOID_RET);
+        DataTree::actualOne()(INIT_AS_VOID_RET);
     }
     return util::mkref(func);
 }
 
 void Block::add_stmt(util::sptr<Statement const>)
 {
-    data_tree::actual_one()(ADD_STMT_TO_BLOCK);
+    DataTree::actualOne()(ADD_STMT_TO_BLOCK);
 }
 
 util::sref<type const> IntLiteral::typeof() const
 {
-    data_tree::actual_one()(INTEGER, util::str(value));
+    DataTree::actualOne()(INTEGER, util::str(value));
     return util::mkref(PROTO_TEST_TYPE);
 }
 
 util::sref<type const> FloatLiteral::typeof() const
 {
-    data_tree::actual_one()(FLOATING, util::str(value));
+    DataTree::actualOne()(FLOATING, util::str(value));
     return util::mkref(PROTO_TEST_TYPE);
 }
 
 util::sref<type const> BoolLiteral::typeof() const
 {
-    data_tree::actual_one()(BOOLEAN, util::str(value));
+    DataTree::actualOne()(BOOLEAN, util::str(value));
     return util::mkref(PROTO_TEST_TYPE);
 }
 
 util::sref<type const> reference::typeof() const
 {
-    data_tree::actual_one()(REFERENCE);
+    DataTree::actualOne()(REFERENCE);
     return util::mkref(PROTO_TEST_TYPE);
 }
 
 util::sref<type const> call::typeof() const
 {
-    data_tree::actual_one()(CALL, util::str(int(args.size())));
+    DataTree::actualOne()(CALL, util::str(int(args.size())));
     return util::mkref(PROTO_TEST_TYPE);
 }
 
 util::sref<type const> FuncReference::typeof() const
 {
-    data_tree::actual_one()(FUNC_REFERENCE);
+    DataTree::actualOne()(FUNC_REFERENCE);
     return util::mkref(PROTO_TEST_TYPE);
 }
 
 util::sref<type const> BinaryOp::typeof() const
 {
-    data_tree::actual_one()(BINARY_OP);
+    DataTree::actualOne()(BINARY_OP);
     lhs->typeof();
     rhs->typeof();
     return util::mkref(PROTO_TEST_TYPE);
@@ -309,14 +309,14 @@ util::sref<type const> BinaryOp::typeof() const
 
 util::sref<type const> PreUnaryOp::typeof() const
 {
-    data_tree::actual_one()(PRE_UNARY_OP);
+    DataTree::actualOne()(PRE_UNARY_OP);
     rhs->typeof();
     return util::mkref(PROTO_TEST_TYPE);
 }
 
 util::sref<type const> Conjunction::typeof() const
 {
-    data_tree::actual_one()(CONJUNCTION);
+    DataTree::actualOne()(CONJUNCTION);
     lhs->typeof();
     rhs->typeof();
     return util::mkref(PROTO_TEST_TYPE);
@@ -324,7 +324,7 @@ util::sref<type const> Conjunction::typeof() const
 
 util::sref<type const> Disjunction::typeof() const
 {
-    data_tree::actual_one()(DISJUNCTION);
+    DataTree::actualOne()(DISJUNCTION);
     lhs->typeof();
     rhs->typeof();
     return util::mkref(PROTO_TEST_TYPE);
@@ -332,7 +332,7 @@ util::sref<type const> Disjunction::typeof() const
 
 util::sref<type const> Negation::typeof() const
 {
-    data_tree::actual_one()(NEGATION);
+    DataTree::actualOne()(NEGATION);
     rhs->typeof();
     return util::mkref(PROTO_TEST_TYPE);
 }

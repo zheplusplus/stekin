@@ -50,48 +50,48 @@ namespace test {
     typedef nothing_node_templ<proto_data> nothing_node;
     typedef string_node_templ<proto_data> string_node;
 
-    struct data_tree
-        : public data_tree_templ<proto_data, data_tree>
+    struct DataTree
+        : public DataTreeTempl<proto_data, DataTree>
     {
-        typedef data_tree_templ<proto_data, data_tree> base_type;
+        typedef DataTreeTempl<proto_data, DataTree> BaseType;
 
-        data_tree& operator()(misc::position const& pos, node_type const& type, std::string const& str);
-        data_tree& operator()(misc::position const& pos
-                            , node_type const& type
+        DataTree& operator()(misc::position const& pos, NodeType const& type, std::string const& str);
+        DataTree& operator()(misc::position const& pos
+                            , NodeType const& type
                             , std::string const& str
                             , int func_arg_size);
-        data_tree& operator()(misc::position const& pos, node_type const& type);
+        DataTree& operator()(misc::position const& pos, NodeType const& type);
 
-        data_tree& operator()(node_type const& type);
-        data_tree& operator()(node_type const& type, std::string const& str);
+        DataTree& operator()(NodeType const& type);
+        DataTree& operator()(NodeType const& type, std::string const& str);
     };
 
-    extern node_type const ADD_STMT_TO_SCOPE;
-    extern node_type const ADD_STMT_TO_BLOCK;
+    extern NodeType const ADD_STMT_TO_SCOPE;
+    extern NodeType const ADD_STMT_TO_BLOCK;
 
-    extern node_type const QUERY_VAR;
-    extern node_type const QUERY_BINARY_OP;
-    extern node_type const QUERY_PRE_UNARY_OP;
+    extern NodeType const QUERY_VAR;
+    extern NodeType const QUERY_BINARY_OP;
+    extern NodeType const QUERY_PRE_UNARY_OP;
 
-    extern node_type const BOOLEAN;
-    extern node_type const INTEGER;
-    extern node_type const FLOATING;
-    extern node_type const REFERENCE;
-    extern node_type const BINARY_OP;
-    extern node_type const PRE_UNARY_OP;
-    extern node_type const CALL;
-    extern node_type const FUNC_REFERENCE;
-    extern node_type const CONJUNCTION;
-    extern node_type const DISJUNCTION;
-    extern node_type const NEGATION;
+    extern NodeType const BOOLEAN;
+    extern NodeType const INTEGER;
+    extern NodeType const FLOATING;
+    extern NodeType const REFERENCE;
+    extern NodeType const BINARY_OP;
+    extern NodeType const PRE_UNARY_OP;
+    extern NodeType const CALL;
+    extern NodeType const FUNC_REFERENCE;
+    extern NodeType const CONJUNCTION;
+    extern NodeType const DISJUNCTION;
+    extern NodeType const NEGATION;
 
-    extern node_type const INIT_AS_VOID_RET;
-    extern node_type const SET_RETURN_TYPE_VOID;
-    extern node_type const SET_RETURN_TYPE;
-    extern node_type const QUERY_RETURN_TYPE_RESOLVE_STATUS;
+    extern NodeType const INIT_AS_VOID_RET;
+    extern NodeType const SET_RETURN_TYPE_VOID;
+    extern NodeType const SET_RETURN_TYPE;
+    extern NodeType const QUERY_RETURN_TYPE_RESOLVE_STATUS;
 
-    extern node_type const NEXT_PATH;
-    extern node_type const ADD_PATH;
+    extern NodeType const NEXT_PATH;
+    extern NodeType const ADD_PATH;
 
     struct proto_test
         : public testing::Test

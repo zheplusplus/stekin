@@ -66,45 +66,45 @@ void Block::add_stmt(util::sptr<Statement const> stmt)
 
 util::sptr<inst::mediate_base> Block::inst(util::sref<inst::scope>) const
 {
-    data_tree::actual_one()(SCOPE_BEGIN);
+    DataTree::actualOne()(SCOPE_BEGIN);
     std::for_each(_stmts.begin()
                 , _stmts.end()
                 , [&](util::sptr<Statement const> const& stmt)
                   {
                       stmt->inst(nul_inst_scope);
                   });
-    data_tree::actual_one()(SCOPE_END);
+    DataTree::actualOne()(SCOPE_END);
     return std::move(nul_mediate());
 }
 
 Block scope::deliver()
 {
-    return std::move(_Block);
+    return std::move(_block);
 }
 
 util::sptr<inst::mediate_base> func_ret::inst(util::sref<inst::scope>) const
 {
-    data_tree::actual_one()(pos, RETURN);
+    DataTree::actualOne()(pos, RETURN);
     ret_val->inst(nul_inst_scope);
     return std::move(nul_mediate());
 }
 
 util::sptr<inst::mediate_base> func_ret_nothing::inst(util::sref<inst::scope>) const
 {
-    data_tree::actual_one()(pos, RETURN_NOTHING);
+    DataTree::actualOne()(pos, RETURN_NOTHING);
     return std::move(nul_mediate());
 }
 
 util::sptr<inst::mediate_base> var_def::inst(util::sref<inst::scope>) const
 {
-    data_tree::actual_one()(pos, VAR_DEF, name);
+    DataTree::actualOne()(pos, VAR_DEF, name);
     init->inst(nul_inst_scope);
     return std::move(nul_mediate());
 }
 
 util::sptr<inst::mediate_base> branch::inst(util::sref<inst::scope>) const
 {
-    data_tree::actual_one()(pos, BRANCH);
+    DataTree::actualOne()(pos, BRANCH);
     _predicate->inst(nul_inst_scope);
     _consequence.inst(nul_inst_scope);
     _alternative.inst(nul_inst_scope);
@@ -113,38 +113,38 @@ util::sptr<inst::mediate_base> branch::inst(util::sref<inst::scope>) const
 
 util::sptr<inst::mediate_base> arithmetics::inst(util::sref<inst::scope>) const
 {
-    data_tree::actual_one()(pos, ARITHMETICS);
+    DataTree::actualOne()(pos, ARITHMETICS);
     expr->inst(nul_inst_scope);
     return std::move(nul_mediate());
 }
 
 util::sptr<inst::Expression const> BoolLiteral::inst(util::sref<inst::scope>) const
 {
-    data_tree::actual_one()(pos, BOOLEAN, util::str(value));
+    DataTree::actualOne()(pos, BOOLEAN, util::str(value));
     return std::move(nul_inst_expr());
 }
 
 util::sptr<inst::Expression const> IntLiteral::inst(util::sref<inst::scope>) const
 {
-    data_tree::actual_one()(pos, INTEGER, util::str(value));
+    DataTree::actualOne()(pos, INTEGER, util::str(value));
     return std::move(nul_inst_expr());
 }
 
 util::sptr<inst::Expression const> FloatLiteral::inst(util::sref<inst::scope>) const
 {
-    data_tree::actual_one()(pos, FLOATING, util::str(value));
+    DataTree::actualOne()(pos, FLOATING, util::str(value));
     return std::move(nul_inst_expr());
 }
 
 util::sptr<inst::Expression const> reference::inst(util::sref<inst::scope>) const
 {
-    data_tree::actual_one()(pos, REFERENCE, name);
+    DataTree::actualOne()(pos, REFERENCE, name);
     return std::move(nul_inst_expr());
 }
 
 util::sptr<inst::Expression const> call::inst(util::sref<inst::scope>) const
 {
-    data_tree::actual_one()(pos, CALL, func->name, args.size(), false);
+    DataTree::actualOne()(pos, CALL, func->name, args.size(), false);
     std::for_each(args.begin()
                 , args.end()
                 , [&](util::sptr<Expression const> const& arg)
@@ -156,13 +156,13 @@ util::sptr<inst::Expression const> call::inst(util::sref<inst::scope>) const
 
 util::sptr<inst::Expression const> FuncReference::inst(util::sref<inst::scope>) const
 {
-    data_tree::actual_one()(pos, FUNC_REFERENCE, func->name, func->param_names.size(), false);
+    DataTree::actualOne()(pos, FUNC_REFERENCE, func->name, func->param_names.size(), false);
     return std::move(nul_inst_expr());
 }
 
 util::sptr<inst::Expression const> BinaryOp::inst(util::sref<inst::scope>) const
 {
-    data_tree::actual_one()(pos, BINARY_OP, op);
+    DataTree::actualOne()(pos, BINARY_OP, op);
     lhs->inst(nul_inst_scope);
     rhs->inst(nul_inst_scope);
     return std::move(nul_inst_expr());
@@ -170,14 +170,14 @@ util::sptr<inst::Expression const> BinaryOp::inst(util::sref<inst::scope>) const
 
 util::sptr<inst::Expression const> PreUnaryOp::inst(util::sref<inst::scope>) const
 {
-    data_tree::actual_one()(pos, PRE_UNARY_OP, op);
+    DataTree::actualOne()(pos, PRE_UNARY_OP, op);
     rhs->inst(nul_inst_scope);
     return std::move(nul_inst_expr());
 }
 
 util::sptr<inst::Expression const> Conjunction::inst(util::sref<inst::scope>) const
 {
-    data_tree::actual_one()(pos, BINARY_OP, "&&");
+    DataTree::actualOne()(pos, BINARY_OP, "&&");
     lhs->inst(nul_inst_scope);
     rhs->inst(nul_inst_scope);
     return std::move(nul_inst_expr());
@@ -185,7 +185,7 @@ util::sptr<inst::Expression const> Conjunction::inst(util::sref<inst::scope>) co
 
 util::sptr<inst::Expression const> Disjunction::inst(util::sref<inst::scope>) const
 {
-    data_tree::actual_one()(pos, BINARY_OP, "||");
+    DataTree::actualOne()(pos, BINARY_OP, "||");
     lhs->inst(nul_inst_scope);
     rhs->inst(nul_inst_scope);
     return std::move(nul_inst_expr());
@@ -193,7 +193,7 @@ util::sptr<inst::Expression const> Disjunction::inst(util::sref<inst::scope>) co
 
 util::sptr<inst::Expression const> Negation::inst(util::sref<inst::scope>) const
 {
-    data_tree::actual_one()(pos, PRE_UNARY_OP, "!");
+    DataTree::actualOne()(pos, PRE_UNARY_OP, "!");
     rhs->inst(nul_inst_scope);
     return std::move(nul_inst_expr());
 }
@@ -249,7 +249,7 @@ util::sptr<Expression const> scope::make_nega(misc::position const& pos, util::s
 
 void scope::add_stmt(util::sptr<Statement const> stmt)
 {
-    _Block.add_stmt(std::move(stmt));
+    _block.add_stmt(std::move(stmt));
 }
 
 util::sptr<Expression const> general_scope::make_ref(misc::position const& pos, std::string const& name)
@@ -283,7 +283,7 @@ util::sptr<Expression const> general_scope::make_FuncReference(misc::position co
 
 void general_scope::def_var(misc::position const& pos, std::string const& name)
 {
-    data_tree::actual_one()(pos, SCOPE_VAR_DEF, name);
+    DataTree::actualOne()(pos, SCOPE_VAR_DEF, name);
 }
 
 util::sptr<scope> general_scope::create_branch_scope()
@@ -296,12 +296,12 @@ util::sref<Function> general_scope::declare(misc::position const& pos
                                           , std::vector<std::string> const& param_names
                                           , bool hint_func_ret_void)
 {
-    data_tree::actual_one()(pos, FUNC_DECL, name, param_names.size(), hint_func_ret_void);
+    DataTree::actualOne()(pos, FUNC_DECL, name, param_names.size(), hint_func_ret_void);
     std::for_each(param_names.begin()
                 , param_names.end()
                 , [&](std::string const& param)
                   {
-                      data_tree::actual_one()(pos, PARAMETER, param);
+                      DataTree::actualOne()(pos, PARAMETER, param);
                   });
     func_entities.push_back(std::move(util::mkmptr(new Function(pos
                                                               , name

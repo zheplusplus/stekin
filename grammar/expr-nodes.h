@@ -85,10 +85,10 @@ namespace grammar {
         util::sptr<Expression const> const rhs;
     };
 
-    struct reference
+    struct Reference
         : public Expression
     {
-        reference(misc::position const& pos, std::string const& n)
+        Reference(misc::position const& pos, std::string const& n)
             : Expression(pos)
             , name(n)
         {}
@@ -137,10 +137,10 @@ namespace grammar {
         std::string const value;
     };
 
-    struct call
+    struct Call
         : public Expression
     {
-        call(misc::position const& pos, std::string const& n, std::vector<util::sptr<Expression const>> a)
+        Call(misc::position const& pos, std::string const& n, std::vector<util::sptr<Expression const>> a)
             : Expression(pos)
             , name(n)
             , args(std::move(a))

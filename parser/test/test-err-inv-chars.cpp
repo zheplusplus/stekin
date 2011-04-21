@@ -10,7 +10,7 @@ using namespace test;
 TEST(Syntax, InvalidCharacters)
 {
     yyparse();
-    ASSERT_TRUE(error::has_error());
+    ASSERT_TRUE(error::hasError());
     std::vector<InvCharRec> recs = getInvCharRecs();
     ASSERT_EQ(3, recs.size());
 

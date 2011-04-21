@@ -14,7 +14,7 @@ void Block::add_stmt(util::sptr<Statement const> stmt)
 
 util::sptr<inst::mediate_base> Block::inst(util::sref<inst::scope> scope) const
 {
-    return std::move(util::mkmptr(new Block_mediate(_stmts, scope)));
+    return std::move(util::mkmptr(new BlockMediate(_stmts, scope)));
 }
 
 std::list<util::sptr<Statement const>> const& Block::get_stmts() const

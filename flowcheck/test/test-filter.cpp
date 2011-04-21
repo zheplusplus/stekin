@@ -30,18 +30,18 @@ TEST_F(FilterTest, FilterNormal)
                                , std::move(util::mkptr(new flchk::FloatLiteral(pos, "235.7")))));
 
     flchk::filter filter0;
-    filter0.add_arith(pos, std::move(util::mkptr(new flchk::BoolLiteral(pos, true))));
+    filter0.addArith(pos, std::move(util::mkptr(new flchk::BoolLiteral(pos, true))));
     filter0.def_var(pos, "soujirou", std::move(binary));
     filter0.def_var(pos, "iwasaki", std::move(util::mkptr(new flchk::reference(pos, "minami"))));
 
     util::sptr<flchk::filter> filter_consq(new flchk::filter);
     misc::position pos_consq(100);
-    filter_consq->add_arith(pos_consq, std::move(util::mkptr(new flchk::reference(pos_consq, "kobayakawa"))));
+    filter_consq->addArith(pos_consq, std::move(util::mkptr(new flchk::reference(pos_consq, "kobayakawa"))));
 
     util::sptr<flchk::filter> filter_alter(new flchk::filter);
     misc::position pos_alter(101);
-    filter_alter->add_arith(pos_alter, std::move(util::mkptr(new flchk::reference(pos_alter, "yutaka"))));
-    filter_alter->add_arith(pos_alter, std::move(util::mkptr(new flchk::reference(pos_alter, "hiyori"))));
+    filter_alter->addArith(pos_alter, std::move(util::mkptr(new flchk::reference(pos_alter, "yutaka"))));
+    filter_alter->addArith(pos_alter, std::move(util::mkptr(new flchk::reference(pos_alter, "hiyori"))));
 
     filter0.add_branch(pos
                      , std::move(util::mkptr(new flchk::reference(pos, "tamura")))
@@ -52,9 +52,9 @@ TEST_F(FilterTest, FilterNormal)
     filter0.deliver().compile(*scope);
     scope->deliver().inst(nul_inst_scope);
 
-    EXPECT_FALSE(error::has_error());
+    EXPECT_FALSE(error::hasError());
 
-    data_tree::expect_one()
+    DataTree::expectOne()
         (pos, SCOPE_VAR_DEF, "soujirou")
         (pos, SCOPE_VAR_DEF, "iwasaki")
         (SCOPE_BEGIN)
@@ -94,7 +94,7 @@ TEST_F(FilterTest, TerminatedError)
     filter0.add_func_ret(pos_error, std::move(util::mkptr(new flchk::reference(pos, "patty"))));
     filter0.add_func_ret_nothing(pos_ignored);
 
-    ASSERT_TRUE(error::has_error());
+    ASSERT_TRUE(error::hasError());
     ASSERT_EQ(1, get_flow_terminated_recs().size());
     ASSERT_EQ(pos_error, get_flow_terminated_recs()[0].this_pos);
     ASSERT_EQ(pos, get_flow_terminated_recs()[0].prev_pos);
@@ -109,18 +109,18 @@ TEST_F(FilterTest, TerminatedWarningIfConsequence)
     flchk::filter filter0;
 
     util::sptr<flchk::filter> filter_consq(new flchk::filter);
-    filter_consq->add_arith(pos, std::move(util::mkptr(new flchk::reference(pos, "ayano"))));
+    filter_consq->addArith(pos, std::move(util::mkptr(new flchk::reference(pos, "ayano"))));
     filter_consq->add_func_ret_nothing(pos_warning);
 
     util::sptr<flchk::filter> filter_alter(new flchk::filter);
-    filter_alter->add_arith(pos, std::move(util::mkptr(new flchk::BoolLiteral(pos, true))));
+    filter_alter->addArith(pos, std::move(util::mkptr(new flchk::BoolLiteral(pos, true))));
 
     filter0.add_branch(pos
                      , std::move(util::mkptr(new flchk::reference(pos, "minegishi")))
                      , std::move(filter_consq)
                      , std::move(filter_alter));
 
-    EXPECT_FALSE(error::has_error());
+    EXPECT_FALSE(error::hasError());
     ASSERT_EQ(1, get_consq_branch_terminated().size());
     ASSERT_EQ(pos_warning, get_consq_branch_terminated()[0].pos);
 }
@@ -134,7 +134,7 @@ TEST_F(FilterTest, TerminatedWarningIfAlternative)
     flchk::filter filter0;
 
     util::sptr<flchk::filter> filter_consq(new flchk::filter);
-    filter_consq->add_arith(pos, std::move(util::mkptr(new flchk::IntLiteral(pos, "20110411"))));
+    filter_consq->addArith(pos, std::move(util::mkptr(new flchk::IntLiteral(pos, "20110411"))));
 
     util::sptr<flchk::filter> filter_alter(new flchk::filter);
     filter_alter->add_func_ret(pos_warning, std::move(util::mkptr(new flchk::reference(pos, "kogami"))));
@@ -144,7 +144,7 @@ TEST_F(FilterTest, TerminatedWarningIfAlternative)
                      , std::move(filter_consq)
                      , std::move(filter_alter));
 
-    EXPECT_FALSE(error::has_error());
+    EXPECT_FALSE(error::hasError());
     ASSERT_EQ(1, get_alter_branch_terminated().size());
     ASSERT_EQ(pos_warning, get_alter_branch_terminated()[0].pos);
 }
@@ -169,7 +169,7 @@ TEST_F(FilterTest, TerminatedWarningBothBranches)
                      , std::move(filter_consq)
                      , std::move(filter_alter));
 
-    EXPECT_FALSE(error::has_error());
+    EXPECT_FALSE(error::hasError());
     ASSERT_EQ(1, get_both_branches_terminated().size());
     ASSERT_EQ(pos_warning_consq, get_both_branches_terminated()[0].consq_pos);
     ASSERT_EQ(pos_warning_alter, get_both_branches_terminated()[0].alter_pos);
@@ -190,11 +190,11 @@ TEST_F(FilterTest, TwoPathBranchFoldedOnFalse)
 
     util::sptr<flchk::filter> filter_consq(new flchk::filter);
     misc::position pos_consq(600);
-    filter_consq->add_arith(pos_consq, std::move(util::mkptr(new flchk::reference(pos_consq, "yui"))));
+    filter_consq->addArith(pos_consq, std::move(util::mkptr(new flchk::reference(pos_consq, "yui"))));
 
     util::sptr<flchk::filter> filter_alter(new flchk::filter);
     misc::position pos_alter(601);
-    filter_alter->add_arith(pos_alter, std::move(util::mkptr(new flchk::reference(pos_alter, "narumi"))));
+    filter_alter->addArith(pos_alter, std::move(util::mkptr(new flchk::reference(pos_alter, "narumi"))));
 
     filter0.add_branch(pos, std::move(binary), std::move(filter_consq), std::move(filter_alter));
     filter0.add_func_ret_nothing(pos);
@@ -202,9 +202,9 @@ TEST_F(FilterTest, TwoPathBranchFoldedOnFalse)
     filter0.deliver().compile(*scope);
     scope->deliver().inst(nul_inst_scope);
 
-    EXPECT_FALSE(error::has_error());
+    EXPECT_FALSE(error::hasError());
 
-    data_tree::expect_one()
+    DataTree::expectOne()
         (SCOPE_BEGIN)
         (pos_alter, ARITHMETICS)
             (pos_alter, REFERENCE, "narumi")
@@ -228,11 +228,11 @@ TEST_F(FilterTest, TwoPathBranchFoldedOnTrue)
 
     util::sptr<flchk::filter> filter_consq(new flchk::filter);
     misc::position pos_consq(700);
-    filter_consq->add_arith(pos_consq, std::move(util::mkptr(new flchk::reference(pos_consq, "yui"))));
+    filter_consq->addArith(pos_consq, std::move(util::mkptr(new flchk::reference(pos_consq, "yui"))));
 
     util::sptr<flchk::filter> filter_alter(new flchk::filter);
     misc::position pos_alter(701);
-    filter_alter->add_arith(pos_alter, std::move(util::mkptr(new flchk::reference(pos_alter, "narumi"))));
+    filter_alter->addArith(pos_alter, std::move(util::mkptr(new flchk::reference(pos_alter, "narumi"))));
 
     filter0.add_branch(pos, std::move(binary), std::move(filter_consq), std::move(filter_alter));
     filter0.add_func_ret_nothing(pos);
@@ -240,9 +240,9 @@ TEST_F(FilterTest, TwoPathBranchFoldedOnTrue)
     filter0.deliver().compile(*scope);
     scope->deliver().inst(nul_inst_scope);
 
-    EXPECT_FALSE(error::has_error());
+    EXPECT_FALSE(error::hasError());
 
-    data_tree::expect_one()
+    DataTree::expectOne()
         (SCOPE_BEGIN)
         (pos_consq, ARITHMETICS)
             (pos_consq, REFERENCE, "yui")
@@ -266,7 +266,7 @@ TEST_F(FilterTest, IfNotFoldedOnFalse)
 
     util::sptr<flchk::filter> filter_alter(new flchk::filter);
     misc::position pos_alter(801);
-    filter_alter->add_arith(pos_alter, std::move(util::mkptr(new flchk::reference(pos_alter, "narumi"))));
+    filter_alter->addArith(pos_alter, std::move(util::mkptr(new flchk::reference(pos_alter, "narumi"))));
 
     filter0.add_branch_alt_only(pos, std::move(binary), std::move(filter_alter));
     filter0.add_func_ret_nothing(pos);
@@ -274,9 +274,9 @@ TEST_F(FilterTest, IfNotFoldedOnFalse)
     filter0.deliver().compile(*scope);
     scope->deliver().inst(nul_inst_scope);
 
-    EXPECT_FALSE(error::has_error());
+    EXPECT_FALSE(error::hasError());
 
-    data_tree::expect_one()
+    DataTree::expectOne()
         (SCOPE_BEGIN)
         (pos_alter, ARITHMETICS)
             (pos_alter, REFERENCE, "narumi")
@@ -300,7 +300,7 @@ TEST_F(FilterTest, IfNotFoldedOnTrue)
 
     util::sptr<flchk::filter> filter_alter(new flchk::filter);
     misc::position pos_alter(801);
-    filter_alter->add_arith(pos_alter, std::move(util::mkptr(new flchk::reference(pos_alter, "narumi"))));
+    filter_alter->addArith(pos_alter, std::move(util::mkptr(new flchk::reference(pos_alter, "narumi"))));
 
     filter0.add_branch_alt_only(pos, std::move(binary), std::move(filter_alter));
     filter0.add_func_ret_nothing(pos);
@@ -308,9 +308,9 @@ TEST_F(FilterTest, IfNotFoldedOnTrue)
     filter0.deliver().compile(*scope);
     scope->deliver().inst(nul_inst_scope);
 
-    EXPECT_FALSE(error::has_error());
+    EXPECT_FALSE(error::hasError());
 
-    data_tree::expect_one()
+    DataTree::expectOne()
         (SCOPE_BEGIN)
         (pos, RETURN_NOTHING)
         (SCOPE_END)

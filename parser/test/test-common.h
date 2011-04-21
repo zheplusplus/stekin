@@ -7,75 +7,75 @@
 
 namespace test {
 
-    struct parser_data {
+    struct ParserData {
         int const indent_level;
         misc::position const pos;
 
-        parser_data(int level, misc::position const& ps)
+        ParserData(int level, misc::position const& ps)
             : indent_level(level)
             , pos(ps)
         {}
 
-        explicit parser_data(misc::position const ps)
+        explicit ParserData(misc::position const ps)
             : indent_level(-1)
             , pos(ps)
         {}
 
-        bool operator==(parser_data const& rhs) const
+        bool operator==(ParserData const& rhs) const
         {
             return indent_level == rhs.indent_level && pos == rhs.pos;
         }
     };
 
-    typedef data_node_templ<parser_data> data_node_base;
-    typedef nothing_node_templ<parser_data> nothing_node;
-    typedef string_node_templ<parser_data> string_node;
+    typedef data_node_templ<ParserData> data_node_base;
+    typedef nothing_node_templ<ParserData> nothing_node;
+    typedef string_node_templ<ParserData> string_node;
 
-    struct data_tree
-        : public data_tree_templ<parser_data, data_tree>
+    struct DataTree
+        : public DataTreeTempl<ParserData, DataTree>
     {
-        typedef data_tree_templ<parser_data, data_tree> base_type;
+        typedef DataTreeTempl<ParserData, DataTree> BaseType;
 
-        data_tree& operator()(misc::position const& pos, node_type const& type, std::string const& str);
-        data_tree& operator()(misc::position const& pos
+        DataTree& operator()(misc::position const& pos, NodeType const& type, std::string const& str);
+        DataTree& operator()(misc::position const& pos
                              , int indent
-                             , node_type const& type
+                             , NodeType const& type
                              , std::string const& str);
-        data_tree& operator()(misc::position const& pos, node_type const& type);
-        data_tree& operator()(misc::position const& pos, int indent, node_type const& type);
+        DataTree& operator()(misc::position const& pos, NodeType const& type);
+        DataTree& operator()(misc::position const& pos, int indent, NodeType const& type);
     };
 
-    extern node_type const BOOLEAN;
-    extern node_type const INTEGER;
-    extern node_type const FLOATING;
-    extern node_type const IDENTIFIER;
+    extern NodeType const BOOLEAN;
+    extern NodeType const INTEGER;
+    extern NodeType const FLOATING;
+    extern NodeType const IDENTIFIER;
 
-    extern node_type const BINARY_OP_BEGIN;
-    extern node_type const BINARY_OP_END;
-    extern node_type const PRE_UNARY_OP_BEGIN;
-    extern node_type const PRE_UNARY_OP_END;
-    extern node_type const OPERAND;
+    extern NodeType const BINARY_OP_BEGIN;
+    extern NodeType const BINARY_OP_END;
+    extern NodeType const PRE_UNARY_OP_BEGIN;
+    extern NodeType const PRE_UNARY_OP_END;
+    extern NodeType const OPERAND;
 
-    extern node_type const FUNC_CALL_BEGIN;
-    extern node_type const FUNC_CALL_END;
-    extern node_type const ARGUMENT;
+    extern NodeType const FUNC_CALL_BEGIN;
+    extern NodeType const FUNC_CALL_END;
+    extern NodeType const ARGUMENT;
 
-    extern node_type const VAR_DEF;
-    extern node_type const ARITHMETICS;
-    extern node_type const RETURN;
+    extern NodeType const VAR_DEF;
+    extern NodeType const ARITHMETICS;
+    extern NodeType const RETURN;
 
-    extern node_type const FUNC_DEF_HEAD_BEGIN;
-    extern node_type const FUNC_DEF_HEAD_END;
+    extern NodeType const FUNC_DEF_HEAD_BEGIN;
+    extern NodeType const FUNC_DEF_HEAD_END;
 
-    extern node_type const CONDITION_BEGIN;
-    extern node_type const CONDITION_END;
+    extern NodeType const CONDITION_BEGIN;
+    extern NodeType const CONDITION_END;
 
-    extern node_type const BRANCH_IF;
-    extern node_type const BRANCH_IFNOT;
-    extern node_type const BRANCH_ELSE;
+    extern NodeType const BRANCH_IF;
+    extern NodeType const BRANCH_IFNOT;
+    extern NodeType const BRANCH_ELSE;
 
 }
 
-std::ostream& operator<<(std::ostream& os, test::parser_data const& data);
+std::ostream& operator<<(std::ostream& os, test::ParserData const& data);
 
 #endif /* __STEKIN_PARSER_TEST_TEST_COMMON_H__ */

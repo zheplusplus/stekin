@@ -69,7 +69,7 @@ util::sref<inst::Function> Function::inst(int level
                                                                         , hint_void_return);
     _instance_cache.insert(std::make_pair(instance_info(ext_vars, arg_types), instance));
 
-    Block_mediate body_mediate(_Block.get_stmts(), instance);
+    BlockMediate body_mediate(_block.get_stmts(), instance);
     instance->inst_next_path();
     instance->add_stmt(std::move(body_mediate.inst(instance)));
     return instance;

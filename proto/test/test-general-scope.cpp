@@ -63,9 +63,9 @@ TEST_F(ScopeTest, ExprNodesCreation)
          ->inst(*inst_scope)
          ->typeof();
     scope->make_nega(pos, std::move(scope->make_int(pos, 49)))->inst(*inst_scope)->typeof();
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
 
-    data_tree::expect_one()
+    DataTree::expectOne()
         (BOOLEAN, "true")
         (BOOLEAN, "false")
         (INTEGER, "0")
@@ -118,9 +118,9 @@ TEST_F(ScopeTest, Symbol)
     misc::position pos(2);
     scope->add_stmt(std::move(util::mkptr(new proto::arithmetics(pos
                                                                , std::move(scope->make_ref(pos, "four"))))));
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
     scope->def_var(pos, "four");
-    ASSERT_TRUE(error::has_error());
+    ASSERT_TRUE(error::hasError());
     ASSERT_EQ(1, get_invalid_refs().size());
     ASSERT_EQ(pos, get_invalid_refs()[0].def_pos);
     ASSERT_EQ(1, get_invalid_refs()[0].ref_positions.size());

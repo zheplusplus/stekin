@@ -11,20 +11,20 @@ void accumulator::add_func_ret(misc::position const& pos, util::sptr<Expression 
 {
     _check_not_terminated(pos);
     _set_terminated_not_by_void_return(pos);
-    _Block.add_stmt(std::move(util::mkptr(new func_ret(pos, std::move(ret_val)))));
+    _block.add_stmt(std::move(util::mkptr(new func_ret(pos, std::move(ret_val)))));
 }
 
 void accumulator::add_func_ret_nothing(misc::position const& pos)
 {
     _check_not_terminated(pos);
     _set_terminated_by_void_return(pos);
-    _Block.add_stmt(std::move(util::mkptr(new func_ret_nothing(pos))));
+    _block.add_stmt(std::move(util::mkptr(new func_ret_nothing(pos))));
 }
 
-void accumulator::add_arith(misc::position const& pos, util::sptr<Expression const> expr)
+void accumulator::addArith(misc::position const& pos, util::sptr<Expression const> expr)
 {
     _check_not_terminated(pos);
-    _Block.add_stmt(std::move(util::mkptr(new arithmetics(pos, std::move(expr)))));
+    _block.add_stmt(std::move(util::mkptr(new arithmetics(pos, std::move(expr)))));
 }
 
 void accumulator::add_branch(misc::position const& pos
@@ -36,10 +36,10 @@ void accumulator::add_branch(misc::position const& pos
     _check_branches_temination(consequence, alternative);
     _set_termination_by_sub_accumulator(consequence);
     _set_termination_by_sub_accumulator(alternative);
-    _Block.add_stmt(std::move(util::mkptr(new branch(pos
+    _block.add_stmt(std::move(util::mkptr(new branch(pos
                                                    , std::move(predicate)
-                                                   , std::move(consequence._Block)
-                                                   , std::move(alternative._Block)))));
+                                                   , std::move(consequence._block)
+                                                   , std::move(alternative._block)))));
 }
 
 void accumulator::add_branch(misc::position const& pos
@@ -48,9 +48,9 @@ void accumulator::add_branch(misc::position const& pos
 {
     _check_not_terminated(pos);
     _set_termination_by_sub_accumulator(consequence);
-    _Block.add_stmt(std::move(util::mkptr(new branch(pos
+    _block.add_stmt(std::move(util::mkptr(new branch(pos
                                                    , std::move(predicate)
-                                                   , std::move(consequence._Block)
+                                                   , std::move(consequence._block)
                                                    , std::move(Block())))));
 }
 
@@ -60,22 +60,22 @@ void accumulator::add_branch_alt_only(misc::position const& pos
 {
     _check_not_terminated(pos);
     _set_termination_by_sub_accumulator(alternative);
-    _Block.add_stmt(std::move(util::mkptr(new branch(pos
+    _block.add_stmt(std::move(util::mkptr(new branch(pos
                                                    , std::move(predicate)
                                                    , std::move(Block())
-                                                   , std::move(alternative._Block)))));
+                                                   , std::move(alternative._block)))));
 }
 
-void accumulator::add_Block(accumulator b)
+void accumulator::add_block(accumulator b)
 {
-    _Block.append(std::move(b._Block));
+    _block.append(std::move(b._block));
     _set_self_terminated(std::move(b));
 }
 
 void accumulator::def_var(misc::position const& pos, std::string const& name, util::sptr<Expression const> init)
 {
     _check_not_terminated(pos);
-    _Block.add_stmt(std::move(util::mkptr(new var_def(pos, name, std::move(init)))));
+    _block.add_stmt(std::move(util::mkptr(new var_def(pos, name, std::move(init)))));
 }
 
 void accumulator::def_func(misc::position const& pos
@@ -83,16 +83,16 @@ void accumulator::def_func(misc::position const& pos
                          , std::vector<std::string> const& param_names
                          , accumulator body)
 {
-    _Block.def_func(pos
+    _block.def_func(pos
                   , name
                   , param_names
-                  , std::move(body._Block)
+                  , std::move(body._block)
                   , body._contains_void_return || !body._terminated());
 }
 
 Block accumulator::deliver()
 {
-    return std::move(_Block);
+    return std::move(_block);
 }
 
 void accumulator::_set_terminated_by_void_return(misc::position const& pos)

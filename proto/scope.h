@@ -52,12 +52,12 @@ namespace proto {
         Block deliver();
         std::list<util::sptr<Statement const>> const& get_stmts() const;
     protected:
-        Block _Block;
+        Block _block;
     protected:
         scope() {}
 
         scope(scope&& rhs)
-            : _Block(std::move(rhs._Block))
+            : _block(std::move(rhs._block))
         {}
 
         scope(scope const&) = delete;

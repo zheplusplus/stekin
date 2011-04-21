@@ -11,14 +11,14 @@ namespace test {
     template <typename _NodeData> struct nothing_node_templ;
     template <typename _NodeData> struct string_node_templ;
 
-    struct node_type {
+    struct NodeType {
         std::string const type_img;
 
-        explicit node_type(std::string const& name)
+        explicit NodeType(std::string const& name)
             : type_img(name)
         {}
 
-        bool operator==(node_type const& rhs) const
+        bool operator==(NodeType const& rhs) const
         {
             return type_img == rhs.type_img;
         }
@@ -26,7 +26,7 @@ namespace test {
 
     template <typename _NodeData>
     struct data_node_templ {
-        node_type const type_img;
+        NodeType const type_img;
         _NodeData const sub_data;
     public:
         virtual ~data_node_templ() {}
@@ -50,7 +50,7 @@ namespace test {
             return false;
         }
     protected:
-        data_node_templ(node_type const& timg, _NodeData const& sdata)
+        data_node_templ(NodeType const& timg, _NodeData const& sdata)
             : type_img(timg)
             , sub_data(sdata)
         {}
@@ -60,7 +60,7 @@ namespace test {
     struct nothing_node_templ
         : public data_node_templ<_NodeData>
     {
-        nothing_node_templ(node_type const& type_img, _NodeData const& sub_data)
+        nothing_node_templ(NodeType const& type_img, _NodeData const& sub_data)
             : data_node_templ<_NodeData>(type_img, sub_data)
         {}
 
@@ -86,7 +86,7 @@ namespace test {
     {
         std::string const data;
 
-        string_node_templ(node_type const& type_img, _NodeData const& sub_data, std::string const& d)
+        string_node_templ(NodeType const& type_img, _NodeData const& sub_data, std::string const& d)
             : data_node_templ<_NodeData>(type_img, sub_data)
             , data(d)
         {}

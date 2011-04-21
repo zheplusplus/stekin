@@ -41,9 +41,9 @@ namespace {
 
         util::sptr<proto::Statement const> compile(util::sref<proto::scope>) const
         {
-            data_tree::actual_one()(pos, BRANCH_CONSQ_ONLY);
+            DataTree::actualOne()(pos, BRANCH_CONSQ_ONLY);
             predicate->compile(nulscope);
-            data_tree::actual_one()(CONSEQUENCE);
+            DataTree::actualOne()(CONSEQUENCE);
             consequence.compile(nulscope);
             return std::move(nul_proto_stmt());
         }
@@ -63,9 +63,9 @@ namespace {
 
         util::sptr<proto::Statement const> compile(util::sref<proto::scope>) const
         {
-            data_tree::actual_one()(pos, BRANCH_ALTER_ONLY);
+            DataTree::actualOne()(pos, BRANCH_ALTER_ONLY);
             predicate->compile(nulscope);
-            data_tree::actual_one()(ALTERNATIVE);
+            DataTree::actualOne()(ALTERNATIVE);
             alternative.compile(nulscope);
             return std::move(nul_proto_stmt());
         }
@@ -78,12 +78,12 @@ namespace {
 
 void Function::compile(util::sref<proto::scope>) const
 {
-    data_tree::actual_one()(pos, FUNC_DEF, name);
+    DataTree::actualOne()(pos, FUNC_DEF, name);
     std::for_each(param_names.begin()
                 , param_names.end()
                 , [&](std::string const& param)
                   {
-                      data_tree::actual_one()(pos, PARAMETER, param);
+                      DataTree::actualOne()(pos, PARAMETER, param);
                   });
     body.compile(nulscope);
 }
@@ -108,7 +108,7 @@ void Block::def_func(misc::position const& pos
 
 void Block::compile(util::sref<proto::scope>) const 
 {
-    data_tree::actual_one()(BLOCK_BEGIN);
+    DataTree::actualOne()(BLOCK_BEGIN);
     std::for_each(_funcs.begin()
                 , _funcs.end()
                 , [&](util::sptr<Function const> const& func)
@@ -122,22 +122,22 @@ void Block::compile(util::sref<proto::scope>) const
                   {
                       stmt->compile(nulscope);
                   });
-    data_tree::actual_one()(BLOCK_END);
+    DataTree::actualOne()(BLOCK_END);
 }
 
 void accumulator::add_func_ret(misc::position const& pos, util::sptr<Expression const> ret_val)
 {
-    _Block.add_stmt(std::move(util::mkptr(new func_ret(pos, std::move(ret_val)))));
+    _block.add_stmt(std::move(util::mkptr(new func_ret(pos, std::move(ret_val)))));
 }
 
 void accumulator::add_func_ret_nothing(misc::position const& pos)
 {
-    _Block.add_stmt(std::move(util::mkptr(new func_ret_nothing(pos))));
+    _block.add_stmt(std::move(util::mkptr(new func_ret_nothing(pos))));
 }
 
-void accumulator::add_arith(misc::position const& pos, util::sptr<Expression const> expr)
+void accumulator::addArith(misc::position const& pos, util::sptr<Expression const> expr)
 {
-    _Block.add_stmt(std::move(util::mkptr(new arithmetics(pos, std::move(expr)))));
+    _block.add_stmt(std::move(util::mkptr(new arithmetics(pos, std::move(expr)))));
 }
 
 void accumulator::add_branch(misc::position const& pos
@@ -145,7 +145,7 @@ void accumulator::add_branch(misc::position const& pos
                            , accumulator consequence
                            , accumulator alternative)
 {
-    _Block.add_stmt(std::move(util::mkptr(new branch(pos
+    _block.add_stmt(std::move(util::mkptr(new branch(pos
                                                    , std::move(predicate)
                                                    , std::move(consequence.deliver())
                                                    , std::move(alternative.deliver())))));
@@ -155,23 +155,23 @@ void accumulator::add_branch(misc::position const& pos
                            , util::sptr<Expression const> predicate
                            , accumulator consequence)
 {
-    _Block.add_stmt(std::move(util::mkptr(new branch_consequence(pos
+    _block.add_stmt(std::move(util::mkptr(new branch_consequence(pos
                                                                , std::move(predicate)
-                                                               , std::move(consequence._Block)))));
+                                                               , std::move(consequence._block)))));
 }
 
 void accumulator::add_branch_alt_only(misc::position const& pos
                                     , util::sptr<Expression const> predicate
                                     , accumulator alternative)
 {
-    _Block.add_stmt(std::move(util::mkptr(new branch_alternative(pos
+    _block.add_stmt(std::move(util::mkptr(new branch_alternative(pos
                                                                , std::move(predicate)
-                                                               , std::move(alternative._Block)))));
+                                                               , std::move(alternative._block)))));
 }
 
 void accumulator::def_var(misc::position const& pos, std::string const& name, util::sptr<Expression const> init)
 {
-    _Block.add_stmt(std::move(util::mkptr(new var_def(pos, name, std::move(init)))));
+    _block.add_stmt(std::move(util::mkptr(new var_def(pos, name, std::move(init)))));
 }
 
 void accumulator::def_func(misc::position const& pos
@@ -179,12 +179,12 @@ void accumulator::def_func(misc::position const& pos
                          , std::vector<std::string> const& param_names
                          , accumulator body)
 {
-    _Block.def_func(pos, name, param_names, std::move(body._Block), false);
+    _block.def_func(pos, name, param_names, std::move(body._block), false);
 }
 
 Block accumulator::deliver()
 {
-    return std::move(_Block);
+    return std::move(_block);
 }
 
 void filter::add_func_ret(misc::position const& pos, util::sptr<Expression const> ret_val)
@@ -197,9 +197,9 @@ void filter::add_func_ret_nothing(misc::position const& pos)
     _accumulator.add_func_ret_nothing(pos);
 }
 
-void filter::add_arith(misc::position const& pos, util::sptr<Expression const> expr)
+void filter::addArith(misc::position const& pos, util::sptr<Expression const> expr)
 {
-    _accumulator.add_arith(pos, std::move(expr));
+    _accumulator.addArith(pos, std::move(expr));
 }
 
 void filter::add_branch(misc::position const& pos
@@ -262,99 +262,99 @@ void symbol_def_filter::def_func(misc::position const& pos
 
 util::sptr<proto::Statement const> arithmetics::compile(util::sref<proto::scope>) const 
 {
-    data_tree::actual_one()(pos, ARITHMETICS);
+    DataTree::actualOne()(pos, ARITHMETICS);
     expr->compile(nulscope);
     return std::move(nul_proto_stmt());
 }
 
 util::sptr<proto::Statement const> branch::compile(util::sref<proto::scope>) const 
 {
-    data_tree::actual_one()(pos, BRANCH);
+    DataTree::actualOne()(pos, BRANCH);
     predicate->compile(nulscope);
-    data_tree::actual_one()(CONSEQUENCE);
+    DataTree::actualOne()(CONSEQUENCE);
     consequence.compile(nulscope);
-    data_tree::actual_one()(ALTERNATIVE);
+    DataTree::actualOne()(ALTERNATIVE);
     alternative.compile(nulscope);
     return std::move(nul_proto_stmt());
 }
 
 util::sptr<proto::Statement const> var_def::compile(util::sref<proto::scope>) const 
 {
-    data_tree::actual_one()(pos, VAR_DEF, name);
+    DataTree::actualOne()(pos, VAR_DEF, name);
     init->compile(nulscope);
     return std::move(nul_proto_stmt());
 }
 
 util::sptr<proto::Statement const> func_ret::compile(util::sref<proto::scope>) const 
 {
-    data_tree::actual_one()(pos, RETURN);
+    DataTree::actualOne()(pos, RETURN);
     ret_val->compile(nulscope);
     return std::move(nul_proto_stmt());
 }
 
 util::sptr<proto::Statement const> func_ret_nothing::compile(util::sref<proto::scope>) const
 {
-    data_tree::actual_one()(pos, RETURN_NOTHING);
+    DataTree::actualOne()(pos, RETURN_NOTHING);
     return std::move(nul_proto_stmt());
 }
 
 util::sptr<proto::Expression const> PreUnaryOp::compile(util::sref<proto::scope>) const
 {
-    data_tree::actual_one()(pos, PRE_UNARY_OP, op_img);
+    DataTree::actualOne()(pos, PRE_UNARY_OP, op_img);
     return std::move(nul_proto_expr());
 }
 
 util::sptr<proto::Expression const> BinaryOp::compile(util::sref<proto::scope>) const
 {
-    data_tree::actual_one()(pos, BINARY_OP, op_img);
+    DataTree::actualOne()(pos, BINARY_OP, op_img);
     return std::move(nul_proto_expr());
 }
 
 util::sptr<proto::Expression const> Conjunction::compile(util::sref<proto::scope>) const
 {
-    data_tree::actual_one()(pos, BINARY_OP, "&&");
+    DataTree::actualOne()(pos, BINARY_OP, "&&");
     return std::move(nul_proto_expr());
 }
 
 util::sptr<proto::Expression const> Disjunction::compile(util::sref<proto::scope>) const
 {
-    data_tree::actual_one()(pos, BINARY_OP, "||");
+    DataTree::actualOne()(pos, BINARY_OP, "||");
     return std::move(nul_proto_expr());
 }
 
 util::sptr<proto::Expression const> Negation::compile(util::sref<proto::scope>) const
 {
-    data_tree::actual_one()(pos, PRE_UNARY_OP, "!");
+    DataTree::actualOne()(pos, PRE_UNARY_OP, "!");
     return std::move(nul_proto_expr());
 }
 
 util::sptr<proto::Expression const> reference::compile(util::sref<proto::scope>) const
 {
-    data_tree::actual_one()(pos, REFERENCE, name);
+    DataTree::actualOne()(pos, REFERENCE, name);
     return std::move(nul_proto_expr());
 }
 
 util::sptr<proto::Expression const> BoolLiteral::compile(util::sref<proto::scope>) const
 {
-    data_tree::actual_one()(pos, BOOLEAN, util::str(value));
+    DataTree::actualOne()(pos, BOOLEAN, util::str(value));
     return std::move(nul_proto_expr());
 }
 
 util::sptr<proto::Expression const> IntLiteral::compile(util::sref<proto::scope>) const
 {
-    data_tree::actual_one()(pos, INTEGER, util::str(value));
+    DataTree::actualOne()(pos, INTEGER, util::str(value));
     return std::move(nul_proto_expr());
 }
 
 util::sptr<proto::Expression const> FloatLiteral::compile(util::sref<proto::scope>) const
 {
-    data_tree::actual_one()(pos, FLOATING, util::str(value));
+    DataTree::actualOne()(pos, FLOATING, util::str(value));
     return std::move(nul_proto_expr());
 }
 
 util::sptr<proto::Expression const> call::compile(util::sref<proto::scope> s) const
 {
-    data_tree::actual_one()(pos, CALL, name, args.size());
+    DataTree::actualOne()(pos, CALL, name, args.size());
     std::for_each(args.begin()
                 , args.end()
                 , [&](util::sptr<Expression const> const& arg)
@@ -366,7 +366,7 @@ util::sptr<proto::Expression const> call::compile(util::sref<proto::scope> s) co
 
 util::sptr<proto::Expression const> FuncReference::compile(util::sref<proto::scope>) const
 {
-    data_tree::actual_one()(pos, FUNC_REFERENCE, name, param_count);
+    DataTree::actualOne()(pos, FUNC_REFERENCE, name, param_count);
     return std::move(nul_proto_expr());
 }
 

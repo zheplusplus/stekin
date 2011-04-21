@@ -27,19 +27,19 @@ TEST_F(FunctionTest, Resolved)
     std::map<std::string, inst::variable const> extvars;
     util::sref<inst::Function> func = inst::Function::create_instance(0, args, extvars, true);
     ASSERT_TRUE(bool(func));
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
 
     ASSERT_TRUE(func->is_return_type_resolved());
     ASSERT_EQ(inst::type::BIT_VOID, func->get_return_type());
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
 
     func->set_return_type(misc::position(1), inst::type::BIT_VOID);
     ASSERT_TRUE(func->is_return_type_resolved());
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
 
     func->set_return_type(misc::position(2), util::mkref(TEST_T));
     ASSERT_TRUE(func->is_return_type_resolved());
-    ASSERT_TRUE(error::has_error());
+    ASSERT_TRUE(error::hasError());
     ret_type_conflicts = get_ret_type_conflicts();
     ASSERT_EQ(1, ret_type_conflicts.size());
     ASSERT_EQ(misc::position(2), ret_type_conflicts[0].this_pos);
@@ -54,17 +54,17 @@ TEST_F(FunctionTest, Unresolved)
     std::map<std::string, inst::variable const> extvars;
     util::sref<inst::Function> func = inst::Function::create_instance(0, args, extvars, false);
     ASSERT_TRUE(bool(func));
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
     ASSERT_FALSE(func->is_return_type_resolved());
 
     func->set_return_type(misc::position(10), util::mkref(TEST_T));
     ASSERT_TRUE(func->is_return_type_resolved());
     ASSERT_EQ(util::sref<inst::type const>(&TEST_T), func->get_return_type());
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
 
     func->set_return_type(misc::position(20), inst::type::BIT_VOID);
     ASSERT_TRUE(func->is_return_type_resolved());
-    ASSERT_TRUE(error::has_error());
+    ASSERT_TRUE(error::hasError());
     ret_type_conflicts = get_ret_type_conflicts();
     ASSERT_EQ(1, ret_type_conflicts.size());
     ASSERT_EQ(misc::position(20), ret_type_conflicts[0].this_pos);

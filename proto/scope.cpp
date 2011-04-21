@@ -55,15 +55,15 @@ util::sptr<Expression const> scope::make_nega(misc::position const& pos, util::s
 
 void scope::add_stmt(util::sptr<Statement const> stmt)
 {
-    _Block.add_stmt(std::move(stmt));
+    _block.add_stmt(std::move(stmt));
 }
 
 std::list<util::sptr<Statement const>> const& scope::get_stmts() const
 {
-    return _Block.get_stmts();
+    return _block.get_stmts();
 }
 
 Block scope::deliver()
 {
-    return std::move(_Block);
+    return std::move(_block);
 }

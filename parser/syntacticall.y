@@ -8,7 +8,7 @@
 
     parser::OpImage* op_type;
     parser::Identifier* ident_type;
-    parser::ParamNames* ParamNames_type;
+    parser::ParamNames* param_names_type;
     parser::ArgList* args_type;
 
     grammar::Expression* expr_node;
@@ -20,8 +20,8 @@
 
 %type <ident_type> ident
 
-%type <ParamNames_type> param_list
-%type <ParamNames_type> additional_param
+%type <param_names_type> param_list
+%type <param_names_type> additional_param
 
 %type <args_type> actual_param_list
 %type <args_type> additional_actual_param
@@ -109,7 +109,7 @@ clue:
 var_def:
     indent ident ':' cond eol
     {
-        parser::builder.add_var_def($1, $2->id, std::move(util::mkptr($4)));
+        parser::builder.addVarDef($1, $2->id, std::move(util::mkptr($4)));
         delete $2;
     }
 ;
@@ -117,26 +117,26 @@ var_def:
 arithmetics:
     indent cond eol
     {
-        parser::builder.add_arith($1, std::move(util::mkptr($2)));
+        parser::builder.addArith($1, std::move(util::mkptr($2)));
     }
 ;
 
 func_return:
     indent KW_RETURN cond eol
     {
-        parser::builder.add_return($1, std::move(util::mkptr($3)));
+        parser::builder.addReturn($1, std::move(util::mkptr($3)));
     }
     |
     indent KW_RETURN eol
     {
-        parser::builder.add_return_nothing($1, parser::here($3));
+        parser::builder.addReturnNothing($1, parser::here($3));
     }
 ;
 
 func_clue:
     indent KW_FUNC ident '(' param_list ')' eol
     {
-        parser::builder.add_Function($1, parser::here($7), $3->id, $5->get());
+        parser::builder.addFunction($1, parser::here($7), $3->id, $5->get());
         delete $3;
         delete $5;
     }
@@ -168,28 +168,28 @@ additional_param:
 if_clue:
     indent KW_IF cond eol
     {
-        parser::builder.add_if($1, std::move(util::mkptr($3)));
+        parser::builder.addIf($1, std::move(util::mkptr($3)));
     }
 ;
 
 ifnot_clue:
     indent KW_IFNOT cond eol
     {
-        parser::builder.add_ifnot($1, std::move(util::mkptr($3)));
+        parser::builder.addIfnot($1, std::move(util::mkptr($3)));
     }
 ;
 
 else_clue:
     indent KW_ELSE eol
     {
-        parser::builder.add_else($1, parser::here($3));
+        parser::builder.addElse($1, parser::here($3));
     }
 ;
 
 ref:
     ident
     {
-        $$ = new grammar::reference($1->pos, $1->id);
+        $$ = new grammar::Reference($1->pos, $1->id);
         delete $1;
     }
     |
@@ -210,7 +210,9 @@ ident:
 cond:
     cond OR conj_cond
     {
-        $$ = new grammar::Disjunction($1->pos, std::move(util::mkptr($1)), std::move(util::mkptr($3)));
+        $$ = new grammar::Disjunction($1->pos
+                                    , std::move(util::mkptr($1))
+                                    , std::move(util::mkptr($3)));
     }
     |
     conj_cond
@@ -222,7 +224,9 @@ cond:
 conj_cond:
     conj_cond AND nega_cond
     {
-        $$ = new grammar::Conjunction($1->pos, std::move(util::mkptr($1)), std::move(util::mkptr($3)));
+        $$ = new grammar::Conjunction($1->pos
+                                    , std::move(util::mkptr($1))
+                                    , std::move(util::mkptr($3)));
     }
     |
     nega_cond
@@ -246,7 +250,10 @@ nega_cond:
 comp:
     comp cmp_op expr
     {
-        $$ = new grammar::BinaryOp($1->pos, std::move(util::mkptr($1)), $2->img, std::move(util::mkptr($3)));
+        $$ = new grammar::BinaryOp($1->pos
+                                 , std::move(util::mkptr($1))
+                                 , $2->img
+                                 , std::move(util::mkptr($3)));
         delete $2;
     }
     |
@@ -259,7 +266,10 @@ comp:
 expr:
     expr add_op term
     {
-        $$ = new grammar::BinaryOp($1->pos, std::move(util::mkptr($1)), $2->img, std::move(util::mkptr($3)));
+        $$ = new grammar::BinaryOp($1->pos
+                                 , std::move(util::mkptr($1))
+                                 , $2->img
+                                 , std::move(util::mkptr($3)));
         delete $2;
     }
     |
@@ -272,7 +282,10 @@ expr:
 term:
     term mul_op unary_factor
     {
-        $$ = new grammar::BinaryOp($1->pos, std::move(util::mkptr($1)), $2->img, std::move(util::mkptr($3)));
+        $$ = new grammar::BinaryOp($1->pos
+                                 , std::move(util::mkptr($1))
+                                 , $2->img
+                                 , std::move(util::mkptr($3)));
         delete $2;
     }
     |
@@ -408,7 +421,7 @@ pm_sign:
 call:
     ident '(' actual_param_list ')'
     {
-        $$ = new grammar::call($1->pos, $1->id, $3->deliver_args());
+        $$ = new grammar::Call($1->pos, $1->id, $3->deliver());
         delete $1;
         delete $3;
     }

@@ -8,11 +8,11 @@
 
 namespace error {
 
-    bool has_error();
+    bool hasError();
 
-    void tab_as_indent(misc::position const& pos);
-    void bad_indent(misc::position const& pos);
-    void invalid_char(misc::position const& pos, int character);
+    void tabAsIndent(misc::position const& pos);
+    void badIndent(misc::position const& pos);
+    void invalidChar(misc::position const& pos, int character);
 
     void else_not_match_if(misc::position const& else_pos);
     void if_already_match_else(misc::position const& prev_else_pos, misc::position const& this_else_pos);

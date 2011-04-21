@@ -25,5 +25,5 @@ operation const* scope::query_pre_unary(misc::position const& pos
 
 void scope::add_stmt(util::sptr<Statement const> stmt)
 {
-    _Block.add_stmt(std::move(stmt));
+    _block.add_stmt(std::move(stmt));
 }

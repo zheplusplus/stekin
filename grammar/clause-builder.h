@@ -52,18 +52,18 @@ namespace grammar {
     };
 
     struct ClauseBuilder {
-        void add_arith(int indent_len, util::sptr<Expression const> arith);
-        void add_var_def(int indent_len, std::string const& name, util::sptr<Expression const> init);
-        void add_return(int indent_len, util::sptr<Expression const> ret_val);
-        void add_return_nothing(int indent_len, misc::position const& pos);
+        void addArith(int indent_len, util::sptr<Expression const> arith);
+        void addVarDef(int indent_len, std::string const& name, util::sptr<Expression const> init);
+        void addReturn(int indent_len, util::sptr<Expression const> ret_val);
+        void addReturnNothing(int indent_len, misc::position const& pos);
 
-        void add_Function(int indent_len
+        void addFunction(int indent_len
                         , misc::position const& pos
                         , std::string const& name
                         , std::vector<std::string> const& params);
-        void add_if(int indent_len, util::sptr<Expression const> condition);
-        void add_ifnot(int indent_len, util::sptr<Expression const> condition);
-        void add_else(int indent_len, misc::position const& pos);
+        void addIf(int indent_len, util::sptr<Expression const> condition);
+        void addIfnot(int indent_len, util::sptr<Expression const> condition);
+        void addElse(int indent_len, misc::position const& pos);
 
         flchk::Block build_and_clear();
     private:

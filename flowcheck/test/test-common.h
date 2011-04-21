@@ -46,45 +46,45 @@ namespace test {
     typedef nothing_node_templ<flowcheck_data> nothing_node;
     typedef string_node_templ<flowcheck_data> string_node;
 
-    struct data_tree
-        : public data_tree_templ<flowcheck_data, data_tree>
+    struct DataTree
+        : public DataTreeTempl<flowcheck_data, DataTree>
     {
-        typedef data_tree_templ<flowcheck_data, data_tree> base_type;
+        typedef DataTreeTempl<flowcheck_data, DataTree> BaseType;
 
-        data_tree& operator()(misc::position const& pos, node_type const& type, std::string const& str);
-        data_tree& operator()(misc::position const& pos
-                            , node_type const& type
+        DataTree& operator()(misc::position const& pos, NodeType const& type, std::string const& str);
+        DataTree& operator()(misc::position const& pos
+                            , NodeType const& type
                             , std::string const& str
                             , int func_arg_size
                             , bool func_hint_return_void);
-        data_tree& operator()(node_type const& type);
-        data_tree& operator()(misc::position const& pos, node_type const& type);
+        DataTree& operator()(NodeType const& type);
+        DataTree& operator()(misc::position const& pos, NodeType const& type);
     };
 
-    extern node_type const BOOLEAN;
-    extern node_type const INTEGER;
-    extern node_type const FLOATING;
-    extern node_type const BINARY_OP;
-    extern node_type const PRE_UNARY_OP;
-    extern node_type const CALL;
-    extern node_type const FUNC_REFERENCE;
-    extern node_type const REFERENCE;
+    extern NodeType const BOOLEAN;
+    extern NodeType const INTEGER;
+    extern NodeType const FLOATING;
+    extern NodeType const BINARY_OP;
+    extern NodeType const PRE_UNARY_OP;
+    extern NodeType const CALL;
+    extern NodeType const FUNC_REFERENCE;
+    extern NodeType const REFERENCE;
 
-    extern node_type const VAR_DEF;
-    extern node_type const SCOPE_VAR_DEF;
+    extern NodeType const VAR_DEF;
+    extern NodeType const SCOPE_VAR_DEF;
 
-    extern node_type const STATEMENT;
-    extern node_type const ARITHMETICS;
-    extern node_type const RETURN;
-    extern node_type const RETURN_NOTHING;
+    extern NodeType const STATEMENT;
+    extern NodeType const ARITHMETICS;
+    extern NodeType const RETURN;
+    extern NodeType const RETURN_NOTHING;
 
-    extern node_type const FUNC_DECL;
-    extern node_type const PARAMETER;
+    extern NodeType const FUNC_DECL;
+    extern NodeType const PARAMETER;
 
-    extern node_type const SCOPE_BEGIN;
-    extern node_type const SCOPE_END;
+    extern NodeType const SCOPE_BEGIN;
+    extern NodeType const SCOPE_END;
 
-    extern node_type const BRANCH;
+    extern NodeType const BRANCH;
 
     struct flowcheck_test
         : public testing::Test

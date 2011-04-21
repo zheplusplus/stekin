@@ -20,7 +20,7 @@ namespace flchk {
         accumulator(accumulator const&) = delete;
 
         accumulator(accumulator&& rhs)
-            : _Block(std::move(rhs._Block))
+            : _block(std::move(rhs._block))
             , _contains_void_return(rhs._contains_void_return)
             , _error_reported(rhs._error_reported)
             , _termination_pos(std::move(rhs._termination_pos))
@@ -28,7 +28,7 @@ namespace flchk {
     public:
         void add_func_ret(misc::position const& pos, util::sptr<Expression const> ret_val);
         void add_func_ret_nothing(misc::position const& pos);
-        void add_arith(misc::position const& pos, util::sptr<Expression const> expr);
+        void addArith(misc::position const& pos, util::sptr<Expression const> expr);
 
         void add_branch(misc::position const& pos
                       , util::sptr<Expression const> predicate
@@ -43,7 +43,7 @@ namespace flchk {
                                , util::sptr<Expression const> predicate
                                , accumulator alternative);
 
-        void add_Block(accumulator b);
+        void add_block(accumulator b);
     public:
         void def_var(misc::position const& pos, std::string const& name, util::sptr<Expression const> init);
 
@@ -63,7 +63,7 @@ namespace flchk {
 
         void _report_terminated(misc::position const& pos);
     private:
-        Block _Block;
+        Block _block;
         bool _contains_void_return;
         bool _error_reported;
         util::sptr<misc::position> _termination_pos;

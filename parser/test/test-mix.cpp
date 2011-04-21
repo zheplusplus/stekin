@@ -10,9 +10,9 @@ using namespace test;
 TEST(Syntax, Mix)
 {
     yyparse();
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
 
-    data_tree::expect_one()
+    DataTree::expectOne()
         (misc::position(1), 0, VAR_DEF, "n")
             (misc::position(1), INTEGER, "10")
 
@@ -102,5 +102,5 @@ TEST(Syntax, Mix)
         (misc::position(20), 0, VAR_DEF, "y")
             (misc::position(20), IDENTIFIER, "fib@1")
     ;
-    data_tree::verify();
+    DataTree::verify();
 }

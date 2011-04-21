@@ -40,50 +40,50 @@ namespace test {
     typedef nothing_node_templ<grammar_data> nothing_node;
     typedef string_node_templ<grammar_data> string_node;
 
-    struct data_tree
-        : public data_tree_templ<grammar_data, data_tree>
+    struct DataTree
+        : public DataTreeTempl<grammar_data, DataTree>
     {
-        typedef data_tree_templ<grammar_data, data_tree> base_type;
+        typedef DataTreeTempl<grammar_data, DataTree> BaseType;
 
-        data_tree& operator()(misc::position const& pos, node_type const& type, std::string const& str);
-        data_tree& operator()(misc::position const& pos
-                            , node_type const& type
+        DataTree& operator()(misc::position const& pos, NodeType const& type, std::string const& str);
+        DataTree& operator()(misc::position const& pos
+                            , NodeType const& type
                             , std::string const& str
                             , int func_arg_size);
-        data_tree& operator()(node_type const& type);
-        data_tree& operator()(misc::position const& pos, node_type const& type);
+        DataTree& operator()(NodeType const& type);
+        DataTree& operator()(misc::position const& pos, NodeType const& type);
     };
 
     extern std::string const VAR_DEF_FILTERED;
     extern std::string const FUNC_DEF_FILTERED;
 
-    extern node_type const BOOLEAN;
-    extern node_type const INTEGER;
-    extern node_type const FLOATING;
-    extern node_type const REFERENCE;
+    extern NodeType const BOOLEAN;
+    extern NodeType const INTEGER;
+    extern NodeType const FLOATING;
+    extern NodeType const REFERENCE;
 
-    extern node_type const BINARY_OP;
-    extern node_type const PRE_UNARY_OP;
+    extern NodeType const BINARY_OP;
+    extern NodeType const PRE_UNARY_OP;
 
-    extern node_type const CALL;
-    extern node_type const FUNC_REFERENCE;
+    extern NodeType const CALL;
+    extern NodeType const FUNC_REFERENCE;
 
-    extern node_type const VAR_DEF;
-    extern node_type const ARITHMETICS;
-    extern node_type const RETURN;
-    extern node_type const RETURN_NOTHING;
+    extern NodeType const VAR_DEF;
+    extern NodeType const ARITHMETICS;
+    extern NodeType const RETURN;
+    extern NodeType const RETURN_NOTHING;
 
-    extern node_type const FUNC_DEF;
-    extern node_type const PARAMETER;
+    extern NodeType const FUNC_DEF;
+    extern NodeType const PARAMETER;
 
-    extern node_type const BRANCH;
-    extern node_type const BRANCH_CONSQ_ONLY;
-    extern node_type const BRANCH_ALTER_ONLY;
-    extern node_type const CONSEQUENCE;
-    extern node_type const ALTERNATIVE;
+    extern NodeType const BRANCH;
+    extern NodeType const BRANCH_CONSQ_ONLY;
+    extern NodeType const BRANCH_ALTER_ONLY;
+    extern NodeType const CONSEQUENCE;
+    extern NodeType const ALTERNATIVE;
 
-    extern node_type const BLOCK_BEGIN;
-    extern node_type const BLOCK_END;
+    extern NodeType const BLOCK_BEGIN;
+    extern NodeType const BLOCK_END;
 
     struct grammar_test
         : public testing::Test

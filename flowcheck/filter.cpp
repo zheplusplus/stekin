@@ -16,9 +16,9 @@ void filter::add_func_ret_nothing(misc::position const& pos)
     _accumulator.add_func_ret_nothing(pos);
 }
 
-void filter::add_arith(misc::position const& pos, util::sptr<Expression const> expr)
+void filter::addArith(misc::position const& pos, util::sptr<Expression const> expr)
 {
-    _accumulator.add_arith(pos, std::move(expr->fold()));
+    _accumulator.addArith(pos, std::move(expr->fold()));
 }
 
 void filter::add_branch(misc::position const& pos
@@ -28,7 +28,7 @@ void filter::add_branch(misc::position const& pos
 {
     util::sptr<Expression const> pred(std::move(predicate->fold()));
     if (pred->is_literal()) {
-        _accumulator.add_Block(std::move((pred->bool_value() ? consequence : alternative)->_accumulator));
+        _accumulator.add_block(std::move((pred->bool_value() ? consequence : alternative)->_accumulator));
         return;
     }
     _accumulator.add_branch(pos
@@ -44,7 +44,7 @@ void filter::add_branch(misc::position const& pos
     util::sptr<Expression const> pred(std::move(predicate->fold()));
     if (pred->is_literal()) {
         if (pred->bool_value()) {
-            _accumulator.add_Block(std::move(consequence->_accumulator));
+            _accumulator.add_block(std::move(consequence->_accumulator));
         }
         return;
     }
@@ -58,7 +58,7 @@ void filter::add_branch_alt_only(misc::position const& pos
     util::sptr<Expression const> pred(std::move(predicate->fold()));
     if (pred->is_literal()) {
         if (!pred->bool_value()) {
-            _accumulator.add_Block(std::move(alternative->_accumulator));
+            _accumulator.add_block(std::move(alternative->_accumulator));
         }
         return;
     }

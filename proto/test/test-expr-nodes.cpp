@@ -34,9 +34,9 @@ TEST_F(ExprNodesTest, Literals)
     int1.inst(*inst_scope)->typeof();
     float0.inst(*inst_scope)->typeof();
     float1.inst(*inst_scope)->typeof();
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
 
-    data_tree::expect_one()
+    DataTree::expectOne()
         (BOOLEAN, "true")
         (BOOLEAN, "false")
         (INTEGER, "0")
@@ -53,9 +53,9 @@ TEST_F(ExprNodesTest, Reference)
     proto::reference ref1(pos, "moji");
     ref0.inst(*inst_scope)->typeof();
     ref1.inst(*inst_scope)->typeof();
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
 
-    data_tree::expect_one()
+    DataTree::expectOne()
         (pos, QUERY_VAR, "ushiro")
         (REFERENCE)
         (pos, QUERY_VAR, "moji")
@@ -76,9 +76,9 @@ TEST_F(ExprNodesTest, Operations)
 
     bin.inst(*inst_scope)->typeof();
     preu.inst(*inst_scope)->typeof();
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
 
-    data_tree::expect_one()
+    DataTree::expectOne()
             (pos, QUERY_VAR, "littleBird")
             (INTEGER, "20110122")
             (REFERENCE)
@@ -111,9 +111,9 @@ TEST_F(ExprNodesTest, Logic)
     conj.inst(*inst_scope)->typeof();
     disj.inst(*inst_scope)->typeof();
     nega.inst(*inst_scope)->typeof();
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
 
-    data_tree::expect_one()
+    DataTree::expectOne()
         (CONJUNCTION)
             (BOOLEAN, "true")
             (BOOLEAN, "false")

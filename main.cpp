@@ -18,18 +18,18 @@
 int main()
 {
     yyparse();
-    if (error::has_error()) {
+    if (error::hasError()) {
         return 1;
     }
 
     flchk::Block global_flow(std::move(parser::builder.build_and_clear()));
-    if (error::has_error()) {
+    if (error::hasError()) {
         return 1;
     }
 
     util::sptr<proto::scope> proto_global_scope(new proto::global_scope);
     global_flow.compile(*proto_global_scope);
-    if (error::has_error()) {
+    if (error::hasError()) {
         return 1;
     }
 
@@ -38,10 +38,10 @@ int main()
                                                            , std::list<inst::arg_name_type_pair>()
                                                            , std::map<std::string, inst::variable const>()
                                                            , true));
-    proto::Block_mediate mediate(proto_global_scope->get_stmts(), inst_global_func);
+    proto::BlockMediate mediate(proto_global_scope->get_stmts(), inst_global_func);
     inst_global_func->inst_next_path();
     inst_global_func->add_stmt(std::move(mediate.inst(inst_global_func)));
-    if (error::has_error()) {
+    if (error::hasError()) {
         return 1;
     }
 

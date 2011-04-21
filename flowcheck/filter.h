@@ -21,7 +21,7 @@ namespace flchk {
     public:
         void add_func_ret(misc::position const& pos, util::sptr<Expression const> ret_val);
         void add_func_ret_nothing(misc::position const& pos);
-        void add_arith(misc::position const& pos, util::sptr<Expression const> expr);
+        void addArith(misc::position const& pos, util::sptr<Expression const> expr);
 
         void add_branch(misc::position const& pos
                       , util::sptr<Expression const> predicate

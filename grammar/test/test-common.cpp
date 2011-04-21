@@ -10,30 +10,30 @@ using namespace test;
 
 util::sref<proto::scope> const test::nulscope(NULL);
 
-data_tree& data_tree::operator()(misc::position const& pos, node_type const& type, std::string const& str)
+DataTree& DataTree::operator()(misc::position const& pos, NodeType const& type, std::string const& str)
 {
-    base_type::operator()(type, grammar_data(pos), str);
+    BaseType::operator()(type, grammar_data(pos), str);
     return *this;
 }
 
-data_tree& data_tree::operator()(misc::position const& pos, node_type const& type)
+DataTree& DataTree::operator()(misc::position const& pos, NodeType const& type)
 {
-    base_type::operator()(type, grammar_data(pos));
+    BaseType::operator()(type, grammar_data(pos));
     return *this;
 }
 
-data_tree& data_tree::operator()(misc::position const& pos
-                               , node_type const& type
+DataTree& DataTree::operator()(misc::position const& pos
+                               , NodeType const& type
                                , std::string const& str
                                , int func_arg_size)
 {
-    base_type::operator()(type, grammar_data(pos, func_arg_size), str);
+    BaseType::operator()(type, grammar_data(pos, func_arg_size), str);
     return *this;
 }
 
-data_tree& data_tree::operator()(node_type const& type)
+DataTree& DataTree::operator()(NodeType const& type)
 {
-    base_type::operator()(type, grammar_data());
+    BaseType::operator()(type, grammar_data());
     return *this;
 }
 
@@ -45,33 +45,33 @@ std::ostream& operator<<(std::ostream& os, grammar_data const& data)
 std::string const test::VAR_DEF_FILTERED(" var def filtered");
 std::string const test::FUNC_DEF_FILTERED(" func def filtered");
 
-node_type const test::BOOLEAN("boolean");
-node_type const test::INTEGER("integer");
-node_type const test::FLOATING("floating");
-node_type const test::REFERENCE("reference");
+NodeType const test::BOOLEAN("boolean");
+NodeType const test::INTEGER("integer");
+NodeType const test::FLOATING("floating");
+NodeType const test::REFERENCE("reference");
 
-node_type const test::BINARY_OP("binary operation");
-node_type const test::PRE_UNARY_OP("prefix unary operation");
+NodeType const test::BINARY_OP("binary operation");
+NodeType const test::PRE_UNARY_OP("prefix unary operation");
 
-node_type const test::CALL("call");
-node_type const test::FUNC_REFERENCE("Function reference");
+NodeType const test::CALL("call");
+NodeType const test::FUNC_REFERENCE("Function reference");
 
-node_type const test::VAR_DEF("var def");
-node_type const test::ARITHMETICS("arithmetics");
-node_type const test::RETURN("return");
-node_type const test::RETURN_NOTHING("return nothing");
+NodeType const test::VAR_DEF("var def");
+NodeType const test::ARITHMETICS("arithmetics");
+NodeType const test::RETURN("return");
+NodeType const test::RETURN_NOTHING("return nothing");
 
-node_type const test::FUNC_DEF("func def");
-node_type const test::PARAMETER("parameter");
+NodeType const test::FUNC_DEF("func def");
+NodeType const test::PARAMETER("parameter");
 
-node_type const test::BRANCH("branch");
-node_type const test::BRANCH_CONSQ_ONLY("branch consequence only");
-node_type const test::BRANCH_ALTER_ONLY("branch alternative only");
-node_type const test::CONSEQUENCE("consequence");
-node_type const test::ALTERNATIVE("alternative");
+NodeType const test::BRANCH("branch");
+NodeType const test::BRANCH_CONSQ_ONLY("branch consequence only");
+NodeType const test::BRANCH_ALTER_ONLY("branch alternative only");
+NodeType const test::CONSEQUENCE("consequence");
+NodeType const test::ALTERNATIVE("alternative");
 
-node_type const test::BLOCK_BEGIN("Block begin");
-node_type const test::BLOCK_END("Block end");
+NodeType const test::BLOCK_BEGIN("Block begin");
+NodeType const test::BLOCK_END("Block end");
 
 void grammar_test::SetUp()
 {
@@ -80,5 +80,5 @@ void grammar_test::SetUp()
 
 void grammar_test::TearDown()
 {
-    data_tree::verify();
+    DataTree::verify();
 }

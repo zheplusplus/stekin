@@ -25,7 +25,7 @@ TEST_F(StmtNodesTest, Arithmetics)
     arith1.compile(*filter);
     filter->deliver().compile(nulscope);
 
-    data_tree::expect_one()
+    DataTree::expectOne()
         (BLOCK_BEGIN)
         (pos, ARITHMETICS)
             (pos, INTEGER, "1840")
@@ -40,12 +40,12 @@ TEST_F(StmtNodesTest, VarDef)
     misc::position pos(2);
     util::sptr<flchk::filter> filter(std::move(util::mkmptr(new flchk::filter)));
     grammar::var_def def0(pos, "Shinji", std::move(util::mkptr(new grammar::FloatLiteral(pos, "18.47"))));
-    grammar::var_def def1(pos, "Asuka", std::move(util::mkptr(new grammar::reference(pos, "tsundere"))));
+    grammar::var_def def1(pos, "Asuka", std::move(util::mkptr(new grammar::Reference(pos, "tsundere"))));
     def0.compile(*filter);
     def1.compile(*filter);
     filter->deliver().compile(nulscope);
 
-    data_tree::expect_one()
+    DataTree::expectOne()
         (BLOCK_BEGIN)
         (pos, VAR_DEF, "Shinji")
             (pos, FLOATING, "18.47")
@@ -59,13 +59,13 @@ TEST_F(StmtNodesTest, Returns)
 {
     misc::position pos(3);
     util::sptr<flchk::filter> filter(std::move(util::mkmptr(new flchk::filter)));
-    grammar::func_ret ret0(pos, std::move(util::mkptr(new grammar::reference(pos, "KaworuNagisa"))));
+    grammar::func_ret ret0(pos, std::move(util::mkptr(new grammar::Reference(pos, "KaworuNagisa"))));
     grammar::func_ret_nothing ret1(pos);
     ret0.compile(*filter);
     ret1.compile(*filter);
     filter->deliver().compile(nulscope);
 
-    data_tree::expect_one()
+    DataTree::expectOne()
         (BLOCK_BEGIN)
         (pos, RETURN)
             (pos, REFERENCE, "KaworuNagisa")
@@ -81,11 +81,11 @@ TEST_F(StmtNodesTest, Block)
     grammar::Block Block;
     Block.add_stmt(std::move(
                 util::mkptr(new grammar::var_def(pos, "Misato", std::move(
-                            util::mkptr(new grammar::reference(pos, "Katsuragi")))))));
+                            util::mkptr(new grammar::Reference(pos, "Katsuragi")))))));
     Block.add_stmt(std::move(util::mkptr(new grammar::func_ret_nothing(pos))));
     Block.compile(std::move(filter))->deliver().compile(nulscope);
 
-    data_tree::expect_one()
+    DataTree::expectOne()
         (BLOCK_BEGIN)
         (pos, VAR_DEF, "Misato")
             (pos, REFERENCE, "Katsuragi")
@@ -106,7 +106,7 @@ TEST_F(StmtNodesTest, Branch)
 
     grammar::Block Block0;
     Block0.add_stmt(std::move(util::mkptr(
-                new grammar::arithmetics(pos, std::move(util::mkptr(new grammar::reference(pos, "Kaji")))))));
+                new grammar::arithmetics(pos, std::move(util::mkptr(new grammar::Reference(pos, "Kaji")))))));
     Block0.add_stmt(std::move(util::mkptr(new grammar::func_ret_nothing(pos))));
     grammar::branch_cons_only(pos
                             , std::move(util::mkptr(new grammar::BoolLiteral(pos, false)))
@@ -116,7 +116,7 @@ TEST_F(StmtNodesTest, Branch)
     grammar::Block Block1;
     Block1.add_stmt(std::move(
                 util::mkptr(new grammar::arithmetics(pos, std::move(
-                            util::mkptr(new grammar::reference(pos, "Ryoji")))))));
+                            util::mkptr(new grammar::Reference(pos, "Ryoji")))))));
     Block1.add_stmt(std::move(util::mkptr(new grammar::func_ret_nothing(pos))));
     grammar::branch_alt_only(pos
                            , std::move(util::mkptr(new grammar::BoolLiteral(pos, true)))
@@ -131,7 +131,7 @@ TEST_F(StmtNodesTest, Branch)
     grammar::Block Block3;
     Block3.add_stmt(std::move(
                 util::mkptr(new grammar::func_ret(pos, std::move(
-                            util::mkptr(new grammar::reference(pos, "betsuni")))))));
+                            util::mkptr(new grammar::Reference(pos, "betsuni")))))));
     grammar::branch(pos
                   , std::move(util::mkptr(new grammar::BoolLiteral(pos, false)))
                   , std::move(Block2)
@@ -139,7 +139,7 @@ TEST_F(StmtNodesTest, Branch)
         .compile(*filter);
     filter->deliver().compile(nulscope);
 
-    data_tree::expect_one()
+    DataTree::expectOne()
         (BLOCK_BEGIN)
         (pos, BRANCH)
         (pos, BOOLEAN, "true")
@@ -195,7 +195,7 @@ TEST_F(StmtNodesTest, Functions)
     grammar::Block body;
     body.add_stmt(std::move(
                 util::mkptr(new grammar::arithmetics(pos, std::move(
-                            util::mkptr(new grammar::reference(pos, "Kuroi")))))));
+                            util::mkptr(new grammar::Reference(pos, "Kuroi")))))));
     body.add_stmt(std::move(util::mkptr(new grammar::func_ret_nothing(pos))));
     grammar::Function func1(pos
                           , "func1"
@@ -204,7 +204,7 @@ TEST_F(StmtNodesTest, Functions)
     func1.compile(*filter);
     filter->deliver().compile(nulscope);
 
-    data_tree::expect_one()
+    DataTree::expectOne()
         (BLOCK_BEGIN)
         (pos, FUNC_DEF, "func0")
             (BLOCK_BEGIN)
@@ -240,7 +240,7 @@ TEST_F(StmtNodesTest, Mixed)
     grammar::Block body;
     body.add_stmt(std::move(
                 util::mkptr(new grammar::arithmetics(pos, std::move(
-                            util::mkptr(new grammar::reference(pos, "Kyon")))))));
+                            util::mkptr(new grammar::Reference(pos, "Kyon")))))));
     body.add_func(std::move(func_nested0));
     body.add_func(std::move(func_nested1));
     body.add_stmt(std::move(util::mkptr(new grammar::func_ret_nothing(pos))));
@@ -252,7 +252,7 @@ TEST_F(StmtNodesTest, Mixed)
     func.compile(*filter);
     filter->deliver().compile(nulscope);
 
-    data_tree::expect_one()
+    DataTree::expectOne()
         (BLOCK_BEGIN)
         (pos, FUNC_DEF, "funco")
             (pos, PARAMETER, "Suzumiya")

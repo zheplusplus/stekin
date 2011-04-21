@@ -10,7 +10,7 @@ using namespace test;
 TEST(Syntax, BadIndentation)
 {
     yyparse();
-    ASSERT_TRUE(error::has_error());
+    ASSERT_TRUE(error::hasError());
     std::vector<BadIndentRec> recs = getBadIndents();
     ASSERT_EQ(3, recs.size());
 

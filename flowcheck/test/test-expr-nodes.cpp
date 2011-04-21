@@ -44,9 +44,9 @@ TEST_F(ExprNodesTest, Literals)
     EXPECT_TRUE(bool1.is_literal());
     EXPECT_FALSE(bool1.bool_value());
 
-    EXPECT_FALSE(error::has_error());
+    EXPECT_FALSE(error::hasError());
 
-    data_tree::expect_one()
+    DataTree::expectOne()
         (pos, INTEGER, "20110116")
         (pos, FLOATING, "19.5")
         (pos, BOOLEAN, "true")
@@ -68,9 +68,9 @@ TEST_F(ExprNodesTest, Reference)
     EXPECT_FALSE(ref0.is_literal());
     ref1.compile(*scope)->inst(nul_inst_scope);
 
-    EXPECT_FALSE(error::has_error());
+    EXPECT_FALSE(error::hasError());
 
-    data_tree::expect_one()
+    DataTree::expectOne()
         (pos, REFERENCE, "a20110116")
         (pos, REFERENCE, "b1950")
     ;
@@ -129,9 +129,9 @@ TEST_F(ExprNodesTest, Operations)
     nega.compile(*scope)->inst(nul_inst_scope);
     EXPECT_TRUE(nega.is_literal());
 
-    EXPECT_FALSE(error::has_error());
+    EXPECT_FALSE(error::hasError());
 
-    data_tree::expect_one()
+    DataTree::expectOne()
         (pos, BINARY_OP, "+")
             (pos, INTEGER, "1")
             (pos, FLOATING, "11235.8")
@@ -179,9 +179,9 @@ TEST_F(ExprNodesTest, Calls)
     call1.compile(*scope)->inst(nul_inst_scope);
     EXPECT_FALSE(call1.is_literal());
 
-    EXPECT_FALSE(error::has_error());
+    EXPECT_FALSE(error::hasError());
 
-    data_tree::expect_one()
+    DataTree::expectOne()
         (pos, CALL, "fib", 0, false)
         (pos, CALL, "leap", 4, false)
             (pos, BOOLEAN, "false")
@@ -211,9 +211,9 @@ TEST_F(ExprNodesTest, FuncReference)
     func_ref2.compile(*scope)->inst(nul_inst_scope);
     EXPECT_FALSE(func_ref0.is_literal());
 
-    EXPECT_FALSE(error::has_error());
+    EXPECT_FALSE(error::hasError());
 
-    data_tree::expect_one()
+    DataTree::expectOne()
         (pos, FUNC_REFERENCE, "fib", 2, false)
         (pos, FUNC_REFERENCE, "fib", 1, false)
         (pos, FUNC_REFERENCE, "fib", 2, false)
@@ -229,7 +229,7 @@ TEST_F(ExprNodesTest, LiteralBoolValueError)
     flchk::FloatLiteral float0(pos, "10.58");
     float0.bool_value();
 
-    ASSERT_TRUE(error::has_error());
+    ASSERT_TRUE(error::hasError());
     ASSERT_EQ(2, get_cond_not_bools().size());
     EXPECT_EQ(pos, get_cond_not_bools()[0].pos);
     EXPECT_EQ("(int(20110409))", get_cond_not_bools()[0].type_name);
@@ -260,7 +260,7 @@ TEST_F(ExprNodesTest, OperationLiteralBoolValueError)
     flchk::PreUnaryOp pre_unary(pos, "+", std::move(util::mkptr(new flchk::FloatLiteral(pos, ".13"))));
     pre_unary.bool_value();
 
-    ASSERT_TRUE(error::has_error());
+    ASSERT_TRUE(error::hasError());
     ASSERT_EQ(5, get_cond_not_bools().size());
     EXPECT_EQ(pos, get_cond_not_bools()[0].pos);
     EXPECT_EQ("(float(20110.4))", get_cond_not_bools()[0].type_name);

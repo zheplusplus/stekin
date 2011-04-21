@@ -106,30 +106,30 @@ Block AcceptorStack::AcceptorOfPack::pack()
     return std::move(_pack);
 }
 
-void ClauseBuilder::add_arith(int indent_len, util::sptr<Expression const> arith)
+void ClauseBuilder::addArith(int indent_len, util::sptr<Expression const> arith)
 {
     misc::position pos(arith->pos);
     _stack.next_stmt(indent_len, std::move(util::mkptr(new arithmetics(pos, std::move(arith)))));
 }
 
-void ClauseBuilder::add_var_def(int indent_len, std::string const& name, util::sptr<Expression const> init)
+void ClauseBuilder::addVarDef(int indent_len, std::string const& name, util::sptr<Expression const> init)
 {
     misc::position pos(init->pos);
     _stack.next_stmt(indent_len, std::move(util::mkptr(new var_def(pos, name, std::move(init)))));
 }
 
-void ClauseBuilder::add_return(int indent_len, util::sptr<Expression const> ret_val)
+void ClauseBuilder::addReturn(int indent_len, util::sptr<Expression const> ret_val)
 {
     misc::position pos(ret_val->pos);
     _stack.next_stmt(indent_len, std::move(util::mkptr(new func_ret(pos, std::move(ret_val)))));
 }
 
-void ClauseBuilder::add_return_nothing(int indent_len, misc::position const& pos)
+void ClauseBuilder::addReturnNothing(int indent_len, misc::position const& pos)
 {
     _stack.next_stmt(indent_len, std::move(util::mkptr(new func_ret_nothing(pos))));
 }
 
-void ClauseBuilder::add_Function(int indent_len
+void ClauseBuilder::addFunction(int indent_len
                                 , misc::position const& pos
                                 , std::string const& name
                                 , std::vector<std::string> const& params)
@@ -137,19 +137,19 @@ void ClauseBuilder::add_Function(int indent_len
     _stack.add(indent_len, std::move(util::mkmptr(new FunctionAcceptor(pos, name, params))));
 }
 
-void ClauseBuilder::add_if(int indent_len, util::sptr<Expression const> condition)
+void ClauseBuilder::addIf(int indent_len, util::sptr<Expression const> condition)
 {
     misc::position pos(condition->pos);
     _stack.add(indent_len, std::move(util::mkmptr(new IfAcceptor(pos, std::move(condition)))));
 }
 
-void ClauseBuilder::add_ifnot(int indent_len, util::sptr<Expression const> condition)
+void ClauseBuilder::addIfnot(int indent_len, util::sptr<Expression const> condition)
 {
     misc::position pos(condition->pos);
     _stack.add(indent_len, std::move(util::mkmptr(new IfnotAcceptor(pos, std::move(condition)))));
 }
 
-void ClauseBuilder::add_else(int indent_len, misc::position const& pos)
+void ClauseBuilder::addElse(int indent_len, misc::position const& pos)
 {
     _stack.match_else(indent_len, pos);
 }

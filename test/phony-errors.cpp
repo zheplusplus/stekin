@@ -68,24 +68,24 @@ void yyerror(std::string const&)
     has_err = true;
 }
 
-bool error::has_error()
+bool error::hasError()
 {
     return has_err;
 }
 
-void error::tab_as_indent(misc::position const& pos)
+void error::tabAsIndent(misc::position const& pos)
 {
     has_err = true;
     TabAsIndRecs.push_back(TabAsIndRec(pos));
 }
 
-void error::bad_indent(misc::position const& pos)
+void error::badIndent(misc::position const& pos)
 {
     has_err = true;
     BadIndentRecs.push_back(BadIndentRec(pos));
 }
 
-void error::invalid_char(misc::position const& pos, int character)
+void error::invalidChar(misc::position const& pos, int character)
 {
     has_err = true;
     InvCharRecs.push_back(InvCharRec(pos, character));

@@ -24,19 +24,19 @@ TEST_F(ClauseBuilderTest, AcceptorStackNext)
     grammar::AcceptorStack stack0;
     stack0.next_stmt(0, std::move(
                 util::mkptr(new grammar::var_def(item_pos, "ruby", std::move(
-                            util::mkptr(new grammar::reference(item_pos, "emerald")))))));
+                            util::mkptr(new grammar::Reference(item_pos, "emerald")))))));
     stack0.next_stmt(0, std::move(
                 util::mkptr(new grammar::var_def(item_pos, "topiz", std::move(
-                            util::mkptr(new grammar::reference(item_pos, "ruby")))))));
+                            util::mkptr(new grammar::Reference(item_pos, "ruby")))))));
     stack0.next_func(0, std::move(util::mkptr(new grammar::Function(item_pos
                                                                   , "skull"
                                                                   , std::vector<std::string>({ "chipped" })
                                                                   , std::move(grammar::Block())))));
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
     grammar::Block Block0(std::move(stack0.pack_all()));
     Block0.compile(std::move(util::mkmptr(new flchk::filter)))->deliver().compile(nulscope);
 
-    data_tree::expect_one()
+    DataTree::expectOne()
         (BLOCK_BEGIN)
         (item_pos, FUNC_DEF, "skull")
             (item_pos, PARAMETER, "chipped")
@@ -52,7 +52,7 @@ TEST_F(ClauseBuilderTest, AcceptorStackNext)
 
     misc::position err_pos0(101);
     misc::position err_pos1(102);
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
     stack0.next_stmt(1, std::move(
                 util::mkptr(new grammar::arithmetics(err_pos0, std::move(
                             util::mkptr(new grammar::IntLiteral(item_pos, "20110119")))))));
@@ -63,7 +63,7 @@ TEST_F(ClauseBuilderTest, AcceptorStackNext)
                                                                   , "ith"
                                                                   , std::vector<std::string>({ "el", "eth" })
                                                                   , std::move(grammar::Block())))));
-    ASSERT_TRUE(error::has_error());
+    ASSERT_TRUE(error::hasError());
     ASSERT_EQ(2, get_excess_inds().size());
     ASSERT_EQ(err_pos0, get_excess_inds()[0].pos);
     ASSERT_EQ(err_pos1, get_excess_inds()[1].pos);
@@ -77,21 +77,21 @@ TEST_F(ClauseBuilderTest, AcceptorStackAdd)
     grammar::AcceptorStack stack0;
     stack0.next_stmt(0, std::move(
                 util::mkptr(new grammar::arithmetics(item_pos, std::move(
-                            util::mkptr(new grammar::reference(item_pos, "eaglehorn")))))));
+                            util::mkptr(new grammar::Reference(item_pos, "eaglehorn")))))));
     stack0.add(0, std::move(util::mkmptr(new grammar::FunctionAcceptor(acc_pos
                                                                       , "witherstring"
                                                                       , std::vector<std::string>()))));
     stack0.next_stmt(1, std::move(
                 util::mkptr(new grammar::var_def(item_pos, "cedar_bow", std::move(
-                            util::mkptr(new grammar::reference(item_pos, "kuko_shakaku"))))))); 
+                            util::mkptr(new grammar::Reference(item_pos, "kuko_shakaku"))))))); 
     stack0.next_stmt(1, std::move(
                 util::mkptr(new grammar::arithmetics(item_pos, std::move(
-                            util::mkptr(new grammar::reference(item_pos, "buriza_do_kyanon"))))))); 
-    ASSERT_FALSE(error::has_error());
+                            util::mkptr(new grammar::Reference(item_pos, "buriza_do_kyanon"))))))); 
+    ASSERT_FALSE(error::hasError());
     grammar::Block Block0(std::move(stack0.pack_all()));
     Block0.compile(std::move(util::mkmptr(new flchk::filter)))->deliver().compile(nulscope);
 
-    data_tree::expect_one()
+    DataTree::expectOne()
         (BLOCK_BEGIN)
         (acc_pos, FUNC_DEF, "witherstring")
             (BLOCK_BEGIN)
@@ -112,14 +112,14 @@ TEST_F(ClauseBuilderTest, AcceptorStackAdd)
                                                                       , std::vector<std::string>()))));
     stack1.next_stmt(1, std::move(
                 util::mkptr(new grammar::var_def(item_pos, "cedar_bow", std::move(
-                            util::mkptr(new grammar::reference(item_pos, "kuko_shakaku"))))))); 
+                            util::mkptr(new grammar::Reference(item_pos, "kuko_shakaku"))))))); 
     stack1.next_stmt(0, std::move(
                 util::mkptr(new grammar::arithmetics(item_pos, std::move(
-                            util::mkptr(new grammar::reference(item_pos, "eaglehorn")))))));
+                            util::mkptr(new grammar::Reference(item_pos, "eaglehorn")))))));
     stack1.next_stmt(1, std::move(
                 util::mkptr(new grammar::arithmetics(item_pos, std::move(
-                            util::mkptr(new grammar::reference(item_pos, "buriza_do_kyanon"))))))); 
-    ASSERT_TRUE(error::has_error());
+                            util::mkptr(new grammar::Reference(item_pos, "buriza_do_kyanon"))))))); 
+    ASSERT_TRUE(error::hasError());
     ASSERT_EQ(1, get_excess_inds().size());
     ASSERT_EQ(item_pos, get_excess_inds()[0].pos);
 }
@@ -133,22 +133,22 @@ TEST_F(ClauseBuilderTest, AcceptorStackMatchElse)
     grammar::AcceptorStack stack0;
     stack0.next_stmt(0, std::move(
                 util::mkptr(new grammar::arithmetics(item_pos, std::move(
-                            util::mkptr(new grammar::reference(item_pos, "roguesbow")))))));
+                            util::mkptr(new grammar::Reference(item_pos, "roguesbow")))))));
     stack0.add(0, std::move(util::mkmptr(new grammar::IfAcceptor(
                           acc_pos
-                        , util::mkptr(new grammar::reference(item_pos, "stormstrike"))))));
+                        , util::mkptr(new grammar::Reference(item_pos, "stormstrike"))))));
     stack0.next_stmt(1, std::move(
                 util::mkptr(new grammar::arithmetics(item_pos, std::move(
-                            util::mkptr(new grammar::reference(item_pos, "witchwild_string"))))))); 
+                            util::mkptr(new grammar::Reference(item_pos, "witchwild_string"))))))); 
     stack0.match_else(0, else_pos);
     stack0.next_stmt(1, std::move(
                 util::mkptr(new grammar::arithmetics(item_pos, std::move(
-                            util::mkptr(new grammar::reference(item_pos, "magewrath"))))))); 
-    ASSERT_FALSE(error::has_error());
+                            util::mkptr(new grammar::Reference(item_pos, "magewrath"))))))); 
+    ASSERT_FALSE(error::hasError());
     grammar::Block Block0(std::move(stack0.pack_all()));
     Block0.compile(std::move(util::mkmptr(new flchk::filter)))->deliver().compile(nulscope);
 
-    data_tree::expect_one()
+    DataTree::expectOne()
         (BLOCK_BEGIN)
         (item_pos, ARITHMETICS)
             (item_pos, REFERENCE, "roguesbow")
@@ -170,18 +170,18 @@ TEST_F(ClauseBuilderTest, AcceptorStackMatchElse)
     grammar::AcceptorStack stack1;
     stack1.next_stmt(0, std::move(
                 util::mkptr(new grammar::arithmetics(item_pos, std::move(
-                            util::mkptr(new grammar::reference(item_pos, "roguesbow")))))));
+                            util::mkptr(new grammar::Reference(item_pos, "roguesbow")))))));
     stack1.add(0, std::move(util::mkmptr(new grammar::IfAcceptor(
                           acc_pos
-                        , util::mkptr(new grammar::reference(item_pos, "stormstrike"))))));
+                        , util::mkptr(new grammar::Reference(item_pos, "stormstrike"))))));
     stack1.next_stmt(1, std::move(
                 util::mkptr(new grammar::arithmetics(item_pos, std::move(
-                            util::mkptr(new grammar::reference(item_pos, "witchwild_string"))))))); 
+                            util::mkptr(new grammar::Reference(item_pos, "witchwild_string"))))))); 
     stack1.match_else(2, else_pos);
     stack1.next_stmt(1, std::move(
                 util::mkptr(new grammar::arithmetics(item_pos, std::move(
-                            util::mkptr(new grammar::reference(item_pos, "magewrath"))))))); 
-    ASSERT_TRUE(error::has_error());
+                            util::mkptr(new grammar::Reference(item_pos, "magewrath"))))))); 
+    ASSERT_TRUE(error::hasError());
     ASSERT_EQ(1, get_else_not_matches().size());
     ASSERT_EQ(else_pos, get_else_not_matches()[0].pos);
 }
@@ -193,22 +193,22 @@ TEST_F(ClauseBuilderTest, ClauseBuilder)
     misc::position item_pos2(6);
 
     grammar::ClauseBuilder builder0;
-    builder0.add_if(0, std::move(util::mkptr(new grammar::BoolLiteral(item_pos0, true))));
-        builder0.add_var_def(1, "wind_force", std::move(util::mkptr(new grammar::IntLiteral(item_pos1
+    builder0.addIf(0, std::move(util::mkptr(new grammar::BoolLiteral(item_pos0, true))));
+        builder0.addVarDef(1, "wind_force", std::move(util::mkptr(new grammar::IntLiteral(item_pos1
                                                                                            , "13571"))));
-        builder0.add_ifnot(1, std::move(util::mkptr(new grammar::reference(item_pos2, "raven_claw"))));
-            builder0.add_return(2, std::move(util::mkptr(new grammar::FloatLiteral(item_pos0, "0.000123"))));
-        builder0.add_return_nothing(1, item_pos1);
-    builder0.add_else(0, item_pos2);
-        builder0.add_ifnot(1, std::move(util::mkptr(new grammar::reference(item_pos2, "cliffkiller"))));
-            builder0.add_ifnot(2, std::move(util::mkptr(new grammar::reference(item_pos0, "skystrike"))));
-    builder0.add_Function(0, item_pos1, "goldenstrike_arch", std::vector<std::string>({ "amn", "tir" }));
-        builder0.add_arith(1, std::move(util::mkptr(new grammar::reference(item_pos1, "widowmaker"))));
+        builder0.addIfnot(1, std::move(util::mkptr(new grammar::Reference(item_pos2, "raven_claw"))));
+            builder0.addReturn(2, std::move(util::mkptr(new grammar::FloatLiteral(item_pos0, "0.000123"))));
+        builder0.addReturnNothing(1, item_pos1);
+    builder0.addElse(0, item_pos2);
+        builder0.addIfnot(1, std::move(util::mkptr(new grammar::Reference(item_pos2, "cliffkiller"))));
+            builder0.addIfnot(2, std::move(util::mkptr(new grammar::Reference(item_pos0, "skystrike"))));
+    builder0.addFunction(0, item_pos1, "goldenstrike_arch", std::vector<std::string>({ "amn", "tir" }));
+        builder0.addArith(1, std::move(util::mkptr(new grammar::Reference(item_pos1, "widowmaker"))));
 
     builder0.build_and_clear().compile(nulscope);
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
 
-    data_tree::expect_one()
+    DataTree::expectOne()
         (BLOCK_BEGIN)
         (item_pos1, FUNC_DEF, "goldenstrike_arch")
             (item_pos1, PARAMETER, "amn")
@@ -252,10 +252,10 @@ TEST_F(ClauseBuilderTest, ClauseBuilder)
     ;
 
     grammar::ClauseBuilder builder1;
-    builder1.add_if(0, std::move(util::mkptr(new grammar::BoolLiteral(item_pos0, true))));
-    builder1.add_var_def(0, "wind_force", std::move(util::mkptr(new grammar::IntLiteral(item_pos1, "13571"))));
-    builder1.add_else(0, item_pos2);
-    ASSERT_TRUE(error::has_error());
+    builder1.addIf(0, std::move(util::mkptr(new grammar::BoolLiteral(item_pos0, true))));
+    builder1.addVarDef(0, "wind_force", std::move(util::mkptr(new grammar::IntLiteral(item_pos1, "13571"))));
+    builder1.addElse(0, item_pos2);
+    ASSERT_TRUE(error::hasError());
     ASSERT_EQ(1, get_else_not_matches().size());
     ASSERT_EQ(item_pos2, get_else_not_matches()[0].pos);
 }

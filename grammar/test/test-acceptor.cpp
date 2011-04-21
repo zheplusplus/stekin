@@ -64,10 +64,10 @@ TEST_F(AcceptorTest, IfAcceptor)
     Acceptor_a.accept_stmt(std::move(util::mkptr(new grammar::func_ret_nothing(pos))));
 
     Acceptor_a.accept_else(pos_else);
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
     Acceptor_a.accept_stmt(std::move(
                 util::mkptr(new grammar::var_def(pos, "Hyperion", std::move(
-                            util::mkptr(new grammar::reference(pos, "Raynor")))))));
+                            util::mkptr(new grammar::Reference(pos, "Raynor")))))));
 
     Acceptor_a.deliver_to(util::mkref(receiver));
     ASSERT_TRUE(bool(receiver.stmt));
@@ -77,7 +77,7 @@ TEST_F(AcceptorTest, IfAcceptor)
     grammar::IfAcceptor Acceptor_b(pos_head, std::move(util::mkptr(new grammar::IntLiteral(pos_head, "1"))));
     Acceptor_b.accept_stmt(std::move(
                 util::mkptr(new grammar::func_ret(pos, std::move(
-                            util::mkptr(new grammar::reference(pos, "Karrigan")))))));
+                            util::mkptr(new grammar::Reference(pos, "Karrigan")))))));
 
     Acceptor_b.deliver_to(util::mkref(receiver));
     ASSERT_TRUE(bool(receiver.stmt));
@@ -89,7 +89,7 @@ TEST_F(AcceptorTest, IfAcceptor)
                 util::mkptr(new grammar::arithmetics(pos, std::move(
                             util::mkptr(new grammar::BoolLiteral(pos, false)))))));
     Acceptor_c.accept_else(pos_else);
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
 
     Acceptor_c.deliver_to(util::mkref(receiver));
     ASSERT_TRUE(bool(receiver.stmt));
@@ -98,7 +98,7 @@ TEST_F(AcceptorTest, IfAcceptor)
 
     grammar::IfAcceptor Acceptor_d(pos_head, std::move(util::mkptr(new grammar::IntLiteral(pos_head, "3"))));
     Acceptor_d.accept_else(pos_else);
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
     Acceptor_d.accept_stmt(std::move(
                 util::mkptr(new grammar::arithmetics(pos, std::move(
                             util::mkptr(new grammar::FloatLiteral(pos, "20.54")))))));
@@ -109,7 +109,7 @@ TEST_F(AcceptorTest, IfAcceptor)
     receiver.compile();
     receiver.filter->deliver().compile(nulscope);
 
-    data_tree::expect_one()
+    DataTree::expectOne()
         (BLOCK_BEGIN)
         (pos_head, BRANCH)
         (pos_head, INTEGER, "0")
@@ -154,7 +154,7 @@ TEST_F(AcceptorTest, IfAcceptor)
             (BLOCK_END)
         (BLOCK_END)
     ;
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
 }
 
 TEST_F(AcceptorTest, IfAcceptorError)
@@ -164,9 +164,9 @@ TEST_F(AcceptorTest, IfAcceptorError)
     misc::position pos_else(201);
     grammar::IfAcceptor Acceptor_a(pos_head, std::move(util::mkptr(new grammar::IntLiteral(pos_head, "0"))));
     Acceptor_a.accept_else(pos);
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
     Acceptor_a.accept_else(pos_else);
-    ASSERT_TRUE(error::has_error());
+    ASSERT_TRUE(error::hasError());
     ASSERT_EQ(1, get_if_matcheds().size());
     ASSERT_EQ(pos, get_if_matcheds()[0].prev_pos);
     ASSERT_EQ(pos_else, get_if_matcheds()[0].this_pos);
@@ -183,7 +183,7 @@ TEST_F(AcceptorTest, IfNotAcceptor)
                             util::mkptr(new grammar::IntLiteral(pos, "60")))))));
     ifnot_acc0.accept_stmt(std::move(
                 util::mkptr(new grammar::arithmetics(pos, std::move(
-                            util::mkptr(new grammar::reference(pos, "Marine")))))));
+                            util::mkptr(new grammar::Reference(pos, "Marine")))))));
 
     ifnot_acc0.deliver_to(util::mkref(receiver));
     ASSERT_TRUE(bool(receiver.stmt));
@@ -191,7 +191,7 @@ TEST_F(AcceptorTest, IfNotAcceptor)
     receiver.compile();
     receiver.filter->deliver().compile(nulscope);
 
-    data_tree::expect_one()
+    DataTree::expectOne()
         (BLOCK_BEGIN)
         (pos, BRANCH_ALTER_ONLY)
         (pos, BOOLEAN, "false")
@@ -204,12 +204,12 @@ TEST_F(AcceptorTest, IfNotAcceptor)
             (BLOCK_END)
         (BLOCK_END)
     ;
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
 
     misc::position pos_else(20);
     grammar::IfnotAcceptor ifnot_acc1(pos, std::move(util::mkptr(new grammar::BoolLiteral(pos, true))));
     ifnot_acc1.accept_else(pos_else);
-    ASSERT_TRUE(error::has_error());
+    ASSERT_TRUE(error::hasError());
     ASSERT_EQ(1, get_else_not_matches().size());
     ASSERT_EQ(pos_else, get_else_not_matches()[0].pos);
 }
@@ -233,7 +233,7 @@ TEST_F(AcceptorTest, FuncAcceptor)
     receiver.compile();
     receiver.filter->deliver().compile(nulscope);
 
-    data_tree::expect_one()
+    DataTree::expectOne()
         (BLOCK_BEGIN)
         (pos, FUNC_DEF, "func1")
             (pos, PARAMETER, "Duke")
@@ -246,12 +246,12 @@ TEST_F(AcceptorTest, FuncAcceptor)
             (BLOCK_END)
         (BLOCK_END)
     ;
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
 
     misc::position pos_else(10);
     grammar::FunctionAcceptor func_acc1(pos, "func2", std::vector<std::string>({ "Mengsk" }));
     func_acc1.accept_else(pos_else);
-    ASSERT_TRUE(error::has_error());
+    ASSERT_TRUE(error::hasError());
     ASSERT_EQ(1, get_else_not_matches().size());
     ASSERT_EQ(pos_else, get_else_not_matches()[0].pos);
 }
@@ -267,12 +267,12 @@ TEST_F(AcceptorTest, FuncAccNested)
                             util::mkptr(new grammar::FloatLiteral(pos, "22.15")))))));
     func_acc0.accept_stmt(std::move(
                 util::mkptr(new grammar::var_def(pos, "medic", std::move(
-                            util::mkptr(new grammar::reference(pos, "wraith")))))));
+                            util::mkptr(new grammar::Reference(pos, "wraith")))))));
 
     grammar::FunctionAcceptor func_acc1(pos, "funca", std::vector<std::string>({ "vulture" }));
     func_acc1.accept_stmt(std::move(
                 util::mkptr(new grammar::arithmetics(pos, std::move(
-                            util::mkptr(new grammar::reference(pos, "goliath")))))));
+                            util::mkptr(new grammar::Reference(pos, "goliath")))))));
 
     func_acc1.deliver_to(util::mkref(func_acc0));
     func_acc0.deliver_to(util::mkref(receiver));
@@ -281,7 +281,7 @@ TEST_F(AcceptorTest, FuncAccNested)
     receiver.compile();
     receiver.filter->deliver().compile(nulscope);
 
-    data_tree::expect_one()
+    DataTree::expectOne()
         (BLOCK_BEGIN)
         (pos, FUNC_DEF, "funca")
             (pos, PARAMETER, "firebat")
@@ -300,5 +300,5 @@ TEST_F(AcceptorTest, FuncAccNested)
             (BLOCK_END)
         (BLOCK_END)
     ;
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
 }

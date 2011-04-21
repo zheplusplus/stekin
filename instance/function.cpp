@@ -77,8 +77,8 @@ namespace {
     struct func_inst_recs
         : protected std::list<util::sptr<Function const>>
     {
-        typedef std::list<util::sptr<Function const>> base_type;
-        typedef base_type::const_iterator iterator;
+        typedef std::list<util::sptr<Function const>> BaseType;
+        typedef BaseType::const_iterator iterator;
 
         void add(util::sptr<Function const> func)
         {
@@ -87,12 +87,12 @@ namespace {
 
         iterator begin() const
         {
-            return base_type::begin();
+            return BaseType::begin();
         }
 
         iterator end() const
         {
-            return base_type::end();
+            return BaseType::end();
         }
     private:
         func_inst_recs() {}
@@ -176,6 +176,6 @@ void Function::write_impls()
                 , [&](util::sptr<Function const> const& func)
                   {
                       output::write_func_perform_impl(func->get_return_type()->exported_name(), func.id());
-                      func->_Block.write();
+                      func->_block.write();
                   });
 }

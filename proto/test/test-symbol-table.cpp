@@ -34,13 +34,13 @@ TEST_F(SymbolTableTest, DefVar)
     symbols->def_var(pos, "nerv");
     symbols->def_var(pos, "seele");
     symbols->def_var(pos, "lilith");
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
     proto::symbol_table inner_symbols(ref_sym());
     inner_symbols.def_var(pos, "nerv");
     inner_symbols.def_var(pos, "seele");
     inner_symbols.def_var(pos, "adam");
     inner_symbols.def_var(pos, "eve");
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
 }
 
 TEST_F(SymbolTableTest, RefLocalVar)
@@ -53,7 +53,7 @@ TEST_F(SymbolTableTest, RefLocalVar)
     symbols->ref_var(pos, "nerv");
     symbols->ref_var(pos, "seele");
     symbols->ref_var(pos, "lilith");
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
 
     proto::symbol_table inner_symbols(ref_sym());
     inner_symbols.def_var(pos, "nerv");
@@ -65,7 +65,7 @@ TEST_F(SymbolTableTest, RefLocalVar)
     inner_symbols.ref_var(pos, "seele");
     inner_symbols.ref_var(pos, "adam");
     inner_symbols.ref_var(pos, "eve");
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
 }
 
 TEST_F(SymbolTableTest, RefExternal)
@@ -74,18 +74,18 @@ TEST_F(SymbolTableTest, RefExternal)
     symbols->ref_var(pos, "soryu");
     symbols->ref_var(pos, "ikari");
     symbols->ref_var(pos, "horaki");
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
     proto::symbol_table inner_symbols(ref_sym());
     inner_symbols.ref_var(pos, "soryu");
     inner_symbols.ref_var(pos, "ikari");
     inner_symbols.ref_var(pos, "horaki");
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
     util::sref<proto::symbol_table const> inner_sym_ref(util::mkref(inner_symbols));
     proto::symbol_table innest_symbols(inner_sym_ref);
     innest_symbols.ref_var(pos, "soryu");
     innest_symbols.ref_var(pos, "ikari");
     innest_symbols.ref_var(pos, "horaki");
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
 }
 
 TEST_F(SymbolTableTest, BindExternalVar)
@@ -96,15 +96,15 @@ TEST_F(SymbolTableTest, BindExternalVar)
 
     ext_refs = symbols->bind_external_var_refs(pos, *inst_scope);
     ASSERT_TRUE(ext_refs.empty());
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
 
     symbols->ref_var(pos, "eva_00");
     symbols->ref_var(pos, "eva_01");
     symbols->ref_var(pos, "eva_02");
     ext_refs = symbols->bind_external_var_refs(bind_pos, *inst_scope);
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
 
-    data_tree::expect_one()
+    DataTree::expectOne()
         (bind_pos, QUERY_VAR, "eva_00")
         (bind_pos, QUERY_VAR, "eva_01")
         (bind_pos, QUERY_VAR, "eva_02")
@@ -122,7 +122,7 @@ TEST_F(SymbolTableTest, RedefVar)
 
     symbols->def_var(err_pos0, "suzuhara");
     symbols->def_var(err_pos1, "aida");
-    ASSERT_TRUE(error::has_error());
+    ASSERT_TRUE(error::hasError());
     std::vector<var_redef_rec> redefs = get_local_redefs();
     ASSERT_EQ(2, redefs.size());
     ASSERT_EQ(pos, redefs[0].prev_pos);
@@ -136,7 +136,7 @@ TEST_F(SymbolTableTest, RedefVar)
     proto::symbol_table inner_symbols(ref_sym());
     inner_symbols.def_var(pos, "aida");
     inner_symbols.def_var(pos, "suzuhara");
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
 }
 
 TEST_F(SymbolTableTest, VarRefBeforeDef)
@@ -148,7 +148,7 @@ TEST_F(SymbolTableTest, VarRefBeforeDef)
     symbols->ref_var(ref_pos0, "katsuragi");
     symbols->ref_var(ref_pos1, "katsuragi");
     symbols->def_var(pos, "katsuragi");
-    ASSERT_TRUE(error::has_error());
+    ASSERT_TRUE(error::hasError());
     std::vector<invalid_ref_rec> invalid_refs = get_invalid_refs();
     ASSERT_EQ(1, invalid_refs.size());
     ASSERT_EQ(pos, invalid_refs[0].def_pos);
@@ -163,7 +163,7 @@ TEST_F(SymbolTableTest, VarRefBeforeDef)
     proto::symbol_table inner_symbols(ref_sym());
     inner_symbols.ref_var(pos, "katsuragi");
     inner_symbols.def_var(pos, "penpen");
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
 }
 
 TEST_F(SymbolTableTest, DefFunc)
@@ -175,24 +175,24 @@ TEST_F(SymbolTableTest, DefFunc)
     ASSERT_EQ(pos, func->pos);
     ASSERT_EQ("f0", func->name);
     ASSERT_TRUE(param_names == func->param_names);
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
     func = symbols->def_func(pos, "f1", param_names, true);
     ASSERT_EQ(pos, func->pos);
     ASSERT_EQ("f1", func->name);
     ASSERT_TRUE(param_names == func->param_names);
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
     param_names = { "x", "y", "z" };
     func = symbols->def_func(pos, "f0", param_names, true);
     ASSERT_EQ(pos, func->pos);
     ASSERT_EQ("f0", func->name);
     ASSERT_TRUE(param_names == func->param_names);
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
     param_names.push_back("a");
     func = symbols->def_func(pos, "f1", param_names, true);
     ASSERT_EQ(pos, func->pos);
     ASSERT_EQ("f1", func->name);
     ASSERT_TRUE(param_names == func->param_names);
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
 }
 
 TEST_F(SymbolTableTest, RefFunc)
@@ -208,19 +208,19 @@ TEST_F(SymbolTableTest, RefFunc)
     symbols->def_func(pos, "fb", param_names, true);
 
     func = symbols->query_func(ref_pos, "fa", 2);
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
     ASSERT_EQ(pos, func->pos);
     ASSERT_EQ("fa", func->name);
     ASSERT_TRUE(std::vector<std::string>({ "m", "n" }) == func->param_names);
 
     func = symbols->query_func(ref_pos, "fa", 3);
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
     ASSERT_EQ(pos, func->pos);
     ASSERT_EQ("fa", func->name);
     ASSERT_TRUE(std::vector<std::string>({ "x", "y", "z" }) == func->param_names);
 
     func = symbols->query_func(ref_pos, "fb", 3);
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
     ASSERT_EQ(pos, func->pos);
     ASSERT_EQ("fb", func->name);
     ASSERT_TRUE(std::vector<std::string>({ "x", "y", "z" }) == func->param_names);
@@ -228,28 +228,28 @@ TEST_F(SymbolTableTest, RefFunc)
     proto::symbol_table inner_symbols(ref_sym());
     param_names = { "a", "b" };
     inner_symbols.def_func(pos, "fb", param_names, true);
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
 
     func = inner_symbols.query_func(ref_pos, "fa", 2);
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
     ASSERT_EQ(pos, func->pos);
     ASSERT_EQ("fa", func->name);
     ASSERT_TRUE(std::vector<std::string>({ "m", "n" }) == func->param_names);
 
     func = inner_symbols.query_func(ref_pos, "fb", 2);
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
     ASSERT_EQ(pos, func->pos);
     ASSERT_EQ("fb", func->name);
     ASSERT_TRUE(std::vector<std::string>({ "a", "b" }) == func->param_names);
 
     func = inner_symbols.query_func(ref_pos, "fa", 3);
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
     ASSERT_EQ(pos, func->pos);
     ASSERT_EQ("fa", func->name);
     ASSERT_TRUE(std::vector<std::string>({ "x", "y", "z" }) == func->param_names);
 
     func = inner_symbols.query_func(ref_pos, "fb", 3);
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
     ASSERT_EQ(pos, func->pos);
     ASSERT_EQ("fb", func->name);
     ASSERT_TRUE(std::vector<std::string>({ "x", "y", "z" }) == func->param_names);
@@ -266,11 +266,11 @@ TEST_F(SymbolTableTest, RedefFunc)
     symbols->def_func(pos, "f0", param_names, true);
     param_names = { "x", "y", "z" };
     symbols->def_func(pos, "f1", param_names, true);
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
 
     param_names = { "a", "b" };
     symbols->def_func(err_pos0, "f0", param_names, true);
-    ASSERT_TRUE(error::has_error());
+    ASSERT_TRUE(error::hasError());
     std::vector<func_redef_rec> redefs = get_func_redefs();
     ASSERT_EQ(1, redefs.size());
 
@@ -305,10 +305,10 @@ TEST_F(SymbolTableTest, NondefFunc)
     symbols->def_func(pos, "f0", param_names, true);
     param_names = { "x", "y", "z" };
     symbols->def_func(pos, "f1", param_names, true);
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
 
     symbols->query_func(err_pos0, "f2", 3);
-    ASSERT_TRUE(error::has_error());
+    ASSERT_TRUE(error::hasError());
     func_nondefs = get_func_nondefs();
     ASSERT_EQ(1, func_nondefs.size());
     ASSERT_EQ(err_pos0, func_nondefs[0].call_pos);
@@ -316,7 +316,7 @@ TEST_F(SymbolTableTest, NondefFunc)
     ASSERT_EQ(3, func_nondefs[0].param_count);
 
     symbols->query_func(err_pos1, "f1", 2);
-    ASSERT_TRUE(error::has_error());
+    ASSERT_TRUE(error::hasError());
     func_nondefs = get_func_nondefs();
     ASSERT_EQ(2, func_nondefs.size());
     ASSERT_EQ(err_pos0, func_nondefs[0].call_pos);
@@ -334,7 +334,7 @@ TEST_F(SymbolTableTest, References)
 
     symbols->def_var(pos, "otonashi");
     symbols->def_var(pos, "tachibana");
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
     std::vector<std::string> param_names;
     param_names = { "yuzuru", "kanade" };
     symbols->def_func(pos, "sss", param_names, true);
@@ -342,9 +342,9 @@ TEST_F(SymbolTableTest, References)
     symbols->ref_var(pos, "otonashi")->inst(*inst_scope)->typeof();
     symbols->ref_var(pos, "sss")->inst(*inst_scope)->typeof();
     symbols->ref_var(pos, "tachibana")->inst(*inst_scope)->typeof();
-    ASSERT_FALSE(error::has_error());
+    ASSERT_FALSE(error::hasError());
 
-    data_tree::expect_one()
+    DataTree::expectOne()
         (pos, QUERY_VAR, "otonashi")
         (REFERENCE)
         (FUNC_REFERENCE)
@@ -368,9 +368,9 @@ TEST_F(SymbolTableTest, FuncRefAmbiguous)
     symbols->def_func(pos, "girl_dead_monster", param_names, true);
 
     symbols->ref_var(err_pos0, "guild");
-    ASSERT_TRUE(error::has_error());
+    ASSERT_TRUE(error::hasError());
     symbols->ref_var(err_pos1, "girl_dead_monster");
-    ASSERT_TRUE(error::has_error());
+    ASSERT_TRUE(error::hasError());
     ASSERT_EQ(2, get_ambiguous_refs().size());
     ASSERT_EQ("guild", get_ambiguous_refs()[0].name);
     ASSERT_EQ(err_pos0, get_ambiguous_refs()[0].ref_pos);

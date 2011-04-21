@@ -13,28 +13,28 @@
 namespace test {
 
     template <typename _NodeData, typename _FinalType>
-    struct data_tree_templ {
-        data_tree_templ& operator()(node_type const& type, _NodeData const& sub, std::string const& str)
+    struct DataTreeTempl {
+        DataTreeTempl& operator()(NodeType const& type, _NodeData const& sub, std::string const& str)
         {
             _nodes.push_back(std::move(util::mkptr(new string_node_templ<_NodeData>(type, sub, str))));
             return *this;
         }
 
-        data_tree_templ& operator()(node_type const& type, _NodeData const& sub)
+        DataTreeTempl& operator()(NodeType const& type, _NodeData const& sub)
         {
             _nodes.push_back(std::move(util::mkptr(new nothing_node_templ<_NodeData>(type, sub))));
             return *this;
         }
     protected:
-        data_tree_templ() {}
+        DataTreeTempl() {}
     public:
-        static _FinalType& expect_one()
+        static _FinalType& expectOne()
         {
             static _FinalType expect;
             return expect;
         }
 
-        static _FinalType& actual_one()
+        static _FinalType& actualOne()
         {
             static _FinalType actual;
             return actual;
@@ -43,18 +43,18 @@ namespace test {
         static void verify()
         {
             _verify();
-            expect_one()._nodes.clear();
-            actual_one()._nodes.clear();
+            expectOne()._nodes.clear();
+            actualOne()._nodes.clear();
         }
     private:
         static void _verify()
         {
-            ASSERT_EQ(expect_one()._nodes.size(), actual_one()._nodes.size());
-            auto expect_iter = expect_one()._nodes.begin();
-            auto actual_iter = actual_one()._nodes.begin();
-            for (; expect_one()._nodes.end() != expect_iter; ++expect_iter, ++actual_iter) {
+            ASSERT_EQ(expectOne()._nodes.size(), actualOne()._nodes.size());
+            auto expect_iter = expectOne()._nodes.begin();
+            auto actual_iter = actualOne()._nodes.begin();
+            for (; expectOne()._nodes.end() != expect_iter; ++expect_iter, ++actual_iter) {
                 EXPECT_EQ(**expect_iter, **actual_iter)
-                        << "------------- [" << std::distance(expect_one()._nodes.begin(), expect_iter) << "]"
+                        << "------------- [" << std::distance(expectOne()._nodes.begin(), expect_iter) << "]"
                         << std::endl;
             }
         }

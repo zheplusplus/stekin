@@ -9,7 +9,7 @@ using namespace grammar;
 
 void arithmetics::compile(util::sref<flchk::filter> filter) const
 {
-    filter->add_arith(pos, std::move(expr->compile()));
+    filter->addArith(pos, std::move(expr->compile()));
 }
 
 void branch::compile(util::sref<flchk::filter> filter) const

@@ -13,30 +13,30 @@ util::sptr<inst::Statement const> direct_inst::inst(util::sref<inst::scope>)
 
 void direct_inst::mediate_inst(util::sref<inst::scope>) {}
 
-Block_mediate::Block_mediate(std::list<util::sptr<Statement const>> const& stmts, util::sref<inst::scope> sc)
+BlockMediate::BlockMediate(std::list<util::sptr<Statement const>> const& stmts, util::sref<inst::scope> sc)
     : _stmts(stmts)
     , _mediates(NULL)
-    , _inst_Block(NULL)
+    , _inst_block(NULL)
 {
     sc->add_path(util::mkref(*this));
 }
 
-util::sptr<inst::Statement const> Block_mediate::inst(util::sref<inst::scope> sc)
+util::sptr<inst::Statement const> BlockMediate::inst(util::sref<inst::scope> sc)
 {
     mediate_inst(sc);
-    if (!bool(_inst_Block)) {
-        _inst_Block.reset(new inst::Block);
+    if (!bool(_inst_block)) {
+        _inst_block.reset(new inst::Block);
         std::for_each(_mediates->begin()
                     , _mediates->end()
                     , [&](util::sptr<inst::mediate_base> const& mediate)
                       {
-                          _inst_Block->add_stmt(std::move(mediate->inst(sc)));
+                          _inst_block->add_stmt(std::move(mediate->inst(sc)));
                       });
     }
-    return std::move(_inst_Block);
+    return std::move(_inst_block);
 }
 
-void Block_mediate::mediate_inst(util::sref<inst::scope> sc)
+void BlockMediate::mediate_inst(util::sref<inst::scope> sc)
 {
     if (bool(_mediates)) {
         return;

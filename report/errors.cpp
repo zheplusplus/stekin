@@ -7,7 +7,7 @@ static bool _has_error = false;
 
 extern int yylineno;
 
-bool error::has_error()
+bool error::hasError()
 {
     return _has_error;
 }
@@ -19,21 +19,21 @@ void yyerror(std::string const& msg)
     std::cerr << "    " <<  msg << std::endl;
 }
 
-void error::tab_as_indent(misc::position const& pos)
+void error::tabAsIndent(misc::position const& pos)
 {
     _has_error = true;
     std::cerr << pos.str() << std::endl;
     std::cerr << "    use tab as indent is forbidden." << std::endl;
 }
 
-void error::bad_indent(misc::position const& pos)
+void error::badIndent(misc::position const& pos)
 {
     _has_error = true;
     std::cerr << pos.str() << std::endl;
     std::cerr << "    indent not exactly 4 spaces." << std::endl;
 }
 
-void error::invalid_char(misc::position const& pos, int character)
+void error::invalidChar(misc::position const& pos, int character)
 {
     _has_error = true;
     std::cerr << pos.str() << std::endl;
