@@ -112,7 +112,7 @@ util::sref<overloads::overload const>
     return util::sref<overload const>(NULL);
 }
 
-util::sptr<expr_base const> symbol_table::ref_var(misc::pos_type const& pos, std::string const& name)
+util::sptr<Expression const> symbol_table::ref_var(misc::pos_type const& pos, std::string const& name)
 {
     std::vector<util::sref<function>> all_funcs = _overloads.all_funcs_of_name(name);
     if (!all_funcs.empty()) {
@@ -156,9 +156,9 @@ util::sref<function> symbol_table::def_func(misc::pos_type const& pos
     return util::mkref(_func_entities.back());
 }
 
-util::sptr<expr_base const> symbol_table::query_call(misc::pos_type const& pos
+util::sptr<Expression const> symbol_table::query_call(misc::pos_type const& pos
                                                    , std::string const& name
-                                                   , std::vector<util::sptr<expr_base const>> args) const
+                                                   , std::vector<util::sptr<Expression const>> args) const
 {
     util::sref<function> func = _overloads.query_or_null_if_nonexist(name, args.size());
     if (bool(func)) {

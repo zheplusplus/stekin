@@ -15,7 +15,7 @@ namespace grammar {
     struct acceptor_stack {
         void add(int level, util::sptr<acceptor> acc);
 
-        void next_stmt(int level, util::sptr<stmt_base const> stmt);
+        void next_stmt(int level, util::sptr<Statement const> stmt);
         void next_func(int level, util::sptr<function const> func);
 
         void match_else(int level, misc::pos_type const& pos);
@@ -35,7 +35,7 @@ namespace grammar {
                 : acceptor(misc::pos_type(-1))
             {}
 
-            void accept_stmt(util::sptr<stmt_base const> stmt);
+            void accept_stmt(util::sptr<Statement const> stmt);
             void accept_func(util::sptr<function const> func);
 
             void deliver_to(util::sref<acceptor>) {}
@@ -52,17 +52,17 @@ namespace grammar {
     };
 
     struct clause_builder {
-        void add_arith(int indent_len, util::sptr<expr_base const> arith);
-        void add_var_def(int indent_len, std::string const& name, util::sptr<expr_base const> init);
-        void add_return(int indent_len, util::sptr<expr_base const> ret_val);
+        void add_arith(int indent_len, util::sptr<Expression const> arith);
+        void add_var_def(int indent_len, std::string const& name, util::sptr<Expression const> init);
+        void add_return(int indent_len, util::sptr<Expression const> ret_val);
         void add_return_nothing(int indent_len, misc::pos_type const& pos);
 
         void add_function(int indent_len
                         , misc::pos_type const& pos
                         , std::string const& name
                         , std::vector<std::string> const& params);
-        void add_if(int indent_len, util::sptr<expr_base const> condition);
-        void add_ifnot(int indent_len, util::sptr<expr_base const> condition);
+        void add_if(int indent_len, util::sptr<Expression const> condition);
+        void add_ifnot(int indent_len, util::sptr<Expression const> condition);
         void add_else(int indent_len, misc::pos_type const& pos);
 
         flchk::block build_and_clear();

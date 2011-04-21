@@ -18,7 +18,7 @@ TEST_F(ExprNodesTest, Literals)
 {
     misc::pos_type pos(1);
     util::sptr<proto::scope> scope(std::move(new proto::global_scope));
-    flchk::int_literal int0(pos, "20110116");
+    flchk::IntLiteral int0(pos, "20110116");
     int0.compile(*scope)->inst(nul_inst_scope);
     EXPECT_TRUE(int0.is_literal());
 
@@ -31,7 +31,7 @@ TEST_F(ExprNodesTest, Literals)
     EXPECT_TRUE(bool0.is_literal());
     EXPECT_TRUE(bool0.bool_value());
 
-    flchk::int_literal int1(pos, "441499");
+    flchk::IntLiteral int1(pos, "441499");
     int1.compile(*scope)->inst(nul_inst_scope);
     EXPECT_TRUE(int1.is_literal());
 
@@ -81,13 +81,13 @@ TEST_F(ExprNodesTest, Operations)
     misc::pos_type pos(2);
     util::sptr<proto::scope> scope(std::move(new proto::global_scope));
     flchk::binary_op binary0(pos
-                           , std::move(util::mkptr(new flchk::int_literal(pos, "1")))
+                           , std::move(util::mkptr(new flchk::IntLiteral(pos, "1")))
                            , "+"
                            , std::move(util::mkptr(new flchk::float_literal(pos, "11235.8"))));
     flchk::binary_op binary1(pos
                            , std::move(util::mkptr(new flchk::float_literal(pos, "1.12358")))
                            , "<="
-                           , std::move(util::mkptr(new flchk::int_literal(pos, "2357111317"))));
+                           , std::move(util::mkptr(new flchk::IntLiteral(pos, "2357111317"))));
 
     flchk::pre_unary_op pre_unary0(pos, "+", std::move(util::mkptr(new flchk::float_literal(pos, ".13"))));
     flchk::pre_unary_op pre_unary1(
@@ -97,14 +97,14 @@ TEST_F(ExprNodesTest, Operations)
                     new flchk::binary_op(pos
                                        , std::move(util::mkptr(new flchk::reference(pos, "wasureru")))
                                        , "%"
-                                       , std::move(util::mkptr(new flchk::int_literal(pos, "1")))))));
+                                       , std::move(util::mkptr(new flchk::IntLiteral(pos, "1")))))));
 
     flchk::conjunction conj(pos
                           , std::move(util::mkptr(new flchk::bool_literal(pos, true)))
                           , std::move(util::mkptr(new flchk::reference(pos, "koto"))));
     flchk::disjunction disj(pos
                           , std::move(util::mkptr(new flchk::bool_literal(pos, false)))
-                          , std::move(util::mkptr(new flchk::int_literal(pos, "2"))));
+                          , std::move(util::mkptr(new flchk::IntLiteral(pos, "2"))));
     flchk::negation nega(pos, std::move(util::mkptr(new flchk::float_literal(pos, "1954.01"))));
 
     binary0.compile(*scope)->inst(nul_inst_scope);
@@ -160,7 +160,7 @@ TEST_F(ExprNodesTest, Calls)
     misc::pos_type pos(3);
     util::sptr<proto::scope> scope(std::move(new proto::global_scope));
 
-    std::vector<util::sptr<flchk::expr_base const>> params;
+    std::vector<util::sptr<flchk::Expression const>> params;
     flchk::call call0(pos, "fib", std::move(params));
 
     params.push_back(std::move(util::mkptr(new flchk::bool_literal(pos, false))));
@@ -169,7 +169,7 @@ TEST_F(ExprNodesTest, Calls)
                                 new flchk::float_literal(pos, "11.11")))))));
     params.push_back(std::move(util::mkptr(
                     new flchk::negation(pos, std::move(util::mkptr(
-                                new flchk::int_literal(pos, "21")))))));
+                                new flchk::IntLiteral(pos, "21")))))));
     params.push_back(std::move(util::mkptr(new flchk::reference(pos, "dareka_tasukete_kudasai"))));
     flchk::call call1(pos, "leap", std::move(params));
 
@@ -223,7 +223,7 @@ TEST_F(ExprNodesTest, FuncReference)
 TEST_F(ExprNodesTest, LiteralBoolValueError)
 {
     misc::pos_type pos(5);
-    flchk::int_literal int0(pos, "20110409");
+    flchk::IntLiteral int0(pos, "20110409");
     int0.bool_value();
 
     flchk::float_literal float0(pos, "10.58");
@@ -246,13 +246,13 @@ TEST_F(ExprNodesTest, OperationLiteralBoolValueError)
     conj.bool_value();
     flchk::disjunction disj(pos
                           , std::move(util::mkptr(new flchk::bool_literal(pos, false)))
-                          , std::move(util::mkptr(new flchk::int_literal(pos, "2"))));
+                          , std::move(util::mkptr(new flchk::IntLiteral(pos, "2"))));
     disj.bool_value();
     flchk::negation nega(pos, std::move(util::mkptr(new flchk::float_literal(pos, "1.12"))));
     nega.bool_value();
 
     flchk::binary_op binary(pos
-                          , std::move(util::mkptr(new flchk::int_literal(pos, "1")))
+                          , std::move(util::mkptr(new flchk::IntLiteral(pos, "1")))
                           , "*"
                           , std::move(util::mkptr(new flchk::float_literal(pos, "11235.8"))));
     binary.bool_value();

@@ -25,7 +25,7 @@ TEST_F(FilterTest, FilterNormal)
 
     util::sptr<flchk::binary_op> binary(
             new flchk::binary_op(pos
-                               , std::move(util::mkptr(new flchk::int_literal(pos, "1")))
+                               , std::move(util::mkptr(new flchk::IntLiteral(pos, "1")))
                                , "+"
                                , std::move(util::mkptr(new flchk::float_literal(pos, "235.7")))));
 
@@ -134,7 +134,7 @@ TEST_F(FilterTest, TerminatedWarningIfAlternative)
     flchk::filter filter0;
 
     util::sptr<flchk::filter> filter_consq(new flchk::filter);
-    filter_consq->add_arith(pos, std::move(util::mkptr(new flchk::int_literal(pos, "20110411"))));
+    filter_consq->add_arith(pos, std::move(util::mkptr(new flchk::IntLiteral(pos, "20110411"))));
 
     util::sptr<flchk::filter> filter_alter(new flchk::filter);
     filter_alter->add_func_ret(pos_warning, std::move(util::mkptr(new flchk::reference(pos, "kogami"))));
@@ -182,7 +182,7 @@ TEST_F(FilterTest, TwoPathBranchFoldedOnFalse)
 
     util::sptr<flchk::binary_op> binary(
             new flchk::binary_op(pos
-                               , std::move(util::mkptr(new flchk::int_literal(pos, "2048")))
+                               , std::move(util::mkptr(new flchk::IntLiteral(pos, "2048")))
                                , ">"
                                , std::move(util::mkptr(new flchk::float_literal(pos, "11235.8")))));
 
@@ -220,7 +220,7 @@ TEST_F(FilterTest, TwoPathBranchFoldedOnTrue)
 
     util::sptr<flchk::binary_op> binary(
             new flchk::binary_op(pos
-                               , std::move(util::mkptr(new flchk::int_literal(pos, "2048")))
+                               , std::move(util::mkptr(new flchk::IntLiteral(pos, "2048")))
                                , "<"
                                , std::move(util::mkptr(new flchk::float_literal(pos, "11235.8")))));
 
@@ -258,7 +258,7 @@ TEST_F(FilterTest, IfNotFoldedOnFalse)
 
     util::sptr<flchk::binary_op> binary(
             new flchk::binary_op(pos
-                               , std::move(util::mkptr(new flchk::int_literal(pos, "2048")))
+                               , std::move(util::mkptr(new flchk::IntLiteral(pos, "2048")))
                                , ">"
                                , std::move(util::mkptr(new flchk::float_literal(pos, "11235.8")))));
 
@@ -292,7 +292,7 @@ TEST_F(FilterTest, IfNotFoldedOnTrue)
 
     util::sptr<flchk::binary_op> binary(
             new flchk::binary_op(pos
-                               , std::move(util::mkptr(new flchk::int_literal(pos, "2048")))
+                               , std::move(util::mkptr(new flchk::IntLiteral(pos, "2048")))
                                , "<"
                                , std::move(util::mkptr(new flchk::float_literal(pos, "11235.8")))));
 

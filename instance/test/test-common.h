@@ -13,7 +13,7 @@ namespace test {
     extern inst::built_in_primitive const HALFWORD;
 
     struct cond_type_expr
-        : public inst::expr_base
+        : public inst::Expression
     {
         util::sref<inst::type const> typeof() const
         {
@@ -24,7 +24,7 @@ namespace test {
     };
 
     struct void_type_expr
-        : public inst::expr_base
+        : public inst::Expression
     {
         util::sref<inst::type const> typeof() const
         {
@@ -35,7 +35,7 @@ namespace test {
     };
 
     struct bad_type_expr
-        : public inst::expr_base
+        : public inst::Expression
     {
         util::sref<inst::type const> typeof() const
         {

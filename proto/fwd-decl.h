@@ -3,8 +3,8 @@
 
 namespace proto {
 
-    struct expr_base;
-    struct stmt_base;
+    struct Expression;
+    struct Statement;
     struct function;
     struct symbol_table;
     struct scope;

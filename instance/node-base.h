@@ -6,21 +6,21 @@
 
 namespace inst {
 
-    struct expr_base {
-        virtual ~expr_base() {}
+    struct Expression {
+        virtual ~Expression() {}
 
         virtual util::sref<type const> typeof() const = 0;
         virtual void write() const = 0;
     protected:
-        expr_base() {}
+        Expression() {}
     };
 
-    struct stmt_base {
-        virtual ~stmt_base() {}
+    struct Statement {
+        virtual ~Statement() {}
 
         virtual void write() const = 0;
     protected:
-        stmt_base() {}
+        Statement() {}
     };
 
 }

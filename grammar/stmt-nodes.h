@@ -11,23 +11,23 @@
 namespace grammar {
 
     struct arithmetics
-        : public stmt_base
+        : public Statement
     {
-        arithmetics(misc::pos_type const& pos, util::sptr<expr_base const> e)
-            : stmt_base(pos)
+        arithmetics(misc::pos_type const& pos, util::sptr<Expression const> e)
+            : Statement(pos)
             , expr(std::move(e))
         {}
 
         void compile(util::sref<flchk::filter> filter) const;
 
-        util::sptr<expr_base const> const expr;
+        util::sptr<Expression const> const expr;
     };
 
     struct branch
-        : public stmt_base
+        : public Statement
     {
-        branch(misc::pos_type const& pos, util::sptr<expr_base const> p, block c, block a)
-            : stmt_base(pos)
+        branch(misc::pos_type const& pos, util::sptr<Expression const> p, block c, block a)
+            : Statement(pos)
             , predicate(std::move(p))
             , consequence(std::move(c))
             , alternative(std::move(a))
@@ -35,69 +35,69 @@ namespace grammar {
 
         void compile(util::sref<flchk::filter> filter) const;
 
-        util::sptr<expr_base const> const predicate;
+        util::sptr<Expression const> const predicate;
         block const consequence;
         block const alternative;
     };
 
     struct branch_cons_only
-        : public stmt_base
+        : public Statement
     {
-        branch_cons_only(misc::pos_type const& pos, util::sptr<expr_base const> p, block c)
-            : stmt_base(pos)
+        branch_cons_only(misc::pos_type const& pos, util::sptr<Expression const> p, block c)
+            : Statement(pos)
             , predicate(std::move(p))
             , consequence(std::move(c))
         {}
 
         void compile(util::sref<flchk::filter> filter) const;
 
-        util::sptr<expr_base const> const predicate;
+        util::sptr<Expression const> const predicate;
         block const consequence;
     };
 
     struct branch_alt_only
-        : public stmt_base
+        : public Statement
     {
-        branch_alt_only(misc::pos_type const& pos, util::sptr<expr_base const> p, block a)
-            : stmt_base(pos)
+        branch_alt_only(misc::pos_type const& pos, util::sptr<Expression const> p, block a)
+            : Statement(pos)
             , predicate(std::move(p))
             , alternative(std::move(a))
         {}
 
         void compile(util::sref<flchk::filter> filter) const;
 
-        util::sptr<expr_base const> const predicate;
+        util::sptr<Expression const> const predicate;
         block const alternative;
     };
 
     struct func_ret
-        : public stmt_base
+        : public Statement
     {
-        func_ret(misc::pos_type const& pos, util::sptr<expr_base const> r)
-            : stmt_base(pos)
+        func_ret(misc::pos_type const& pos, util::sptr<Expression const> r)
+            : Statement(pos)
             , ret_val(std::move(r))
         {}
 
         void compile(util::sref<flchk::filter> filter) const;
 
-        util::sptr<expr_base const> const ret_val;
+        util::sptr<Expression const> const ret_val;
     };
 
     struct func_ret_nothing
-        : public stmt_base
+        : public Statement
     {
         explicit func_ret_nothing(misc::pos_type const& pos)
-            : stmt_base(pos)
+            : Statement(pos)
         {}
 
         void compile(util::sref<flchk::filter> filter) const;
     };
 
     struct var_def
-        : public stmt_base
+        : public Statement
     {
-        var_def(misc::pos_type const& pos, std::string const& n, util::sptr<expr_base const> i)
-            : stmt_base(pos)
+        var_def(misc::pos_type const& pos, std::string const& n, util::sptr<Expression const> i)
+            : Statement(pos)
             , name(n)
             , init(std::move(i))
         {}
@@ -105,7 +105,7 @@ namespace grammar {
         void compile(util::sref<flchk::filter> filter) const;
 
         std::string const name;
-        util::sptr<expr_base const> const init;
+        util::sptr<Expression const> const init;
     };
 
 }

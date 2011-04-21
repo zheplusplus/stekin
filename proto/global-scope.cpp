@@ -10,9 +10,9 @@
 namespace {
 
     struct write_stmt_inst
-        : public inst::stmt_base
+        : public inst::Statement
     {
-        explicit write_stmt_inst(util::sptr<inst::expr_base const> e)
+        explicit write_stmt_inst(util::sptr<inst::Expression const> e)
             : expr(std::move(e))
         {}
 
@@ -24,14 +24,14 @@ namespace {
             output::end_of_statement();
         }
 
-        util::sptr<inst::expr_base const> const expr;
+        util::sptr<inst::Expression const> const expr;
     };
 
     struct write_stmt_proto
-        : public proto::stmt_base
+        : public proto::Statement
     {
         write_stmt_proto()
-            : proto::stmt_base(misc::pos_type(0))
+            : proto::Statement(misc::pos_type(0))
             , ref(misc::pos_type(0), "value to write")
         {}
 

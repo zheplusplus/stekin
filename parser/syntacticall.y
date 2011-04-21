@@ -11,7 +11,7 @@
     parser::param_names* param_names_type;
     parser::arg_list* args_type;
 
-    grammar::expr_base* expr_node;
+    grammar::Expression* expr_node;
 }
 
 %type <indent_type> indent
@@ -313,7 +313,7 @@ factor:
     |
     INT_LITERAL
     {
-        $$ = new grammar::int_literal(parser::here(), yytext);
+        $$ = new grammar::IntLiteral(parser::here(), yytext);
     }
     |
     DOUBLE_LITERAL

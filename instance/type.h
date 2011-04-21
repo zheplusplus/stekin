@@ -17,12 +17,12 @@ namespace inst {
         virtual std::string exported_name() const = 0;
         virtual std::string name() const = 0;
     public:
-        virtual util::sptr<inst::expr_base const> call_func(
+        virtual util::sptr<inst::Expression const> call_func(
                   misc::pos_type const& call_pos
                 , int level
                 , int stack_offset
                 , std::vector<util::sref<inst::type const>> const& arg_types
-                , std::vector<util::sptr<expr_base const>> args) const = 0;
+                , std::vector<util::sptr<Expression const>> args) const = 0;
     public:
         bool operator!=(type const& rhs) const;
         virtual bool operator==(type const& rhs) const = 0;
@@ -62,12 +62,12 @@ namespace inst {
         std::string exported_name() const;
         std::string name() const;
     public:
-        util::sptr<inst::expr_base const> call_func(
+        util::sptr<inst::Expression const> call_func(
                   misc::pos_type const& call_pos
                 , int
                 , int
                 , std::vector<util::sref<inst::type const>> const&
-                , std::vector<util::sptr<expr_base const>>) const;
+                , std::vector<util::sptr<Expression const>>) const;
     public:
         bool operator==(type const& rhs) const;
         bool operator<(type const& rhs) const;

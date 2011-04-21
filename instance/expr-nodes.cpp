@@ -8,7 +8,7 @@
 
 using namespace inst;
 
-conjunction::conjunction(misc::pos_type const& p, util::sptr<expr_base const> l, util::sptr<expr_base const> r)
+conjunction::conjunction(misc::pos_type const& p, util::sptr<Expression const> l, util::sptr<Expression const> r)
     : lhs(std::move(l))
     , rhs(std::move(r))
 {
@@ -16,7 +16,7 @@ conjunction::conjunction(misc::pos_type const& p, util::sptr<expr_base const> l,
     rhs->typeof()->check_condition_type(p);
 }
 
-disjunction::disjunction(misc::pos_type const& p, util::sptr<expr_base const> l, util::sptr<expr_base const> r)
+disjunction::disjunction(misc::pos_type const& p, util::sptr<Expression const> l, util::sptr<Expression const> r)
     : lhs(std::move(l))
     , rhs(std::move(r))
 {
@@ -24,13 +24,13 @@ disjunction::disjunction(misc::pos_type const& p, util::sptr<expr_base const> l,
     rhs->typeof()->check_condition_type(p);
 }
 
-negation::negation(misc::pos_type const& p, util::sptr<expr_base const> r)
+negation::negation(misc::pos_type const& p, util::sptr<Expression const> r)
     : rhs(std::move(r))
 {
     rhs->typeof()->check_condition_type(p);
 }
 
-util::sref<type const> int_literal::typeof() const
+util::sref<type const> IntLiteral::typeof() const
 {
     return type::BIT_INT;
 }
@@ -85,7 +85,7 @@ util::sref<type const> negation::typeof() const
     return type::BIT_BOOL;
 }
 
-void int_literal::write() const
+void IntLiteral::write() const
 {
     output::write_int(value);
 }
@@ -110,7 +110,7 @@ void call::write() const
     output::write_call_begin(func.id());
     std::for_each(args.begin()
                 , args.end()
-                , [&](util::sptr<expr_base const> const& expr)
+                , [&](util::sptr<Expression const> const& expr)
                   {
                        output::write_arg_seperator();
                        expr->write();

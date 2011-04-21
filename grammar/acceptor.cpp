@@ -16,7 +16,7 @@ void if_acceptor::accept_func(util::sptr<function const> func)
     _current_branch->add_func(std::move(func));
 }
 
-void if_acceptor::accept_stmt(util::sptr<stmt_base const> stmt)
+void if_acceptor::accept_stmt(util::sptr<Statement const> stmt)
 {
     _current_branch->add_stmt(std::move(stmt));
 }
@@ -55,7 +55,7 @@ void ifnot_acceptor::accept_func(util::sptr<function const> func)
     _alternative.add_func(std::move(func));
 }
 
-void ifnot_acceptor::accept_stmt(util::sptr<stmt_base const> stmt)
+void ifnot_acceptor::accept_stmt(util::sptr<Statement const> stmt)
 {
     _alternative.add_stmt(std::move(stmt));
 }
@@ -72,7 +72,7 @@ void function_acceptor::accept_func(util::sptr<function const> func)
     _body.add_func(std::move(func));
 }
 
-void function_acceptor::accept_stmt(util::sptr<stmt_base const> stmt)
+void function_acceptor::accept_stmt(util::sptr<Statement const> stmt)
 {
     _body.add_stmt(std::move(stmt));
 }

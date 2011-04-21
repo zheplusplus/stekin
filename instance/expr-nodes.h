@@ -13,10 +13,10 @@
 
 namespace inst {
 
-    struct int_literal
-        : public expr_base
+    struct IntLiteral
+        : public Expression
     {
-        explicit int_literal(platform::i4_type v)
+        explicit IntLiteral(platform::i4_type v)
             : value(v)
         {}
 
@@ -27,7 +27,7 @@ namespace inst {
     };
 
     struct float_literal
-        : public expr_base
+        : public Expression
     {
         explicit float_literal(platform::f8_type v)
             : value(v)
@@ -40,7 +40,7 @@ namespace inst {
     };
 
     struct bool_literal
-        : public expr_base
+        : public Expression
     {
         explicit bool_literal(bool v)
             : value(v)
@@ -53,7 +53,7 @@ namespace inst {
     };
 
     struct reference
-        : public expr_base
+        : public Expression
     {
         explicit reference(variable const& v)
             : var(v)
@@ -66,9 +66,9 @@ namespace inst {
     };
 
     struct call
-        : public expr_base
+        : public Expression
     {
-        call(util::sref<function const> f, std::vector<util::sptr<expr_base const>> a)
+        call(util::sref<function const> f, std::vector<util::sptr<Expression const>> a)
             : func(f)
             , args(std::move(a))
         {}
@@ -77,11 +77,11 @@ namespace inst {
         void write() const;
 
         util::sref<function const> const func;
-        std::vector<util::sptr<expr_base const>> args;
+        std::vector<util::sptr<Expression const>> args;
     };
 
     struct func_reference
-        : public expr_base
+        : public Expression
     {
         func_reference(misc::pos_type const& reference_pos
                      , util::sref<proto::function> func_proto
@@ -97,9 +97,9 @@ namespace inst {
     };
 
     struct binary_op
-        : public expr_base
+        : public Expression
     {
-        binary_op(util::sptr<expr_base const> l, operation const* o, util::sptr<expr_base const> r)
+        binary_op(util::sptr<Expression const> l, operation const* o, util::sptr<Expression const> r)
             : lhs(std::move(l))
             , op(o)
             , rhs(std::move(r))
@@ -108,15 +108,15 @@ namespace inst {
         util::sref<type const> typeof() const;
         void write() const;
 
-        util::sptr<expr_base const> const lhs;
+        util::sptr<Expression const> const lhs;
         operation const* const op;
-        util::sptr<expr_base const> const rhs;
+        util::sptr<Expression const> const rhs;
     };
 
     struct pre_unary_op
-        : public expr_base
+        : public Expression
     {
-        pre_unary_op(operation const* o, util::sptr<expr_base const> r)
+        pre_unary_op(operation const* o, util::sptr<Expression const> r)
             : op(o)
             , rhs(std::move(r))
         {}
@@ -125,42 +125,42 @@ namespace inst {
         void write() const;
 
         operation const* const op;
-        util::sptr<expr_base const> const rhs;
+        util::sptr<Expression const> const rhs;
     };
 
     struct conjunction
-        : public expr_base
+        : public Expression
     {
-        conjunction(misc::pos_type const& p, util::sptr<expr_base const> l, util::sptr<expr_base const> r);
+        conjunction(misc::pos_type const& p, util::sptr<Expression const> l, util::sptr<Expression const> r);
 
         util::sref<type const> typeof() const;
         void write() const;
 
-        util::sptr<expr_base const> const lhs;
-        util::sptr<expr_base const> const rhs;
+        util::sptr<Expression const> const lhs;
+        util::sptr<Expression const> const rhs;
     };
 
     struct disjunction
-        : public expr_base
+        : public Expression
     {
-        disjunction(misc::pos_type const& p, util::sptr<expr_base const> l, util::sptr<expr_base const> r);
+        disjunction(misc::pos_type const& p, util::sptr<Expression const> l, util::sptr<Expression const> r);
 
         util::sref<type const> typeof() const;
         void write() const;
 
-        util::sptr<expr_base const> const lhs;
-        util::sptr<expr_base const> const rhs;
+        util::sptr<Expression const> const lhs;
+        util::sptr<Expression const> const rhs;
     };
 
     struct negation
-        : public expr_base
+        : public Expression
     {
-        explicit negation(misc::pos_type const& p, util::sptr<expr_base const> r);
+        explicit negation(misc::pos_type const& p, util::sptr<Expression const> r);
 
         util::sref<type const> typeof() const;
         void write() const;
 
-        util::sptr<expr_base const> const rhs;
+        util::sptr<Expression const> const rhs;
     };
 
 }

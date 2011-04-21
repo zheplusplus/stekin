@@ -6,7 +6,7 @@
 
 using namespace flchk;
 
-void filter::add_func_ret(misc::pos_type const& pos, util::sptr<expr_base const> ret_val)
+void filter::add_func_ret(misc::pos_type const& pos, util::sptr<Expression const> ret_val)
 {
     _accumulator.add_func_ret(pos, std::move(ret_val->fold()));
 }
@@ -16,17 +16,17 @@ void filter::add_func_ret_nothing(misc::pos_type const& pos)
     _accumulator.add_func_ret_nothing(pos);
 }
 
-void filter::add_arith(misc::pos_type const& pos, util::sptr<expr_base const> expr)
+void filter::add_arith(misc::pos_type const& pos, util::sptr<Expression const> expr)
 {
     _accumulator.add_arith(pos, std::move(expr->fold()));
 }
 
 void filter::add_branch(misc::pos_type const& pos
-                      , util::sptr<expr_base const> predicate
+                      , util::sptr<Expression const> predicate
                       , util::sptr<filter> consequence
                       , util::sptr<filter> alternative)
 {
-    util::sptr<expr_base const> pred(std::move(predicate->fold()));
+    util::sptr<Expression const> pred(std::move(predicate->fold()));
     if (pred->is_literal()) {
         _accumulator.add_block(std::move((pred->bool_value() ? consequence : alternative)->_accumulator));
         return;
@@ -38,10 +38,10 @@ void filter::add_branch(misc::pos_type const& pos
 }
 
 void filter::add_branch(misc::pos_type const& pos
-                      , util::sptr<expr_base const> predicate
+                      , util::sptr<Expression const> predicate
                       , util::sptr<filter> consequence)
 {
-    util::sptr<expr_base const> pred(std::move(predicate->fold()));
+    util::sptr<Expression const> pred(std::move(predicate->fold()));
     if (pred->is_literal()) {
         if (pred->bool_value()) {
             _accumulator.add_block(std::move(consequence->_accumulator));
@@ -52,10 +52,10 @@ void filter::add_branch(misc::pos_type const& pos
 }
 
 void filter::add_branch_alt_only(misc::pos_type const& pos
-                               , util::sptr<expr_base const> predicate
+                               , util::sptr<Expression const> predicate
                                , util::sptr<filter> alternative)
 {
-    util::sptr<expr_base const> pred(std::move(predicate->fold()));
+    util::sptr<Expression const> pred(std::move(predicate->fold()));
     if (pred->is_literal()) {
         if (!pred->bool_value()) {
             _accumulator.add_block(std::move(alternative->_accumulator));
@@ -65,7 +65,7 @@ void filter::add_branch_alt_only(misc::pos_type const& pos
     _accumulator.add_branch_alt_only(pos, std::move(pred), std::move(alternative->_accumulator));
 }
 
-void filter::def_var(misc::pos_type const& pos, std::string const& name, util::sptr<expr_base const> init)
+void filter::def_var(misc::pos_type const& pos, std::string const& name, util::sptr<Expression const> init)
 {
     _accumulator.def_var(pos, name, std::move(init->fold()));
 }
@@ -83,7 +83,7 @@ block filter::deliver()
     return std::move(_accumulator.deliver());
 }
 
-void symbol_def_filter::def_var(misc::pos_type const& pos, std::string const& name, util::sptr<expr_base const>)
+void symbol_def_filter::def_var(misc::pos_type const& pos, std::string const& name, util::sptr<Expression const>)
 {
     error::forbid_def_var(pos, name);
 }

@@ -19,7 +19,7 @@ TEST_F(StmtNodesTest, Arithmetics)
 {
     misc::pos_type pos(1);
     util::sptr<flchk::filter> filter(std::move(util::mkmptr(new flchk::filter)));
-    grammar::arithmetics arith0(pos, std::move(util::mkptr(new grammar::int_literal(pos, "1840"))));
+    grammar::arithmetics arith0(pos, std::move(util::mkptr(new grammar::IntLiteral(pos, "1840"))));
     grammar::arithmetics arith1(pos, std::move(util::mkptr(new grammar::bool_literal(pos, false))));
     arith0.compile(*filter);
     arith1.compile(*filter);
@@ -126,7 +126,7 @@ TEST_F(StmtNodesTest, Branch)
     grammar::block block2;
     block2.add_stmt(std::move(
                 util::mkptr(new grammar::arithmetics(pos, std::move(
-                            util::mkptr(new grammar::int_literal(pos, "7")))))));
+                            util::mkptr(new grammar::IntLiteral(pos, "7")))))));
     block2.add_stmt(std::move(util::mkptr(new grammar::func_ret_nothing(pos))));
     grammar::block block3;
     block3.add_stmt(std::move(
@@ -231,7 +231,7 @@ TEST_F(StmtNodesTest, Mixed)
     grammar::block block_nested;
     block_nested.add_stmt(std::move(
                 util::mkptr(new grammar::arithmetics(pos, std::move(
-                            util::mkptr(new grammar::int_literal(pos, "9")))))));
+                            util::mkptr(new grammar::IntLiteral(pos, "9")))))));
     util::sptr<grammar::function> func_nested0(
             new grammar::function(pos, "funcn", std::vector<std::string>({ "SOS" }), std::move(block_nested)));
     util::sptr<grammar::function> func_nested1(

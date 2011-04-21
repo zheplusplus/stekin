@@ -9,7 +9,7 @@
 
 using namespace flchk;
 
-void block::add_stmt(util::sptr<stmt_base const> stmt)
+void block::add_stmt(util::sptr<Statement const> stmt)
 {
     _stmts.push_back(std::move(stmt));
 }
@@ -48,7 +48,7 @@ void block::compile(util::sref<proto::scope> scope) const
 
     std::for_each(_stmts.begin()
                 , _stmts.end()
-                , [&](util::sptr<stmt_base const> const& stmt)
+                , [&](util::sptr<Statement const> const& stmt)
                   {
                       scope->add_stmt(stmt->compile(scope));
                   });
@@ -65,7 +65,7 @@ void block::append(block following)
 
     std::for_each(following._stmts.begin()
                 , following._stmts.end()
-                , [&](util::sptr<stmt_base const>& stmt)
+                , [&](util::sptr<Statement const>& stmt)
                   {
                       _stmts.push_back(std::move(stmt));
                   });

@@ -10,255 +10,255 @@
 namespace flchk {
 
     struct pre_unary_op
-        : public expr_base
+        : public Expression
     {
-        pre_unary_op(misc::pos_type const& pos, std::string const& op, util::sptr<expr_base const> r)
-            : expr_base(pos)
+        pre_unary_op(misc::pos_type const& pos, std::string const& op, util::sptr<Expression const> r)
+            : Expression(pos)
             , op_img(op)
             , rhs(std::move(r))
         {}
 
-        util::sptr<proto::expr_base const> compile(util::sref<proto::scope> scope) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::scope> scope) const;
         bool is_literal() const;
         bool bool_value() const;
-        util::sptr<expr_base const> fold() const;
+        util::sptr<Expression const> fold() const;
         std::string type_name() const;
 
         std::string const op_img;
-        util::sptr<expr_base const> const rhs;
+        util::sptr<Expression const> const rhs;
     };
 
     struct binary_op
-        : public expr_base
+        : public Expression
     {
         binary_op(misc::pos_type const& pos
-                , util::sptr<expr_base const> l
+                , util::sptr<Expression const> l
                 , std::string const& op
-                , util::sptr<expr_base const> r)
-            : expr_base(pos)
+                , util::sptr<Expression const> r)
+            : Expression(pos)
             , lhs(std::move(l))
             , op_img(op)
             , rhs(std::move(r))
         {}
 
-        util::sptr<proto::expr_base const> compile(util::sref<proto::scope> scope) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::scope> scope) const;
         bool is_literal() const;
         bool bool_value() const;
         std::string type_name() const;
-        util::sptr<expr_base const> fold() const;
+        util::sptr<Expression const> fold() const;
 
-        util::sptr<expr_base const> const lhs;
+        util::sptr<Expression const> const lhs;
         std::string const op_img;
-        util::sptr<expr_base const> const rhs;
+        util::sptr<Expression const> const rhs;
     };
 
     struct conjunction
-        : public expr_base
+        : public Expression
     {
-        conjunction(misc::pos_type const& pos, util::sptr<expr_base const> l, util::sptr<expr_base const> r)
-            : expr_base(pos)
+        conjunction(misc::pos_type const& pos, util::sptr<Expression const> l, util::sptr<Expression const> r)
+            : Expression(pos)
             , lhs(std::move(l))
             , rhs(std::move(r))
         {}
 
-        util::sptr<proto::expr_base const> compile(util::sref<proto::scope> scope) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::scope> scope) const;
         bool is_literal() const;
         bool bool_value() const;
         std::string type_name() const;
-        util::sptr<expr_base const> fold() const;
+        util::sptr<Expression const> fold() const;
 
-        util::sptr<expr_base const> const lhs;
-        util::sptr<expr_base const> const rhs;
+        util::sptr<Expression const> const lhs;
+        util::sptr<Expression const> const rhs;
     };
 
     struct disjunction
-        : public expr_base
+        : public Expression
     {
-        disjunction(misc::pos_type const& pos, util::sptr<expr_base const> l, util::sptr<expr_base const> r)
-            : expr_base(pos)
+        disjunction(misc::pos_type const& pos, util::sptr<Expression const> l, util::sptr<Expression const> r)
+            : Expression(pos)
             , lhs(std::move(l))
             , rhs(std::move(r))
         {}
 
-        util::sptr<proto::expr_base const> compile(util::sref<proto::scope> scope) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::scope> scope) const;
         bool is_literal() const;
         bool bool_value() const;
         std::string type_name() const;
-        util::sptr<expr_base const> fold() const;
+        util::sptr<Expression const> fold() const;
 
-        util::sptr<expr_base const> const lhs;
-        util::sptr<expr_base const> const rhs;
+        util::sptr<Expression const> const lhs;
+        util::sptr<Expression const> const rhs;
     };
 
     struct negation
-        : public expr_base
+        : public Expression
     {
-        negation(misc::pos_type const& pos, util::sptr<expr_base const> r)
-            : expr_base(pos)
+        negation(misc::pos_type const& pos, util::sptr<Expression const> r)
+            : Expression(pos)
             , rhs(std::move(r))
         {}
 
-        util::sptr<proto::expr_base const> compile(util::sref<proto::scope> scope) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::scope> scope) const;
         bool is_literal() const;
         bool bool_value() const;
         std::string type_name() const;
-        util::sptr<expr_base const> fold() const;
+        util::sptr<Expression const> fold() const;
 
-        util::sptr<expr_base const> const rhs;
+        util::sptr<Expression const> const rhs;
     };
 
     struct reference
-        : public expr_base
+        : public Expression
     {
         reference(misc::pos_type const& pos, std::string const& n)
-            : expr_base(pos)
+            : Expression(pos)
             , name(n)
         {}
 
-        util::sptr<proto::expr_base const> compile(util::sref<proto::scope> scope) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::scope> scope) const;
         std::string type_name() const;
-        util::sptr<expr_base const> fold() const;
+        util::sptr<Expression const> fold() const;
 
         std::string const name;
     };
 
     struct bool_literal
-        : public expr_base
+        : public Expression
     {
         bool_literal(misc::pos_type const& pos, bool v)
-            : expr_base(pos)
+            : Expression(pos)
             , value(v)
         {}
 
-        util::sptr<proto::expr_base const> compile(util::sref<proto::scope> scope) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::scope> scope) const;
         bool is_literal() const;
         bool bool_value() const;
         std::string type_name() const;
-        util::sptr<expr_base const> fold() const;
+        util::sptr<Expression const> fold() const;
 
-        util::sptr<expr_base const> operate(misc::pos_type const& op_pos
+        util::sptr<Expression const> operate(misc::pos_type const& op_pos
                                           , std::string const& op_img
                                           , mpz_class const&) const;
-        util::sptr<expr_base const> operate(misc::pos_type const& op_pos
+        util::sptr<Expression const> operate(misc::pos_type const& op_pos
                                           , std::string const& op_img
                                           , mpf_class const&) const;
-        util::sptr<expr_base const> operate(misc::pos_type const& op_pos
+        util::sptr<Expression const> operate(misc::pos_type const& op_pos
                                           , std::string const& op_img
                                           , bool rhs) const;
 
-        util::sptr<expr_base const> as_rhs(misc::pos_type const& op_pos
+        util::sptr<Expression const> as_rhs(misc::pos_type const& op_pos
                                          , std::string const& op_img
-                                         , util::sptr<expr_base const> lhs) const;
-        util::sptr<expr_base const> as_rhs(misc::pos_type const& op_pos, std::string const& op_img) const;
+                                         , util::sptr<Expression const> lhs) const;
+        util::sptr<Expression const> as_rhs(misc::pos_type const& op_pos, std::string const& op_img) const;
 
         bool const value;
     public:
-        static util::sptr<expr_base const> mkbool(bool value);
+        static util::sptr<Expression const> mkbool(bool value);
     };
 
-    struct int_literal
-        : public expr_base
+    struct IntLiteral
+        : public Expression
     {
-        int_literal(misc::pos_type const& pos, std::string const& image)
-            : expr_base(pos)
+        IntLiteral(misc::pos_type const& pos, std::string const& image)
+            : Expression(pos)
             , value(image)
         {}
 
-        int_literal(misc::pos_type const& pos, mpz_class const& v)
-            : expr_base(pos)
+        IntLiteral(misc::pos_type const& pos, mpz_class const& v)
+            : Expression(pos)
             , value(v)
         {}
 
-        util::sptr<proto::expr_base const> compile(util::sref<proto::scope> scope) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::scope> scope) const;
         bool is_literal() const;
         bool bool_value() const;
         std::string type_name() const;
-        util::sptr<expr_base const> fold() const;
+        util::sptr<Expression const> fold() const;
 
-        util::sptr<expr_base const> operate(misc::pos_type const& op_pos
+        util::sptr<Expression const> operate(misc::pos_type const& op_pos
                                           , std::string const& op_img
                                           , mpz_class const& rhs) const;
-        util::sptr<expr_base const> operate(misc::pos_type const& op_pos
+        util::sptr<Expression const> operate(misc::pos_type const& op_pos
                                           , std::string const& op_img
                                           , mpf_class const& rhs) const;
-        util::sptr<expr_base const> operate(misc::pos_type const& op_pos
+        util::sptr<Expression const> operate(misc::pos_type const& op_pos
                                           , std::string const& op_img
                                           , bool) const;
 
-        util::sptr<expr_base const> as_rhs(misc::pos_type const& op_pos
+        util::sptr<Expression const> as_rhs(misc::pos_type const& op_pos
                                          , std::string const& op_img
-                                         , util::sptr<expr_base const> lhs) const;
-        util::sptr<expr_base const> as_rhs(misc::pos_type const& op_pos, std::string const& op_img) const;
+                                         , util::sptr<Expression const> lhs) const;
+        util::sptr<Expression const> as_rhs(misc::pos_type const& op_pos, std::string const& op_img) const;
 
         mpz_class const value;
     };
 
     struct float_literal
-        : public expr_base
+        : public Expression
     {
         float_literal(misc::pos_type const& pos, std::string const& image)
-            : expr_base(pos)
+            : Expression(pos)
             , value(image)
         {}
 
         float_literal(misc::pos_type const& pos, mpf_class const& v)
-            : expr_base(pos)
+            : Expression(pos)
             , value(v)
         {}
 
-        util::sptr<proto::expr_base const> compile(util::sref<proto::scope> scope) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::scope> scope) const;
         bool is_literal() const;
         bool bool_value() const;
         std::string type_name() const;
-        util::sptr<expr_base const> fold() const;
+        util::sptr<Expression const> fold() const;
 
-        util::sptr<expr_base const> operate(misc::pos_type const& op_pos
+        util::sptr<Expression const> operate(misc::pos_type const& op_pos
                                           , std::string const& op_img
                                           , mpz_class const& rhs) const;
-        util::sptr<expr_base const> operate(misc::pos_type const& op_pos
+        util::sptr<Expression const> operate(misc::pos_type const& op_pos
                                           , std::string const& op_img
                                           , mpf_class const& rhs) const;
-        util::sptr<expr_base const> operate(misc::pos_type const& op_pos
+        util::sptr<Expression const> operate(misc::pos_type const& op_pos
                                           , std::string const& op_img
                                           , bool) const;
 
-        util::sptr<expr_base const> as_rhs(misc::pos_type const& op_pos
+        util::sptr<Expression const> as_rhs(misc::pos_type const& op_pos
                                          , std::string const& op_img
-                                         , util::sptr<expr_base const> lhs) const;
-        util::sptr<expr_base const> as_rhs(misc::pos_type const& op_pos, std::string const& op_img) const;
+                                         , util::sptr<Expression const> lhs) const;
+        util::sptr<Expression const> as_rhs(misc::pos_type const& op_pos, std::string const& op_img) const;
 
         mpf_class const value;
     };
 
     struct call
-        : public expr_base
+        : public Expression
     {
-        call(misc::pos_type const& pos, std::string const& n, std::vector<util::sptr<expr_base const>> a)
-            : expr_base(pos)
+        call(misc::pos_type const& pos, std::string const& n, std::vector<util::sptr<Expression const>> a)
+            : Expression(pos)
             , name(n)
             , args(std::move(a))
         {}
 
-        util::sptr<proto::expr_base const> compile(util::sref<proto::scope> scope) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::scope> scope) const;
         std::string type_name() const;
-        util::sptr<expr_base const> fold() const;
+        util::sptr<Expression const> fold() const;
 
         std::string const name;
-        std::vector<util::sptr<expr_base const>> const args;
+        std::vector<util::sptr<Expression const>> const args;
     };
 
     struct func_reference
-        : public expr_base
+        : public Expression
     {
         func_reference(misc::pos_type const& pos, std::string const& n, int pc)
-            : expr_base(pos)
+            : Expression(pos)
             , name(n)
             , param_count(pc)
         {}
 
-        util::sptr<proto::expr_base const> compile(util::sref<proto::scope> scope) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::scope> scope) const;
         std::string type_name() const;
-        util::sptr<expr_base const> fold() const;
+        util::sptr<Expression const> fold() const;
 
         std::string const name;
         int const param_count;

@@ -6,20 +6,20 @@
 
 using namespace proto;
 
-util::sptr<expr_base const> sub_scope::make_ref(misc::pos_type const& pos, std::string const& name)
+util::sptr<Expression const> sub_scope::make_ref(misc::pos_type const& pos, std::string const& name)
 {
     _symbols->ref_var(pos, name);
     return std::move(util::mkptr(new reference(pos, name)));
 }
 
-util::sptr<expr_base const> sub_scope::make_call(misc::pos_type const& pos
+util::sptr<Expression const> sub_scope::make_call(misc::pos_type const& pos
                                                , std::string const& name
-                                               , std::vector<util::sptr<expr_base const>> args) const
+                                               , std::vector<util::sptr<Expression const>> args) const
 {
     return std::move(_symbols->query_call(pos, name, std::move(args)));
 }
 
-util::sptr<expr_base const> sub_scope::make_func_reference(misc::pos_type const& pos
+util::sptr<Expression const> sub_scope::make_func_reference(misc::pos_type const& pos
                                                          , std::string const& name
                                                          , int param_count) const
 {

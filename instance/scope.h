@@ -36,7 +36,7 @@ namespace inst {
                                        , std::string const& op
                                        , util::sref<type const> rhs) const;
 
-        void add_stmt(util::sptr<stmt_base const> stmt);
+        void add_stmt(util::sptr<Statement const> stmt);
     protected:
         scope() {}
 

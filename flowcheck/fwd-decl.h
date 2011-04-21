@@ -3,8 +3,8 @@
 
 namespace flchk {
 
-    struct stmt_base;
-    struct expr_base;
+    struct Statement;
+    struct Expression;
     struct filter;
     struct block;
     struct function;

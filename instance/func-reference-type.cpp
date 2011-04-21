@@ -85,12 +85,12 @@ int func_reference_type::_calc_size(std::map<std::string, variable const> const&
     return size;
 }
 
-util::sptr<inst::expr_base const> func_reference_type::call_func(
+util::sptr<inst::Expression const> func_reference_type::call_func(
             misc::pos_type const&
           , int level
           , int stack_offset
           , std::vector<util::sref<inst::type const>> const& arg_types
-          , std::vector<util::sptr<expr_base const>> args) const
+          , std::vector<util::sptr<Expression const>> args) const
 {
     return std::move(util::mkptr(new call(_func_proto->inst(level, _adjust_vars(stack_offset, level), arg_types)
                                         , std::move(args))));

@@ -7,26 +7,26 @@
 
 namespace proto {
 
-    struct expr_base {
-        virtual ~expr_base() {}
+    struct Expression {
+        virtual ~Expression() {}
 
-        virtual util::sptr<inst::expr_base const> inst(util::sref<inst::scope> sc) const = 0;
+        virtual util::sptr<inst::Expression const> inst(util::sref<inst::scope> sc) const = 0;
 
         misc::pos_type const pos;
     protected:
-        explicit expr_base(misc::pos_type const ps)
+        explicit Expression(misc::pos_type const ps)
             : pos(ps)
         {}
     };
 
-    struct stmt_base {
-        virtual ~stmt_base() {}
+    struct Statement {
+        virtual ~Statement() {}
 
         virtual util::sptr<inst::mediate_base> inst(util::sref<inst::scope> sc) const = 0;
 
         misc::pos_type const pos;
     protected:
-        explicit stmt_base(misc::pos_type const ps)
+        explicit Statement(misc::pos_type const ps)
             : pos(ps)
         {}
     };

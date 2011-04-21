@@ -7,32 +7,32 @@
 
 namespace grammar {
 
-    struct stmt_base {
+    struct Statement {
         misc::pos_type const pos;
 
         virtual void compile(util::sref<flchk::filter> scope) const = 0;
 
-        virtual ~stmt_base() {}
+        virtual ~Statement() {}
     protected:
-        explicit stmt_base(misc::pos_type const& ps)
+        explicit Statement(misc::pos_type const& ps)
             : pos(ps)
         {}
 
-        stmt_base(stmt_base const&) = delete;
+        Statement(Statement const&) = delete;
     };
 
-    struct expr_base {
+    struct Expression {
         misc::pos_type const pos;
 
-        virtual util::sptr<flchk::expr_base const> compile() const = 0;
+        virtual util::sptr<flchk::Expression const> compile() const = 0;
 
-        virtual ~expr_base() {}
+        virtual ~Expression() {}
     protected:
-        explicit expr_base(misc::pos_type const& ps)
+        explicit Expression(misc::pos_type const& ps)
             : pos(ps)
         {}
 
-        expr_base(expr_base const&) = delete;
+        Expression(Expression const&) = delete;
     };
 
 }

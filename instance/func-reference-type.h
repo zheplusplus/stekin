@@ -22,11 +22,11 @@ namespace inst {
         std::string exported_name() const;
         std::string name() const;
     public:
-        util::sptr<inst::expr_base const> call_func(misc::pos_type const&
+        util::sptr<inst::Expression const> call_func(misc::pos_type const&
                                                   , int level
                                                   , int stack_offset
                                                   , std::vector<util::sref<inst::type const>> const& arg_types
-                                                  , std::vector<util::sptr<expr_base const>> args) const;
+                                                  , std::vector<util::sptr<Expression const>> args) const;
 
         bool operator==(type const& rhs) const;
         bool operator<(type const& rhs) const;

@@ -7,7 +7,7 @@
 
 using namespace flchk;
 
-void accumulator::add_func_ret(misc::pos_type const& pos, util::sptr<expr_base const> ret_val)
+void accumulator::add_func_ret(misc::pos_type const& pos, util::sptr<Expression const> ret_val)
 {
     _check_not_terminated(pos);
     _set_terminated_not_by_void_return(pos);
@@ -21,14 +21,14 @@ void accumulator::add_func_ret_nothing(misc::pos_type const& pos)
     _block.add_stmt(std::move(util::mkptr(new func_ret_nothing(pos))));
 }
 
-void accumulator::add_arith(misc::pos_type const& pos, util::sptr<expr_base const> expr)
+void accumulator::add_arith(misc::pos_type const& pos, util::sptr<Expression const> expr)
 {
     _check_not_terminated(pos);
     _block.add_stmt(std::move(util::mkptr(new arithmetics(pos, std::move(expr)))));
 }
 
 void accumulator::add_branch(misc::pos_type const& pos
-                           , util::sptr<expr_base const> predicate
+                           , util::sptr<Expression const> predicate
                            , accumulator consequence
                            , accumulator alternative)
 {
@@ -43,7 +43,7 @@ void accumulator::add_branch(misc::pos_type const& pos
 }
 
 void accumulator::add_branch(misc::pos_type const& pos
-                           , util::sptr<expr_base const> predicate
+                           , util::sptr<Expression const> predicate
                            , accumulator consequence)
 {
     _check_not_terminated(pos);
@@ -55,7 +55,7 @@ void accumulator::add_branch(misc::pos_type const& pos
 }
 
 void accumulator::add_branch_alt_only(misc::pos_type const& pos
-                                    , util::sptr<expr_base const> predicate
+                                    , util::sptr<Expression const> predicate
                                     , accumulator alternative)
 {
     _check_not_terminated(pos);
@@ -72,7 +72,7 @@ void accumulator::add_block(accumulator b)
     _set_self_terminated(std::move(b));
 }
 
-void accumulator::def_var(misc::pos_type const& pos, std::string const& name, util::sptr<expr_base const> init)
+void accumulator::def_var(misc::pos_type const& pos, std::string const& name, util::sptr<Expression const> init)
 {
     _check_not_terminated(pos);
     _block.add_stmt(std::move(util::mkptr(new var_def(pos, name, std::move(init)))));

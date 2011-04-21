@@ -45,18 +45,18 @@ namespace parser {
     };
 
     struct arg_list {
-        arg_list* add(grammar::expr_base const* expr)
+        arg_list* add(grammar::Expression const* expr)
         {
             _params.push_back(std::move(util::mkptr(expr)));
             return this;
         }
 
-        std::vector<util::sptr<grammar::expr_base const>> deliver_args()
+        std::vector<util::sptr<grammar::Expression const>> deliver_args()
         {
             return std::move(_params);
         }
     private:
-        std::vector<util::sptr<grammar::expr_base const>> _params;
+        std::vector<util::sptr<grammar::Expression const>> _params;
     };
 
 }

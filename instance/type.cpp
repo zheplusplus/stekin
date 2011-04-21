@@ -90,12 +90,12 @@ void built_in_primitive::check_condition_type(misc::pos_type const& pos) const
     }
 }
 
-util::sptr<inst::expr_base const> built_in_primitive::call_func(
+util::sptr<inst::Expression const> built_in_primitive::call_func(
                   misc::pos_type const& call_pos
                 , int
                 , int
                 , std::vector<util::sref<inst::type const>> const&
-                , std::vector<util::sptr<expr_base const>>) const
+                , std::vector<util::sptr<Expression const>>) const
 {
     error::request_variable_not_callable(call_pos);
     return std::move(util::mkptr(new bool_literal(false)));

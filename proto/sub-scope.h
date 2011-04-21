@@ -13,11 +13,11 @@ namespace proto {
             : _symbols(symbols)
         {}
     public:
-        util::sptr<expr_base const> make_ref(misc::pos_type const& pos, std::string const& name);
-        util::sptr<expr_base const> make_call(misc::pos_type const& pos
+        util::sptr<Expression const> make_ref(misc::pos_type const& pos, std::string const& name);
+        util::sptr<Expression const> make_call(misc::pos_type const& pos
                                             , std::string const& name
-                                            , std::vector<util::sptr<expr_base const>> args) const;
-        util::sptr<expr_base const> make_func_reference(misc::pos_type const& pos
+                                            , std::vector<util::sptr<Expression const>> args) const;
+        util::sptr<Expression const> make_func_reference(misc::pos_type const& pos
                                                       , std::string const& name
                                                       , int param_count) const;
 

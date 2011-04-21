@@ -8,9 +8,9 @@
 using namespace inst;
 
 branch::branch(misc::pos_type const& pos
-             , util::sptr<expr_base const> p
-             , util::sptr<stmt_base const> c
-             , util::sptr<stmt_base const> a)
+             , util::sptr<Expression const> p
+             , util::sptr<Statement const> c
+             , util::sptr<Statement const> a)
     : predicate(std::move(p))
     , consequence(std::move(c))
     , alternative(std::move(a))

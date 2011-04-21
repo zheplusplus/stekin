@@ -8,23 +8,23 @@
 namespace proto {
 
     struct arithmetics
-        : public stmt_base
+        : public Statement
     {
-        arithmetics(misc::pos_type const& ps, util::sptr<expr_base const> e)
-            : stmt_base(ps)
+        arithmetics(misc::pos_type const& ps, util::sptr<Expression const> e)
+            : Statement(ps)
             , expr(std::move(e))
         {}
 
         util::sptr<inst::mediate_base> inst(util::sref<inst::scope> scope) const;
 
-        util::sptr<expr_base const> const expr;
+        util::sptr<Expression const> const expr;
     };
 
     struct branch
-        : public stmt_base
+        : public Statement
     {
-        branch(misc::pos_type const& ps, util::sptr<expr_base const> p, block c, block a)
-            : stmt_base(ps)
+        branch(misc::pos_type const& ps, util::sptr<Expression const> p, block c, block a)
+            : Statement(ps)
             , _predicate(std::move(p))
             , _consequence(std::move(c))
             , _alternative(std::move(a))
@@ -32,16 +32,16 @@ namespace proto {
 
         util::sptr<inst::mediate_base> inst(util::sref<inst::scope> scope) const;
     private:
-        util::sptr<expr_base const> const _predicate;
+        util::sptr<Expression const> const _predicate;
         block _consequence;
         block _alternative;
     };
 
     struct var_def
-        : public stmt_base
+        : public Statement
     {
-        var_def(misc::pos_type const& ps, std::string const& n, util::sptr<expr_base const> i)
-            : stmt_base(ps)
+        var_def(misc::pos_type const& ps, std::string const& n, util::sptr<Expression const> i)
+            : Statement(ps)
             , name(n)
             , init(std::move(i))
         {}
@@ -49,27 +49,27 @@ namespace proto {
         util::sptr<inst::mediate_base> inst(util::sref<inst::scope> scope) const;
 
         std::string const name;
-        util::sptr<expr_base const> const init;
+        util::sptr<Expression const> const init;
     };
 
     struct func_ret
-        : public stmt_base
+        : public Statement
     {
-        func_ret(misc::pos_type const& ps, util::sptr<expr_base const> r)
-            : stmt_base(ps)
+        func_ret(misc::pos_type const& ps, util::sptr<Expression const> r)
+            : Statement(ps)
             , ret_val(std::move(r))
         {}
 
         util::sptr<inst::mediate_base> inst(util::sref<inst::scope> scope) const;
 
-        util::sptr<expr_base const> const ret_val;
+        util::sptr<Expression const> const ret_val;
     };
 
     struct func_ret_nothing
-        : public stmt_base
+        : public Statement
     {
         explicit func_ret_nothing(misc::pos_type const& ps)
-            : stmt_base(ps)
+            : Statement(ps)
         {}
 
         util::sptr<inst::mediate_base> inst(util::sref<inst::scope> scope) const;

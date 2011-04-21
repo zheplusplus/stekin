@@ -6,14 +6,14 @@
 
 using namespace proto;
 
-util::sptr<inst::stmt_base const> direct_inst::inst(util::sref<inst::scope>)
+util::sptr<inst::Statement const> direct_inst::inst(util::sref<inst::scope>)
 {
     return std::move(_stmt);
 }
 
 void direct_inst::mediate_inst(util::sref<inst::scope>) {}
 
-block_mediate::block_mediate(std::list<util::sptr<stmt_base const>> const& stmts, util::sref<inst::scope> sc)
+block_mediate::block_mediate(std::list<util::sptr<Statement const>> const& stmts, util::sref<inst::scope> sc)
     : _stmts(stmts)
     , _mediates(NULL)
     , _inst_block(NULL)
@@ -21,7 +21,7 @@ block_mediate::block_mediate(std::list<util::sptr<stmt_base const>> const& stmts
     sc->add_path(util::mkref(*this));
 }
 
-util::sptr<inst::stmt_base const> block_mediate::inst(util::sref<inst::scope> sc)
+util::sptr<inst::Statement const> block_mediate::inst(util::sref<inst::scope> sc)
 {
     mediate_inst(sc);
     if (!bool(_inst_block)) {
@@ -44,13 +44,13 @@ void block_mediate::mediate_inst(util::sref<inst::scope> sc)
     _mediates.reset(new std::list<util::sptr<inst::mediate_base>>);
     std::for_each(_stmts.begin()
                 , _stmts.end()
-                , [&](util::sptr<stmt_base const> const& stmt)
+                , [&](util::sptr<Statement const> const& stmt)
                   {
                       _mediates->push_back(std::move(stmt->inst(sc)));
                   });
 }
 
-util::sptr<inst::stmt_base const> branch_mediate::inst(util::sref<inst::scope> sc)
+util::sptr<inst::Statement const> branch_mediate::inst(util::sref<inst::scope> sc)
 {
     return std::move(util::mkptr(new inst::branch(pos
                                                 , std::move(_predicate)

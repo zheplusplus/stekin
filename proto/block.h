@@ -19,10 +19,10 @@ namespace proto {
 
         util::sptr<inst::mediate_base> inst(util::sref<inst::scope> scope) const;
 
-        void add_stmt(util::sptr<stmt_base const> stmt);
-        std::list<util::sptr<stmt_base const>> const& get_stmts() const;
+        void add_stmt(util::sptr<Statement const> stmt);
+        std::list<util::sptr<Statement const>> const& get_stmts() const;
     private:
-        std::list<util::sptr<stmt_base const>> _stmts;
+        std::list<util::sptr<Statement const>> _stmts;
     };
 
 }

@@ -11,71 +11,71 @@
 namespace flchk {
 
     struct arithmetics
-        : public stmt_base
+        : public Statement
     {
-        arithmetics(misc::pos_type const& pos, util::sptr<expr_base const> e)
-            : stmt_base(pos)
+        arithmetics(misc::pos_type const& pos, util::sptr<Expression const> e)
+            : Statement(pos)
             , expr(std::move(e))
         {}
 
-        util::sptr<proto::stmt_base const> compile(util::sref<proto::scope> scope) const;
+        util::sptr<proto::Statement const> compile(util::sref<proto::scope> scope) const;
 
-        util::sptr<expr_base const> const expr;
+        util::sptr<Expression const> const expr;
     };
 
     struct branch
-        : public stmt_base
+        : public Statement
     {
-        branch(misc::pos_type const& pos, util::sptr<expr_base const> p, block c, block a)
-            : stmt_base(pos)
+        branch(misc::pos_type const& pos, util::sptr<Expression const> p, block c, block a)
+            : Statement(pos)
             , predicate(std::move(p))
             , consequence(std::move(c))
             , alternative(std::move(a))
         {}
 
-        util::sptr<proto::stmt_base const> compile(util::sref<proto::scope> scope) const;
+        util::sptr<proto::Statement const> compile(util::sref<proto::scope> scope) const;
 
-        util::sptr<expr_base const> const predicate;
+        util::sptr<Expression const> const predicate;
         block const consequence;
         block const alternative;
     };
 
     struct func_ret
-        : public stmt_base
+        : public Statement
     {
-        func_ret(misc::pos_type const& pos, util::sptr<expr_base const> retval)
-            : stmt_base(pos)
+        func_ret(misc::pos_type const& pos, util::sptr<Expression const> retval)
+            : Statement(pos)
             , ret_val(std::move(retval))
         {}
 
-        util::sptr<proto::stmt_base const> compile(util::sref<proto::scope> scope) const;
+        util::sptr<proto::Statement const> compile(util::sref<proto::scope> scope) const;
 
-        util::sptr<expr_base const> const ret_val;
+        util::sptr<Expression const> const ret_val;
     };
 
     struct func_ret_nothing
-        : public stmt_base
+        : public Statement
     {
         explicit func_ret_nothing(misc::pos_type const& pos)
-            : stmt_base(pos)
+            : Statement(pos)
         {}
 
-        util::sptr<proto::stmt_base const> compile(util::sref<proto::scope> scope) const;
+        util::sptr<proto::Statement const> compile(util::sref<proto::scope> scope) const;
     };
 
     struct var_def
-        : public stmt_base
+        : public Statement
     {
-        var_def(misc::pos_type const& pos, std::string const& var_name, util::sptr<expr_base const> var_init)
-            : stmt_base(pos)
+        var_def(misc::pos_type const& pos, std::string const& var_name, util::sptr<Expression const> var_init)
+            : Statement(pos)
             , name(var_name)
             , init(std::move(var_init))
         {}
 
-        util::sptr<proto::stmt_base const> compile(util::sref<proto::scope> scope) const;
+        util::sptr<proto::Statement const> compile(util::sref<proto::scope> scope) const;
 
         std::string const name;
-        util::sptr<expr_base const> const init;
+        util::sptr<Expression const> const init;
     };
 
 }

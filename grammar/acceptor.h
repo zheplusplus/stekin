@@ -10,7 +10,7 @@ namespace grammar {
 
     struct acceptor {
         virtual void accept_func(util::sptr<function const> func) = 0;
-        virtual void accept_stmt(util::sptr<stmt_base const> stmt) = 0;
+        virtual void accept_stmt(util::sptr<Statement const> stmt) = 0;
         virtual void deliver_to(util::sref<acceptor> acc) = 0;
 
         virtual void accept_else(misc::pos_type const& else_pos);
@@ -30,11 +30,11 @@ namespace grammar {
         : public acceptor
     {
         void accept_func(util::sptr<function const> func);
-        void accept_stmt(util::sptr<stmt_base const> stmt);
+        void accept_stmt(util::sptr<Statement const> stmt);
         void deliver_to(util::sref<acceptor> acc);
         void accept_else(misc::pos_type const& else_pos);
 
-        if_acceptor(misc::pos_type const& pos, util::sptr<expr_base const> predicate)
+        if_acceptor(misc::pos_type const& pos, util::sptr<Expression const> predicate)
             : acceptor(pos)
             , _predicate(std::move(predicate))
             , _current_branch(&_consequence)
@@ -42,7 +42,7 @@ namespace grammar {
     private:
         bool _else_matched() const;
     private:
-        util::sptr<expr_base const> _predicate;
+        util::sptr<Expression const> _predicate;
 
         util::sptr<misc::pos_type> _last_else_pos;
         block* _current_branch;
@@ -55,15 +55,15 @@ namespace grammar {
         : public acceptor
     {
         void accept_func(util::sptr<function const> func);
-        void accept_stmt(util::sptr<stmt_base const> stmt);
+        void accept_stmt(util::sptr<Statement const> stmt);
         void deliver_to(util::sref<acceptor> acc);
 
-        ifnot_acceptor(misc::pos_type const& pos, util::sptr<expr_base const> predicate)
+        ifnot_acceptor(misc::pos_type const& pos, util::sptr<Expression const> predicate)
             : acceptor(pos)
             , _predicate(std::move(predicate))
         {}
     private:
-        util::sptr<expr_base const> _predicate;
+        util::sptr<Expression const> _predicate;
 
         block _alternative;
     };
@@ -72,7 +72,7 @@ namespace grammar {
         : public acceptor
     {
         void accept_func(util::sptr<function const> func);
-        void accept_stmt(util::sptr<stmt_base const> stmt);
+        void accept_stmt(util::sptr<Statement const> stmt);
         void deliver_to(util::sref<acceptor> acc);
 
         function_acceptor(misc::pos_type const& pos

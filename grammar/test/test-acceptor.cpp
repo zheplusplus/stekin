@@ -22,7 +22,7 @@ struct test_acceptor
         , filter(new flchk::filter)
     {}
 
-    void accept_stmt(util::sptr<grammar::stmt_base const> s)
+    void accept_stmt(util::sptr<grammar::Statement const> s)
     {
         stmt = std::move(s);
     }
@@ -44,7 +44,7 @@ struct test_acceptor
         filter = std::move(block.compile(std::move(filter)));
     }
 
-    util::sptr<grammar::stmt_base const> stmt;
+    util::sptr<grammar::Statement const> stmt;
     util::sptr<grammar::function const> func;
     util::sptr<flchk::filter> filter;
 
@@ -60,7 +60,7 @@ TEST_F(AcceptorTest, IfAcceptor)
     misc::pos_type pos_else(101);
     test_acceptor receiver;
 
-    grammar::if_acceptor acceptor_a(pos_head, std::move(util::mkptr(new grammar::int_literal(pos_head, "0"))));
+    grammar::if_acceptor acceptor_a(pos_head, std::move(util::mkptr(new grammar::IntLiteral(pos_head, "0"))));
     acceptor_a.accept_stmt(std::move(util::mkptr(new grammar::func_ret_nothing(pos))));
 
     acceptor_a.accept_else(pos_else);
@@ -74,7 +74,7 @@ TEST_F(AcceptorTest, IfAcceptor)
     ASSERT_FALSE(bool(receiver.func));
     receiver.compile();
 
-    grammar::if_acceptor acceptor_b(pos_head, std::move(util::mkptr(new grammar::int_literal(pos_head, "1"))));
+    grammar::if_acceptor acceptor_b(pos_head, std::move(util::mkptr(new grammar::IntLiteral(pos_head, "1"))));
     acceptor_b.accept_stmt(std::move(
                 util::mkptr(new grammar::func_ret(pos, std::move(
                             util::mkptr(new grammar::reference(pos, "Karrigan")))))));
@@ -84,7 +84,7 @@ TEST_F(AcceptorTest, IfAcceptor)
     ASSERT_FALSE(bool(receiver.func));
     receiver.compile();
 
-    grammar::if_acceptor acceptor_c(pos_head, std::move(util::mkptr(new grammar::int_literal(pos_head, "2"))));
+    grammar::if_acceptor acceptor_c(pos_head, std::move(util::mkptr(new grammar::IntLiteral(pos_head, "2"))));
     acceptor_c.accept_stmt(std::move(
                 util::mkptr(new grammar::arithmetics(pos, std::move(
                             util::mkptr(new grammar::bool_literal(pos, false)))))));
@@ -96,7 +96,7 @@ TEST_F(AcceptorTest, IfAcceptor)
     ASSERT_FALSE(bool(receiver.func));
     receiver.compile();
 
-    grammar::if_acceptor acceptor_d(pos_head, std::move(util::mkptr(new grammar::int_literal(pos_head, "3"))));
+    grammar::if_acceptor acceptor_d(pos_head, std::move(util::mkptr(new grammar::IntLiteral(pos_head, "3"))));
     acceptor_d.accept_else(pos_else);
     ASSERT_FALSE(error::has_error());
     acceptor_d.accept_stmt(std::move(
@@ -162,7 +162,7 @@ TEST_F(AcceptorTest, IfAcceptorError)
     misc::pos_type pos(2);
     misc::pos_type pos_head(200);
     misc::pos_type pos_else(201);
-    grammar::if_acceptor acceptor_a(pos_head, std::move(util::mkptr(new grammar::int_literal(pos_head, "0"))));
+    grammar::if_acceptor acceptor_a(pos_head, std::move(util::mkptr(new grammar::IntLiteral(pos_head, "0"))));
     acceptor_a.accept_else(pos);
     ASSERT_FALSE(error::has_error());
     acceptor_a.accept_else(pos_else);
@@ -180,7 +180,7 @@ TEST_F(AcceptorTest, IfNotAcceptor)
     grammar::ifnot_acceptor ifnot_acc0(pos, std::move(util::mkptr(new grammar::bool_literal(pos, false))));
     ifnot_acc0.accept_stmt(std::move(
                 util::mkptr(new grammar::var_def(pos, "SCV", std::move(
-                            util::mkptr(new grammar::int_literal(pos, "60")))))));
+                            util::mkptr(new grammar::IntLiteral(pos, "60")))))));
     ifnot_acc0.accept_stmt(std::move(
                 util::mkptr(new grammar::arithmetics(pos, std::move(
                             util::mkptr(new grammar::reference(pos, "Marine")))))));
@@ -225,7 +225,7 @@ TEST_F(AcceptorTest, FuncAcceptor)
                             util::mkptr(new grammar::float_literal(pos, "21.37")))))));
     func_acc0.accept_stmt(std::move(
                 util::mkptr(new grammar::var_def(pos, "SonOfKorhal", std::move(
-                            util::mkptr(new grammar::int_literal(pos, "20110116")))))));
+                            util::mkptr(new grammar::IntLiteral(pos, "20110116")))))));
 
     func_acc0.deliver_to(util::mkref(receiver));
     ASSERT_FALSE(bool(receiver.stmt));

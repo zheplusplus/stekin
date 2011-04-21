@@ -12,7 +12,7 @@ namespace grammar {
     struct block {
         util::sptr<flchk::filter> compile(util::sptr<flchk::filter> filter) const;
 
-        void add_stmt(util::sptr<stmt_base const> stmt);
+        void add_stmt(util::sptr<Statement const> stmt);
         void add_func(util::sptr<function const> func);
 
         block() = default;
@@ -24,7 +24,7 @@ namespace grammar {
             , _funcs(std::move(rhs._funcs))
         {}
     private:
-        std::list<util::sptr<stmt_base const>> _stmts;
+        std::list<util::sptr<Statement const>> _stmts;
         std::list<util::sptr<function const>> _funcs;
     };
 

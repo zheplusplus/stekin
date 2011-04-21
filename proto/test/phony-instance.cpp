@@ -112,14 +112,14 @@ bool func_reference_type::lt_as_built_in(type const&) const
 void type::check_condition_type(misc::pos_type const&) const {}
 void built_in_primitive::check_condition_type(misc::pos_type const&) const {}
 
-util::sptr<inst::expr_base const> func_reference_type::call_func(
+util::sptr<inst::Expression const> func_reference_type::call_func(
                   misc::pos_type const&
                 , int
                 , int
                 , std::vector<util::sref<inst::type const>> const&
-                , std::vector<util::sptr<expr_base const>>) const
+                , std::vector<util::sptr<Expression const>>) const
 {
-    return std::move(util::sptr<inst::expr_base const>(NULL));
+    return std::move(util::sptr<inst::Expression const>(NULL));
 }
 
 std::map<std::string, variable const> func_reference_type::_enclose_reference(
@@ -135,21 +135,21 @@ int func_reference_type::_calc_size(std::map<std::string, variable const> const&
     return 0;
 }
 
-util::sptr<inst::expr_base const> built_in_primitive::call_func(
+util::sptr<inst::Expression const> built_in_primitive::call_func(
                   misc::pos_type const&
                 , int
                 , int
                 , std::vector<util::sref<inst::type const>> const&
-                , std::vector<util::sptr<expr_base const>>) const
+                , std::vector<util::sptr<Expression const>>) const
 {
-    return std::move(util::sptr<inst::expr_base const>(NULL));
+    return std::move(util::sptr<inst::Expression const>(NULL));
 }
 
-util::sptr<inst::expr_base const> variable::call_func(misc::pos_type const&
+util::sptr<inst::Expression const> variable::call_func(misc::pos_type const&
                                                     , std::vector<util::sref<inst::type const>> const&
-                                                    , std::vector<util::sptr<expr_base const>>) const
+                                                    , std::vector<util::sptr<Expression const>>) const
 {
-    return std::move(util::sptr<inst::expr_base const>(NULL));
+    return std::move(util::sptr<inst::Expression const>(NULL));
 }
 
 bool variable::operator<(variable const& rhs) const
@@ -227,7 +227,7 @@ operation const* scope::query_pre_unary(misc::pos_type const& pos, std::string c
     return NULL;
 }
 
-void scope::add_stmt(util::sptr<stmt_base const>)
+void scope::add_stmt(util::sptr<Statement const>)
 {
     data_tree::actual_one()(ADD_STMT_TO_SCOPE);
 }
@@ -258,12 +258,12 @@ util::sref<function> function::create_instance(int
     return util::mkref(func);
 }
 
-void block::add_stmt(util::sptr<stmt_base const>)
+void block::add_stmt(util::sptr<Statement const>)
 {
     data_tree::actual_one()(ADD_STMT_TO_BLOCK);
 }
 
-util::sref<type const> int_literal::typeof() const
+util::sref<type const> IntLiteral::typeof() const
 {
     data_tree::actual_one()(INTEGER, util::str(value));
     return util::mkref(PROTO_TEST_TYPE);
@@ -337,30 +337,30 @@ util::sref<type const> negation::typeof() const
     return util::mkref(PROTO_TEST_TYPE);
 }
 
-conjunction::conjunction(misc::pos_type const&, util::sptr<expr_base const> l, util::sptr<expr_base const> r)
+conjunction::conjunction(misc::pos_type const&, util::sptr<Expression const> l, util::sptr<Expression const> r)
     : lhs(std::move(l))
     , rhs(std::move(r))
 {}
 
-disjunction::disjunction(misc::pos_type const&, util::sptr<expr_base const> l, util::sptr<expr_base const> r)
+disjunction::disjunction(misc::pos_type const&, util::sptr<Expression const> l, util::sptr<Expression const> r)
     : lhs(std::move(l))
     , rhs(std::move(r))
 {}
 
-negation::negation(misc::pos_type const&, util::sptr<expr_base const> r)
+negation::negation(misc::pos_type const&, util::sptr<Expression const> r)
     : rhs(std::move(r))
 {}
 
 branch::branch(misc::pos_type const&
-             , util::sptr<expr_base const> p
-             , util::sptr<stmt_base const> c
-             , util::sptr<stmt_base const> a)
+             , util::sptr<Expression const> p
+             , util::sptr<Statement const> c
+             , util::sptr<Statement const> a)
     : predicate(std::move(p))
     , consequence(std::move(c))
     , alternative(std::move(a))
 {}
 
-void int_literal::write() const {}
+void IntLiteral::write() const {}
 void float_literal::write() const {}
 void bool_literal::write() const {}
 void reference::write() const {}

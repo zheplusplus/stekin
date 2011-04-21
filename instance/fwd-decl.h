@@ -6,8 +6,8 @@ namespace inst {
     struct function;
     struct operation;
     struct symbol_table;
-    struct expr_base;
-    struct stmt_base;
+    struct Expression;
+    struct Statement;
     struct scope;
     struct mediate_base;
     struct type;

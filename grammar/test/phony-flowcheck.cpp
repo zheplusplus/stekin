@@ -15,31 +15,31 @@ using namespace flchk;
 
 namespace {
 
-    util::sptr<proto::stmt_base const> nul_proto_stmt()
+    util::sptr<proto::Statement const> nul_proto_stmt()
     {
-        return std::move(util::sptr<proto::stmt_base const>(NULL));
+        return std::move(util::sptr<proto::Statement const>(NULL));
     }
 
-    util::sptr<proto::expr_base const> nul_proto_expr()
+    util::sptr<proto::Expression const> nul_proto_expr()
     {
-        return std::move(util::sptr<proto::expr_base const>(NULL));
+        return std::move(util::sptr<proto::Expression const>(NULL));
     }
 
-    util::sptr<flchk::expr_base const> nul_flchk_expr()
+    util::sptr<flchk::Expression const> nul_flchk_expr()
     {
-        return std::move(util::sptr<flchk::expr_base const>(NULL));
+        return std::move(util::sptr<flchk::Expression const>(NULL));
     }
 
     struct branch_consequence
-        : public stmt_base
+        : public Statement
     {
-        branch_consequence(misc::pos_type const& pos, util::sptr<expr_base const> p, block c)
-            : stmt_base(pos)
+        branch_consequence(misc::pos_type const& pos, util::sptr<Expression const> p, block c)
+            : Statement(pos)
             , predicate(std::move(p))
             , consequence(std::move(c))
         {}
 
-        util::sptr<proto::stmt_base const> compile(util::sref<proto::scope>) const
+        util::sptr<proto::Statement const> compile(util::sref<proto::scope>) const
         {
             data_tree::actual_one()(pos, BRANCH_CONSQ_ONLY);
             predicate->compile(nulscope);
@@ -48,20 +48,20 @@ namespace {
             return std::move(nul_proto_stmt());
         }
 
-        util::sptr<expr_base const> const predicate;
+        util::sptr<Expression const> const predicate;
         block const consequence;
     };
 
     struct branch_alternative
-        : public stmt_base
+        : public Statement
     {
-        branch_alternative(misc::pos_type const& pos, util::sptr<expr_base const> p, block a)
-            : stmt_base(pos)
+        branch_alternative(misc::pos_type const& pos, util::sptr<Expression const> p, block a)
+            : Statement(pos)
             , predicate(std::move(p))
             , alternative(std::move(a))
         {}
 
-        util::sptr<proto::stmt_base const> compile(util::sref<proto::scope>) const
+        util::sptr<proto::Statement const> compile(util::sref<proto::scope>) const
         {
             data_tree::actual_one()(pos, BRANCH_ALTER_ONLY);
             predicate->compile(nulscope);
@@ -70,7 +70,7 @@ namespace {
             return std::move(nul_proto_stmt());
         }
 
-        util::sptr<expr_base const> const predicate;
+        util::sptr<Expression const> const predicate;
         block const alternative;
     };
 
@@ -88,7 +88,7 @@ void function::compile(util::sref<proto::scope>) const
     body.compile(nulscope);
 }
 
-void block::add_stmt(util::sptr<stmt_base const> stmt)
+void block::add_stmt(util::sptr<Statement const> stmt)
 {
     _stmts.push_back(std::move(stmt));
 }
@@ -118,14 +118,14 @@ void block::compile(util::sref<proto::scope>) const
 
     std::for_each(_stmts.begin()
                 , _stmts.end()
-                , [&](util::sptr<stmt_base const> const& stmt)
+                , [&](util::sptr<Statement const> const& stmt)
                   {
                       stmt->compile(nulscope);
                   });
     data_tree::actual_one()(BLOCK_END);
 }
 
-void accumulator::add_func_ret(misc::pos_type const& pos, util::sptr<expr_base const> ret_val)
+void accumulator::add_func_ret(misc::pos_type const& pos, util::sptr<Expression const> ret_val)
 {
     _block.add_stmt(std::move(util::mkptr(new func_ret(pos, std::move(ret_val)))));
 }
@@ -135,13 +135,13 @@ void accumulator::add_func_ret_nothing(misc::pos_type const& pos)
     _block.add_stmt(std::move(util::mkptr(new func_ret_nothing(pos))));
 }
 
-void accumulator::add_arith(misc::pos_type const& pos, util::sptr<expr_base const> expr)
+void accumulator::add_arith(misc::pos_type const& pos, util::sptr<Expression const> expr)
 {
     _block.add_stmt(std::move(util::mkptr(new arithmetics(pos, std::move(expr)))));
 }
 
 void accumulator::add_branch(misc::pos_type const& pos
-                           , util::sptr<expr_base const> predicate
+                           , util::sptr<Expression const> predicate
                            , accumulator consequence
                            , accumulator alternative)
 {
@@ -152,7 +152,7 @@ void accumulator::add_branch(misc::pos_type const& pos
 }
 
 void accumulator::add_branch(misc::pos_type const& pos
-                           , util::sptr<expr_base const> predicate
+                           , util::sptr<Expression const> predicate
                            , accumulator consequence)
 {
     _block.add_stmt(std::move(util::mkptr(new branch_consequence(pos
@@ -161,7 +161,7 @@ void accumulator::add_branch(misc::pos_type const& pos
 }
 
 void accumulator::add_branch_alt_only(misc::pos_type const& pos
-                                    , util::sptr<expr_base const> predicate
+                                    , util::sptr<Expression const> predicate
                                     , accumulator alternative)
 {
     _block.add_stmt(std::move(util::mkptr(new branch_alternative(pos
@@ -169,7 +169,7 @@ void accumulator::add_branch_alt_only(misc::pos_type const& pos
                                                                , std::move(alternative._block)))));
 }
 
-void accumulator::def_var(misc::pos_type const& pos, std::string const& name, util::sptr<expr_base const> init)
+void accumulator::def_var(misc::pos_type const& pos, std::string const& name, util::sptr<Expression const> init)
 {
     _block.add_stmt(std::move(util::mkptr(new var_def(pos, name, std::move(init)))));
 }
@@ -187,7 +187,7 @@ block accumulator::deliver()
     return std::move(_block);
 }
 
-void filter::add_func_ret(misc::pos_type const& pos, util::sptr<expr_base const> ret_val)
+void filter::add_func_ret(misc::pos_type const& pos, util::sptr<Expression const> ret_val)
 {
     _accumulator.add_func_ret(pos, std::move(ret_val));
 }
@@ -197,13 +197,13 @@ void filter::add_func_ret_nothing(misc::pos_type const& pos)
     _accumulator.add_func_ret_nothing(pos);
 }
 
-void filter::add_arith(misc::pos_type const& pos, util::sptr<expr_base const> expr)
+void filter::add_arith(misc::pos_type const& pos, util::sptr<Expression const> expr)
 {
     _accumulator.add_arith(pos, std::move(expr));
 }
 
 void filter::add_branch(misc::pos_type const& pos
-                      , util::sptr<expr_base const> predicate
+                      , util::sptr<Expression const> predicate
                       , util::sptr<filter> consequence
                       , util::sptr<filter> alternative)
 {
@@ -214,20 +214,20 @@ void filter::add_branch(misc::pos_type const& pos
 }
 
 void filter::add_branch(misc::pos_type const& pos
-                      , util::sptr<expr_base const> predicate
+                      , util::sptr<Expression const> predicate
                       , util::sptr<filter> consequence)
 {
     _accumulator.add_branch(pos, std::move(predicate), std::move(consequence->_accumulator));
 }
 
 void filter::add_branch_alt_only(misc::pos_type const& pos
-                               , util::sptr<expr_base const> predicate
+                               , util::sptr<Expression const> predicate
                                , util::sptr<filter> alternative)
 {
     _accumulator.add_branch_alt_only(pos, std::move(predicate), std::move(alternative->_accumulator));
 }
 
-void filter::def_var(misc::pos_type const& pos, std::string const& name, util::sptr<expr_base const> init)
+void filter::def_var(misc::pos_type const& pos, std::string const& name, util::sptr<Expression const> init)
 {
     _accumulator.def_var(pos, name, std::move(init));
 }
@@ -247,7 +247,7 @@ block filter::deliver()
 
 void symbol_def_filter::def_var(misc::pos_type const& pos
                               , std::string const& name
-                              , util::sptr<expr_base const> init)
+                              , util::sptr<Expression const> init)
 {
     filter::def_var(pos, name + VAR_DEF_FILTERED, std::move(init));
 }
@@ -260,14 +260,14 @@ void symbol_def_filter::def_func(misc::pos_type const& pos
     filter::def_func(pos, name + FUNC_DEF_FILTERED, param_names, std::move(body));
 }
 
-util::sptr<proto::stmt_base const> arithmetics::compile(util::sref<proto::scope>) const 
+util::sptr<proto::Statement const> arithmetics::compile(util::sref<proto::scope>) const 
 {
     data_tree::actual_one()(pos, ARITHMETICS);
     expr->compile(nulscope);
     return std::move(nul_proto_stmt());
 }
 
-util::sptr<proto::stmt_base const> branch::compile(util::sref<proto::scope>) const 
+util::sptr<proto::Statement const> branch::compile(util::sref<proto::scope>) const 
 {
     data_tree::actual_one()(pos, BRANCH);
     predicate->compile(nulscope);
@@ -278,135 +278,135 @@ util::sptr<proto::stmt_base const> branch::compile(util::sref<proto::scope>) con
     return std::move(nul_proto_stmt());
 }
 
-util::sptr<proto::stmt_base const> var_def::compile(util::sref<proto::scope>) const 
+util::sptr<proto::Statement const> var_def::compile(util::sref<proto::scope>) const 
 {
     data_tree::actual_one()(pos, VAR_DEF, name);
     init->compile(nulscope);
     return std::move(nul_proto_stmt());
 }
 
-util::sptr<proto::stmt_base const> func_ret::compile(util::sref<proto::scope>) const 
+util::sptr<proto::Statement const> func_ret::compile(util::sref<proto::scope>) const 
 {
     data_tree::actual_one()(pos, RETURN);
     ret_val->compile(nulscope);
     return std::move(nul_proto_stmt());
 }
 
-util::sptr<proto::stmt_base const> func_ret_nothing::compile(util::sref<proto::scope>) const
+util::sptr<proto::Statement const> func_ret_nothing::compile(util::sref<proto::scope>) const
 {
     data_tree::actual_one()(pos, RETURN_NOTHING);
     return std::move(nul_proto_stmt());
 }
 
-util::sptr<proto::expr_base const> pre_unary_op::compile(util::sref<proto::scope>) const
+util::sptr<proto::Expression const> pre_unary_op::compile(util::sref<proto::scope>) const
 {
     data_tree::actual_one()(pos, PRE_UNARY_OP, op_img);
     return std::move(nul_proto_expr());
 }
 
-util::sptr<proto::expr_base const> binary_op::compile(util::sref<proto::scope>) const
+util::sptr<proto::Expression const> binary_op::compile(util::sref<proto::scope>) const
 {
     data_tree::actual_one()(pos, BINARY_OP, op_img);
     return std::move(nul_proto_expr());
 }
 
-util::sptr<proto::expr_base const> conjunction::compile(util::sref<proto::scope>) const
+util::sptr<proto::Expression const> conjunction::compile(util::sref<proto::scope>) const
 {
     data_tree::actual_one()(pos, BINARY_OP, "&&");
     return std::move(nul_proto_expr());
 }
 
-util::sptr<proto::expr_base const> disjunction::compile(util::sref<proto::scope>) const
+util::sptr<proto::Expression const> disjunction::compile(util::sref<proto::scope>) const
 {
     data_tree::actual_one()(pos, BINARY_OP, "||");
     return std::move(nul_proto_expr());
 }
 
-util::sptr<proto::expr_base const> negation::compile(util::sref<proto::scope>) const
+util::sptr<proto::Expression const> negation::compile(util::sref<proto::scope>) const
 {
     data_tree::actual_one()(pos, PRE_UNARY_OP, "!");
     return std::move(nul_proto_expr());
 }
 
-util::sptr<proto::expr_base const> reference::compile(util::sref<proto::scope>) const
+util::sptr<proto::Expression const> reference::compile(util::sref<proto::scope>) const
 {
     data_tree::actual_one()(pos, REFERENCE, name);
     return std::move(nul_proto_expr());
 }
 
-util::sptr<proto::expr_base const> bool_literal::compile(util::sref<proto::scope>) const
+util::sptr<proto::Expression const> bool_literal::compile(util::sref<proto::scope>) const
 {
     data_tree::actual_one()(pos, BOOLEAN, util::str(value));
     return std::move(nul_proto_expr());
 }
 
-util::sptr<proto::expr_base const> int_literal::compile(util::sref<proto::scope>) const
+util::sptr<proto::Expression const> IntLiteral::compile(util::sref<proto::scope>) const
 {
     data_tree::actual_one()(pos, INTEGER, util::str(value));
     return std::move(nul_proto_expr());
 }
 
-util::sptr<proto::expr_base const> float_literal::compile(util::sref<proto::scope>) const
+util::sptr<proto::Expression const> float_literal::compile(util::sref<proto::scope>) const
 {
     data_tree::actual_one()(pos, FLOATING, util::str(value));
     return std::move(nul_proto_expr());
 }
 
-util::sptr<proto::expr_base const> call::compile(util::sref<proto::scope> s) const
+util::sptr<proto::Expression const> call::compile(util::sref<proto::scope> s) const
 {
     data_tree::actual_one()(pos, CALL, name, args.size());
     std::for_each(args.begin()
                 , args.end()
-                , [&](util::sptr<expr_base const> const& arg)
+                , [&](util::sptr<Expression const> const& arg)
                   {
                       arg->compile(s);
                   });
     return std::move(nul_proto_expr());
 }
 
-util::sptr<proto::expr_base const> func_reference::compile(util::sref<proto::scope>) const
+util::sptr<proto::Expression const> func_reference::compile(util::sref<proto::scope>) const
 {
     data_tree::actual_one()(pos, FUNC_REFERENCE, name, param_count);
     return std::move(nul_proto_expr());
 }
 
-bool expr_base::is_literal() const
+bool Expression::is_literal() const
 {
     return false;
 }
 
-bool expr_base::bool_value() const
+bool Expression::bool_value() const
 {
     return false;
 }
 
-util::sptr<expr_base const> expr_base::operate(misc::pos_type const&
+util::sptr<Expression const> Expression::operate(misc::pos_type const&
                                              , std::string const&
                                              , mpz_class const&) const
 {
     return std::move(nul_flchk_expr());
 }
 
-util::sptr<expr_base const> expr_base::operate(misc::pos_type const&
+util::sptr<Expression const> Expression::operate(misc::pos_type const&
                                              , std::string const&
                                              , mpf_class const&) const
 {
     return std::move(nul_flchk_expr());
 }
 
-util::sptr<expr_base const> expr_base::operate(misc::pos_type const&, std::string const&, bool) const
+util::sptr<Expression const> Expression::operate(misc::pos_type const&, std::string const&, bool) const
 {
     return std::move(nul_flchk_expr());
 }
 
-util::sptr<expr_base const> expr_base::as_rhs(misc::pos_type const&
+util::sptr<Expression const> Expression::as_rhs(misc::pos_type const&
                                             , std::string const&
-                                            , util::sptr<expr_base const>) const
+                                            , util::sptr<Expression const>) const
 {
     return std::move(nul_flchk_expr());
 }
 
-util::sptr<expr_base const> expr_base::as_rhs(misc::pos_type const&, std::string const&) const
+util::sptr<Expression const> Expression::as_rhs(misc::pos_type const&, std::string const&) const
 {
     return std::move(nul_flchk_expr());
 }
@@ -426,7 +426,7 @@ std::string pre_unary_op::type_name() const
     return "";
 }
 
-util::sptr<expr_base const> pre_unary_op::fold() const
+util::sptr<Expression const> pre_unary_op::fold() const
 {
     return std::move(nul_flchk_expr());
 }
@@ -446,7 +446,7 @@ std::string binary_op::type_name() const
     return "";
 }
 
-util::sptr<expr_base const> binary_op::fold() const
+util::sptr<Expression const> binary_op::fold() const
 {
     return std::move(nul_flchk_expr());
 }
@@ -466,7 +466,7 @@ std::string conjunction::type_name() const
     return "";
 }
 
-util::sptr<expr_base const> conjunction::fold() const
+util::sptr<Expression const> conjunction::fold() const
 {
     return std::move(nul_flchk_expr());
 }
@@ -486,7 +486,7 @@ std::string disjunction::type_name() const
     return "";
 }
 
-util::sptr<expr_base const> disjunction::fold() const
+util::sptr<Expression const> disjunction::fold() const
 {
     return std::move(nul_flchk_expr());
 }
@@ -506,7 +506,7 @@ std::string negation::type_name() const
     return "";
 }
 
-util::sptr<expr_base const> negation::fold() const
+util::sptr<Expression const> negation::fold() const
 {
     return std::move(nul_flchk_expr());
 }
@@ -516,7 +516,7 @@ std::string reference::type_name() const
     return "";
 }
 
-util::sptr<expr_base const> reference::fold() const
+util::sptr<Expression const> reference::fold() const
 {
     return std::move(nul_flchk_expr());
 }
@@ -536,89 +536,89 @@ std::string bool_literal::type_name() const
     return "";
 }
 
-util::sptr<expr_base const> bool_literal::fold() const
+util::sptr<Expression const> bool_literal::fold() const
 {
     return std::move(nul_flchk_expr());
 }
 
-util::sptr<expr_base const> bool_literal::operate(misc::pos_type const&
+util::sptr<Expression const> bool_literal::operate(misc::pos_type const&
                                                 , std::string const&
                                                 , mpz_class const&) const
 {
     return std::move(nul_flchk_expr());
 }
 
-util::sptr<expr_base const> bool_literal::operate(misc::pos_type const&
+util::sptr<Expression const> bool_literal::operate(misc::pos_type const&
                                                 , std::string const&
                                                 , mpf_class const&) const
 {
     return std::move(nul_flchk_expr());
 }
 
-util::sptr<expr_base const> bool_literal::operate(misc::pos_type const&, std::string const&, bool) const
+util::sptr<Expression const> bool_literal::operate(misc::pos_type const&, std::string const&, bool) const
 {
     return std::move(nul_flchk_expr());
 }
 
-util::sptr<expr_base const> bool_literal::as_rhs(misc::pos_type const&
+util::sptr<Expression const> bool_literal::as_rhs(misc::pos_type const&
                                                , std::string const&
-                                               , util::sptr<expr_base const>) const
+                                               , util::sptr<Expression const>) const
 {
     return std::move(nul_flchk_expr());
 }
 
-util::sptr<expr_base const> bool_literal::as_rhs(misc::pos_type const&, std::string const&) const
+util::sptr<Expression const> bool_literal::as_rhs(misc::pos_type const&, std::string const&) const
 {
     return std::move(nul_flchk_expr());
 }
 
-bool int_literal::is_literal() const
+bool IntLiteral::is_literal() const
 {
     return false;
 }
 
-bool int_literal::bool_value() const
+bool IntLiteral::bool_value() const
 {
     return false;
 }
 
-std::string int_literal::type_name() const
+std::string IntLiteral::type_name() const
 {
     return "";
 }
 
-util::sptr<expr_base const> int_literal::fold() const
+util::sptr<Expression const> IntLiteral::fold() const
 {
     return std::move(nul_flchk_expr());
 }
 
-util::sptr<expr_base const> int_literal::operate(misc::pos_type const&
+util::sptr<Expression const> IntLiteral::operate(misc::pos_type const&
                                                , std::string const&
                                                , mpz_class const&) const
 {
     return std::move(nul_flchk_expr());
 }
 
-util::sptr<expr_base const> int_literal::operate(misc::pos_type const&
+util::sptr<Expression const> IntLiteral::operate(misc::pos_type const&
                                                , std::string const&
                                                , mpf_class const&) const
 {
     return std::move(nul_flchk_expr());
 }
 
-util::sptr<expr_base const> int_literal::operate(misc::pos_type const&, std::string const&, bool) const
+util::sptr<Expression const> IntLiteral::operate(misc::pos_type const&, std::string const&, bool) const
 {
     return std::move(nul_flchk_expr());
 }
 
-util::sptr<expr_base const> int_literal::as_rhs(misc::pos_type const&
+util::sptr<Expression const> IntLiteral::as_rhs(misc::pos_type const&
                                               , std::string const&
-                                              , util::sptr<expr_base const>) const
+                                              , util::sptr<Expression const>) const
 {
     return std::move(nul_flchk_expr());
 }
 
-util::sptr<expr_base const> int_literal::as_rhs(misc::pos_type const&, std::string const&) const
+util::sptr<Expression const> IntLiteral::as_rhs(misc::pos_type const&, std::string const&) const
 {
     return std::move(nul_flchk_expr());
 }
@@ -638,38 +638,38 @@ std::string float_literal::type_name() const
     return "";
 }
 
-util::sptr<expr_base const> float_literal::fold() const
+util::sptr<Expression const> float_literal::fold() const
 {
     return std::move(nul_flchk_expr());
 }
 
-util::sptr<expr_base const> float_literal::operate(misc::pos_type const&
+util::sptr<Expression const> float_literal::operate(misc::pos_type const&
                                                  , std::string const&
                                                  , mpz_class const&) const
 {
     return std::move(nul_flchk_expr());
 }
 
-util::sptr<expr_base const> float_literal::operate(misc::pos_type const&
+util::sptr<Expression const> float_literal::operate(misc::pos_type const&
                                                  , std::string const&
                                                  , mpf_class const&) const
 {
     return std::move(nul_flchk_expr());
 }
 
-util::sptr<expr_base const> float_literal::operate(misc::pos_type const&, std::string const&, bool) const
+util::sptr<Expression const> float_literal::operate(misc::pos_type const&, std::string const&, bool) const
 {
     return std::move(nul_flchk_expr());
 }
 
-util::sptr<expr_base const> float_literal::as_rhs(misc::pos_type const&
+util::sptr<Expression const> float_literal::as_rhs(misc::pos_type const&
                                                 , std::string const&
-                                                , util::sptr<expr_base const>) const
+                                                , util::sptr<Expression const>) const
 {
     return std::move(nul_flchk_expr());
 }
 
-util::sptr<expr_base const> float_literal::as_rhs(misc::pos_type const&, std::string const&) const
+util::sptr<Expression const> float_literal::as_rhs(misc::pos_type const&, std::string const&) const
 {
     return std::move(nul_flchk_expr());
 }
@@ -679,7 +679,7 @@ std::string call::type_name() const
     return "";
 }
 
-util::sptr<expr_base const> call::fold() const
+util::sptr<Expression const> call::fold() const
 {
     return std::move(nul_flchk_expr());
 }
@@ -689,7 +689,7 @@ std::string func_reference::type_name() const
     return "";
 }
 
-util::sptr<expr_base const> func_reference::fold() const
+util::sptr<Expression const> func_reference::fold() const
 {
     return std::move(nul_flchk_expr());
 }

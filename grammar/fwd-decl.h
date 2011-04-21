@@ -3,8 +3,8 @@
 
 namespace grammar {
 
-    struct stmt_base;
-    struct expr_base;
+    struct Statement;
+    struct Expression;
     struct clause_builder;
     struct function;
 

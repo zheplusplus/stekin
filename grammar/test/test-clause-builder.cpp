@@ -55,7 +55,7 @@ TEST_F(ClauseBuilderTest, AcceptorStackNext)
     ASSERT_FALSE(error::has_error());
     stack0.next_stmt(1, std::move(
                 util::mkptr(new grammar::arithmetics(err_pos0, std::move(
-                            util::mkptr(new grammar::int_literal(item_pos, "20110119")))))));
+                            util::mkptr(new grammar::IntLiteral(item_pos, "20110119")))))));
     stack0.next_stmt(1, std::move(
                 util::mkptr(new grammar::arithmetics(item_pos, std::move(
                             util::mkptr(new grammar::float_literal(item_pos, "19.55")))))));
@@ -194,7 +194,7 @@ TEST_F(ClauseBuilderTest, ClauseBuilder)
 
     grammar::clause_builder builder0;
     builder0.add_if(0, std::move(util::mkptr(new grammar::bool_literal(item_pos0, true))));
-        builder0.add_var_def(1, "wind_force", std::move(util::mkptr(new grammar::int_literal(item_pos1
+        builder0.add_var_def(1, "wind_force", std::move(util::mkptr(new grammar::IntLiteral(item_pos1
                                                                                            , "13571"))));
         builder0.add_ifnot(1, std::move(util::mkptr(new grammar::reference(item_pos2, "raven_claw"))));
             builder0.add_return(2, std::move(util::mkptr(new grammar::float_literal(item_pos0, "0.000123"))));
@@ -253,7 +253,7 @@ TEST_F(ClauseBuilderTest, ClauseBuilder)
 
     grammar::clause_builder builder1;
     builder1.add_if(0, std::move(util::mkptr(new grammar::bool_literal(item_pos0, true))));
-    builder1.add_var_def(0, "wind_force", std::move(util::mkptr(new grammar::int_literal(item_pos1, "13571"))));
+    builder1.add_var_def(0, "wind_force", std::move(util::mkptr(new grammar::IntLiteral(item_pos1, "13571"))));
     builder1.add_else(0, item_pos2);
     ASSERT_TRUE(error::has_error());
     ASSERT_EQ(1, get_else_not_matches().size());

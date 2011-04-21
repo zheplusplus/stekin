@@ -8,160 +8,160 @@
 namespace grammar {
 
     struct pre_unary_op
-        : public expr_base
+        : public Expression
     {
-        pre_unary_op(misc::pos_type const& pos, std::string const& op, util::sptr<expr_base const> r)
-            : expr_base(pos)
+        pre_unary_op(misc::pos_type const& pos, std::string const& op, util::sptr<Expression const> r)
+            : Expression(pos)
             , op_img(op)
             , rhs(std::move(r))
         {}
 
-        util::sptr<flchk::expr_base const> compile() const;
+        util::sptr<flchk::Expression const> compile() const;
 
         std::string const op_img;
-        util::sptr<expr_base const> const rhs;
+        util::sptr<Expression const> const rhs;
     };
 
     struct binary_op
-        : public expr_base
+        : public Expression
     {
         binary_op(misc::pos_type const& pos
-                , util::sptr<expr_base const> l
+                , util::sptr<Expression const> l
                 , std::string const& op
-                , util::sptr<expr_base const> r)
-            : expr_base(pos)
+                , util::sptr<Expression const> r)
+            : Expression(pos)
             , lhs(std::move(l))
             , op_img(op)
             , rhs(std::move(r))
         {}
 
-        util::sptr<flchk::expr_base const> compile() const;
+        util::sptr<flchk::Expression const> compile() const;
 
-        util::sptr<expr_base const> const lhs;
+        util::sptr<Expression const> const lhs;
         std::string const op_img;
-        util::sptr<expr_base const> const rhs;
+        util::sptr<Expression const> const rhs;
     };
 
     struct conjunction
-        : public expr_base
+        : public Expression
     {
-        conjunction(misc::pos_type const& pos, util::sptr<expr_base const> l, util::sptr<expr_base const> r)
-            : expr_base(pos)
+        conjunction(misc::pos_type const& pos, util::sptr<Expression const> l, util::sptr<Expression const> r)
+            : Expression(pos)
             , lhs(std::move(l))
             , rhs(std::move(r))
         {}
 
-        util::sptr<flchk::expr_base const> compile() const;
+        util::sptr<flchk::Expression const> compile() const;
 
-        util::sptr<expr_base const> const lhs;
-        util::sptr<expr_base const> const rhs;
+        util::sptr<Expression const> const lhs;
+        util::sptr<Expression const> const rhs;
     };
 
     struct disjunction
-        : public expr_base
+        : public Expression
     {
-        disjunction(misc::pos_type const& pos, util::sptr<expr_base const> l, util::sptr<expr_base const> r)
-            : expr_base(pos)
+        disjunction(misc::pos_type const& pos, util::sptr<Expression const> l, util::sptr<Expression const> r)
+            : Expression(pos)
             , lhs(std::move(l))
             , rhs(std::move(r))
         {}
 
-        util::sptr<flchk::expr_base const> compile() const;
+        util::sptr<flchk::Expression const> compile() const;
 
-        util::sptr<expr_base const> const lhs;
-        util::sptr<expr_base const> const rhs;
+        util::sptr<Expression const> const lhs;
+        util::sptr<Expression const> const rhs;
     };
 
     struct negation
-        : public expr_base
+        : public Expression
     {
-        negation(misc::pos_type const& pos, util::sptr<expr_base const> r)
-            : expr_base(pos)
+        negation(misc::pos_type const& pos, util::sptr<Expression const> r)
+            : Expression(pos)
             , rhs(std::move(r))
         {}
 
-        util::sptr<flchk::expr_base const> compile() const;
+        util::sptr<flchk::Expression const> compile() const;
 
-        util::sptr<expr_base const> const rhs;
+        util::sptr<Expression const> const rhs;
     };
 
     struct reference
-        : public expr_base
+        : public Expression
     {
         reference(misc::pos_type const& pos, std::string const& n)
-            : expr_base(pos)
+            : Expression(pos)
             , name(n)
         {}
 
-        util::sptr<flchk::expr_base const> compile() const;
+        util::sptr<flchk::Expression const> compile() const;
 
         std::string const name;
     };
 
     struct bool_literal
-        : public expr_base
+        : public Expression
     {
         bool_literal(misc::pos_type const& pos, bool val)
-            : expr_base(pos)
+            : Expression(pos)
             , value(val)
         {}
 
-        util::sptr<flchk::expr_base const> compile() const;
+        util::sptr<flchk::Expression const> compile() const;
 
         bool const value;
     };
 
-    struct int_literal
-        : public expr_base
+    struct IntLiteral
+        : public Expression
     {
-        int_literal(misc::pos_type const& pos, std::string const& val)
-            : expr_base(pos)
+        IntLiteral(misc::pos_type const& pos, std::string const& val)
+            : Expression(pos)
             , value(val)
         {}
 
-        util::sptr<flchk::expr_base const> compile() const;
+        util::sptr<flchk::Expression const> compile() const;
 
         std::string const value;
     };
 
     struct float_literal
-        : public expr_base
+        : public Expression
     {
         float_literal(misc::pos_type const& pos, std::string const& val)
-            : expr_base(pos)
+            : Expression(pos)
             , value(val)
         {}
 
-        util::sptr<flchk::expr_base const> compile() const;
+        util::sptr<flchk::Expression const> compile() const;
 
         std::string const value;
     };
 
     struct call
-        : public expr_base
+        : public Expression
     {
-        call(misc::pos_type const& pos, std::string const& n, std::vector<util::sptr<expr_base const>> a)
-            : expr_base(pos)
+        call(misc::pos_type const& pos, std::string const& n, std::vector<util::sptr<Expression const>> a)
+            : Expression(pos)
             , name(n)
             , args(std::move(a))
         {}
 
-        util::sptr<flchk::expr_base const> compile() const;
+        util::sptr<flchk::Expression const> compile() const;
 
         std::string const name;
-        std::vector<util::sptr<expr_base const>> const args;
+        std::vector<util::sptr<Expression const>> const args;
     };
 
     struct func_reference
-        : public expr_base
+        : public Expression
     {
         func_reference(misc::pos_type const& pos, std::string const& n, int pc)
-            : expr_base(pos)
+            : Expression(pos)
             , name(n)
             , param_count(pc)
         {}
 
-        util::sptr<flchk::expr_base const> compile() const;
+        util::sptr<flchk::Expression const> compile() const;
 
         std::string const name;
         int const param_count;

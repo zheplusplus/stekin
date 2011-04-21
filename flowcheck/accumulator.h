@@ -26,26 +26,26 @@ namespace flchk {
             , _termination_pos(std::move(rhs._termination_pos))
         {}
     public:
-        void add_func_ret(misc::pos_type const& pos, util::sptr<expr_base const> ret_val);
+        void add_func_ret(misc::pos_type const& pos, util::sptr<Expression const> ret_val);
         void add_func_ret_nothing(misc::pos_type const& pos);
-        void add_arith(misc::pos_type const& pos, util::sptr<expr_base const> expr);
+        void add_arith(misc::pos_type const& pos, util::sptr<Expression const> expr);
 
         void add_branch(misc::pos_type const& pos
-                      , util::sptr<expr_base const> predicate
+                      , util::sptr<Expression const> predicate
                       , accumulator consequence
                       , accumulator alternative);
 
         void add_branch(misc::pos_type const& pos
-                      , util::sptr<expr_base const> predicate
+                      , util::sptr<Expression const> predicate
                       , accumulator consequence);
 
         void add_branch_alt_only(misc::pos_type const& pos
-                               , util::sptr<expr_base const> predicate
+                               , util::sptr<Expression const> predicate
                                , accumulator alternative);
 
         void add_block(accumulator b);
     public:
-        void def_var(misc::pos_type const& pos, std::string const& name, util::sptr<expr_base const> init);
+        void def_var(misc::pos_type const& pos, std::string const& name, util::sptr<Expression const> init);
 
         void def_func(misc::pos_type const& pos
                     , std::string const& name

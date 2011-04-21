@@ -9,9 +9,9 @@
 namespace inst {
 
     struct block
-        : public stmt_base
+        : public Statement
     {
-        void add_stmt(util::sptr<stmt_base const> stmt);
+        void add_stmt(util::sptr<Statement const> stmt);
 
         block() = default;
 
@@ -23,7 +23,7 @@ namespace inst {
 
         void write() const;
     private:
-        std::list<util::sptr<stmt_base const>> _stmts;
+        std::list<util::sptr<Statement const>> _stmts;
     };
 
 }

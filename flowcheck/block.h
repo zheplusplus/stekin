@@ -22,7 +22,7 @@ namespace flchk {
 
         void compile(util::sref<proto::scope> scope) const;
 
-        void add_stmt(util::sptr<stmt_base const> stmt);
+        void add_stmt(util::sptr<Statement const> stmt);
         void def_func(misc::pos_type const& pos
                     , std::string const& name
                     , std::vector<std::string> const& param_names
@@ -30,7 +30,7 @@ namespace flchk {
                     , bool contains_void_return);
         void append(block following);
     private:
-        std::list<util::sptr<stmt_base const>> _stmts;
+        std::list<util::sptr<Statement const>> _stmts;
         std::list<util::sptr<function const>> _funcs;
     };
 
