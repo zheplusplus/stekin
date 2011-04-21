@@ -32,7 +32,7 @@ void Function::_fill_param_names()
                 , param_names.end()
                 , [&](std::string const& param_name)
                   {
-                      _symbols.def_var(pos, param_name);
+                      _symbols.defVar(pos, param_name);
                   });
 }
 
@@ -54,7 +54,7 @@ util::sref<inst::Function> Function::inst(int level
             instance->inst_next_path();
         }
         if (!instance->is_return_type_resolved()) {
-            error::func_ret_type_unresolvable(name, arg_types.size());
+            error::returnTypeUnresolvable(name, arg_types.size());
         }
         return instance;
     }
@@ -71,7 +71,7 @@ util::sref<inst::Function> Function::inst(int level
 
     BlockMediate body_mediate(_block.get_stmts(), instance);
     instance->inst_next_path();
-    instance->add_stmt(std::move(body_mediate.inst(instance)));
+    instance->addStmt(std::move(body_mediate.inst(instance)));
     return instance;
 }
 

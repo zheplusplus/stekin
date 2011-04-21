@@ -3,12 +3,12 @@
 
 using namespace flchk;
 
-bool Expression::is_literal() const
+bool Expression::isLiteral() const
 {
     return false;
 }
 
-bool Expression::bool_value() const
+bool Expression::boolValue() const
 {
     return false;
 }
@@ -43,14 +43,14 @@ util::sptr<Expression const> Expression::operate(misc::position const& op_pos
                                              , std::move(util::mkptr(new BoolLiteral(op_pos, rhs))))));
 }
 
-util::sptr<Expression const> Expression::as_rhs(misc::position const& op_pos
+util::sptr<Expression const> Expression::asRHS(misc::position const& op_pos
                                             , std::string const& op_img
                                             , util::sptr<Expression const> lhs) const
 {
     return std::move(util::mkptr(new BinaryOp(op_pos, std::move(lhs), op_img, std::move(fold()))));
 }
 
-util::sptr<Expression const> Expression::as_rhs(misc::position const& op_pos, std::string const& op_img) const
+util::sptr<Expression const> Expression::asRHS(misc::position const& op_pos, std::string const& op_img) const
 {
     return std::move(util::mkptr(new PreUnaryOp(op_pos, op_img, std::move(fold()))));
 }

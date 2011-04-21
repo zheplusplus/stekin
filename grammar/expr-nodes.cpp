@@ -13,9 +13,9 @@ util::sptr<flchk::Expression const> PreUnaryOp::compile() const
 util::sptr<flchk::Expression const> BinaryOp::compile() const
 {
     return std::move(util::mkptr(new flchk::BinaryOp(pos
-                                                    , std::move(lhs->compile())
-                                                    , op_img
-                                                    , std::move(rhs->compile()))));
+                                                   , std::move(lhs->compile())
+                                                   , op_img
+                                                   , std::move(rhs->compile()))));
 }
 
 util::sptr<flchk::Expression const> Conjunction::compile() const
@@ -63,7 +63,7 @@ util::sptr<flchk::Expression const> Call::compile() const
                   {
                       arguments.push_back(expr->compile());
                   });
-    return std::move(util::mkptr(new flchk::call(pos, name, std::move(arguments))));
+    return std::move(util::mkptr(new flchk::Call(pos, name, std::move(arguments))));
 }
 
 util::sptr<flchk::Expression const> FuncReference::compile() const

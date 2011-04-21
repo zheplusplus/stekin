@@ -18,7 +18,7 @@ branch::branch(misc::position const& pos
     predicate->typeof()->check_condition_type(pos);
 }
 
-void arithmetics::write() const
+void Arithmetics::write() const
 {
     expr->write();
     output::end_of_statement();
@@ -41,14 +41,14 @@ void initialization::write() const
     output::end_of_statement();
 }
 
-void func_ret::write() const
+void Return::write() const
 {
     output::return_kw();
     ret_val->write();
     output::end_of_statement();
 }
 
-void func_ret_nothing::write() const
+void ReturnNothing::write() const
 {
     output::return_nothing();
 }

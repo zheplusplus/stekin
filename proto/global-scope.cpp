@@ -53,5 +53,5 @@ global_scope::global_scope()
 {
     util::sref<proto::Function> func_write
                 = declare(misc::position(0), "write", std::vector<std::string>({ "value to write" }), true);
-    func_write->add_stmt(std::move(util::mkptr(new write_stmt_proto)));
+    func_write->addStmt(std::move(util::mkptr(new write_stmt_proto)));
 }

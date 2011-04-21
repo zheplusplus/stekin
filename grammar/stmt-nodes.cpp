@@ -7,45 +7,47 @@
 
 using namespace grammar;
 
-void arithmetics::compile(util::sref<flchk::filter> filter) const
+void Arithmetics::compile(util::sref<flchk::Filter> filter) const
 {
     filter->addArith(pos, std::move(expr->compile()));
 }
 
-void branch::compile(util::sref<flchk::filter> filter) const
+void Branch::compile(util::sref<flchk::Filter> filter) const
 {
-    filter->add_branch(pos
-                     , std::move(predicate->compile())
-                     , std::move(consequence.compile(std::move(util::mkmptr(new flchk::symbol_def_filter))))
-                     , std::move(alternative.compile(std::move(util::mkmptr(new flchk::symbol_def_filter)))));
+    filter->addBranch(
+               pos
+             , std::move(predicate->compile())
+             , std::move(consequence.compile(std::move(util::mkmptr(new flchk::SymbolDefFilter))))
+             , std::move(alternative.compile(std::move(util::mkmptr(new flchk::SymbolDefFilter)))));
 }
 
-void branch_cons_only::compile(util::sref<flchk::filter> filter) const
+void BranchConsqOnly::compile(util::sref<flchk::Filter> filter) const
 {
-    filter->add_branch(pos
-                     , std::move(predicate->compile())
-                     , std::move(consequence.compile(std::move(util::mkmptr(new flchk::symbol_def_filter)))));
+    filter->addBranch(
+               pos
+             , std::move(predicate->compile())
+             , std::move(consequence.compile(std::move(util::mkmptr(new flchk::SymbolDefFilter)))));
 }
 
-void branch_alt_only::compile(util::sref<flchk::filter> filter) const
+void BranchAlterOnly::compile(util::sref<flchk::Filter> filter) const
 {
-    filter->add_branch_alt_only(
-                       pos
-                     , std::move(predicate->compile())
-                     , std::move(alternative.compile(std::move(util::mkmptr(new flchk::symbol_def_filter)))));
+    filter->addBranchAlterOnly(
+               pos
+             , std::move(predicate->compile())
+             , std::move(alternative.compile(std::move(util::mkmptr(new flchk::SymbolDefFilter)))));
 }
 
-void func_ret::compile(util::sref<flchk::filter> filter) const
+void Return::compile(util::sref<flchk::Filter> filter) const
 {
-    filter->add_func_ret(pos, std::move(ret_val->compile()));
+    filter->addReturn(pos, std::move(ret_val->compile()));
 }
 
-void func_ret_nothing::compile(util::sref<flchk::filter> filter) const
+void ReturnNothing::compile(util::sref<flchk::Filter> filter) const
 {
-    filter->add_func_ret_nothing(pos);
+    filter->addReturnNothing(pos);
 }
 
-void var_def::compile(util::sref<flchk::filter> filter) const
+void VarDef::compile(util::sref<flchk::Filter> filter) const
 {
-    filter->def_var(pos, name, std::move(init->compile()));
+    filter->defVar(pos, name, std::move(init->compile()));
 }

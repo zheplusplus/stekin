@@ -7,10 +7,10 @@
 
 namespace inst {
 
-    struct arithmetics
+    struct Arithmetics
         : public Statement
     {
-        explicit arithmetics(util::sptr<Expression const> e)
+        explicit Arithmetics(util::sptr<Expression const> e)
             : expr(std::move(e))
         {}
 
@@ -48,10 +48,10 @@ namespace inst {
         util::sptr<Expression const> const init;
     };
 
-    struct func_ret
+    struct Return
         : public Statement
     {
-        explicit func_ret(util::sptr<Expression const> r)
+        explicit Return(util::sptr<Expression const> r)
             : ret_val(std::move(r))
         {}
 
@@ -60,7 +60,7 @@ namespace inst {
         util::sptr<Expression const> const ret_val;
     };
 
-    struct func_ret_nothing
+    struct ReturnNothing
         : public Statement
     {
         void write() const;

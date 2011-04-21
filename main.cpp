@@ -22,7 +22,7 @@ int main()
         return 1;
     }
 
-    flchk::Block global_flow(std::move(parser::builder.build_and_clear()));
+    flchk::Block global_flow(std::move(parser::builder.buildAndClear()));
     if (error::hasError()) {
         return 1;
     }
@@ -40,7 +40,7 @@ int main()
                                                            , true));
     proto::BlockMediate mediate(proto_global_scope->get_stmts(), inst_global_func);
     inst_global_func->inst_next_path();
-    inst_global_func->add_stmt(std::move(mediate.inst(inst_global_func)));
+    inst_global_func->addStmt(std::move(mediate.inst(inst_global_func)));
     if (error::hasError()) {
         return 1;
     }

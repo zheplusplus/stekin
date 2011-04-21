@@ -1,5 +1,5 @@
-#ifndef __STAKCENING_FLOW_CHECK_EXPRESSION_NODES_H__
-#define __STAKCENING_FLOW_CHECK_EXPRESSION_NODES_H__
+#ifndef __STEKIN_FLOW_CHECK_EXPRESSION_NODES_H__
+#define __STEKIN_FLOW_CHECK_EXPRESSION_NODES_H__
 
 #include <string>
 #include <vector>
@@ -19,10 +19,10 @@ namespace flchk {
         {}
 
         util::sptr<proto::Expression const> compile(util::sref<proto::scope> scope) const;
-        bool is_literal() const;
-        bool bool_value() const;
+        bool isLiteral() const;
+        bool boolValue() const;
         util::sptr<Expression const> fold() const;
-        std::string type_name() const;
+        std::string typeName() const;
 
         std::string const op_img;
         util::sptr<Expression const> const rhs;
@@ -42,9 +42,9 @@ namespace flchk {
         {}
 
         util::sptr<proto::Expression const> compile(util::sref<proto::scope> scope) const;
-        bool is_literal() const;
-        bool bool_value() const;
-        std::string type_name() const;
+        bool isLiteral() const;
+        bool boolValue() const;
+        std::string typeName() const;
         util::sptr<Expression const> fold() const;
 
         util::sptr<Expression const> const lhs;
@@ -62,9 +62,9 @@ namespace flchk {
         {}
 
         util::sptr<proto::Expression const> compile(util::sref<proto::scope> scope) const;
-        bool is_literal() const;
-        bool bool_value() const;
-        std::string type_name() const;
+        bool isLiteral() const;
+        bool boolValue() const;
+        std::string typeName() const;
         util::sptr<Expression const> fold() const;
 
         util::sptr<Expression const> const lhs;
@@ -81,9 +81,9 @@ namespace flchk {
         {}
 
         util::sptr<proto::Expression const> compile(util::sref<proto::scope> scope) const;
-        bool is_literal() const;
-        bool bool_value() const;
-        std::string type_name() const;
+        bool isLiteral() const;
+        bool boolValue() const;
+        std::string typeName() const;
         util::sptr<Expression const> fold() const;
 
         util::sptr<Expression const> const lhs;
@@ -99,9 +99,9 @@ namespace flchk {
         {}
 
         util::sptr<proto::Expression const> compile(util::sref<proto::scope> scope) const;
-        bool is_literal() const;
-        bool bool_value() const;
-        std::string type_name() const;
+        bool isLiteral() const;
+        bool boolValue() const;
+        std::string typeName() const;
         util::sptr<Expression const> fold() const;
 
         util::sptr<Expression const> const rhs;
@@ -116,7 +116,7 @@ namespace flchk {
         {}
 
         util::sptr<proto::Expression const> compile(util::sref<proto::scope> scope) const;
-        std::string type_name() const;
+        std::string typeName() const;
         util::sptr<Expression const> fold() const;
 
         std::string const name;
@@ -131,9 +131,9 @@ namespace flchk {
         {}
 
         util::sptr<proto::Expression const> compile(util::sref<proto::scope> scope) const;
-        bool is_literal() const;
-        bool bool_value() const;
-        std::string type_name() const;
+        bool isLiteral() const;
+        bool boolValue() const;
+        std::string typeName() const;
         util::sptr<Expression const> fold() const;
 
         util::sptr<Expression const> operate(misc::position const& op_pos
@@ -146,10 +146,10 @@ namespace flchk {
                                           , std::string const& op_img
                                           , bool rhs) const;
 
-        util::sptr<Expression const> as_rhs(misc::position const& op_pos
+        util::sptr<Expression const> asRHS(misc::position const& op_pos
                                          , std::string const& op_img
                                          , util::sptr<Expression const> lhs) const;
-        util::sptr<Expression const> as_rhs(misc::position const& op_pos, std::string const& op_img) const;
+        util::sptr<Expression const> asRHS(misc::position const& op_pos, std::string const& op_img) const;
 
         bool const value;
     public:
@@ -170,9 +170,9 @@ namespace flchk {
         {}
 
         util::sptr<proto::Expression const> compile(util::sref<proto::scope> scope) const;
-        bool is_literal() const;
-        bool bool_value() const;
-        std::string type_name() const;
+        bool isLiteral() const;
+        bool boolValue() const;
+        std::string typeName() const;
         util::sptr<Expression const> fold() const;
 
         util::sptr<Expression const> operate(misc::position const& op_pos
@@ -185,10 +185,10 @@ namespace flchk {
                                           , std::string const& op_img
                                           , bool) const;
 
-        util::sptr<Expression const> as_rhs(misc::position const& op_pos
+        util::sptr<Expression const> asRHS(misc::position const& op_pos
                                          , std::string const& op_img
                                          , util::sptr<Expression const> lhs) const;
-        util::sptr<Expression const> as_rhs(misc::position const& op_pos, std::string const& op_img) const;
+        util::sptr<Expression const> asRHS(misc::position const& op_pos, std::string const& op_img) const;
 
         mpz_class const value;
     };
@@ -207,9 +207,9 @@ namespace flchk {
         {}
 
         util::sptr<proto::Expression const> compile(util::sref<proto::scope> scope) const;
-        bool is_literal() const;
-        bool bool_value() const;
-        std::string type_name() const;
+        bool isLiteral() const;
+        bool boolValue() const;
+        std::string typeName() const;
         util::sptr<Expression const> fold() const;
 
         util::sptr<Expression const> operate(misc::position const& op_pos
@@ -222,25 +222,25 @@ namespace flchk {
                                           , std::string const& op_img
                                           , bool) const;
 
-        util::sptr<Expression const> as_rhs(misc::position const& op_pos
+        util::sptr<Expression const> asRHS(misc::position const& op_pos
                                          , std::string const& op_img
                                          , util::sptr<Expression const> lhs) const;
-        util::sptr<Expression const> as_rhs(misc::position const& op_pos, std::string const& op_img) const;
+        util::sptr<Expression const> asRHS(misc::position const& op_pos, std::string const& op_img) const;
 
         mpf_class const value;
     };
 
-    struct call
+    struct Call
         : public Expression
     {
-        call(misc::position const& pos, std::string const& n, std::vector<util::sptr<Expression const>> a)
+        Call(misc::position const& pos, std::string const& n, std::vector<util::sptr<Expression const>> a)
             : Expression(pos)
             , name(n)
             , args(std::move(a))
         {}
 
         util::sptr<proto::Expression const> compile(util::sref<proto::scope> scope) const;
-        std::string type_name() const;
+        std::string typeName() const;
         util::sptr<Expression const> fold() const;
 
         std::string const name;
@@ -257,7 +257,7 @@ namespace flchk {
         {}
 
         util::sptr<proto::Expression const> compile(util::sref<proto::scope> scope) const;
-        std::string type_name() const;
+        std::string typeName() const;
         util::sptr<Expression const> fold() const;
 
         std::string const name;
@@ -266,4 +266,4 @@ namespace flchk {
 
 }
 
-#endif /* _STAKCENING_FLOW_CHECK_EXPRESSION_NODES_H__ */
+#endif /* _STEKIN_FLOW_CHECK_EXPRESSION_NODES_H__ */

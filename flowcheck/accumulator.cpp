@@ -7,125 +7,125 @@
 
 using namespace flchk;
 
-void accumulator::add_func_ret(misc::position const& pos, util::sptr<Expression const> ret_val)
+void Accumulator::addReturn(misc::position const& pos, util::sptr<Expression const> ret_val)
 {
-    _check_not_terminated(pos);
-    _set_terminated_not_by_void_return(pos);
-    _block.add_stmt(std::move(util::mkptr(new func_ret(pos, std::move(ret_val)))));
+    _checkNotTerminated(pos);
+    _setTerminatedNotByVoidReturn(pos);
+    _block.addStmt(std::move(util::mkptr(new Return(pos, std::move(ret_val)))));
 }
 
-void accumulator::add_func_ret_nothing(misc::position const& pos)
+void Accumulator::addReturnNothing(misc::position const& pos)
 {
-    _check_not_terminated(pos);
-    _set_terminated_by_void_return(pos);
-    _block.add_stmt(std::move(util::mkptr(new func_ret_nothing(pos))));
+    _checkNotTerminated(pos);
+    _setTerminatedByVoidReturn(pos);
+    _block.addStmt(std::move(util::mkptr(new ReturnNothing(pos))));
 }
 
-void accumulator::addArith(misc::position const& pos, util::sptr<Expression const> expr)
+void Accumulator::addArith(misc::position const& pos, util::sptr<Expression const> expr)
 {
-    _check_not_terminated(pos);
-    _block.add_stmt(std::move(util::mkptr(new arithmetics(pos, std::move(expr)))));
+    _checkNotTerminated(pos);
+    _block.addStmt(std::move(util::mkptr(new Arithmetics(pos, std::move(expr)))));
 }
 
-void accumulator::add_branch(misc::position const& pos
+void Accumulator::addBranch(misc::position const& pos
                            , util::sptr<Expression const> predicate
-                           , accumulator consequence
-                           , accumulator alternative)
+                           , Accumulator consequence
+                           , Accumulator alternative)
 {
-    _check_not_terminated(pos);
-    _check_branches_temination(consequence, alternative);
-    _set_termination_by_sub_accumulator(consequence);
-    _set_termination_by_sub_accumulator(alternative);
-    _block.add_stmt(std::move(util::mkptr(new branch(pos
+    _checkNotTerminated(pos);
+    _checkBranchesTermination(consequence, alternative);
+    _setTerminationBySubAccumulator(consequence);
+    _setTerminationBySubAccumulator(alternative);
+    _block.addStmt(std::move(util::mkptr(new Branch(pos
                                                    , std::move(predicate)
                                                    , std::move(consequence._block)
                                                    , std::move(alternative._block)))));
 }
 
-void accumulator::add_branch(misc::position const& pos
+void Accumulator::addBranch(misc::position const& pos
                            , util::sptr<Expression const> predicate
-                           , accumulator consequence)
+                           , Accumulator consequence)
 {
-    _check_not_terminated(pos);
-    _set_termination_by_sub_accumulator(consequence);
-    _block.add_stmt(std::move(util::mkptr(new branch(pos
+    _checkNotTerminated(pos);
+    _setTerminationBySubAccumulator(consequence);
+    _block.addStmt(std::move(util::mkptr(new Branch(pos
                                                    , std::move(predicate)
                                                    , std::move(consequence._block)
                                                    , std::move(Block())))));
 }
 
-void accumulator::add_branch_alt_only(misc::position const& pos
+void Accumulator::addBranchAlterOnly(misc::position const& pos
                                     , util::sptr<Expression const> predicate
-                                    , accumulator alternative)
+                                    , Accumulator alternative)
 {
-    _check_not_terminated(pos);
-    _set_termination_by_sub_accumulator(alternative);
-    _block.add_stmt(std::move(util::mkptr(new branch(pos
+    _checkNotTerminated(pos);
+    _setTerminationBySubAccumulator(alternative);
+    _block.addStmt(std::move(util::mkptr(new Branch(pos
                                                    , std::move(predicate)
                                                    , std::move(Block())
                                                    , std::move(alternative._block)))));
 }
 
-void accumulator::add_block(accumulator b)
+void Accumulator::add_block(Accumulator b)
 {
     _block.append(std::move(b._block));
-    _set_self_terminated(std::move(b));
+    _setSelfTerminated(std::move(b));
 }
 
-void accumulator::def_var(misc::position const& pos, std::string const& name, util::sptr<Expression const> init)
+void Accumulator::defVar(misc::position const& pos, std::string const& name, util::sptr<Expression const> init)
 {
-    _check_not_terminated(pos);
-    _block.add_stmt(std::move(util::mkptr(new var_def(pos, name, std::move(init)))));
+    _checkNotTerminated(pos);
+    _block.addStmt(std::move(util::mkptr(new VarDef(pos, name, std::move(init)))));
 }
 
-void accumulator::def_func(misc::position const& pos
+void Accumulator::defFunc(misc::position const& pos
                          , std::string const& name
                          , std::vector<std::string> const& param_names
-                         , accumulator body)
+                         , Accumulator body)
 {
-    _block.def_func(pos
+    _block.defFunc(pos
                   , name
                   , param_names
                   , std::move(body._block)
                   , body._contains_void_return || !body._terminated());
 }
 
-Block accumulator::deliver()
+Block Accumulator::deliver()
 {
     return std::move(_block);
 }
 
-void accumulator::_set_terminated_by_void_return(misc::position const& pos)
+void Accumulator::_setTerminatedByVoidReturn(misc::position const& pos)
 {
-    _set_terminated_not_by_void_return(pos);
+    _setTerminatedNotByVoidReturn(pos);
     _contains_void_return = true;
 }
 
-void accumulator::_set_terminated_not_by_void_return(misc::position const& pos)
+void Accumulator::_setTerminatedNotByVoidReturn(misc::position const& pos)
 {
     _termination_pos.reset(new misc::position(pos));
 }
 
-void accumulator::_set_termination_by_sub_accumulator(accumulator const& sub)
+void Accumulator::_setTerminationBySubAccumulator(Accumulator const& sub)
 {
     _contains_void_return = _contains_void_return || sub._contains_void_return;
 }
 
-void accumulator::_check_branches_temination(accumulator const& consequence, accumulator const& alternative)
+void Accumulator::_checkBranchesTermination(Accumulator const& consequence, Accumulator const& alternative)
 {
     if (consequence._terminated() || alternative._terminated()) {
         warning::one_or_two_branches_terminated(*consequence._termination_pos, *alternative._termination_pos);
     }
 }
 
-void accumulator::_check_not_terminated(misc::position const& pos)
+void Accumulator::_checkNotTerminated(misc::position const& pos)
 {
     if (_terminated()) {
-        _report_terminated(pos);
+        _reportTerminated(pos);
     }
 }
 
-void accumulator::_report_terminated(misc::position const& pos)
+void Accumulator::_reportTerminated(misc::position const& pos)
 {
     if (!_error_reported) {
         error::flow_terminated(pos, _termination_pos.cp());
@@ -133,14 +133,14 @@ void accumulator::_report_terminated(misc::position const& pos)
     }
 }
 
-bool accumulator::_terminated() const
+bool Accumulator::_terminated() const
 {
     return bool(_termination_pos);
 }
 
-void accumulator::_set_self_terminated(accumulator term)
+void Accumulator::_setSelfTerminated(Accumulator term)
 {
-    _set_termination_by_sub_accumulator(term);
+    _setTerminationBySubAccumulator(term);
     _termination_pos = std::move(term._termination_pos);
     if (bool(_termination_pos)) {
         _error_reported = true;

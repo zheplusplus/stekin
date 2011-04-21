@@ -33,28 +33,28 @@ namespace test {
         int const character;
     };
 
-    struct else_not_match_rec {
+    struct ElseNotMatchRec {
         misc::position const pos;
 
-        explicit else_not_match_rec(misc::position const& ps)
+        explicit ElseNotMatchRec(misc::position const& ps)
             : pos(ps)
         {}
     };
 
-    struct if_matched_rec {
+    struct IfMatchedRec {
         misc::position const prev_pos;
         misc::position const this_pos;
 
-        if_matched_rec(misc::position const& ppos, misc::position const& tpos)
+        IfMatchedRec(misc::position const& ppos, misc::position const& tpos)
             : prev_pos(ppos)
             , this_pos(tpos)
         {}
     };
 
-    struct excess_ind_rec {
+    struct ExcessIndRec {
         misc::position const pos;
 
-        explicit excess_ind_rec(misc::position const& ps)
+        explicit ExcessIndRec(misc::position const& ps)
             : pos(ps)
         {}
     };
@@ -146,11 +146,11 @@ namespace test {
         {}
     };
 
-    struct forbid_def_rec {
+    struct ForbidDefRec {
         misc::position const pos;
         std::string const name;
 
-        forbid_def_rec(misc::position ps, std::string const& n)
+        ForbidDefRec(misc::position ps, std::string const& n)
             : pos(ps)
             , name(n)
         {}
@@ -209,11 +209,11 @@ namespace test {
         {}
     };
 
-    struct ret_type_unresolvable_rec {
+    struct RetTypeUnresolvableRec {
         std::string const name;
         int const arg_count;
 
-        ret_type_unresolvable_rec(std::string const& n, int ac)
+        RetTypeUnresolvableRec(std::string const& n, int ac)
             : name(n)
             , arg_count(ac)
         {}
@@ -242,12 +242,12 @@ namespace test {
     std::vector<TabAsIndRec> getTabAsIndents();
     std::vector<BadIndentRec> getBadIndents();
     std::vector<InvCharRec> getInvCharRecs();
-    std::vector<else_not_match_rec> get_else_not_matches();
-    std::vector<if_matched_rec> get_if_matcheds();
-    std::vector<excess_ind_rec> get_excess_inds();
+    std::vector<ElseNotMatchRec> getElseNotMatches();
+    std::vector<IfMatchedRec> getIfMatchedRecs();
+    std::vector<ExcessIndRec> get_excess_inds();
     std::vector<flow_terminated_rec> get_flow_terminated_recs();
     std::vector<func_forbidden_rec> get_forbidden_funcs();
-    std::vector<forbid_def_rec> get_forbid_var_defs();
+    std::vector<ForbidDefRec> getForbidVarDefs();
     std::vector<var_redef_rec> get_local_redefs();
     std::vector<invalid_ref_rec> get_invalid_refs();
     std::vector<func_ref_ambiguous_rec> get_ambiguous_refs();
@@ -257,7 +257,7 @@ namespace test {
     std::vector<NABinaryOpRec> getNABinaryOps();
     std::vector<NAPreUnaryOpRec> getNAPreUnaryOps();
     std::vector<ret_type_conflict_rec> get_ret_type_conflicts();
-    std::vector<ret_type_unresolvable_rec> get_ret_type_unresolvables();
+    std::vector<RetTypeUnresolvableRec> getRetTypeUnresolvables();
     std::vector<cond_not_bool_rec> get_cond_not_bools();
     std::vector<variable_not_callable_rec> get_variable_not_callables();
 

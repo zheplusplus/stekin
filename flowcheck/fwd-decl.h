@@ -5,7 +5,7 @@ namespace flchk {
 
     struct Statement;
     struct Expression;
-    struct filter;
+    struct Filter;
     struct Block;
     struct Function;
 

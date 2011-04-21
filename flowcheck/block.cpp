@@ -9,12 +9,12 @@
 
 using namespace flchk;
 
-void Block::add_stmt(util::sptr<Statement const> stmt)
+void Block::addStmt(util::sptr<Statement const> stmt)
 {
     _stmts.push_back(std::move(stmt));
 }
 
-void Block::def_func(misc::position const& pos
+void Block::defFunc(misc::position const& pos
                    , std::string const& name
                    , std::vector<std::string> const& param_names
                    , Block body
@@ -50,7 +50,7 @@ void Block::compile(util::sref<proto::scope> scope) const
                 , _stmts.end()
                 , [&](util::sptr<Statement const> const& stmt)
                   {
-                      scope->add_stmt(stmt->compile(scope));
+                      scope->addStmt(stmt->compile(scope));
                   });
 }
 

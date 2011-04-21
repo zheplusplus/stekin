@@ -21,7 +21,7 @@ symbol_table::symbol_table(int ext_lvl
                 , args.end()
                 , [&](arg_name_type_pair const& arg_info)
                   {
-                      _args.push_back(def_var(misc::position(0), arg_info.atype, arg_info.name));
+                      _args.push_back(defVar(misc::position(0), arg_info.atype, arg_info.name));
                   });
 }
 
@@ -37,7 +37,7 @@ static int calc_offset_on_align(int base, int new_size)
     return base - mod + platform::WORD_LENGTH_INBYTE;
 }
 
-variable symbol_table::def_var(misc::position const& pos
+variable symbol_table::defVar(misc::position const& pos
                              , util::sref<type const> var_type
                              , std::string const& name)
 {

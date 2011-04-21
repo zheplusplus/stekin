@@ -1,5 +1,5 @@
-#ifndef __STAKCENING_GRAMMAR_EXPRESSION_NODES_H__
-#define __STAKCENING_GRAMMAR_EXPRESSION_NODES_H__
+#ifndef __STEKIN_GRAMMAR_EXPRESSION_NODES_H__
+#define __STEKIN_GRAMMAR_EXPRESSION_NODES_H__
 
 #include <vector>
 
@@ -26,9 +26,9 @@ namespace grammar {
         : public Expression
     {
         BinaryOp(misc::position const& pos
-                , util::sptr<Expression const> l
-                , std::string const& op
-                , util::sptr<Expression const> r)
+               , util::sptr<Expression const> l
+               , std::string const& op
+               , util::sptr<Expression const> r)
             : Expression(pos)
             , lhs(std::move(l))
             , op_img(op)
@@ -45,7 +45,9 @@ namespace grammar {
     struct Conjunction
         : public Expression
     {
-        Conjunction(misc::position const& pos, util::sptr<Expression const> l, util::sptr<Expression const> r)
+        Conjunction(misc::position const& pos
+                  , util::sptr<Expression const> l
+                  , util::sptr<Expression const> r)
             : Expression(pos)
             , lhs(std::move(l))
             , rhs(std::move(r))
@@ -60,7 +62,9 @@ namespace grammar {
     struct Disjunction
         : public Expression
     {
-        Disjunction(misc::position const& pos, util::sptr<Expression const> l, util::sptr<Expression const> r)
+        Disjunction(misc::position const& pos
+                  , util::sptr<Expression const> l
+                  , util::sptr<Expression const> r)
             : Expression(pos)
             , lhs(std::move(l))
             , rhs(std::move(r))
@@ -101,9 +105,9 @@ namespace grammar {
     struct BoolLiteral
         : public Expression
     {
-        BoolLiteral(misc::position const& pos, bool val)
+        BoolLiteral(misc::position const& pos, bool v)
             : Expression(pos)
-            , value(val)
+            , value(v)
         {}
 
         util::sptr<flchk::Expression const> compile() const;
@@ -114,9 +118,9 @@ namespace grammar {
     struct IntLiteral
         : public Expression
     {
-        IntLiteral(misc::position const& pos, std::string const& val)
+        IntLiteral(misc::position const& pos, std::string const& v)
             : Expression(pos)
-            , value(val)
+            , value(v)
         {}
 
         util::sptr<flchk::Expression const> compile() const;
@@ -127,9 +131,9 @@ namespace grammar {
     struct FloatLiteral
         : public Expression
     {
-        FloatLiteral(misc::position const& pos, std::string const& val)
+        FloatLiteral(misc::position const& pos, std::string const& v)
             : Expression(pos)
-            , value(val)
+            , value(v)
         {}
 
         util::sptr<flchk::Expression const> compile() const;
@@ -140,10 +144,12 @@ namespace grammar {
     struct Call
         : public Expression
     {
-        Call(misc::position const& pos, std::string const& n, std::vector<util::sptr<Expression const>> a)
-            : Expression(pos)
-            , name(n)
-            , args(std::move(a))
+        Call(misc::position const& pos
+           , std::string const& n
+           , std::vector<util::sptr<Expression const>> a)
+                : Expression(pos)
+                , name(n)
+                , args(std::move(a))
         {}
 
         util::sptr<flchk::Expression const> compile() const;
@@ -169,4 +175,4 @@ namespace grammar {
 
 }
 
-#endif /* _STAKCENING_GRAMMAR_EXPRESSION_NODES_H__ */
+#endif /* __STEKIN_GRAMMAR_EXPRESSION_NODES_H__ */

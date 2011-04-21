@@ -21,7 +21,7 @@ namespace proto {
                                                       , std::string const& name
                                                       , int param_count) const;
 
-        void def_var(misc::position const&, std::string const&);
+        void defVar(misc::position const&, std::string const&);
 
         util::sref<Function> declare(misc::position const&
                                    , std::string const&

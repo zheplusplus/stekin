@@ -24,8 +24,8 @@ void output::begin_expr() {}
 void output::end_expr() {}
 void output::branch_if() {}
 void output::branch_else() {}
-void output::Block_begin() {}
-void output::Block_end() {}
+void output::block_begin() {}
+void output::block_end() {}
 void output::end_of_statement() {}
 void output::construct_FuncReference(std::string const&) {}
 void output::FuncReference_next_variable(int, stack_var_record const&) {}

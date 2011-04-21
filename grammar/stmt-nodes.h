@@ -1,5 +1,5 @@
-#ifndef __STAKCENING_GRAMMAR_STATEMENT_NODES_H__
-#define __STAKCENING_GRAMMAR_STATEMENT_NODES_H__
+#ifndef __STEKIN_GRAMMAR_STATEMENT_NODES_H__
+#define __STEKIN_GRAMMAR_STATEMENT_NODES_H__
 
 #include <string>
 #include <list>
@@ -10,99 +10,99 @@
 
 namespace grammar {
 
-    struct arithmetics
+    struct Arithmetics
         : public Statement
     {
-        arithmetics(misc::position const& pos, util::sptr<Expression const> e)
+        Arithmetics(misc::position const& pos, util::sptr<Expression const> e)
             : Statement(pos)
             , expr(std::move(e))
         {}
 
-        void compile(util::sref<flchk::filter> filter) const;
+        void compile(util::sref<flchk::Filter> filter) const;
 
         util::sptr<Expression const> const expr;
     };
 
-    struct branch
+    struct Branch
         : public Statement
     {
-        branch(misc::position const& pos, util::sptr<Expression const> p, Block c, Block a)
+        Branch(misc::position const& pos, util::sptr<Expression const> p, Block c, Block a)
             : Statement(pos)
             , predicate(std::move(p))
             , consequence(std::move(c))
             , alternative(std::move(a))
         {}
 
-        void compile(util::sref<flchk::filter> filter) const;
+        void compile(util::sref<flchk::Filter> filter) const;
 
         util::sptr<Expression const> const predicate;
         Block const consequence;
         Block const alternative;
     };
 
-    struct branch_cons_only
+    struct BranchConsqOnly
         : public Statement
     {
-        branch_cons_only(misc::position const& pos, util::sptr<Expression const> p, Block c)
+        BranchConsqOnly(misc::position const& pos, util::sptr<Expression const> p, Block c)
             : Statement(pos)
             , predicate(std::move(p))
             , consequence(std::move(c))
         {}
 
-        void compile(util::sref<flchk::filter> filter) const;
+        void compile(util::sref<flchk::Filter> filter) const;
 
         util::sptr<Expression const> const predicate;
         Block const consequence;
     };
 
-    struct branch_alt_only
+    struct BranchAlterOnly
         : public Statement
     {
-        branch_alt_only(misc::position const& pos, util::sptr<Expression const> p, Block a)
+        BranchAlterOnly(misc::position const& pos, util::sptr<Expression const> p, Block a)
             : Statement(pos)
             , predicate(std::move(p))
             , alternative(std::move(a))
         {}
 
-        void compile(util::sref<flchk::filter> filter) const;
+        void compile(util::sref<flchk::Filter> filter) const;
 
         util::sptr<Expression const> const predicate;
         Block const alternative;
     };
 
-    struct func_ret
+    struct Return
         : public Statement
     {
-        func_ret(misc::position const& pos, util::sptr<Expression const> r)
+        Return(misc::position const& pos, util::sptr<Expression const> r)
             : Statement(pos)
             , ret_val(std::move(r))
         {}
 
-        void compile(util::sref<flchk::filter> filter) const;
+        void compile(util::sref<flchk::Filter> filter) const;
 
         util::sptr<Expression const> const ret_val;
     };
 
-    struct func_ret_nothing
+    struct ReturnNothing
         : public Statement
     {
-        explicit func_ret_nothing(misc::position const& pos)
+        explicit ReturnNothing(misc::position const& pos)
             : Statement(pos)
         {}
 
-        void compile(util::sref<flchk::filter> filter) const;
+        void compile(util::sref<flchk::Filter> filter) const;
     };
 
-    struct var_def
+    struct VarDef
         : public Statement
     {
-        var_def(misc::position const& pos, std::string const& n, util::sptr<Expression const> i)
+        VarDef(misc::position const& pos, std::string const& n, util::sptr<Expression const> i)
             : Statement(pos)
             , name(n)
             , init(std::move(i))
         {}
 
-        void compile(util::sref<flchk::filter> filter) const;
+        void compile(util::sref<flchk::Filter> filter) const;
 
         std::string const name;
         util::sptr<Expression const> const init;
@@ -110,4 +110,4 @@ namespace grammar {
 
 }
 
-#endif /* __STAKCENING_GRAMMAR_STATEMENT_NODES_H__ */
+#endif /* __STEKIN_GRAMMAR_STATEMENT_NODES_H__ */

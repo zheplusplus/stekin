@@ -17,7 +17,7 @@ namespace inst {
     public:
         virtual void set_return_type(misc::position const& pos, util::sref<type const> type) = 0;
 
-        virtual variable def_var(misc::position const& pos
+        virtual variable defVar(misc::position const& pos
                                , util::sref<type const> vtype
                                , std::string const& name) = 0;
         virtual variable query_var(misc::position const& pos, std::string const& name) const = 0;
@@ -36,7 +36,7 @@ namespace inst {
                                        , std::string const& op
                                        , util::sref<type const> rhs) const;
 
-        void add_stmt(util::sptr<Statement const> stmt);
+        void addStmt(util::sptr<Statement const> stmt);
     protected:
         scope() {}
 

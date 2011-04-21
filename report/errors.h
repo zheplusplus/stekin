@@ -14,14 +14,14 @@ namespace error {
     void badIndent(misc::position const& pos);
     void invalidChar(misc::position const& pos, int character);
 
-    void else_not_match_if(misc::position const& else_pos);
-    void if_already_match_else(misc::position const& prev_else_pos, misc::position const& this_else_pos);
-    void excessive_indent(misc::position const& pos);
+    void elseNotMatchIf(misc::position const& else_pos);
+    void ifAlreadyMatchElse(misc::position const& prev_else_pos, misc::position const& this_else_pos);
+    void excessiveIndent(misc::position const& pos);
 
     void flow_terminated(misc::position const& this_pos, misc::position const& prev_pos);
 
-    void forbid_def_func(misc::position const& pos, std::string const& name);
-    void forbid_def_var(misc::position const& pos, std::string const& name);
+    void forbidDefFunc(misc::position const& pos, std::string const& name);
+    void forbidDefVar(misc::position const& pos, std::string const& name);
 
     void var_already_in_local(misc::position const& prev_def_pos
                             , misc::position const& this_def_pos
@@ -51,7 +51,7 @@ namespace error {
                             , std::string const& prev_ret_type_name
                             , std::string const& this_ret_type_name);
 
-    void func_ret_type_unresolvable(std::string const& name, int arg_count);
+    void returnTypeUnresolvable(std::string const& name, int arg_count);
 
     void cond_not_bool(misc::position const& pos, std::string const& actual_type);
 

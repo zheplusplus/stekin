@@ -7,10 +7,10 @@
 
 namespace proto {
 
-    struct arithmetics
+    struct Arithmetics
         : public Statement
     {
-        arithmetics(misc::position const& ps, util::sptr<Expression const> e)
+        Arithmetics(misc::position const& ps, util::sptr<Expression const> e)
             : Statement(ps)
             , expr(std::move(e))
         {}
@@ -37,10 +37,10 @@ namespace proto {
         Block _alternative;
     };
 
-    struct var_def
+    struct VarDef
         : public Statement
     {
-        var_def(misc::position const& ps, std::string const& n, util::sptr<Expression const> i)
+        VarDef(misc::position const& ps, std::string const& n, util::sptr<Expression const> i)
             : Statement(ps)
             , name(n)
             , init(std::move(i))
@@ -52,10 +52,10 @@ namespace proto {
         util::sptr<Expression const> const init;
     };
 
-    struct func_ret
+    struct Return
         : public Statement
     {
-        func_ret(misc::position const& ps, util::sptr<Expression const> r)
+        Return(misc::position const& ps, util::sptr<Expression const> r)
             : Statement(ps)
             , ret_val(std::move(r))
         {}
@@ -65,10 +65,10 @@ namespace proto {
         util::sptr<Expression const> const ret_val;
     };
 
-    struct func_ret_nothing
+    struct ReturnNothing
         : public Statement
     {
-        explicit func_ret_nothing(misc::position const& ps)
+        explicit ReturnNothing(misc::position const& ps)
             : Statement(ps)
         {}
 

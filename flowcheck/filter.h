@@ -9,56 +9,56 @@
 
 namespace flchk {
 
-    struct filter {
-        filter() = default;
-        filter(filter const&) = delete;
+    struct Filter {
+        Filter() = default;
+        Filter(Filter const&) = delete;
 
-        filter(filter&& rhs)
+        Filter(Filter&& rhs)
             : _accumulator(std::move(rhs._accumulator))
         {}
 
-        virtual ~filter() {}
+        virtual ~Filter() {}
     public:
-        void add_func_ret(misc::position const& pos, util::sptr<Expression const> ret_val);
-        void add_func_ret_nothing(misc::position const& pos);
+        void addReturn(misc::position const& pos, util::sptr<Expression const> ret_val);
+        void addReturnNothing(misc::position const& pos);
         void addArith(misc::position const& pos, util::sptr<Expression const> expr);
 
-        void add_branch(misc::position const& pos
-                      , util::sptr<Expression const> predicate
-                      , util::sptr<filter> consequence
-                      , util::sptr<filter> alternative);
+        void addBranch(misc::position const& pos
+                     , util::sptr<Expression const> predicate
+                     , util::sptr<Filter> consequence
+                     , util::sptr<Filter> alternative);
 
-        void add_branch(misc::position const& pos
-                      , util::sptr<Expression const> predicate
-                      , util::sptr<filter> consequence);
+        void addBranch(misc::position const& pos
+                     , util::sptr<Expression const> predicate
+                     , util::sptr<Filter> consequence);
 
-        void add_branch_alt_only(misc::position const& pos
-                               , util::sptr<Expression const> predicate
-                               , util::sptr<filter> alternative);
+        void addBranchAlterOnly(misc::position const& pos
+                              , util::sptr<Expression const> predicate
+                              , util::sptr<Filter> alternative);
     public:
-        virtual void def_var(misc::position const& pos
-                           , std::string const& name
-                           , util::sptr<Expression const> init);
+        virtual void defVar(misc::position const& pos
+                          , std::string const& name
+                          , util::sptr<Expression const> init);
 
-        virtual void def_func(misc::position const& pos
-                            , std::string const& name
-                            , std::vector<std::string> const& param_names
-                            , util::sptr<filter> body);
+        virtual void defFunc(misc::position const& pos
+                           , std::string const& name
+                           , std::vector<std::string> const& param_names
+                           , util::sptr<Filter> body);
     public:
         Block deliver();
     protected:
-        accumulator _accumulator;
+        Accumulator _accumulator;
     };
 
-    struct symbol_def_filter
-        : public filter
+    struct SymbolDefFilter
+        : public Filter
     {
-        void def_var(misc::position const& pos, std::string const& name, util::sptr<Expression const>);
+        void defVar(misc::position const& pos, std::string const& name, util::sptr<Expression const>);
 
-        void def_func(misc::position const& pos
-                    , std::string const& name
-                    , std::vector<std::string> const&
-                    , util::sptr<filter>);
+        void defFunc(misc::position const& pos
+                   , std::string const& name
+                   , std::vector<std::string> const&
+                   , util::sptr<Filter>);
     };
 
 }

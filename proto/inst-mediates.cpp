@@ -30,7 +30,7 @@ util::sptr<inst::Statement const> BlockMediate::inst(util::sref<inst::scope> sc)
                     , _mediates->end()
                     , [&](util::sptr<inst::mediate_base> const& mediate)
                       {
-                          _inst_block->add_stmt(std::move(mediate->inst(sc)));
+                          _inst_block->addStmt(std::move(mediate->inst(sc)));
                       });
     }
     return std::move(_inst_block);

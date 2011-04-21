@@ -10,66 +10,66 @@
 
 namespace flchk {
 
-    struct accumulator {
-        accumulator()
+    struct Accumulator {
+        Accumulator()
             : _contains_void_return(false)
             , _error_reported(false)
             , _termination_pos(NULL)
         {}
 
-        accumulator(accumulator const&) = delete;
+        Accumulator(Accumulator const&) = delete;
 
-        accumulator(accumulator&& rhs)
+        Accumulator(Accumulator&& rhs)
             : _block(std::move(rhs._block))
             , _contains_void_return(rhs._contains_void_return)
             , _error_reported(rhs._error_reported)
             , _termination_pos(std::move(rhs._termination_pos))
         {}
     public:
-        void add_func_ret(misc::position const& pos, util::sptr<Expression const> ret_val);
-        void add_func_ret_nothing(misc::position const& pos);
+        void addReturn(misc::position const& pos, util::sptr<Expression const> ret_val);
+        void addReturnNothing(misc::position const& pos);
         void addArith(misc::position const& pos, util::sptr<Expression const> expr);
 
-        void add_branch(misc::position const& pos
+        void addBranch(misc::position const& pos
                       , util::sptr<Expression const> predicate
-                      , accumulator consequence
-                      , accumulator alternative);
+                      , Accumulator consequence
+                      , Accumulator alternative);
 
-        void add_branch(misc::position const& pos
+        void addBranch(misc::position const& pos
                       , util::sptr<Expression const> predicate
-                      , accumulator consequence);
+                      , Accumulator consequence);
 
-        void add_branch_alt_only(misc::position const& pos
+        void addBranchAlterOnly(misc::position const& pos
                                , util::sptr<Expression const> predicate
-                               , accumulator alternative);
+                               , Accumulator alternative);
 
-        void add_block(accumulator b);
+        void add_block(Accumulator b);
     public:
-        void def_var(misc::position const& pos, std::string const& name, util::sptr<Expression const> init);
+        void defVar(misc::position const& pos, std::string const& name, util::sptr<Expression const> init);
 
-        void def_func(misc::position const& pos
+        void defFunc(misc::position const& pos
                     , std::string const& name
                     , std::vector<std::string> const& param_names
-                    , accumulator body);
+                    , Accumulator body);
     public:
         Block deliver();
     private:
-        void _set_terminated_by_void_return(misc::position const& pos);
-        void _set_terminated_not_by_void_return(misc::position const& pos);
-        void _set_termination_by_sub_accumulator(accumulator const& sub);
+        void _setTerminatedByVoidReturn(misc::position const& pos);
+        void _setTerminatedNotByVoidReturn(misc::position const& pos);
+        void _setTerminationBySubAccumulator(Accumulator const& sub);
 
-        static void _check_branches_temination(accumulator const& consequence, accumulator const& alternative);
-        void _check_not_terminated(misc::position const& pos);
+        static void _checkBranchesTermination(Accumulator const& consequence, Accumulator const& alternative);
+        void _checkNotTerminated(misc::position const& pos);
 
-        void _report_terminated(misc::position const& pos);
+        void _reportTerminated(misc::position const& pos);
+
+        bool _terminated() const;
+        void _setSelfTerminated(Accumulator term);
     private:
         Block _block;
         bool _contains_void_return;
         bool _error_reported;
         util::sptr<misc::position> _termination_pos;
-
-        bool _terminated() const;
-        void _set_self_terminated(accumulator term);
     };
 
 }

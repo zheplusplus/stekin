@@ -53,9 +53,9 @@ util::sptr<Expression const> scope::make_nega(misc::position const& pos, util::s
     return std::move(util::mkptr(new Negation(pos, std::move(rhs))));
 }
 
-void scope::add_stmt(util::sptr<Statement const> stmt)
+void scope::addStmt(util::sptr<Statement const> stmt)
 {
-    _block.add_stmt(std::move(stmt));
+    _block.addStmt(std::move(stmt));
 }
 
 std::list<util::sptr<Statement const>> const& scope::get_stmts() const

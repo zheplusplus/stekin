@@ -10,10 +10,10 @@
 namespace grammar {
 
     struct Block {
-        util::sptr<flchk::filter> compile(util::sptr<flchk::filter> filter) const;
+        util::sptr<flchk::Filter> compile(util::sptr<flchk::Filter> filter) const;
 
-        void add_stmt(util::sptr<Statement const> stmt);
-        void add_func(util::sptr<Function const> func);
+        void addStmt(util::sptr<Statement const> stmt);
+        void addFunc(util::sptr<Function const> func);
 
         Block() = default;
 

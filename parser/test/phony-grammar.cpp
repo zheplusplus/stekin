@@ -169,7 +169,7 @@ void ClauseBuilder::addElse(int indent_level, misc::position const& pos)
     DataTree::actualOne()(pos, indent_level, BRANCH_ELSE);
 }
 
-flchk::Block ClauseBuilder::build_and_clear()
+flchk::Block ClauseBuilder::buildAndClear()
 {
     return std::move(flchk::Block());
 }

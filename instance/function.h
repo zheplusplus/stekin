@@ -17,7 +17,7 @@ namespace inst {
     struct Function
         : public scope
     {
-        variable def_var(misc::position const& pos, util::sref<type const> vtype, std::string const& name);
+        variable defVar(misc::position const& pos, util::sref<type const> vtype, std::string const& name);
         variable query_var(misc::position const& pos, std::string const& name) const;
 
         void set_return_type(misc::position const& pos, util::sref<type const> return_type);

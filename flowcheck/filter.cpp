@@ -6,92 +6,96 @@
 
 using namespace flchk;
 
-void filter::add_func_ret(misc::position const& pos, util::sptr<Expression const> ret_val)
+void Filter::addReturn(misc::position const& pos, util::sptr<Expression const> ret_val)
 {
-    _accumulator.add_func_ret(pos, std::move(ret_val->fold()));
+    _accumulator.addReturn(pos, std::move(ret_val->fold()));
 }
 
-void filter::add_func_ret_nothing(misc::position const& pos)
+void Filter::addReturnNothing(misc::position const& pos)
 {
-    _accumulator.add_func_ret_nothing(pos);
+    _accumulator.addReturnNothing(pos);
 }
 
-void filter::addArith(misc::position const& pos, util::sptr<Expression const> expr)
+void Filter::addArith(misc::position const& pos, util::sptr<Expression const> expr)
 {
     _accumulator.addArith(pos, std::move(expr->fold()));
 }
 
-void filter::add_branch(misc::position const& pos
-                      , util::sptr<Expression const> predicate
-                      , util::sptr<filter> consequence
-                      , util::sptr<filter> alternative)
+void Filter::addBranch(misc::position const& pos
+                     , util::sptr<Expression const> predicate
+                     , util::sptr<Filter> consequence
+                     , util::sptr<Filter> alternative)
 {
     util::sptr<Expression const> pred(std::move(predicate->fold()));
-    if (pred->is_literal()) {
-        _accumulator.add_block(std::move((pred->bool_value() ? consequence : alternative)->_accumulator));
+    if (pred->isLiteral()) {
+        _accumulator.add_block(std::move((pred->boolValue() ? consequence : alternative)->_accumulator));
         return;
     }
-    _accumulator.add_branch(pos
-                          , std::move(pred)
-                          , std::move(consequence->_accumulator)
-                          , std::move(alternative->_accumulator));
+    _accumulator.addBranch(pos
+                         , std::move(pred)
+                         , std::move(consequence->_accumulator)
+                         , std::move(alternative->_accumulator));
 }
 
-void filter::add_branch(misc::position const& pos
-                      , util::sptr<Expression const> predicate
-                      , util::sptr<filter> consequence)
+void Filter::addBranch(misc::position const& pos
+                     , util::sptr<Expression const> predicate
+                     , util::sptr<Filter> consequence)
 {
     util::sptr<Expression const> pred(std::move(predicate->fold()));
-    if (pred->is_literal()) {
-        if (pred->bool_value()) {
+    if (pred->isLiteral()) {
+        if (pred->boolValue()) {
             _accumulator.add_block(std::move(consequence->_accumulator));
         }
         return;
     }
-    _accumulator.add_branch(pos, std::move(pred), std::move(consequence->_accumulator));
+    _accumulator.addBranch(pos, std::move(pred), std::move(consequence->_accumulator));
 }
 
-void filter::add_branch_alt_only(misc::position const& pos
-                               , util::sptr<Expression const> predicate
-                               , util::sptr<filter> alternative)
+void Filter::addBranchAlterOnly(misc::position const& pos
+                              , util::sptr<Expression const> predicate
+                              , util::sptr<Filter> alternative)
 {
     util::sptr<Expression const> pred(std::move(predicate->fold()));
-    if (pred->is_literal()) {
-        if (!pred->bool_value()) {
+    if (pred->isLiteral()) {
+        if (!pred->boolValue()) {
             _accumulator.add_block(std::move(alternative->_accumulator));
         }
         return;
     }
-    _accumulator.add_branch_alt_only(pos, std::move(pred), std::move(alternative->_accumulator));
+    _accumulator.addBranchAlterOnly(pos, std::move(pred), std::move(alternative->_accumulator));
 }
 
-void filter::def_var(misc::position const& pos, std::string const& name, util::sptr<Expression const> init)
+void Filter::defVar(misc::position const& pos
+                  , std::string const& name
+                  , util::sptr<Expression const> init)
 {
-    _accumulator.def_var(pos, name, std::move(init->fold()));
+    _accumulator.defVar(pos, name, std::move(init->fold()));
 }
 
-void filter::def_func(misc::position const& pos
-                    , std::string const& name
-                    , std::vector<std::string> const& param_names
-                    , util::sptr<filter> body)
+void Filter::defFunc(misc::position const& pos
+                   , std::string const& name
+                   , std::vector<std::string> const& param_names
+                   , util::sptr<Filter> body)
 {
-    _accumulator.def_func(pos, name, param_names, std::move(body->_accumulator));
+    _accumulator.defFunc(pos, name, param_names, std::move(body->_accumulator));
 }
 
-Block filter::deliver()
+Block Filter::deliver()
 {
     return std::move(_accumulator.deliver());
 }
 
-void symbol_def_filter::def_var(misc::position const& pos, std::string const& name, util::sptr<Expression const>)
+void SymbolDefFilter::defVar(misc::position const& pos
+                           , std::string const& name
+                           , util::sptr<Expression const>)
 {
-    error::forbid_def_var(pos, name);
+    error::forbidDefVar(pos, name);
 }
 
-void symbol_def_filter::def_func(misc::position const& pos
-                               , std::string const& name
-                               , std::vector<std::string> const&
-                               , util::sptr<filter>)
+void SymbolDefFilter::defFunc(misc::position const& pos
+                            , std::string const& name
+                            , std::vector<std::string> const&
+                            , util::sptr<Filter>)
 {
-    error::forbid_def_func(pos, name);
+    error::forbidDefFunc(pos, name);
 }

@@ -12,16 +12,16 @@ static util::sptr<inst::mediate_base> mkdirect(inst::Statement* stmt)
     return std::move(util::mkmptr(new direct_inst(std::move(util::mkptr(stmt)))));
 }
 
-util::sptr<inst::mediate_base> arithmetics::inst(util::sref<inst::scope> scope) const
+util::sptr<inst::mediate_base> Arithmetics::inst(util::sref<inst::scope> scope) const
 {
-    return std::move(mkdirect(new inst::arithmetics(std::move(expr->inst(scope)))));
+    return std::move(mkdirect(new inst::Arithmetics(std::move(expr->inst(scope)))));
 }
 
-util::sptr<inst::mediate_base> var_def::inst(util::sref<inst::scope> scope) const
+util::sptr<inst::mediate_base> VarDef::inst(util::sref<inst::scope> scope) const
 {
     util::sptr<inst::Expression const> init_val = init->inst(scope);
     util::sref<inst::type const> init_type = init_val->typeof();
-    return std::move(mkdirect(new inst::initialization(scope->def_var(pos, init_type, name).stack_offset
+    return std::move(mkdirect(new inst::initialization(scope->defVar(pos, init_type, name).stack_offset
                                                      , std::move(init_val))));
 }
 
@@ -34,15 +34,15 @@ util::sptr<inst::mediate_base> branch::inst(util::sref<inst::scope> scope) const
                                                    , scope)));
 }
 
-util::sptr<inst::mediate_base> func_ret::inst(util::sref<inst::scope> scope) const
+util::sptr<inst::mediate_base> Return::inst(util::sref<inst::scope> scope) const
 {
     util::sptr<inst::Expression const> e = ret_val->inst(scope);
     scope->set_return_type(pos, e->typeof());
-    return std::move(mkdirect(new inst::func_ret(std::move(e))));
+    return std::move(mkdirect(new inst::Return(std::move(e))));
 }
 
-util::sptr<inst::mediate_base> func_ret_nothing::inst(util::sref<inst::scope> scope) const
+util::sptr<inst::mediate_base> ReturnNothing::inst(util::sref<inst::scope> scope) const
 {
     scope->set_return_type(pos, inst::type::BIT_VOID);
-    return std::move(mkdirect(new inst::func_ret_nothing));
+    return std::move(mkdirect(new inst::ReturnNothing));
 }

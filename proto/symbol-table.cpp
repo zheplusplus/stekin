@@ -122,25 +122,25 @@ util::sptr<Expression const> symbol_table::ref_var(misc::position const& pos, st
         return std::move(util::mkptr(new FuncReference(pos, all_funcs[0])));
     }
 
-    if (_var_defs.end() == _var_defs.find(name)) {
+    if (_VarDefs.end() == _VarDefs.find(name)) {
         _external_var_refs[name].push_back(pos);
     }
     return std::move(util::mkptr(new reference(pos, name)));
 }
 
-void symbol_table::def_var(misc::position const& pos, std::string const& name)
+void symbol_table::defVar(misc::position const& pos, std::string const& name)
 {
     auto local_refs = _external_var_refs.find(name);
     if (_external_var_refs.end() != local_refs) {
         error::var_ref_before_def(pos, local_refs->second, name);
     }
-    auto insert_result = _var_defs.insert(std::make_pair(name, pos));
+    auto insert_result = _VarDefs.insert(std::make_pair(name, pos));
     if (!insert_result.second) {
         error::var_already_in_local(insert_result.first->second, pos, name);
     }
 }
 
-util::sref<Function> symbol_table::def_func(misc::position const& pos
+util::sref<Function> symbol_table::defFunc(misc::position const& pos
                                           , std::string const& name
                                           , std::vector<std::string> const& params
                                           , bool hint_void_return)
@@ -164,8 +164,8 @@ util::sptr<Expression const> symbol_table::query_call(misc::position const& pos
     if (bool(func)) {
         return std::move(util::mkptr(new call(pos, func, std::move(args))));
     }
-    auto local_ref = _var_defs.find(name);
-    if (_var_defs.end() != local_ref) {
+    auto local_ref = _VarDefs.find(name);
+    if (_VarDefs.end() != local_ref) {
         return std::move(util::mkptr(new functor(pos, name, std::move(args))));
     }
     error::func_not_def(pos, name, args.size());

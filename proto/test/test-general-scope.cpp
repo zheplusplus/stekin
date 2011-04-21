@@ -116,10 +116,10 @@ TEST_F(ScopeTest, ExprNodesCreation)
 TEST_F(ScopeTest, Symbol)
 {
     misc::position pos(2);
-    scope->add_stmt(std::move(util::mkptr(new proto::arithmetics(pos
+    scope->addStmt(std::move(util::mkptr(new proto::Arithmetics(pos
                                                                , std::move(scope->make_ref(pos, "four"))))));
     ASSERT_FALSE(error::hasError());
-    scope->def_var(pos, "four");
+    scope->defVar(pos, "four");
     ASSERT_TRUE(error::hasError());
     ASSERT_EQ(1, get_invalid_refs().size());
     ASSERT_EQ(pos, get_invalid_refs()[0].def_pos);

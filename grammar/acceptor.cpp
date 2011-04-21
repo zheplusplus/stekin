@@ -6,78 +6,78 @@
 
 using namespace grammar;
 
-void Acceptor::accept_else(misc::position const& else_pos)
+void Acceptor::acceptElse(misc::position const& else_pos)
 {
-    error::else_not_match_if(else_pos);
+    error::elseNotMatchIf(else_pos);
 }
 
-void IfAcceptor::accept_func(util::sptr<Function const> func)
+void IfAcceptor::acceptFunc(util::sptr<Function const> func)
 {
-    _current_branch->add_func(std::move(func));
+    _current_branch->addFunc(std::move(func));
 }
 
-void IfAcceptor::accept_stmt(util::sptr<Statement const> stmt)
+void IfAcceptor::acceptStmt(util::sptr<Statement const> stmt)
 {
-    _current_branch->add_stmt(std::move(stmt));
+    _current_branch->addStmt(std::move(stmt));
 }
 
-void IfAcceptor::deliver_to(util::sref<Acceptor> acc)
+void IfAcceptor::deliverTo(util::sref<Acceptor> acc)
 {
-    if (_else_matched()) {
-        acc->accept_stmt(std::move(util::mkptr(new branch(pos
-                                                        , std::move(_predicate)
-                                                        , std::move(_consequence)
-                                                        , std::move(_alternative)))));
+    if (_elseMatched()) {
+        acc->acceptStmt(std::move(util::mkptr(new Branch(pos
+                                                       , std::move(_predicate)
+                                                       , std::move(_consequence)
+                                                       , std::move(_alternative)))));
     } else {
-        acc->accept_stmt(std::move(util::mkptr(new branch_cons_only(pos
-                                                                  , std::move(_predicate)
-                                                                  , std::move(_consequence)))));
+        acc->acceptStmt(std::move(util::mkptr(new BranchConsqOnly(pos
+                                                                , std::move(_predicate)
+                                                                , std::move(_consequence)))));
     }
 }
 
-void IfAcceptor::accept_else(misc::position const& else_pos)
+void IfAcceptor::acceptElse(misc::position const& else_pos)
 {
-    if (_else_matched()) {
-        error::if_already_match_else(*_last_else_pos, else_pos);
+    if (_elseMatched()) {
+        error::ifAlreadyMatchElse(*_last_else_pos, else_pos);
     } else {
         _current_branch = &_alternative;
         _last_else_pos.reset(new misc::position(else_pos));
     }
 }
 
-bool IfAcceptor::_else_matched() const
+bool IfAcceptor::_elseMatched() const
 {
     return bool(_last_else_pos);
 }
 
-void IfnotAcceptor::accept_func(util::sptr<Function const> func)
+void IfnotAcceptor::acceptFunc(util::sptr<Function const> func)
 {
-    _alternative.add_func(std::move(func));
+    _alternative.addFunc(std::move(func));
 }
 
-void IfnotAcceptor::accept_stmt(util::sptr<Statement const> stmt)
+void IfnotAcceptor::acceptStmt(util::sptr<Statement const> stmt)
 {
-    _alternative.add_stmt(std::move(stmt));
+    _alternative.addStmt(std::move(stmt));
 }
 
-void IfnotAcceptor::deliver_to(util::sref<Acceptor> acc)
+void IfnotAcceptor::deliverTo(util::sref<Acceptor> acc)
 {
-    acc->accept_stmt(std::move(util::mkptr(new branch_alt_only(pos
-                                                             , std::move(_predicate)
-                                                             , std::move(_alternative)))));
+    acc->acceptStmt(std::move(util::mkptr(new BranchAlterOnly(pos
+                                                            , std::move(_predicate)
+                                                            , std::move(_alternative)))));
 }
 
-void FunctionAcceptor::accept_func(util::sptr<Function const> func)
+void FunctionAcceptor::acceptFunc(util::sptr<Function const> func)
 {
-    _body.add_func(std::move(func));
+    _body.addFunc(std::move(func));
 }
 
-void FunctionAcceptor::accept_stmt(util::sptr<Statement const> stmt)
+void FunctionAcceptor::acceptStmt(util::sptr<Statement const> stmt)
 {
-    _body.add_stmt(std::move(stmt));
+    _body.addStmt(std::move(stmt));
 }
 
-void FunctionAcceptor::deliver_to(util::sref<Acceptor> acc)
+void FunctionAcceptor::deliverTo(util::sref<Acceptor> acc)
 {
-    acc->accept_func(std::move(util::mkptr(new Function(pos, name, param_names, std::move(_body)))));
+    acc->acceptFunc(std::move(util::mkptr(new Function(pos, name, param_names, std::move(_body)))));
 }

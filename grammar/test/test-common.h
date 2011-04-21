@@ -11,39 +11,39 @@ namespace test {
 
     extern util::sref<proto::scope> const nulscope;
 
-    struct grammar_data {
+    struct GrammarData {
         misc::position const pos;
         int const func_arg_size;
 
-        grammar_data(misc::position const& ps, int arg_size)
+        GrammarData(misc::position const& ps, int arg_size)
             : pos(ps)
             , func_arg_size(arg_size)
         {}
 
-        explicit grammar_data(misc::position const ps)
+        explicit GrammarData(misc::position const ps)
             : pos(ps)
             , func_arg_size(-1)
         {}
 
-        grammar_data()
+        GrammarData()
             : pos(-1)
             , func_arg_size(-1)
         {}
 
-        bool operator==(grammar_data const& rhs) const
+        bool operator==(GrammarData const& rhs) const
         {
             return pos == rhs.pos && func_arg_size == rhs.func_arg_size;
         }
     };
 
-    typedef data_node_templ<grammar_data> data_node_base;
-    typedef nothing_node_templ<grammar_data> nothing_node;
-    typedef string_node_templ<grammar_data> string_node;
+    typedef data_node_templ<GrammarData> data_node_base;
+    typedef nothing_node_templ<GrammarData> nothing_node;
+    typedef string_node_templ<GrammarData> string_node;
 
     struct DataTree
-        : public DataTreeTempl<grammar_data, DataTree>
+        : public DataTreeTempl<GrammarData, DataTree>
     {
-        typedef DataTreeTempl<grammar_data, DataTree> BaseType;
+        typedef DataTreeTempl<GrammarData, DataTree> BaseType;
 
         DataTree& operator()(misc::position const& pos, NodeType const& type, std::string const& str);
         DataTree& operator()(misc::position const& pos
@@ -85,7 +85,7 @@ namespace test {
     extern NodeType const BLOCK_BEGIN;
     extern NodeType const BLOCK_END;
 
-    struct grammar_test
+    struct GrammarTest
         : public testing::Test
     {
         void SetUp();
@@ -94,6 +94,6 @@ namespace test {
 
 }
 
-std::ostream& operator<<(std::ostream& os, test::grammar_data const& data);
+std::ostream& operator<<(std::ostream& os, test::GrammarData const& data);
 
 #endif /* __STEKIN_GRAMMAR_TEST_TEST_COMMON_H__ */

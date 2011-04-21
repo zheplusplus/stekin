@@ -59,7 +59,7 @@ namespace {
 
 }
 
-void Block::add_stmt(util::sptr<Statement const> stmt)
+void Block::addStmt(util::sptr<Statement const> stmt)
 {
     _stmts.push_back(std::move(stmt));
 }
@@ -82,20 +82,20 @@ Block scope::deliver()
     return std::move(_block);
 }
 
-util::sptr<inst::mediate_base> func_ret::inst(util::sref<inst::scope>) const
+util::sptr<inst::mediate_base> Return::inst(util::sref<inst::scope>) const
 {
     DataTree::actualOne()(pos, RETURN);
     ret_val->inst(nul_inst_scope);
     return std::move(nul_mediate());
 }
 
-util::sptr<inst::mediate_base> func_ret_nothing::inst(util::sref<inst::scope>) const
+util::sptr<inst::mediate_base> ReturnNothing::inst(util::sref<inst::scope>) const
 {
     DataTree::actualOne()(pos, RETURN_NOTHING);
     return std::move(nul_mediate());
 }
 
-util::sptr<inst::mediate_base> var_def::inst(util::sref<inst::scope>) const
+util::sptr<inst::mediate_base> VarDef::inst(util::sref<inst::scope>) const
 {
     DataTree::actualOne()(pos, VAR_DEF, name);
     init->inst(nul_inst_scope);
@@ -111,7 +111,7 @@ util::sptr<inst::mediate_base> branch::inst(util::sref<inst::scope>) const
     return std::move(nul_mediate());
 }
 
-util::sptr<inst::mediate_base> arithmetics::inst(util::sref<inst::scope>) const
+util::sptr<inst::mediate_base> Arithmetics::inst(util::sref<inst::scope>) const
 {
     DataTree::actualOne()(pos, ARITHMETICS);
     expr->inst(nul_inst_scope);
@@ -247,9 +247,9 @@ util::sptr<Expression const> scope::make_nega(misc::position const& pos, util::s
     return std::move(util::mkptr(new Negation(pos, std::move(rhs))));
 }
 
-void scope::add_stmt(util::sptr<Statement const> stmt)
+void scope::addStmt(util::sptr<Statement const> stmt)
 {
-    _block.add_stmt(std::move(stmt));
+    _block.addStmt(std::move(stmt));
 }
 
 util::sptr<Expression const> general_scope::make_ref(misc::position const& pos, std::string const& name)
@@ -281,7 +281,7 @@ util::sptr<Expression const> general_scope::make_FuncReference(misc::position co
     return std::move(util::mkptr(new FuncReference(pos, *func_entities.back())));
 }
 
-void general_scope::def_var(misc::position const& pos, std::string const& name)
+void general_scope::defVar(misc::position const& pos, std::string const& name)
 {
     DataTree::actualOne()(pos, SCOPE_VAR_DEF, name);
 }
@@ -294,9 +294,9 @@ util::sptr<scope> general_scope::create_branch_scope()
 util::sref<Function> general_scope::declare(misc::position const& pos
                                           , std::string const& name
                                           , std::vector<std::string> const& param_names
-                                          , bool hint_func_ret_void)
+                                          , bool hint_return_void)
 {
-    DataTree::actualOne()(pos, FUNC_DECL, name, param_names.size(), hint_func_ret_void);
+    DataTree::actualOne()(pos, FUNC_DECL, name, param_names.size(), hint_return_void);
     std::for_each(param_names.begin()
                 , param_names.end()
                 , [&](std::string const& param)
@@ -307,7 +307,7 @@ util::sref<Function> general_scope::declare(misc::position const& pos
                                                               , name
                                                               , param_names
                                                               , util::mkref(phony_symbols)
-                                                              , hint_func_ret_void))));
+                                                              , hint_return_void))));
     return *func_entities.back();
 }
 

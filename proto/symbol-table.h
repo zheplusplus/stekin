@@ -59,14 +59,14 @@ namespace proto {
         symbol_table(symbol_table&& rhs)
             : level(rhs.level)
             , _external_var_refs(rhs._external_var_refs)
-            , _var_defs(rhs._var_defs)
+            , _VarDefs(rhs._VarDefs)
             , _overloads(rhs._overloads)
             , _func_entities(std::move(rhs._func_entities))
         {}
 
         util::sptr<Expression const> ref_var(misc::position const& pos, std::string const& name);
-        void def_var(misc::position const& pos, std::string const& name);
-        util::sref<Function> def_func(misc::position const& pos
+        void defVar(misc::position const& pos, std::string const& name);
+        util::sref<Function> defFunc(misc::position const& pos
                                     , std::string const& name
                                     , std::vector<std::string> const& param_names
                                     , bool hint_void_return);
@@ -80,7 +80,7 @@ namespace proto {
             bind_external_var_refs(misc::position const& pos, util::sref<inst::scope const> ext_scope) const;
     private:
         std::map<std::string, std::list<misc::position>> _external_var_refs;
-        std::map<std::string, misc::position> _var_defs;
+        std::map<std::string, misc::position> _VarDefs;
 
         overloads _overloads;
         std::list<Function> _func_entities;

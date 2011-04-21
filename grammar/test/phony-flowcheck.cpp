@@ -15,25 +15,25 @@ using namespace flchk;
 
 namespace {
 
-    util::sptr<proto::Statement const> nul_proto_stmt()
+    util::sptr<proto::Statement const> nulProtoStmt()
     {
         return std::move(util::sptr<proto::Statement const>(NULL));
     }
 
-    util::sptr<proto::Expression const> nul_proto_expr()
+    util::sptr<proto::Expression const> nulProtoExpr()
     {
         return std::move(util::sptr<proto::Expression const>(NULL));
     }
 
-    util::sptr<flchk::Expression const> nul_flchk_expr()
+    util::sptr<flchk::Expression const> nulFlchkExpr()
     {
         return std::move(util::sptr<flchk::Expression const>(NULL));
     }
 
-    struct branch_consequence
+    struct BranchConsequence
         : public Statement
     {
-        branch_consequence(misc::position const& pos, util::sptr<Expression const> p, Block c)
+        BranchConsequence(misc::position const& pos, util::sptr<Expression const> p, Block c)
             : Statement(pos)
             , predicate(std::move(p))
             , consequence(std::move(c))
@@ -45,17 +45,17 @@ namespace {
             predicate->compile(nulscope);
             DataTree::actualOne()(CONSEQUENCE);
             consequence.compile(nulscope);
-            return std::move(nul_proto_stmt());
+            return std::move(nulProtoStmt());
         }
 
         util::sptr<Expression const> const predicate;
         Block const consequence;
     };
 
-    struct branch_alternative
+    struct BranchAlternative
         : public Statement
     {
-        branch_alternative(misc::position const& pos, util::sptr<Expression const> p, Block a)
+        BranchAlternative(misc::position const& pos, util::sptr<Expression const> p, Block a)
             : Statement(pos)
             , predicate(std::move(p))
             , alternative(std::move(a))
@@ -67,7 +67,7 @@ namespace {
             predicate->compile(nulscope);
             DataTree::actualOne()(ALTERNATIVE);
             alternative.compile(nulscope);
-            return std::move(nul_proto_stmt());
+            return std::move(nulProtoStmt());
         }
 
         util::sptr<Expression const> const predicate;
@@ -88,16 +88,16 @@ void Function::compile(util::sref<proto::scope>) const
     body.compile(nulscope);
 }
 
-void Block::add_stmt(util::sptr<Statement const> stmt)
+void Block::addStmt(util::sptr<Statement const> stmt)
 {
     _stmts.push_back(std::move(stmt));
 }
 
-void Block::def_func(misc::position const& pos
-                   , std::string const& name
-                   , std::vector<std::string> const& param_names
-                   , Block body
-                   , bool)
+void Block::defFunc(misc::position const& pos
+                  , std::string const& name
+                  , std::vector<std::string> const& param_names
+                  , Block body
+                  , bool)
 {
     _funcs.push_back(std::move(util::mkptr(new Function(pos
                                                       , name
@@ -125,149 +125,155 @@ void Block::compile(util::sref<proto::scope>) const
     DataTree::actualOne()(BLOCK_END);
 }
 
-void accumulator::add_func_ret(misc::position const& pos, util::sptr<Expression const> ret_val)
+void Accumulator::addReturn(misc::position const& pos, util::sptr<Expression const> ret_val)
 {
-    _block.add_stmt(std::move(util::mkptr(new func_ret(pos, std::move(ret_val)))));
+    _block.addStmt(std::move(util::mkptr(new Return(pos, std::move(ret_val)))));
 }
 
-void accumulator::add_func_ret_nothing(misc::position const& pos)
+void Accumulator::addReturnNothing(misc::position const& pos)
 {
-    _block.add_stmt(std::move(util::mkptr(new func_ret_nothing(pos))));
+    _block.addStmt(std::move(util::mkptr(new ReturnNothing(pos))));
 }
 
-void accumulator::addArith(misc::position const& pos, util::sptr<Expression const> expr)
+void Accumulator::addArith(misc::position const& pos, util::sptr<Expression const> expr)
 {
-    _block.add_stmt(std::move(util::mkptr(new arithmetics(pos, std::move(expr)))));
+    _block.addStmt(std::move(util::mkptr(new Arithmetics(pos, std::move(expr)))));
 }
 
-void accumulator::add_branch(misc::position const& pos
-                           , util::sptr<Expression const> predicate
-                           , accumulator consequence
-                           , accumulator alternative)
+void Accumulator::addBranch(misc::position const& pos
+                          , util::sptr<Expression const> predicate
+                          , Accumulator consequence
+                          , Accumulator alternative)
 {
-    _block.add_stmt(std::move(util::mkptr(new branch(pos
-                                                   , std::move(predicate)
-                                                   , std::move(consequence.deliver())
-                                                   , std::move(alternative.deliver())))));
+    _block.addStmt(std::move(util::mkptr(new Branch(pos
+                                                  , std::move(predicate)
+                                                  , std::move(consequence.deliver())
+                                                  , std::move(alternative.deliver())))));
 }
 
-void accumulator::add_branch(misc::position const& pos
-                           , util::sptr<Expression const> predicate
-                           , accumulator consequence)
+void Accumulator::addBranch(misc::position const& pos
+                          , util::sptr<Expression const> predicate
+                          , Accumulator consequence)
 {
-    _block.add_stmt(std::move(util::mkptr(new branch_consequence(pos
-                                                               , std::move(predicate)
-                                                               , std::move(consequence._block)))));
+    _block.addStmt(std::move(util::mkptr(new BranchConsequence(pos
+                                                             , std::move(predicate)
+                                                             , std::move(consequence._block)))));
 }
 
-void accumulator::add_branch_alt_only(misc::position const& pos
-                                    , util::sptr<Expression const> predicate
-                                    , accumulator alternative)
+void Accumulator::addBranchAlterOnly(misc::position const& pos
+                                   , util::sptr<Expression const> predicate
+                                   , Accumulator alternative)
 {
-    _block.add_stmt(std::move(util::mkptr(new branch_alternative(pos
-                                                               , std::move(predicate)
-                                                               , std::move(alternative._block)))));
+    _block.addStmt(std::move(util::mkptr(new BranchAlternative(pos
+                                                             , std::move(predicate)
+                                                             , std::move(alternative._block)))));
 }
 
-void accumulator::def_var(misc::position const& pos, std::string const& name, util::sptr<Expression const> init)
+void Accumulator::defVar(misc::position const& pos
+                       , std::string const& name
+                       , util::sptr<Expression const> init)
 {
-    _block.add_stmt(std::move(util::mkptr(new var_def(pos, name, std::move(init)))));
+    _block.addStmt(std::move(util::mkptr(new VarDef(pos, name, std::move(init)))));
 }
 
-void accumulator::def_func(misc::position const& pos
-                         , std::string const& name
-                         , std::vector<std::string> const& param_names
-                         , accumulator body)
+void Accumulator::defFunc(misc::position const& pos
+                        , std::string const& name
+                        , std::vector<std::string> const& param_names
+                        , Accumulator body)
 {
-    _block.def_func(pos, name, param_names, std::move(body._block), false);
+    _block.defFunc(pos, name, param_names, std::move(body._block), false);
 }
 
-Block accumulator::deliver()
+Block Accumulator::deliver()
 {
     return std::move(_block);
 }
 
-void filter::add_func_ret(misc::position const& pos, util::sptr<Expression const> ret_val)
+void Filter::addReturn(misc::position const& pos, util::sptr<Expression const> ret_val)
 {
-    _accumulator.add_func_ret(pos, std::move(ret_val));
+    _accumulator.addReturn(pos, std::move(ret_val));
 }
 
-void filter::add_func_ret_nothing(misc::position const& pos)
+void Filter::addReturnNothing(misc::position const& pos)
 {
-    _accumulator.add_func_ret_nothing(pos);
+    _accumulator.addReturnNothing(pos);
 }
 
-void filter::addArith(misc::position const& pos, util::sptr<Expression const> expr)
+void Filter::addArith(misc::position const& pos, util::sptr<Expression const> expr)
 {
     _accumulator.addArith(pos, std::move(expr));
 }
 
-void filter::add_branch(misc::position const& pos
-                      , util::sptr<Expression const> predicate
-                      , util::sptr<filter> consequence
-                      , util::sptr<filter> alternative)
+void Filter::addBranch(misc::position const& pos
+                     , util::sptr<Expression const> predicate
+                     , util::sptr<Filter> consequence
+                     , util::sptr<Filter> alternative)
 {
-    _accumulator.add_branch(pos
-                          , std::move(predicate)
-                          , std::move(consequence->_accumulator)
-                          , std::move(alternative->_accumulator));
+    _accumulator.addBranch(pos
+                         , std::move(predicate)
+                         , std::move(consequence->_accumulator)
+                         , std::move(alternative->_accumulator));
 }
 
-void filter::add_branch(misc::position const& pos
-                      , util::sptr<Expression const> predicate
-                      , util::sptr<filter> consequence)
+void Filter::addBranch(misc::position const& pos
+                     , util::sptr<Expression const> predicate
+                     , util::sptr<Filter> consequence)
 {
-    _accumulator.add_branch(pos, std::move(predicate), std::move(consequence->_accumulator));
+    _accumulator.addBranch(pos, std::move(predicate), std::move(consequence->_accumulator));
 }
 
-void filter::add_branch_alt_only(misc::position const& pos
-                               , util::sptr<Expression const> predicate
-                               , util::sptr<filter> alternative)
+void Filter::addBranchAlterOnly(misc::position const& pos
+                              , util::sptr<Expression const> predicate
+                              , util::sptr<Filter> alternative)
 {
-    _accumulator.add_branch_alt_only(pos, std::move(predicate), std::move(alternative->_accumulator));
+    _accumulator.addBranchAlterOnly(pos
+                                  , std::move(predicate)
+                                  , std::move(alternative->_accumulator));
 }
 
-void filter::def_var(misc::position const& pos, std::string const& name, util::sptr<Expression const> init)
+void Filter::defVar(misc::position const& pos
+                  , std::string const& name
+                  , util::sptr<Expression const> init)
 {
-    _accumulator.def_var(pos, name, std::move(init));
+    _accumulator.defVar(pos, name, std::move(init));
 }
 
-void filter::def_func(misc::position const& pos
-                    , std::string const& name
-                    , std::vector<std::string> const& param_names
-                    , util::sptr<filter> body)
+void Filter::defFunc(misc::position const& pos
+                   , std::string const& name
+                   , std::vector<std::string> const& param_names
+                   , util::sptr<Filter> body)
 {
-    _accumulator.def_func(pos, name, param_names, std::move(body->_accumulator));
+    _accumulator.defFunc(pos, name, param_names, std::move(body->_accumulator));
 }
 
-Block filter::deliver()
+Block Filter::deliver()
 {
     return std::move(_accumulator.deliver());
 }
 
-void symbol_def_filter::def_var(misc::position const& pos
-                              , std::string const& name
-                              , util::sptr<Expression const> init)
+void SymbolDefFilter::defVar(misc::position const& pos
+                           , std::string const& name
+                           , util::sptr<Expression const> init)
 {
-    filter::def_var(pos, name + VAR_DEF_FILTERED, std::move(init));
+    Filter::defVar(pos, name + VAR_DEF_FILTERED, std::move(init));
 }
 
-void symbol_def_filter::def_func(misc::position const& pos
-                               , std::string const& name
-                               , std::vector<std::string> const& param_names
-                               , util::sptr<filter> body)
+void SymbolDefFilter::defFunc(misc::position const& pos
+                            , std::string const& name
+                            , std::vector<std::string> const& param_names
+                            , util::sptr<Filter> body)
 {
-    filter::def_func(pos, name + FUNC_DEF_FILTERED, param_names, std::move(body));
+    Filter::defFunc(pos, name + FUNC_DEF_FILTERED, param_names, std::move(body));
 }
 
-util::sptr<proto::Statement const> arithmetics::compile(util::sref<proto::scope>) const 
+util::sptr<proto::Statement const> Arithmetics::compile(util::sref<proto::scope>) const 
 {
     DataTree::actualOne()(pos, ARITHMETICS);
     expr->compile(nulscope);
-    return std::move(nul_proto_stmt());
+    return std::move(nulProtoStmt());
 }
 
-util::sptr<proto::Statement const> branch::compile(util::sref<proto::scope>) const 
+util::sptr<proto::Statement const> Branch::compile(util::sref<proto::scope>) const 
 {
     DataTree::actualOne()(pos, BRANCH);
     predicate->compile(nulscope);
@@ -275,84 +281,84 @@ util::sptr<proto::Statement const> branch::compile(util::sref<proto::scope>) con
     consequence.compile(nulscope);
     DataTree::actualOne()(ALTERNATIVE);
     alternative.compile(nulscope);
-    return std::move(nul_proto_stmt());
+    return std::move(nulProtoStmt());
 }
 
-util::sptr<proto::Statement const> var_def::compile(util::sref<proto::scope>) const 
+util::sptr<proto::Statement const> VarDef::compile(util::sref<proto::scope>) const 
 {
     DataTree::actualOne()(pos, VAR_DEF, name);
     init->compile(nulscope);
-    return std::move(nul_proto_stmt());
+    return std::move(nulProtoStmt());
 }
 
-util::sptr<proto::Statement const> func_ret::compile(util::sref<proto::scope>) const 
+util::sptr<proto::Statement const> Return::compile(util::sref<proto::scope>) const 
 {
     DataTree::actualOne()(pos, RETURN);
     ret_val->compile(nulscope);
-    return std::move(nul_proto_stmt());
+    return std::move(nulProtoStmt());
 }
 
-util::sptr<proto::Statement const> func_ret_nothing::compile(util::sref<proto::scope>) const
+util::sptr<proto::Statement const> ReturnNothing::compile(util::sref<proto::scope>) const
 {
     DataTree::actualOne()(pos, RETURN_NOTHING);
-    return std::move(nul_proto_stmt());
+    return std::move(nulProtoStmt());
 }
 
 util::sptr<proto::Expression const> PreUnaryOp::compile(util::sref<proto::scope>) const
 {
     DataTree::actualOne()(pos, PRE_UNARY_OP, op_img);
-    return std::move(nul_proto_expr());
+    return std::move(nulProtoExpr());
 }
 
 util::sptr<proto::Expression const> BinaryOp::compile(util::sref<proto::scope>) const
 {
     DataTree::actualOne()(pos, BINARY_OP, op_img);
-    return std::move(nul_proto_expr());
+    return std::move(nulProtoExpr());
 }
 
 util::sptr<proto::Expression const> Conjunction::compile(util::sref<proto::scope>) const
 {
     DataTree::actualOne()(pos, BINARY_OP, "&&");
-    return std::move(nul_proto_expr());
+    return std::move(nulProtoExpr());
 }
 
 util::sptr<proto::Expression const> Disjunction::compile(util::sref<proto::scope>) const
 {
     DataTree::actualOne()(pos, BINARY_OP, "||");
-    return std::move(nul_proto_expr());
+    return std::move(nulProtoExpr());
 }
 
 util::sptr<proto::Expression const> Negation::compile(util::sref<proto::scope>) const
 {
     DataTree::actualOne()(pos, PRE_UNARY_OP, "!");
-    return std::move(nul_proto_expr());
+    return std::move(nulProtoExpr());
 }
 
 util::sptr<proto::Expression const> reference::compile(util::sref<proto::scope>) const
 {
     DataTree::actualOne()(pos, REFERENCE, name);
-    return std::move(nul_proto_expr());
+    return std::move(nulProtoExpr());
 }
 
 util::sptr<proto::Expression const> BoolLiteral::compile(util::sref<proto::scope>) const
 {
     DataTree::actualOne()(pos, BOOLEAN, util::str(value));
-    return std::move(nul_proto_expr());
+    return std::move(nulProtoExpr());
 }
 
 util::sptr<proto::Expression const> IntLiteral::compile(util::sref<proto::scope>) const
 {
     DataTree::actualOne()(pos, INTEGER, util::str(value));
-    return std::move(nul_proto_expr());
+    return std::move(nulProtoExpr());
 }
 
 util::sptr<proto::Expression const> FloatLiteral::compile(util::sref<proto::scope>) const
 {
     DataTree::actualOne()(pos, FLOATING, util::str(value));
-    return std::move(nul_proto_expr());
+    return std::move(nulProtoExpr());
 }
 
-util::sptr<proto::Expression const> call::compile(util::sref<proto::scope> s) const
+util::sptr<proto::Expression const> Call::compile(util::sref<proto::scope> s) const
 {
     DataTree::actualOne()(pos, CALL, name, args.size());
     std::for_each(args.begin()
@@ -361,335 +367,343 @@ util::sptr<proto::Expression const> call::compile(util::sref<proto::scope> s) co
                   {
                       arg->compile(s);
                   });
-    return std::move(nul_proto_expr());
+    return std::move(nulProtoExpr());
 }
 
 util::sptr<proto::Expression const> FuncReference::compile(util::sref<proto::scope>) const
 {
     DataTree::actualOne()(pos, FUNC_REFERENCE, name, param_count);
-    return std::move(nul_proto_expr());
+    return std::move(nulProtoExpr());
 }
 
-bool Expression::is_literal() const
+bool Expression::isLiteral() const
 {
     return false;
 }
 
-bool Expression::bool_value() const
+bool Expression::boolValue() const
 {
     return false;
 }
 
 util::sptr<Expression const> Expression::operate(misc::position const&
-                                             , std::string const&
-                                             , mpz_class const&) const
+                                               , std::string const&
+                                               , mpz_class const&) const
 {
-    return std::move(nul_flchk_expr());
+    return std::move(nulFlchkExpr());
 }
 
 util::sptr<Expression const> Expression::operate(misc::position const&
+                                               , std::string const&
+                                               , mpf_class const&) const
+{
+    return std::move(nulFlchkExpr());
+}
+
+util::sptr<Expression const> Expression::operate(misc::position const&
+                                               , std::string const&
+                                               , bool) const
+{
+    return std::move(nulFlchkExpr());
+}
+
+util::sptr<Expression const> Expression::asRHS(misc::position const&
                                              , std::string const&
-                                             , mpf_class const&) const
+                                             , util::sptr<Expression const>) const
 {
-    return std::move(nul_flchk_expr());
+    return std::move(nulFlchkExpr());
 }
 
-util::sptr<Expression const> Expression::operate(misc::position const&, std::string const&, bool) const
+util::sptr<Expression const> Expression::asRHS(misc::position const&, std::string const&) const
 {
-    return std::move(nul_flchk_expr());
+    return std::move(nulFlchkExpr());
 }
 
-util::sptr<Expression const> Expression::as_rhs(misc::position const&
-                                            , std::string const&
-                                            , util::sptr<Expression const>) const
-{
-    return std::move(nul_flchk_expr());
-}
-
-util::sptr<Expression const> Expression::as_rhs(misc::position const&, std::string const&) const
-{
-    return std::move(nul_flchk_expr());
-}
-
-bool PreUnaryOp::is_literal() const
+bool PreUnaryOp::isLiteral() const
 {
     return false;
 }
 
-bool PreUnaryOp::bool_value() const
+bool PreUnaryOp::boolValue() const
 {
     return false;
 }
 
-std::string PreUnaryOp::type_name() const
+std::string PreUnaryOp::typeName() const
 {
     return "";
 }
 
 util::sptr<Expression const> PreUnaryOp::fold() const
 {
-    return std::move(nul_flchk_expr());
+    return std::move(nulFlchkExpr());
 }
 
-bool BinaryOp::is_literal() const
+bool BinaryOp::isLiteral() const
 {
     return false;
 }
 
-bool BinaryOp::bool_value() const
+bool BinaryOp::boolValue() const
 {
     return false;
 }
 
-std::string BinaryOp::type_name() const
+std::string BinaryOp::typeName() const
 {
     return "";
 }
 
 util::sptr<Expression const> BinaryOp::fold() const
 {
-    return std::move(nul_flchk_expr());
+    return std::move(nulFlchkExpr());
 }
 
-bool Conjunction::is_literal() const
+bool Conjunction::isLiteral() const
 {
     return false;
 }
 
-bool Conjunction::bool_value() const
+bool Conjunction::boolValue() const
 {
     return false;
 }
 
-std::string Conjunction::type_name() const
+std::string Conjunction::typeName() const
 {
     return "";
 }
 
 util::sptr<Expression const> Conjunction::fold() const
 {
-    return std::move(nul_flchk_expr());
+    return std::move(nulFlchkExpr());
 }
 
-bool Disjunction::is_literal() const
+bool Disjunction::isLiteral() const
 {
     return false;
 }
 
-bool Disjunction::bool_value() const
+bool Disjunction::boolValue() const
 {
     return false;
 }
 
-std::string Disjunction::type_name() const
+std::string Disjunction::typeName() const
 {
     return "";
 }
 
 util::sptr<Expression const> Disjunction::fold() const
 {
-    return std::move(nul_flchk_expr());
+    return std::move(nulFlchkExpr());
 }
 
-bool Negation::is_literal() const
+bool Negation::isLiteral() const
 {
     return false;
 }
 
-bool Negation::bool_value() const
+bool Negation::boolValue() const
 {
     return false;
 }
 
-std::string Negation::type_name() const
+std::string Negation::typeName() const
 {
     return "";
 }
 
 util::sptr<Expression const> Negation::fold() const
 {
-    return std::move(nul_flchk_expr());
+    return std::move(nulFlchkExpr());
 }
 
-std::string reference::type_name() const
+std::string reference::typeName() const
 {
     return "";
 }
 
 util::sptr<Expression const> reference::fold() const
 {
-    return std::move(nul_flchk_expr());
+    return std::move(nulFlchkExpr());
 }
 
-bool BoolLiteral::is_literal() const
+bool BoolLiteral::isLiteral() const
 {
     return false;
 }
 
-bool BoolLiteral::bool_value() const
+bool BoolLiteral::boolValue() const
 {
     return false;
 }
 
-std::string BoolLiteral::type_name() const
+std::string BoolLiteral::typeName() const
 {
     return "";
 }
 
 util::sptr<Expression const> BoolLiteral::fold() const
 {
-    return std::move(nul_flchk_expr());
+    return std::move(nulFlchkExpr());
 }
 
 util::sptr<Expression const> BoolLiteral::operate(misc::position const&
                                                 , std::string const&
                                                 , mpz_class const&) const
 {
-    return std::move(nul_flchk_expr());
+    return std::move(nulFlchkExpr());
 }
 
 util::sptr<Expression const> BoolLiteral::operate(misc::position const&
                                                 , std::string const&
                                                 , mpf_class const&) const
 {
-    return std::move(nul_flchk_expr());
+    return std::move(nulFlchkExpr());
 }
 
-util::sptr<Expression const> BoolLiteral::operate(misc::position const&, std::string const&, bool) const
+util::sptr<Expression const> BoolLiteral::operate(misc::position const&
+                                                , std::string const&
+                                                , bool) const
 {
-    return std::move(nul_flchk_expr());
+    return std::move(nulFlchkExpr());
 }
 
-util::sptr<Expression const> BoolLiteral::as_rhs(misc::position const&
-                                               , std::string const&
-                                               , util::sptr<Expression const>) const
+util::sptr<Expression const> BoolLiteral::asRHS(misc::position const&
+                                              , std::string const&
+                                              , util::sptr<Expression const>) const
 {
-    return std::move(nul_flchk_expr());
+    return std::move(nulFlchkExpr());
 }
 
-util::sptr<Expression const> BoolLiteral::as_rhs(misc::position const&, std::string const&) const
+util::sptr<Expression const> BoolLiteral::asRHS(misc::position const&, std::string const&) const
 {
-    return std::move(nul_flchk_expr());
+    return std::move(nulFlchkExpr());
 }
 
-bool IntLiteral::is_literal() const
-{
-    return false;
-}
-
-bool IntLiteral::bool_value() const
+bool IntLiteral::isLiteral() const
 {
     return false;
 }
 
-std::string IntLiteral::type_name() const
+bool IntLiteral::boolValue() const
+{
+    return false;
+}
+
+std::string IntLiteral::typeName() const
 {
     return "";
 }
 
 util::sptr<Expression const> IntLiteral::fold() const
 {
-    return std::move(nul_flchk_expr());
+    return std::move(nulFlchkExpr());
 }
 
 util::sptr<Expression const> IntLiteral::operate(misc::position const&
                                                , std::string const&
                                                , mpz_class const&) const
 {
-    return std::move(nul_flchk_expr());
+    return std::move(nulFlchkExpr());
 }
 
 util::sptr<Expression const> IntLiteral::operate(misc::position const&
                                                , std::string const&
                                                , mpf_class const&) const
 {
-    return std::move(nul_flchk_expr());
+    return std::move(nulFlchkExpr());
 }
 
-util::sptr<Expression const> IntLiteral::operate(misc::position const&, std::string const&, bool) const
+util::sptr<Expression const> IntLiteral::operate(misc::position const&
+                                               , std::string const&
+                                               , bool) const
 {
-    return std::move(nul_flchk_expr());
+    return std::move(nulFlchkExpr());
 }
 
-util::sptr<Expression const> IntLiteral::as_rhs(misc::position const&
-                                              , std::string const&
-                                              , util::sptr<Expression const>) const
+util::sptr<Expression const> IntLiteral::asRHS(misc::position const&
+                                             , std::string const&
+                                             , util::sptr<Expression const>) const
 {
-    return std::move(nul_flchk_expr());
+    return std::move(nulFlchkExpr());
 }
 
-util::sptr<Expression const> IntLiteral::as_rhs(misc::position const&, std::string const&) const
+util::sptr<Expression const> IntLiteral::asRHS(misc::position const&, std::string const&) const
 {
-    return std::move(nul_flchk_expr());
+    return std::move(nulFlchkExpr());
 }
 
-bool FloatLiteral::is_literal() const
-{
-    return false;
-}
-
-bool FloatLiteral::bool_value() const
+bool FloatLiteral::isLiteral() const
 {
     return false;
 }
 
-std::string FloatLiteral::type_name() const
+bool FloatLiteral::boolValue() const
+{
+    return false;
+}
+
+std::string FloatLiteral::typeName() const
 {
     return "";
 }
 
 util::sptr<Expression const> FloatLiteral::fold() const
 {
-    return std::move(nul_flchk_expr());
+    return std::move(nulFlchkExpr());
 }
 
 util::sptr<Expression const> FloatLiteral::operate(misc::position const&
                                                  , std::string const&
                                                  , mpz_class const&) const
 {
-    return std::move(nul_flchk_expr());
+    return std::move(nulFlchkExpr());
 }
 
 util::sptr<Expression const> FloatLiteral::operate(misc::position const&
                                                  , std::string const&
                                                  , mpf_class const&) const
 {
-    return std::move(nul_flchk_expr());
+    return std::move(nulFlchkExpr());
 }
 
-util::sptr<Expression const> FloatLiteral::operate(misc::position const&, std::string const&, bool) const
+util::sptr<Expression const> FloatLiteral::operate(misc::position const&
+                                                 , std::string const&
+                                                 , bool) const
 {
-    return std::move(nul_flchk_expr());
+    return std::move(nulFlchkExpr());
 }
 
-util::sptr<Expression const> FloatLiteral::as_rhs(misc::position const&
-                                                , std::string const&
-                                                , util::sptr<Expression const>) const
+util::sptr<Expression const> FloatLiteral::asRHS(misc::position const&
+                                               , std::string const&
+                                               , util::sptr<Expression const>) const
 {
-    return std::move(nul_flchk_expr());
+    return std::move(nulFlchkExpr());
 }
 
-util::sptr<Expression const> FloatLiteral::as_rhs(misc::position const&, std::string const&) const
+util::sptr<Expression const> FloatLiteral::asRHS(misc::position const&, std::string const&) const
 {
-    return std::move(nul_flchk_expr());
+    return std::move(nulFlchkExpr());
 }
 
-std::string call::type_name() const
+std::string Call::typeName() const
 {
     return "";
 }
 
-util::sptr<Expression const> call::fold() const
+util::sptr<Expression const> Call::fold() const
 {
-    return std::move(nul_flchk_expr());
+    return std::move(nulFlchkExpr());
 }
 
-std::string FuncReference::type_name() const
+std::string FuncReference::typeName() const
 {
     return "";
 }
 
 util::sptr<Expression const> FuncReference::fold() const
 {
-    return std::move(nul_flchk_expr());
+    return std::move(nulFlchkExpr());
 }

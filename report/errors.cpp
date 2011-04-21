@@ -41,21 +41,21 @@ void error::invalidChar(misc::position const& pos, int character)
               << " (decimal value: " << character << ')' << std::endl;
 }
 
-void error::else_not_match_if(misc::position const& else_pos)
+void error::elseNotMatchIf(misc::position const& else_pos)
 {
     _has_error = true;
     std::cerr << else_pos.str() << std::endl;
     std::cerr << "    ``else'' does not match an ``if''" << std::endl;
 }
 
-void error::if_already_match_else(misc::position const& prev_else_pos, misc::position const& this_else_pos)
+void error::ifAlreadyMatchElse(misc::position const& prev_else_pos, misc::position const& this_else_pos)
 {
     _has_error = true;
     std::cerr << this_else_pos.str() << std::endl;
     std::cerr << "    another ``else'' already matches the ``if'' at " << prev_else_pos.str() << std::endl;
 }
 
-void error::excessive_indent(misc::position const& pos)
+void error::excessiveIndent(misc::position const& pos)
 {
     _has_error = true;
     std::cerr << pos.str() << std::endl;
@@ -69,14 +69,14 @@ void error::flow_terminated(misc::position const& this_pos, misc::position const
     std::cerr << "    flow already terminated at " << prev_pos.str() << std::endl;
 }
 
-void error::forbid_def_func(misc::position const& pos, std::string const& name)
+void error::forbidDefFunc(misc::position const& pos, std::string const& name)
 {
     _has_error = true;
     std::cerr << pos.str() << std::endl;
     std::cerr << "    " << "attempt define Function `" << name << "' but forbidden here." << std::endl;
 }
 
-void error::forbid_def_var(misc::position const& pos, std::string const& name)
+void error::forbidDefVar(misc::position const& pos, std::string const& name)
 {
     _has_error = true;
     std::cerr << pos.str() << std::endl;
@@ -173,7 +173,7 @@ void error::conflict_return_type(misc::position const& this_pos
     std::cerr << "                                       this return type: " << this_ret_type_name << std::endl;
 }
 
-void error::func_ret_type_unresolvable(std::string const& name, int arg_count)
+void error::returnTypeUnresolvable(std::string const& name, int arg_count)
 {
     _has_error = true;
     std::cerr << "Function return type is not resolvable:" << std::endl;

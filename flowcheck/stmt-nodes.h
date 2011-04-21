@@ -1,5 +1,5 @@
-#ifndef __STAKCENING_FLOW_CHECK_STATEMENT_NODES_H__
-#define __STAKCENING_FLOW_CHECK_STATEMENT_NODES_H__
+#ifndef __STEKIN_FLOW_CHECK_STATEMENT_NODES_H__
+#define __STEKIN_FLOW_CHECK_STATEMENT_NODES_H__
 
 #include <string>
 #include <list>
@@ -10,10 +10,10 @@
 
 namespace flchk {
 
-    struct arithmetics
+    struct Arithmetics
         : public Statement
     {
-        arithmetics(misc::position const& pos, util::sptr<Expression const> e)
+        Arithmetics(misc::position const& pos, util::sptr<Expression const> e)
             : Statement(pos)
             , expr(std::move(e))
         {}
@@ -23,10 +23,10 @@ namespace flchk {
         util::sptr<Expression const> const expr;
     };
 
-    struct branch
+    struct Branch
         : public Statement
     {
-        branch(misc::position const& pos, util::sptr<Expression const> p, Block c, Block a)
+        Branch(misc::position const& pos, util::sptr<Expression const> p, Block c, Block a)
             : Statement(pos)
             , predicate(std::move(p))
             , consequence(std::move(c))
@@ -40,10 +40,10 @@ namespace flchk {
         Block const alternative;
     };
 
-    struct func_ret
+    struct Return
         : public Statement
     {
-        func_ret(misc::position const& pos, util::sptr<Expression const> retval)
+        Return(misc::position const& pos, util::sptr<Expression const> retval)
             : Statement(pos)
             , ret_val(std::move(retval))
         {}
@@ -53,20 +53,20 @@ namespace flchk {
         util::sptr<Expression const> const ret_val;
     };
 
-    struct func_ret_nothing
+    struct ReturnNothing
         : public Statement
     {
-        explicit func_ret_nothing(misc::position const& pos)
+        explicit ReturnNothing(misc::position const& pos)
             : Statement(pos)
         {}
 
         util::sptr<proto::Statement const> compile(util::sref<proto::scope> scope) const;
     };
 
-    struct var_def
+    struct VarDef
         : public Statement
     {
-        var_def(misc::position const& pos, std::string const& var_name, util::sptr<Expression const> var_init)
+        VarDef(misc::position const& pos, std::string const& var_name, util::sptr<Expression const> var_init)
             : Statement(pos)
             , name(var_name)
             , init(std::move(var_init))
@@ -80,4 +80,4 @@ namespace flchk {
 
 }
 
-#endif /* __STAKCENING_FLOW_CHECK_STATEMENT_NODES_H__ */
+#endif /* __STEKIN_FLOW_CHECK_STATEMENT_NODES_H__ */

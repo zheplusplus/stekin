@@ -11,9 +11,9 @@
 
 using namespace inst;
 
-variable Function::def_var(misc::position const& pos, util::sref<type const> vtype, std::string const& name)
+variable Function::defVar(misc::position const& pos, util::sref<type const> vtype, std::string const& name)
 {
-    return _symbols.def_var(pos, vtype, name);
+    return _symbols.defVar(pos, vtype, name);
 }
 
 variable Function::query_var(misc::position const& pos, std::string const& name) const

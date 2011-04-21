@@ -9,11 +9,11 @@
 namespace grammar {
 
     struct Acceptor {
-        virtual void accept_func(util::sptr<Function const> func) = 0;
-        virtual void accept_stmt(util::sptr<Statement const> stmt) = 0;
-        virtual void deliver_to(util::sref<Acceptor> acc) = 0;
+        virtual void acceptFunc(util::sptr<Function const> func) = 0;
+        virtual void acceptStmt(util::sptr<Statement const> stmt) = 0;
+        virtual void deliverTo(util::sref<Acceptor> acc) = 0;
 
-        virtual void accept_else(misc::position const& else_pos);
+        virtual void acceptElse(misc::position const& else_pos);
 
         virtual ~Acceptor() {}
 
@@ -29,10 +29,10 @@ namespace grammar {
     struct IfAcceptor
         : public Acceptor
     {
-        void accept_func(util::sptr<Function const> func);
-        void accept_stmt(util::sptr<Statement const> stmt);
-        void deliver_to(util::sref<Acceptor> acc);
-        void accept_else(misc::position const& else_pos);
+        void acceptFunc(util::sptr<Function const> func);
+        void acceptStmt(util::sptr<Statement const> stmt);
+        void deliverTo(util::sref<Acceptor> acc);
+        void acceptElse(misc::position const& else_pos);
 
         IfAcceptor(misc::position const& pos, util::sptr<Expression const> predicate)
             : Acceptor(pos)
@@ -40,7 +40,7 @@ namespace grammar {
             , _current_branch(&_consequence)
         {}
     private:
-        bool _else_matched() const;
+        bool _elseMatched() const;
     private:
         util::sptr<Expression const> _predicate;
 
@@ -54,9 +54,9 @@ namespace grammar {
     struct IfnotAcceptor
         : public Acceptor
     {
-        void accept_func(util::sptr<Function const> func);
-        void accept_stmt(util::sptr<Statement const> stmt);
-        void deliver_to(util::sref<Acceptor> acc);
+        void acceptFunc(util::sptr<Function const> func);
+        void acceptStmt(util::sptr<Statement const> stmt);
+        void deliverTo(util::sref<Acceptor> acc);
 
         IfnotAcceptor(misc::position const& pos, util::sptr<Expression const> predicate)
             : Acceptor(pos)
@@ -71,13 +71,13 @@ namespace grammar {
     struct FunctionAcceptor
         : public Acceptor
     {
-        void accept_func(util::sptr<Function const> func);
-        void accept_stmt(util::sptr<Statement const> stmt);
-        void deliver_to(util::sref<Acceptor> acc);
+        void acceptFunc(util::sptr<Function const> func);
+        void acceptStmt(util::sptr<Statement const> stmt);
+        void deliverTo(util::sref<Acceptor> acc);
 
         FunctionAcceptor(misc::position const& pos
-                        , std::string const& func_name
-                        , std::vector<std::string> const& params)
+                       , std::string const& func_name
+                       , std::vector<std::string> const& params)
             : Acceptor(pos)
             , name(func_name)
             , param_names(params)

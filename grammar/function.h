@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "block.h"
+#include "../flowcheck/fwd-decl.h"
 #include "../util/pointer.h"
 #include "../misc/pos-type.h"
 
@@ -12,16 +13,16 @@ namespace grammar {
 
     struct Function {
         Function(misc::position const& ps
-               , std::string const& func_name
+               , std::string const& n
                , std::vector<std::string> const& params
-               , Block func_body)
+               , Block b)
             : pos(ps)
-            , name(func_name)
+            , name(n)
             , param_names(params)
-            , body(std::move(func_body))
+            , body(std::move(b))
         {}
 
-        void compile(util::sref<flchk::filter> filter) const;
+        void compile(util::sref<flchk::Filter> filter) const;
 
         misc::position const pos;
         std::string const name;

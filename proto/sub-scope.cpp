@@ -26,7 +26,7 @@ util::sptr<Expression const> sub_scope::make_FuncReference(misc::position const&
     return std::move(util::mkptr(new FuncReference(pos, _symbols->query_func(pos, name, param_count))));
 }
 
-void sub_scope::def_var(misc::position const&, std::string const&) {}
+void sub_scope::defVar(misc::position const&, std::string const&) {}
 
 util::sref<Function> sub_scope::declare(misc::position const&
                                       , std::string const&

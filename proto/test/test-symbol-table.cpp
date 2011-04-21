@@ -31,24 +31,24 @@ struct SymbolTableTest
 TEST_F(SymbolTableTest, DefVar)
 {
     misc::position pos(1);
-    symbols->def_var(pos, "nerv");
-    symbols->def_var(pos, "seele");
-    symbols->def_var(pos, "lilith");
+    symbols->defVar(pos, "nerv");
+    symbols->defVar(pos, "seele");
+    symbols->defVar(pos, "lilith");
     ASSERT_FALSE(error::hasError());
     proto::symbol_table inner_symbols(ref_sym());
-    inner_symbols.def_var(pos, "nerv");
-    inner_symbols.def_var(pos, "seele");
-    inner_symbols.def_var(pos, "adam");
-    inner_symbols.def_var(pos, "eve");
+    inner_symbols.defVar(pos, "nerv");
+    inner_symbols.defVar(pos, "seele");
+    inner_symbols.defVar(pos, "adam");
+    inner_symbols.defVar(pos, "eve");
     ASSERT_FALSE(error::hasError());
 }
 
 TEST_F(SymbolTableTest, RefLocalVar)
 {
     misc::position pos(2);
-    symbols->def_var(pos, "nerv");
-    symbols->def_var(pos, "seele");
-    symbols->def_var(pos, "lilith");
+    symbols->defVar(pos, "nerv");
+    symbols->defVar(pos, "seele");
+    symbols->defVar(pos, "lilith");
 
     symbols->ref_var(pos, "nerv");
     symbols->ref_var(pos, "seele");
@@ -56,10 +56,10 @@ TEST_F(SymbolTableTest, RefLocalVar)
     ASSERT_FALSE(error::hasError());
 
     proto::symbol_table inner_symbols(ref_sym());
-    inner_symbols.def_var(pos, "nerv");
-    inner_symbols.def_var(pos, "seele");
-    inner_symbols.def_var(pos, "adam");
-    inner_symbols.def_var(pos, "eve");
+    inner_symbols.defVar(pos, "nerv");
+    inner_symbols.defVar(pos, "seele");
+    inner_symbols.defVar(pos, "adam");
+    inner_symbols.defVar(pos, "eve");
 
     inner_symbols.ref_var(pos, "nerv");
     inner_symbols.ref_var(pos, "seele");
@@ -117,11 +117,11 @@ TEST_F(SymbolTableTest, RedefVar)
     misc::position err_pos0(200);
     misc::position err_pos1(201);
 
-    symbols->def_var(pos, "suzuhara");
-    symbols->def_var(pos, "aida");
+    symbols->defVar(pos, "suzuhara");
+    symbols->defVar(pos, "aida");
 
-    symbols->def_var(err_pos0, "suzuhara");
-    symbols->def_var(err_pos1, "aida");
+    symbols->defVar(err_pos0, "suzuhara");
+    symbols->defVar(err_pos1, "aida");
     ASSERT_TRUE(error::hasError());
     std::vector<var_redef_rec> redefs = get_local_redefs();
     ASSERT_EQ(2, redefs.size());
@@ -134,8 +134,8 @@ TEST_F(SymbolTableTest, RedefVar)
 
     clear_err();
     proto::symbol_table inner_symbols(ref_sym());
-    inner_symbols.def_var(pos, "aida");
-    inner_symbols.def_var(pos, "suzuhara");
+    inner_symbols.defVar(pos, "aida");
+    inner_symbols.defVar(pos, "suzuhara");
     ASSERT_FALSE(error::hasError());
 }
 
@@ -147,7 +147,7 @@ TEST_F(SymbolTableTest, VarRefBeforeDef)
 
     symbols->ref_var(ref_pos0, "katsuragi");
     symbols->ref_var(ref_pos1, "katsuragi");
-    symbols->def_var(pos, "katsuragi");
+    symbols->defVar(pos, "katsuragi");
     ASSERT_TRUE(error::hasError());
     std::vector<invalid_ref_rec> invalid_refs = get_invalid_refs();
     ASSERT_EQ(1, invalid_refs.size());
@@ -162,7 +162,7 @@ TEST_F(SymbolTableTest, VarRefBeforeDef)
 
     proto::symbol_table inner_symbols(ref_sym());
     inner_symbols.ref_var(pos, "katsuragi");
-    inner_symbols.def_var(pos, "penpen");
+    inner_symbols.defVar(pos, "penpen");
     ASSERT_FALSE(error::hasError());
 }
 
@@ -171,24 +171,24 @@ TEST_F(SymbolTableTest, DefFunc)
     misc::position pos(7);
     util::sref<proto::Function const> func(NULL);
     std::vector<std::string> param_names;
-    func = symbols->def_func(pos, "f0", param_names, true);
+    func = symbols->defFunc(pos, "f0", param_names, true);
     ASSERT_EQ(pos, func->pos);
     ASSERT_EQ("f0", func->name);
     ASSERT_TRUE(param_names == func->param_names);
     ASSERT_FALSE(error::hasError());
-    func = symbols->def_func(pos, "f1", param_names, true);
+    func = symbols->defFunc(pos, "f1", param_names, true);
     ASSERT_EQ(pos, func->pos);
     ASSERT_EQ("f1", func->name);
     ASSERT_TRUE(param_names == func->param_names);
     ASSERT_FALSE(error::hasError());
     param_names = { "x", "y", "z" };
-    func = symbols->def_func(pos, "f0", param_names, true);
+    func = symbols->defFunc(pos, "f0", param_names, true);
     ASSERT_EQ(pos, func->pos);
     ASSERT_EQ("f0", func->name);
     ASSERT_TRUE(param_names == func->param_names);
     ASSERT_FALSE(error::hasError());
     param_names.push_back("a");
-    func = symbols->def_func(pos, "f1", param_names, true);
+    func = symbols->defFunc(pos, "f1", param_names, true);
     ASSERT_EQ(pos, func->pos);
     ASSERT_EQ("f1", func->name);
     ASSERT_TRUE(param_names == func->param_names);
@@ -202,10 +202,10 @@ TEST_F(SymbolTableTest, RefFunc)
     util::sref<proto::Function const> func(NULL);
     std::vector<std::string> param_names;
     param_names = { "m", "n" };
-    symbols->def_func(pos, "fa", param_names, true);
+    symbols->defFunc(pos, "fa", param_names, true);
     param_names = { "x", "y", "z" };
-    symbols->def_func(pos, "fa", param_names, true);
-    symbols->def_func(pos, "fb", param_names, true);
+    symbols->defFunc(pos, "fa", param_names, true);
+    symbols->defFunc(pos, "fb", param_names, true);
 
     func = symbols->query_func(ref_pos, "fa", 2);
     ASSERT_FALSE(error::hasError());
@@ -227,7 +227,7 @@ TEST_F(SymbolTableTest, RefFunc)
 
     proto::symbol_table inner_symbols(ref_sym());
     param_names = { "a", "b" };
-    inner_symbols.def_func(pos, "fb", param_names, true);
+    inner_symbols.defFunc(pos, "fb", param_names, true);
     ASSERT_FALSE(error::hasError());
 
     func = inner_symbols.query_func(ref_pos, "fa", 2);
@@ -263,23 +263,23 @@ TEST_F(SymbolTableTest, RedefFunc)
     std::vector<std::string> param_names;
 
     param_names = { "m", "n" };
-    symbols->def_func(pos, "f0", param_names, true);
+    symbols->defFunc(pos, "f0", param_names, true);
     param_names = { "x", "y", "z" };
-    symbols->def_func(pos, "f1", param_names, true);
+    symbols->defFunc(pos, "f1", param_names, true);
     ASSERT_FALSE(error::hasError());
 
     param_names = { "a", "b" };
-    symbols->def_func(err_pos0, "f0", param_names, true);
+    symbols->defFunc(err_pos0, "f0", param_names, true);
     ASSERT_TRUE(error::hasError());
     std::vector<func_redef_rec> redefs = get_func_redefs();
     ASSERT_EQ(1, redefs.size());
 
     proto::symbol_table inner_symbols(ref_sym());
     param_names = { "a", "b" };
-    inner_symbols.def_func(pos, "f1", param_names, true);
+    inner_symbols.defFunc(pos, "f1", param_names, true);
 
     param_names = { "a", "b", "c" };
-    inner_symbols.def_func(err_pos1, "f1", param_names, true);
+    inner_symbols.defFunc(err_pos1, "f1", param_names, true);
 
     redefs = get_func_redefs();
     ASSERT_EQ(2, redefs.size());
@@ -302,9 +302,9 @@ TEST_F(SymbolTableTest, NondefFunc)
     std::vector<std::string> param_names;
 
     param_names = { "m", "n" };
-    symbols->def_func(pos, "f0", param_names, true);
+    symbols->defFunc(pos, "f0", param_names, true);
     param_names = { "x", "y", "z" };
-    symbols->def_func(pos, "f1", param_names, true);
+    symbols->defFunc(pos, "f1", param_names, true);
     ASSERT_FALSE(error::hasError());
 
     symbols->query_func(err_pos0, "f2", 3);
@@ -332,12 +332,12 @@ TEST_F(SymbolTableTest, References)
     misc::position pos(11);
     util::sptr<inst::scope> inst_scope(new phony_func);
 
-    symbols->def_var(pos, "otonashi");
-    symbols->def_var(pos, "tachibana");
+    symbols->defVar(pos, "otonashi");
+    symbols->defVar(pos, "tachibana");
     ASSERT_FALSE(error::hasError());
     std::vector<std::string> param_names;
     param_names = { "yuzuru", "kanade" };
-    symbols->def_func(pos, "sss", param_names, true);
+    symbols->defFunc(pos, "sss", param_names, true);
 
     symbols->ref_var(pos, "otonashi")->inst(*inst_scope)->typeof();
     symbols->ref_var(pos, "sss")->inst(*inst_scope)->typeof();
@@ -360,12 +360,12 @@ TEST_F(SymbolTableTest, FuncRefAmbiguous)
     misc::position err_pos1(1201);
     std::vector<std::string> param_names;
     param_names = { "nakamura" };
-    symbols->def_func(pos, "guild", param_names, true);
-    symbols->def_func(pos, "guild", std::vector<std::string>(), true);
-    symbols->def_func(pos, "girl_dead_monster", std::vector<std::string>(), true);
+    symbols->defFunc(pos, "guild", param_names, true);
+    symbols->defFunc(pos, "guild", std::vector<std::string>(), true);
+    symbols->defFunc(pos, "girl_dead_monster", std::vector<std::string>(), true);
     proto::symbol_table inner_symbols(ref_sym());
     param_names = { "yui", "iwasawa", "sekine" };
-    symbols->def_func(pos, "girl_dead_monster", param_names, true);
+    symbols->defFunc(pos, "girl_dead_monster", param_names, true);
 
     symbols->ref_var(err_pos0, "guild");
     ASSERT_TRUE(error::hasError());

@@ -10,17 +10,17 @@
 
 using namespace grammar;
 
-void Block::add_stmt(util::sptr<Statement const> stmt)
+void Block::addStmt(util::sptr<Statement const> stmt)
 {
     _stmts.push_back(std::move(stmt));
 }
 
-void Block::add_func(util::sptr<Function const> Function)
+void Block::addFunc(util::sptr<Function const> Function)
 {
     _funcs.push_back(std::move(Function));
 }
 
-util::sptr<flchk::filter> Block::compile(util::sptr<flchk::filter> filter) const
+util::sptr<flchk::Filter> Block::compile(util::sptr<flchk::Filter> filter) const
 {
     std::for_each(_funcs.begin()
                 , _funcs.end()

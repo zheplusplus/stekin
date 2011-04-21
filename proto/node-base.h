@@ -1,5 +1,5 @@
-#ifndef __STAKCENING_PROTO_NODE_BASE_H__
-#define __STAKCENING_PROTO_NODE_BASE_H__
+#ifndef __STEKIN_PROTO_NODE_BASE_H__
+#define __STEKIN_PROTO_NODE_BASE_H__
 
 #include "../instance/fwd-decl.h"
 #include "../util/pointer.h"
@@ -33,4 +33,4 @@ namespace proto {
 
 }
 
-#endif /* __STAKCENING_PROTO_NODE_BASE_H__ */
+#endif /* __STEKIN_PROTO_NODE_BASE_H__ */

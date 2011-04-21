@@ -25,9 +25,9 @@ util::sptr<Expression const> general_scope::make_FuncReference(misc::position co
     return std::move(util::mkptr(new FuncReference(pos, _symbols.query_func(pos, name, param_count))));
 }
 
-void general_scope::def_var(misc::position const& pos, std::string const& name)
+void general_scope::defVar(misc::position const& pos, std::string const& name)
 {
-    _symbols.def_var(pos, name);
+    _symbols.defVar(pos, name);
 }
 
 util::sref<Function> general_scope::declare(misc::position const& pos
@@ -35,7 +35,7 @@ util::sref<Function> general_scope::declare(misc::position const& pos
                                           , std::vector<std::string> const& param_names
                                           , bool hint_void_return)
 {
-    return _symbols.def_func(pos, name, param_names, hint_void_return);
+    return _symbols.defFunc(pos, name, param_names, hint_void_return);
 }
 
 util::sptr<scope> general_scope::create_branch_scope()

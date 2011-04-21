@@ -22,8 +22,8 @@ namespace flchk {
 
         void compile(util::sref<proto::scope> scope) const;
 
-        void add_stmt(util::sptr<Statement const> stmt);
-        void def_func(misc::position const& pos
+        void addStmt(util::sptr<Statement const> stmt);
+        void defFunc(misc::position const& pos
                     , std::string const& name
                     , std::vector<std::string> const& param_names
                     , Block body

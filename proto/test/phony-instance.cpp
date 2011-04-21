@@ -201,7 +201,7 @@ bool Function::has_more_path() const
     return path_count > 0;
 }
 
-variable Function::def_var(misc::position const& pos, util::sref<type const> vtype, std::string const&)
+variable Function::defVar(misc::position const& pos, util::sref<type const> vtype, std::string const&)
 {
     return variable(pos, vtype, 0, 0);
 }
@@ -227,7 +227,7 @@ operation const* scope::query_pre_unary(misc::position const& pos, std::string c
     return NULL;
 }
 
-void scope::add_stmt(util::sptr<Statement const>)
+void scope::addStmt(util::sptr<Statement const>)
 {
     DataTree::actualOne()(ADD_STMT_TO_SCOPE);
 }
@@ -258,7 +258,7 @@ util::sref<Function> Function::create_instance(int
     return util::mkref(func);
 }
 
-void Block::add_stmt(util::sptr<Statement const>)
+void Block::addStmt(util::sptr<Statement const>)
 {
     DataTree::actualOne()(ADD_STMT_TO_BLOCK);
 }
@@ -371,9 +371,9 @@ void PreUnaryOp::write() const {}
 void Conjunction::write() const {}
 void Disjunction::write() const {}
 void Negation::write() const {}
-void arithmetics::write() const {}
+void Arithmetics::write() const {}
 void branch::write() const {}
 void initialization::write() const {}
-void func_ret::write() const {}
-void func_ret_nothing::write() const {}
+void Return::write() const {}
+void ReturnNothing::write() const {}
 void Block::write() const {}

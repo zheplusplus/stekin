@@ -1,5 +1,5 @@
-#ifndef __STAKCENING_GRAMMAR_NODE_BASE_H__
-#define __STAKCENING_GRAMMAR_NODE_BASE_H__
+#ifndef __STEKIN_GRAMMAR_NODE_BASE_H__
+#define __STEKIN_GRAMMAR_NODE_BASE_H__
 
 #include "../flowcheck/fwd-decl.h"
 #include "../util/pointer.h"
@@ -10,7 +10,7 @@ namespace grammar {
     struct Statement {
         misc::position const pos;
 
-        virtual void compile(util::sref<flchk::filter> scope) const = 0;
+        virtual void compile(util::sref<flchk::Filter> scope) const = 0;
 
         virtual ~Statement() {}
     protected:
@@ -37,4 +37,4 @@ namespace grammar {
 
 }
 
-#endif /* __STAKCENING_GRAMMAR_NODE_BASE_H__ */
+#endif /* __STEKIN_GRAMMAR_NODE_BASE_H__ */

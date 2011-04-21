@@ -281,25 +281,25 @@ util::sptr<proto::Expression const> PreUnaryOp::compile(util::sref<proto::scope>
     return std::move(scope->make_pre_unary(pos, op_img, rhs->compile(scope)));
 }
 
-bool PreUnaryOp::is_literal() const
+bool PreUnaryOp::isLiteral() const
 {
-    return rhs->is_literal();
+    return rhs->isLiteral();
 }
 
-bool PreUnaryOp::bool_value() const
+bool PreUnaryOp::boolValue() const
 {
-    error::cond_not_bool(pos, type_name());
+    error::cond_not_bool(pos, typeName());
     return false;
 }
 
-std::string PreUnaryOp::type_name() const
+std::string PreUnaryOp::typeName() const
 {
-    return '(' + op_img + rhs->type_name() + ')';
+    return '(' + op_img + rhs->typeName() + ')';
 }
 
 util::sptr<Expression const> PreUnaryOp::fold() const
 {
-    return std::move(rhs->fold()->as_rhs(pos, op_img));
+    return std::move(rhs->fold()->asRHS(pos, op_img));
 }
 
 util::sptr<proto::Expression const> BinaryOp::compile(util::sref<proto::scope> scope) const
@@ -307,28 +307,28 @@ util::sptr<proto::Expression const> BinaryOp::compile(util::sref<proto::scope> s
     return std::move(scope->make_binary(pos, lhs->compile(scope), op_img, rhs->compile(scope)));
 }
 
-bool BinaryOp::is_literal() const
+bool BinaryOp::isLiteral() const
 {
-    return lhs->is_literal() && rhs->is_literal();
+    return lhs->isLiteral() && rhs->isLiteral();
 }
 
-bool BinaryOp::bool_value() const
+bool BinaryOp::boolValue() const
 {
     if (COMPARE_OPS.end() == COMPARE_OPS.find(op_img)) {
-        error::cond_not_bool(pos, type_name());
+        error::cond_not_bool(pos, typeName());
         return false;
     }
-    return fold()->bool_value();
+    return fold()->boolValue();
 }
 
-std::string BinaryOp::type_name() const
+std::string BinaryOp::typeName() const
 {
-    return '(' + lhs->type_name() + op_img + rhs->type_name() + ')';
+    return '(' + lhs->typeName() + op_img + rhs->typeName() + ')';
 }
 
 util::sptr<Expression const> BinaryOp::fold() const
 {
-    return std::move(rhs->fold()->as_rhs(pos, op_img, std::move(lhs->fold())));
+    return std::move(rhs->fold()->asRHS(pos, op_img, std::move(lhs->fold())));
 }
 
 util::sptr<proto::Expression const> Conjunction::compile(util::sref<proto::scope> scope) const
@@ -336,25 +336,25 @@ util::sptr<proto::Expression const> Conjunction::compile(util::sref<proto::scope
     return std::move(scope->make_conj(pos, lhs->compile(scope), rhs->compile(scope)));
 }
 
-bool Conjunction::is_literal() const
+bool Conjunction::isLiteral() const
 {
-    return lhs->is_literal() && rhs->is_literal();
+    return lhs->isLiteral() && rhs->isLiteral();
 }
 
-bool Conjunction::bool_value() const
+bool Conjunction::boolValue() const
 {
-    return lhs->bool_value() && rhs->bool_value();
+    return lhs->boolValue() && rhs->boolValue();
 }
 
-std::string Conjunction::type_name() const
+std::string Conjunction::typeName() const
 {
-    return '(' + lhs->type_name() + "&&" + rhs->type_name() + ')';
+    return '(' + lhs->typeName() + "&&" + rhs->typeName() + ')';
 }
 
 util::sptr<Expression const> Conjunction::fold() const
 {
-    if (is_literal()) {
-        return std::move(util::mkptr(new BoolLiteral(pos, lhs->bool_value() && rhs->bool_value())));
+    if (isLiteral()) {
+        return std::move(util::mkptr(new BoolLiteral(pos, lhs->boolValue() && rhs->boolValue())));
     }
     return std::move(util::mkptr(new Conjunction(pos, std::move(lhs->fold()), std::move(rhs->fold()))));
 }
@@ -364,25 +364,25 @@ util::sptr<proto::Expression const> Disjunction::compile(util::sref<proto::scope
     return std::move(scope->make_disj(pos, lhs->compile(scope), rhs->compile(scope)));
 }
 
-bool Disjunction::is_literal() const
+bool Disjunction::isLiteral() const
 {
-    return lhs->is_literal() && rhs->is_literal();
+    return lhs->isLiteral() && rhs->isLiteral();
 }
 
-bool Disjunction::bool_value() const
+bool Disjunction::boolValue() const
 {
-    return lhs->bool_value() || rhs->bool_value();
+    return lhs->boolValue() || rhs->boolValue();
 }
 
-std::string Disjunction::type_name() const
+std::string Disjunction::typeName() const
 {
-    return '(' + lhs->type_name() + "||" + rhs->type_name() + ')';
+    return '(' + lhs->typeName() + "||" + rhs->typeName() + ')';
 }
 
 util::sptr<Expression const> Disjunction::fold() const
 {
-    if (is_literal()) {
-        return std::move(util::mkptr(new BoolLiteral(pos, lhs->bool_value() || rhs->bool_value())));
+    if (isLiteral()) {
+        return std::move(util::mkptr(new BoolLiteral(pos, lhs->boolValue() || rhs->boolValue())));
     }
     return std::move(util::mkptr(new Disjunction(pos, std::move(lhs->fold()), std::move(rhs->fold()))));
 }
@@ -392,25 +392,25 @@ util::sptr<proto::Expression const> Negation::compile(util::sref<proto::scope> s
     return std::move(scope->make_nega(pos, rhs->compile(scope)));
 }
 
-bool Negation::is_literal() const
+bool Negation::isLiteral() const
 {
-    return rhs->is_literal();
+    return rhs->isLiteral();
 }
 
-bool Negation::bool_value() const
+bool Negation::boolValue() const
 {
-    return !rhs->bool_value();
+    return !rhs->boolValue();
 }
 
-std::string Negation::type_name() const
+std::string Negation::typeName() const
 {
-    return "(!" + rhs->type_name() + ')';
+    return "(!" + rhs->typeName() + ')';
 }
 
 util::sptr<Expression const> Negation::fold() const
 {
-    if (is_literal()) {
-        return std::move(util::mkptr(new BoolLiteral(pos, !rhs->bool_value())));
+    if (isLiteral()) {
+        return std::move(util::mkptr(new BoolLiteral(pos, !rhs->boolValue())));
     }
     return std::move(util::mkptr(new Negation(pos, std::move(rhs->fold()))));
 }
@@ -420,7 +420,7 @@ util::sptr<proto::Expression const> reference::compile(util::sref<proto::scope> 
     return std::move(scope->make_ref(pos, name));
 }
 
-std::string reference::type_name() const
+std::string reference::typeName() const
 {
     return "(Reference(" + name + "))";
 }
@@ -435,17 +435,17 @@ util::sptr<proto::Expression const> BoolLiteral::compile(util::sref<proto::scope
     return std::move(scope->make_bool(pos, value));
 }
 
-bool BoolLiteral::is_literal() const
+bool BoolLiteral::isLiteral() const
 {
     return true;
 }
 
-bool BoolLiteral::bool_value() const
+bool BoolLiteral::boolValue() const
 {
     return value;
 }
 
-std::string BoolLiteral::type_name() const
+std::string BoolLiteral::typeName() const
 {
     return "(bool(" + util::str(value) + "))";
 }
@@ -481,14 +481,14 @@ util::sptr<Expression const> BoolLiteral::operate(misc::position const& op_pos
     return std::move(util::mkptr(new BoolLiteral(op_pos, value != rhs)));
 }
 
-util::sptr<Expression const> BoolLiteral::as_rhs(misc::position const& op_pos
+util::sptr<Expression const> BoolLiteral::asRHS(misc::position const& op_pos
                                                , std::string const& op_img
                                                , util::sptr<Expression const> lhs) const
 {
     return std::move(lhs->operate(op_pos, op_img, value));
 }
 
-util::sptr<Expression const> BoolLiteral::as_rhs(misc::position const& op_pos, std::string const& op_img) const
+util::sptr<Expression const> BoolLiteral::asRHS(misc::position const& op_pos, std::string const& op_img) const
 {
     error::PreUnaryOp_not_avai(op_pos, op_img, "bool");
     return std::move(make_fake_expr(op_pos));
@@ -499,18 +499,18 @@ util::sptr<proto::Expression const> IntLiteral::compile(util::sref<proto::scope>
     return std::move(scope->make_int(pos, value));
 }
 
-bool IntLiteral::is_literal() const
+bool IntLiteral::isLiteral() const
 {
     return true;
 }
 
-bool IntLiteral::bool_value() const
+bool IntLiteral::boolValue() const
 {
-    error::cond_not_bool(pos, type_name());
+    error::cond_not_bool(pos, typeName());
     return false;
 }
 
-std::string IntLiteral::type_name() const
+std::string IntLiteral::typeName() const
 {
     return "(int(" + util::str(value) + "))";
 }
@@ -542,14 +542,14 @@ util::sptr<Expression const> IntLiteral::operate(misc::position const& op_pos
     return std::move(make_fake_expr(op_pos));
 }
 
-util::sptr<Expression const> IntLiteral::as_rhs(misc::position const& op_pos
+util::sptr<Expression const> IntLiteral::asRHS(misc::position const& op_pos
                                               , std::string const& op_img
                                               , util::sptr<Expression const> lhs) const
 {
     return std::move(lhs->operate(op_pos, op_img, value));
 }
 
-util::sptr<Expression const> IntLiteral::as_rhs(misc::position const& op_pos, std::string const& op_img) const
+util::sptr<Expression const> IntLiteral::asRHS(misc::position const& op_pos, std::string const& op_img) const
 {
     if ("-" == op_img) {
         return std::move(util::mkptr(new IntLiteral(op_pos, -value)));
@@ -562,18 +562,18 @@ util::sptr<proto::Expression const> FloatLiteral::compile(util::sref<proto::scop
     return std::move(scope->make_float(pos, value));
 }
 
-bool FloatLiteral::is_literal() const
+bool FloatLiteral::isLiteral() const
 {
     return true;
 }
 
-bool FloatLiteral::bool_value() const
+bool FloatLiteral::boolValue() const
 {
-    error::cond_not_bool(pos, type_name());
+    error::cond_not_bool(pos, typeName());
     return false;
 }
 
-std::string FloatLiteral::type_name() const
+std::string FloatLiteral::typeName() const
 {
     return "(float(" + util::str(value) + "))";
 }
@@ -605,14 +605,14 @@ util::sptr<Expression const> FloatLiteral::operate(misc::position const& op_pos
     return std::move(make_fake_expr(op_pos));
 }
 
-util::sptr<Expression const> FloatLiteral::as_rhs(misc::position const& op_pos
+util::sptr<Expression const> FloatLiteral::asRHS(misc::position const& op_pos
                                                 , std::string const& op_img
                                                 , util::sptr<Expression const> lhs) const
 {
     return std::move(lhs->operate(op_pos, op_img, value));
 }
 
-util::sptr<Expression const> FloatLiteral::as_rhs(misc::position const& op_pos, std::string const& op_img) const
+util::sptr<Expression const> FloatLiteral::asRHS(misc::position const& op_pos, std::string const& op_img) const
 {
     if ("-" == op_img) {
         return std::move(util::mkptr(new FloatLiteral(op_pos, -value)));
@@ -620,7 +620,7 @@ util::sptr<Expression const> FloatLiteral::as_rhs(misc::position const& op_pos, 
     return std::move(util::mkptr(new FloatLiteral(op_pos, value)));
 }
 
-util::sptr<proto::Expression const> call::compile(util::sref<proto::scope> scope) const
+util::sptr<proto::Expression const> Call::compile(util::sref<proto::scope> scope) const
 {
     std::vector<util::sptr<proto::Expression const>> arguments;
     arguments.reserve(args.size());
@@ -633,7 +633,7 @@ util::sptr<proto::Expression const> call::compile(util::sref<proto::scope> scope
     return std::move(scope->make_call(pos, name, std::move(arguments)));
 }
 
-std::string call::type_name() const
+std::string Call::typeName() const
 {
     if (args.empty()) {
         return "(call(" + name + "))";
@@ -643,12 +643,12 @@ std::string call::type_name() const
                 , args.end()
                 , [&](util::sptr<Expression const> const& arg)
                   {
-                      args_names += (arg->type_name() + ", ");
+                      args_names += (arg->typeName() + ", ");
                   });
     return "(call(" + name + ")(" + args_names.substr(0, args_names.length() - 2) + "))";
 }
 
-util::sptr<Expression const> call::fold() const
+util::sptr<Expression const> Call::fold() const
 {
     std::vector<util::sptr<Expression const>> args_fold;
     args_fold.reserve(args.size());
@@ -658,7 +658,7 @@ util::sptr<Expression const> call::fold() const
                   {
                       args_fold.push_back(std::move(expr->fold()));
                   });
-    return std::move(util::mkptr(new call(pos, name, std::move(args_fold))));
+    return std::move(util::mkptr(new Call(pos, name, std::move(args_fold))));
 }
 
 util::sptr<proto::Expression const> FuncReference::compile(util::sref<proto::scope> scope) const
@@ -666,7 +666,7 @@ util::sptr<proto::Expression const> FuncReference::compile(util::sref<proto::sco
     return std::move(scope->make_FuncReference(pos, name, param_count));
 }
 
-std::string FuncReference::type_name() const
+std::string FuncReference::typeName() const
 {
     return "(func reference(" + name + ")@" + util::str(param_count) + ')';
 }

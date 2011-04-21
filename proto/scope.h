@@ -40,14 +40,14 @@ namespace proto {
                                             , util::sptr<Expression const> rhs) const;
         util::sptr<Expression const> make_nega(misc::position const& pos, util::sptr<Expression const> rhs) const;
     public:
-        virtual void def_var(misc::position const& pos, std::string const& name) = 0;
+        virtual void defVar(misc::position const& pos, std::string const& name) = 0;
         virtual util::sref<Function> declare(misc::position const& pos
                                            , std::string const& name
                                            , std::vector<std::string> const& param_names
                                            , bool contains_void_return) = 0;
         virtual util::sptr<scope> create_branch_scope() = 0;
     public:
-        void add_stmt(util::sptr<Statement const> stmt);
+        void addStmt(util::sptr<Statement const> stmt);
     public:
         Block deliver();
         std::list<util::sptr<Statement const>> const& get_stmts() const;

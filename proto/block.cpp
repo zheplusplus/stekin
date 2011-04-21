@@ -7,7 +7,7 @@
 
 using namespace proto;
 
-void Block::add_stmt(util::sptr<Statement const> stmt)
+void Block::addStmt(util::sptr<Statement const> stmt)
 {
     _stmts.push_back(std::move(stmt));
 }
