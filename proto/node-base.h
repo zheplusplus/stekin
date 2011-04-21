@@ -12,9 +12,9 @@ namespace proto {
 
         virtual util::sptr<inst::Expression const> inst(util::sref<inst::scope> sc) const = 0;
 
-        misc::pos_type const pos;
+        misc::position const pos;
     protected:
-        explicit Expression(misc::pos_type const ps)
+        explicit Expression(misc::position const ps)
             : pos(ps)
         {}
     };
@@ -24,9 +24,9 @@ namespace proto {
 
         virtual util::sptr<inst::mediate_base> inst(util::sref<inst::scope> sc) const = 0;
 
-        misc::pos_type const pos;
+        misc::position const pos;
     protected:
-        explicit Statement(misc::pos_type const ps)
+        explicit Statement(misc::position const ps)
             : pos(ps)
         {}
     };

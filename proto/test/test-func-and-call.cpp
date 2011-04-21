@@ -23,7 +23,7 @@ struct FuncNCallTest
     void reset_func(bool hint_func_return_void)
     {
         ext_symbols.reset(new proto::symbol_table);
-        misc::pos_type pos(65535);
+        misc::position pos(65535);
         func.reset(new proto::Function(pos
                                      , "f"
                                      , std::vector<std::string>()
@@ -38,7 +38,7 @@ struct FuncNCallTest
 
 TEST_F(FuncNCallTest, NoBranchRecursionFunc)
 {
-    misc::pos_type pos(1);
+    misc::position pos(1);
     func->inst(pos, *inst_scope, std::vector<util::sref<inst::type const>>());
     ASSERT_FALSE(error::has_error());
 
@@ -77,7 +77,7 @@ TEST_F(FuncNCallTest, NoBranchRecursionFunc)
 
 TEST_F(FuncNCallTest, FuncWithBranchRecursion)
 {
-    misc::pos_type pos(2);
+    misc::position pos(2);
     util::sptr<proto::scope> sub_scope0(NULL);
     util::sptr<proto::scope> sub_scope1(NULL);
     util::sref<proto::Function> test_func(NULL);
@@ -124,7 +124,7 @@ TEST_F(FuncNCallTest, FuncWithBranchRecursion)
 
 TEST_F(FuncNCallTest, CouldNotResolve)
 {
-    misc::pos_type pos(3);
+    misc::position pos(3);
     util::sptr<proto::scope> sub_scope0(NULL);
     util::sptr<proto::scope> sub_scope1(NULL);
     util::sref<proto::Function> test_func(NULL);

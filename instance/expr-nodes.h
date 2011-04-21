@@ -83,7 +83,7 @@ namespace inst {
     struct func_reference
         : public Expression
     {
-        func_reference(misc::pos_type const& reference_pos
+        func_reference(misc::position const& reference_pos
                      , util::sref<proto::Function> func_proto
                      , int level
                      , std::map<std::string, variable const> const& cr)
@@ -131,7 +131,7 @@ namespace inst {
     struct conjunction
         : public Expression
     {
-        conjunction(misc::pos_type const& p, util::sptr<Expression const> l, util::sptr<Expression const> r);
+        conjunction(misc::position const& p, util::sptr<Expression const> l, util::sptr<Expression const> r);
 
         util::sref<type const> typeof() const;
         void write() const;
@@ -143,7 +143,7 @@ namespace inst {
     struct disjunction
         : public Expression
     {
-        disjunction(misc::pos_type const& p, util::sptr<Expression const> l, util::sptr<Expression const> r);
+        disjunction(misc::position const& p, util::sptr<Expression const> l, util::sptr<Expression const> r);
 
         util::sref<type const> typeof() const;
         void write() const;
@@ -155,7 +155,7 @@ namespace inst {
     struct negation
         : public Expression
     {
-        explicit negation(misc::pos_type const& p, util::sptr<Expression const> r);
+        explicit negation(misc::position const& p, util::sptr<Expression const> r);
 
         util::sref<type const> typeof() const;
         void write() const;

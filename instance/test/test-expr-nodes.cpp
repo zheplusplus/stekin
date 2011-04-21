@@ -11,7 +11,7 @@ typedef instance_test ExprNodesTest;
 
 TEST_F(ExprNodesTest, ConjunctionConditionTypeCheck)
 {
-    misc::pos_type pos(1);
+    misc::position pos(1);
     inst::conjunction(pos
                     , std::move(util::mkptr(new cond_type_expr))
                     , std::move(util::mkptr(new cond_type_expr)));
@@ -29,21 +29,21 @@ TEST_F(ExprNodesTest, ConjunctionConditionTypeCheck)
                     , std::move(util::mkptr(new bad_type_expr)));
     ASSERT_FALSE(error::has_error());
 
-    misc::pos_type pos_err0(10);
+    misc::position pos_err0(10);
     inst::conjunction(pos_err0
                     , std::move(util::mkptr(new void_type_expr))
                     , std::move(util::mkptr(new cond_type_expr)));
     ASSERT_TRUE(error::has_error());
     ASSERT_EQ(1, get_cond_not_bools().size());
 
-    misc::pos_type pos_err1(11);
+    misc::position pos_err1(11);
     inst::conjunction(pos_err1
                     , std::move(util::mkptr(new cond_type_expr))
                     , std::move(util::mkptr(new void_type_expr)));
     ASSERT_TRUE(error::has_error());
     ASSERT_EQ(2, get_cond_not_bools().size());
 
-    misc::pos_type pos_err2(12);
+    misc::position pos_err2(12);
     inst::conjunction(pos_err2
                     , std::move(util::mkptr(new void_type_expr))
                     , std::move(util::mkptr(new void_type_expr)));
@@ -65,7 +65,7 @@ TEST_F(ExprNodesTest, ConjunctionConditionTypeCheck)
 
 TEST_F(ExprNodesTest, DisjunctionConditionTypeCheck)
 {
-    misc::pos_type pos(2);
+    misc::position pos(2);
     inst::disjunction(pos
                     , std::move(util::mkptr(new cond_type_expr))
                     , std::move(util::mkptr(new cond_type_expr)));
@@ -83,21 +83,21 @@ TEST_F(ExprNodesTest, DisjunctionConditionTypeCheck)
                     , std::move(util::mkptr(new bad_type_expr)));
     ASSERT_FALSE(error::has_error());
 
-    misc::pos_type pos_err0(20);
+    misc::position pos_err0(20);
     inst::disjunction(pos_err0
                     , std::move(util::mkptr(new void_type_expr))
                     , std::move(util::mkptr(new cond_type_expr)));
     ASSERT_TRUE(error::has_error());
     ASSERT_EQ(1, get_cond_not_bools().size());
 
-    misc::pos_type pos_err1(21);
+    misc::position pos_err1(21);
     inst::disjunction(pos_err1
                     , std::move(util::mkptr(new cond_type_expr))
                     , std::move(util::mkptr(new void_type_expr)));
     ASSERT_TRUE(error::has_error());
     ASSERT_EQ(2, get_cond_not_bools().size());
 
-    misc::pos_type pos_err2(22);
+    misc::position pos_err2(22);
     inst::disjunction(pos_err2
                     , std::move(util::mkptr(new void_type_expr))
                     , std::move(util::mkptr(new void_type_expr)));
@@ -119,7 +119,7 @@ TEST_F(ExprNodesTest, DisjunctionConditionTypeCheck)
 
 TEST_F(ExprNodesTest, NegationConditionTypeCheck)
 {
-    misc::pos_type pos(3);
+    misc::position pos(3);
     inst::negation(pos, std::move(util::mkptr(new cond_type_expr)));
     ASSERT_FALSE(error::has_error());
     inst::negation(pos, std::move(util::mkptr(new bad_type_expr)));

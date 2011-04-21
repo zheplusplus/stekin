@@ -4,14 +4,14 @@
 
 using namespace misc;
 
-std::string pos_type::str() const
+std::string position::str() const
 {
     std::stringstream ss;
     ss << "Line: " << line;
     return ss.str();
 }
 
-bool pos_type::operator==(pos_type const& rhs) const
+bool position::operator==(position const& rhs) const
 {
     return line == rhs.line;
 }

@@ -6,29 +6,29 @@
 
 using namespace proto;
 
-util::sptr<Expression const> sub_scope::make_ref(misc::pos_type const& pos, std::string const& name)
+util::sptr<Expression const> sub_scope::make_ref(misc::position const& pos, std::string const& name)
 {
     _symbols->ref_var(pos, name);
     return std::move(util::mkptr(new reference(pos, name)));
 }
 
-util::sptr<Expression const> sub_scope::make_call(misc::pos_type const& pos
+util::sptr<Expression const> sub_scope::make_call(misc::position const& pos
                                                , std::string const& name
                                                , std::vector<util::sptr<Expression const>> args) const
 {
     return std::move(_symbols->query_call(pos, name, std::move(args)));
 }
 
-util::sptr<Expression const> sub_scope::make_func_reference(misc::pos_type const& pos
+util::sptr<Expression const> sub_scope::make_func_reference(misc::position const& pos
                                                          , std::string const& name
                                                          , int param_count) const
 {
     return std::move(util::mkptr(new func_reference(pos, _symbols->query_func(pos, name, param_count))));
 }
 
-void sub_scope::def_var(misc::pos_type const&, std::string const&) {}
+void sub_scope::def_var(misc::position const&, std::string const&) {}
 
-util::sref<Function> sub_scope::declare(misc::pos_type const&
+util::sref<Function> sub_scope::declare(misc::position const&
                                       , std::string const&
                                       , std::vector<std::string> const&
                                       , bool)

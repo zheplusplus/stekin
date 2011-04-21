@@ -39,7 +39,7 @@ namespace proto {
     struct branch_mediate
         : public inst::mediate_base
     {
-        branch_mediate(misc::pos_type const& ps
+        branch_mediate(misc::position const& ps
                      , util::sptr<inst::Expression const> predicate
                      , std::list<util::sptr<Statement const>> const& consequence_stmts
                      , std::list<util::sptr<Statement const>> const& alternative_stmts
@@ -53,7 +53,7 @@ namespace proto {
         util::sptr<inst::Statement const> inst(util::sref<inst::scope> sc);
         void mediate_inst(util::sref<inst::scope> sc);
     public:
-        misc::pos_type const pos;
+        misc::position const pos;
     private:
         util::sptr<inst::Expression const> _predicate;
         Block_mediate _consequence_mediate;

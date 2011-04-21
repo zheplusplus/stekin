@@ -161,7 +161,7 @@ namespace {
 
 }
 
-operation const* operation::query_binary(misc::pos_type const& pos
+operation const* operation::query_binary(misc::position const& pos
                                        , std::string const& op
                                        , util::sref<type const> lhs
                                        , util::sref<type const> rhs)
@@ -174,7 +174,7 @@ operation const* operation::query_binary(misc::pos_type const& pos
     }
 }
 
-operation const* operation::query_pre_unary(misc::pos_type const& pos
+operation const* operation::query_pre_unary(misc::position const& pos
                                           , std::string const& op
                                           , util::sref<type const> rhs)
 {

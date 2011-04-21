@@ -12,13 +12,13 @@
 namespace flchk {
 
     struct Statement {
-        misc::pos_type const pos;
+        misc::position const pos;
 
         virtual util::sptr<proto::Statement const> compile(util::sref<proto::scope> scope) const = 0;
 
         virtual ~Statement() {}
     protected:
-        explicit Statement(misc::pos_type const& ps)
+        explicit Statement(misc::position const& ps)
             : pos(ps)
         {}
 
@@ -26,7 +26,7 @@ namespace flchk {
     };
 
     struct Expression {
-        misc::pos_type const pos;
+        misc::position const pos;
     public:
         virtual util::sptr<proto::Expression const> compile(util::sref<proto::scope> scope) const = 0;
     public:
@@ -36,25 +36,25 @@ namespace flchk {
         virtual bool bool_value() const;
         virtual util::sptr<Expression const> fold() const = 0;
     public:
-        virtual util::sptr<Expression const> operate(misc::pos_type const& op_pos
+        virtual util::sptr<Expression const> operate(misc::position const& op_pos
                                                   , std::string const& op_img
                                                   , mpz_class const& rhs) const;
-        virtual util::sptr<Expression const> operate(misc::pos_type const& op_pos
+        virtual util::sptr<Expression const> operate(misc::position const& op_pos
                                                   , std::string const& op_img
                                                   , mpf_class const& rhs) const;
-        virtual util::sptr<Expression const> operate(misc::pos_type const& op_pos
+        virtual util::sptr<Expression const> operate(misc::position const& op_pos
                                                   , std::string const& op_img
                                                   , bool rhs) const;
 
-        virtual util::sptr<Expression const> as_rhs(misc::pos_type const& op_pos
+        virtual util::sptr<Expression const> as_rhs(misc::position const& op_pos
                                                  , std::string const& op_img
                                                  , util::sptr<Expression const> lhs) const;
-        virtual util::sptr<Expression const> as_rhs(misc::pos_type const& op_pos
+        virtual util::sptr<Expression const> as_rhs(misc::position const& op_pos
                                                  , std::string const& op_img) const;
     public:
         virtual ~Expression() {}
     protected:
-        Expression(misc::pos_type const& ps)
+        Expression(misc::position const& ps)
             : pos(ps)
         {}
 

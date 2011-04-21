@@ -31,8 +31,8 @@ namespace {
         : public proto::Statement
     {
         write_stmt_proto()
-            : proto::Statement(misc::pos_type(0))
-            , ref(misc::pos_type(0), "value to write")
+            : proto::Statement(misc::position(0))
+            , ref(misc::position(0), "value to write")
         {}
 
         util::sptr<inst::mediate_base> inst(util::sref<inst::scope> inst_scope) const
@@ -52,6 +52,6 @@ using namespace proto;
 global_scope::global_scope()
 {
     util::sref<proto::Function> func_write
-                = declare(misc::pos_type(0), "write", std::vector<std::string>({ "value to write" }), true);
+                = declare(misc::position(0), "write", std::vector<std::string>({ "value to write" }), true);
     func_write->add_stmt(std::move(util::mkptr(new write_stmt_proto)));
 }

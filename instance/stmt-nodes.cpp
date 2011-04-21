@@ -7,7 +7,7 @@
 
 using namespace inst;
 
-branch::branch(misc::pos_type const& pos
+branch::branch(misc::position const& pos
              , util::sptr<Expression const> p
              , util::sptr<Statement const> c
              , util::sptr<Statement const> a)

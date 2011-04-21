@@ -22,7 +22,7 @@ namespace test {
     extern inst::built_in_primitive const PROTO_TEST_VOID;
 
     struct proto_data {
-        misc::pos_type const pos;
+        misc::position const pos;
         int const func_arg_size;
 
         proto_data()
@@ -30,12 +30,12 @@ namespace test {
             , func_arg_size(-1)
         {}
 
-        explicit proto_data(misc::pos_type const ps)
+        explicit proto_data(misc::position const ps)
             : pos(ps)
             , func_arg_size(-1)
         {}
 
-        proto_data(misc::pos_type const& ps, int arg_size)
+        proto_data(misc::position const& ps, int arg_size)
             : pos(ps)
             , func_arg_size(arg_size)
         {}
@@ -55,12 +55,12 @@ namespace test {
     {
         typedef data_tree_templ<proto_data, data_tree> base_type;
 
-        data_tree& operator()(misc::pos_type const& pos, node_type const& type, std::string const& str);
-        data_tree& operator()(misc::pos_type const& pos
+        data_tree& operator()(misc::position const& pos, node_type const& type, std::string const& str);
+        data_tree& operator()(misc::position const& pos
                             , node_type const& type
                             , std::string const& str
                             , int func_arg_size);
-        data_tree& operator()(misc::pos_type const& pos, node_type const& type);
+        data_tree& operator()(misc::position const& pos, node_type const& type);
 
         data_tree& operator()(node_type const& type);
         data_tree& operator()(node_type const& type, std::string const& str);

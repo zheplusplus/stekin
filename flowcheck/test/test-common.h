@@ -12,17 +12,17 @@ namespace test {
     extern util::sref<inst::scope> const nul_inst_scope;
 
     struct flowcheck_data {
-        misc::pos_type const pos;
+        misc::position const pos;
         int const func_arg_size;
         bool const func_hint_ret_void;
 
-        flowcheck_data(misc::pos_type const& ps, int arg_size, bool hint_ret_void)
+        flowcheck_data(misc::position const& ps, int arg_size, bool hint_ret_void)
             : pos(ps)
             , func_arg_size(arg_size)
             , func_hint_ret_void(hint_ret_void)
         {}
 
-        explicit flowcheck_data(misc::pos_type const ps)
+        explicit flowcheck_data(misc::position const ps)
             : pos(ps)
             , func_arg_size(-1)
             , func_hint_ret_void(false)
@@ -51,14 +51,14 @@ namespace test {
     {
         typedef data_tree_templ<flowcheck_data, data_tree> base_type;
 
-        data_tree& operator()(misc::pos_type const& pos, node_type const& type, std::string const& str);
-        data_tree& operator()(misc::pos_type const& pos
+        data_tree& operator()(misc::position const& pos, node_type const& type, std::string const& str);
+        data_tree& operator()(misc::position const& pos
                             , node_type const& type
                             , std::string const& str
                             , int func_arg_size
                             , bool func_hint_return_void);
         data_tree& operator()(node_type const& type);
-        data_tree& operator()(misc::pos_type const& pos, node_type const& type);
+        data_tree& operator()(misc::position const& pos, node_type const& type);
     };
 
     extern node_type const BOOLEAN;

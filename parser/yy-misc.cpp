@@ -12,12 +12,12 @@ int yywrap(void)
 grammar::clause_builder parser::builder;
 int parser::last_indent = 0;
 
-misc::pos_type parser::here()
+misc::position parser::here()
 {
-    return misc::pos_type(yylineno);
+    return misc::position(yylineno);
 }
 
-misc::pos_type parser::here(int lineno)
+misc::position parser::here(int lineno)
 {
-    return misc::pos_type(lineno);
+    return misc::position(lineno);
 }

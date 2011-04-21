@@ -2,7 +2,7 @@
 
 using namespace test;
 
-std::ostream& test::operator<<(std::ostream& os, misc::pos_type const& pos)
+std::ostream& test::operator<<(std::ostream& os, misc::position const& pos)
 {
     return os << pos.str();
 }

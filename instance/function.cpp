@@ -11,12 +11,12 @@
 
 using namespace inst;
 
-variable Function::def_var(misc::pos_type const& pos, util::sref<type const> vtype, std::string const& name)
+variable Function::def_var(misc::position const& pos, util::sref<type const> vtype, std::string const& name)
 {
     return _symbols.def_var(pos, vtype, name);
 }
 
-variable Function::query_var(misc::pos_type const& pos, std::string const& name) const
+variable Function::query_var(misc::position const& pos, std::string const& name) const
 {
     return _symbols.query_var(pos, name);
 }
@@ -26,7 +26,7 @@ util::sref<type const> Function::get_return_type() const
     return type::BIT_VOID;
 }
 
-void Function::set_return_type(misc::pos_type const& pos, util::sref<type const> return_type)
+void Function::set_return_type(misc::position const& pos, util::sref<type const> return_type)
 {
     if (type::BIT_VOID != return_type) {
         error::conflict_return_type(pos, type::BIT_VOID->name(), return_type->name());
@@ -55,7 +55,7 @@ namespace {
             return _return_type;
         }
 
-        void set_return_type(misc::pos_type const& pos, util::sref<type const> return_type)
+        void set_return_type(misc::position const& pos, util::sref<type const> return_type)
         {
             if (type::BAD_TYPE == _return_type) {
                 _return_type = return_type;

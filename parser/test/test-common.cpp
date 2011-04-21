@@ -3,13 +3,13 @@
 
 using namespace test;
 
-data_tree& data_tree::operator()(misc::pos_type const& pos, node_type const& type, std::string const& str)
+data_tree& data_tree::operator()(misc::position const& pos, node_type const& type, std::string const& str)
 {
     base_type::operator()(type, parser_data(pos), str);
     return *this;
 }
 
-data_tree& data_tree::operator()(misc::pos_type const& pos
+data_tree& data_tree::operator()(misc::position const& pos
                                , int indent
                                , node_type const& type
                                , std::string const& str)
@@ -18,13 +18,13 @@ data_tree& data_tree::operator()(misc::pos_type const& pos
     return *this;
 }
 
-data_tree& data_tree::operator()(misc::pos_type const& pos, node_type const& type)
+data_tree& data_tree::operator()(misc::position const& pos, node_type const& type)
 {
     base_type::operator()(type, parser_data(pos));
     return *this;
 }
 
-data_tree& data_tree::operator()(misc::pos_type const& pos, int indent, node_type const& type)
+data_tree& data_tree::operator()(misc::position const& pos, int indent, node_type const& type)
 {
     base_type::operator()(type, parser_data(indent, pos));
     return *this;

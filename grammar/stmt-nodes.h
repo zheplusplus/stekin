@@ -13,7 +13,7 @@ namespace grammar {
     struct arithmetics
         : public Statement
     {
-        arithmetics(misc::pos_type const& pos, util::sptr<Expression const> e)
+        arithmetics(misc::position const& pos, util::sptr<Expression const> e)
             : Statement(pos)
             , expr(std::move(e))
         {}
@@ -26,7 +26,7 @@ namespace grammar {
     struct branch
         : public Statement
     {
-        branch(misc::pos_type const& pos, util::sptr<Expression const> p, Block c, Block a)
+        branch(misc::position const& pos, util::sptr<Expression const> p, Block c, Block a)
             : Statement(pos)
             , predicate(std::move(p))
             , consequence(std::move(c))
@@ -43,7 +43,7 @@ namespace grammar {
     struct branch_cons_only
         : public Statement
     {
-        branch_cons_only(misc::pos_type const& pos, util::sptr<Expression const> p, Block c)
+        branch_cons_only(misc::position const& pos, util::sptr<Expression const> p, Block c)
             : Statement(pos)
             , predicate(std::move(p))
             , consequence(std::move(c))
@@ -58,7 +58,7 @@ namespace grammar {
     struct branch_alt_only
         : public Statement
     {
-        branch_alt_only(misc::pos_type const& pos, util::sptr<Expression const> p, Block a)
+        branch_alt_only(misc::position const& pos, util::sptr<Expression const> p, Block a)
             : Statement(pos)
             , predicate(std::move(p))
             , alternative(std::move(a))
@@ -73,7 +73,7 @@ namespace grammar {
     struct func_ret
         : public Statement
     {
-        func_ret(misc::pos_type const& pos, util::sptr<Expression const> r)
+        func_ret(misc::position const& pos, util::sptr<Expression const> r)
             : Statement(pos)
             , ret_val(std::move(r))
         {}
@@ -86,7 +86,7 @@ namespace grammar {
     struct func_ret_nothing
         : public Statement
     {
-        explicit func_ret_nothing(misc::pos_type const& pos)
+        explicit func_ret_nothing(misc::position const& pos)
             : Statement(pos)
         {}
 
@@ -96,7 +96,7 @@ namespace grammar {
     struct var_def
         : public Statement
     {
-        var_def(misc::pos_type const& pos, std::string const& n, util::sptr<Expression const> i)
+        var_def(misc::position const& pos, std::string const& n, util::sptr<Expression const> i)
             : Statement(pos)
             , name(n)
             , init(std::move(i))

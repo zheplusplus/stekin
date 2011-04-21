@@ -22,17 +22,17 @@ namespace proto {
             , _symbols(std::move(rhs._symbols))
         {}
     public:
-        util::sptr<Expression const> make_ref(misc::pos_type const& pos, std::string const& name);
-        util::sptr<Expression const> make_call(misc::pos_type const& pos
+        util::sptr<Expression const> make_ref(misc::position const& pos, std::string const& name);
+        util::sptr<Expression const> make_call(misc::position const& pos
                                             , std::string const& name
                                             , std::vector<util::sptr<Expression const>> args) const;
-        util::sptr<Expression const> make_func_reference(misc::pos_type const& pos
+        util::sptr<Expression const> make_func_reference(misc::position const& pos
                                                       , std::string const& name
                                                       , int param_count) const;
 
-        void def_var(misc::pos_type const& pos, std::string const& name);
+        void def_var(misc::position const& pos, std::string const& name);
 
-        util::sref<Function> declare(misc::pos_type const& pos
+        util::sref<Function> declare(misc::position const& pos
                                    , std::string const& name
                                    , std::vector<std::string> const& param_names
                                    , bool hint_void_return);

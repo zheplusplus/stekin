@@ -198,22 +198,22 @@ util::sptr<inst::Expression const> negation::inst(util::sref<inst::scope>) const
     return std::move(nul_inst_expr());
 }
 
-util::sptr<Expression const> scope::make_bool(misc::pos_type const& pos, bool value) const
+util::sptr<Expression const> scope::make_bool(misc::position const& pos, bool value) const
 {
     return std::move(util::mkptr(new BoolLiteral(pos, value)));
 }
 
-util::sptr<Expression const> scope::make_int(misc::pos_type const& pos, mpz_class const& value) const
+util::sptr<Expression const> scope::make_int(misc::position const& pos, mpz_class const& value) const
 {
     return std::move(util::mkptr(new IntLiteral(pos, value)));
 }
 
-util::sptr<Expression const> scope::make_float(misc::pos_type const& pos, mpf_class const& value) const
+util::sptr<Expression const> scope::make_float(misc::position const& pos, mpf_class const& value) const
 {
     return std::move(util::mkptr(new FloatLiteral(pos, value)));
 }
 
-util::sptr<Expression const> scope::make_binary(misc::pos_type const& pos
+util::sptr<Expression const> scope::make_binary(misc::position const& pos
                                              , util::sptr<Expression const> lhs
                                              , std::string const& op
                                              , util::sptr<Expression const> rhs) const
@@ -221,28 +221,28 @@ util::sptr<Expression const> scope::make_binary(misc::pos_type const& pos
     return std::move(util::mkptr(new binary_op(pos, std::move(lhs), op, std::move(rhs))));
 }
 
-util::sptr<Expression const> scope::make_pre_unary(misc::pos_type const& pos
+util::sptr<Expression const> scope::make_pre_unary(misc::position const& pos
                                                 , std::string const& op
                                                 , util::sptr<Expression const> rhs) const
 {
     return std::move(util::mkptr(new pre_unary_op(pos, op, std::move(rhs))));
 }
 
-util::sptr<Expression const> scope::make_conj(misc::pos_type const& pos
+util::sptr<Expression const> scope::make_conj(misc::position const& pos
                                            , util::sptr<Expression const> lhs
                                            , util::sptr<Expression const> rhs) const
 {
     return std::move(util::mkptr(new conjunction(pos, std::move(lhs), std::move(rhs))));
 }
 
-util::sptr<Expression const> scope::make_disj(misc::pos_type const& pos
+util::sptr<Expression const> scope::make_disj(misc::position const& pos
                                            , util::sptr<Expression const> lhs
                                            , util::sptr<Expression const> rhs) const
 {
     return std::move(util::mkptr(new disjunction(pos, std::move(lhs), std::move(rhs))));
 }
 
-util::sptr<Expression const> scope::make_nega(misc::pos_type const& pos, util::sptr<Expression const> rhs) const
+util::sptr<Expression const> scope::make_nega(misc::position const& pos, util::sptr<Expression const> rhs) const
 {
     return std::move(util::mkptr(new negation(pos, std::move(rhs))));
 }
@@ -252,12 +252,12 @@ void scope::add_stmt(util::sptr<Statement const> stmt)
     _Block.add_stmt(std::move(stmt));
 }
 
-util::sptr<Expression const> general_scope::make_ref(misc::pos_type const& pos, std::string const& name)
+util::sptr<Expression const> general_scope::make_ref(misc::position const& pos, std::string const& name)
 {
     return std::move(util::mkptr(new reference(pos, name)));
 }
 
-util::sptr<Expression const> general_scope::make_call(misc::pos_type const& pos
+util::sptr<Expression const> general_scope::make_call(misc::position const& pos
                                                    , std::string const& name
                                                    , std::vector<util::sptr<Expression const>> args) const
 {
@@ -269,7 +269,7 @@ util::sptr<Expression const> general_scope::make_call(misc::pos_type const& pos
     return std::move(util::mkptr(new call(pos, *func_entities.back(), std::move(args))));
 }
 
-util::sptr<Expression const> general_scope::make_func_reference(misc::pos_type const& pos
+util::sptr<Expression const> general_scope::make_func_reference(misc::position const& pos
                                                              , std::string const& name
                                                              , int param_count) const
 {
@@ -281,7 +281,7 @@ util::sptr<Expression const> general_scope::make_func_reference(misc::pos_type c
     return std::move(util::mkptr(new func_reference(pos, *func_entities.back())));
 }
 
-void general_scope::def_var(misc::pos_type const& pos, std::string const& name)
+void general_scope::def_var(misc::position const& pos, std::string const& name)
 {
     data_tree::actual_one()(pos, SCOPE_VAR_DEF, name);
 }
@@ -291,7 +291,7 @@ util::sptr<scope> general_scope::create_branch_scope()
     return std::move(mkscope());
 }
 
-util::sref<Function> general_scope::declare(misc::pos_type const& pos
+util::sref<Function> general_scope::declare(misc::position const& pos
                                           , std::string const& name
                                           , std::vector<std::string> const& param_names
                                           , bool hint_func_ret_void)
@@ -313,7 +313,7 @@ util::sref<Function> general_scope::declare(misc::pos_type const& pos
 
 global_scope::global_scope() {}
 
-Function::Function(misc::pos_type const& p
+Function::Function(misc::position const& p
                  , std::string const& n
                  , std::vector<std::string> const& params
                  , util::sref<symbol_table const>

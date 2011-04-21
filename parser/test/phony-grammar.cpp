@@ -126,13 +126,13 @@ void clause_builder::add_return(int indent_level, util::sptr<Expression const> r
     util::sptr<Expression const>(std::move(ret_val))->compile();
 }
 
-void clause_builder::add_return_nothing(int indent_level, misc::pos_type const& pos)
+void clause_builder::add_return_nothing(int indent_level, misc::position const& pos)
 {
     data_tree::actual_one()(pos, indent_level, RETURN, "");
 }
 
 void clause_builder::add_Function(int indent_level
-                                , misc::pos_type const& pos
+                                , misc::position const& pos
                                 , std::string const& name
                                 , std::vector<std::string> const& params)
 {
@@ -148,7 +148,7 @@ void clause_builder::add_Function(int indent_level
 
 void clause_builder::add_if(int indent_level, util::sptr<Expression const> condition)
 {
-    misc::pos_type pos(condition->pos);
+    misc::position pos(condition->pos);
     data_tree::actual_one()(pos, indent_level, BRANCH_IF)(pos, indent_level, CONDITION_BEGIN);
     util::sptr<Expression const>(std::move(condition))->compile();
     data_tree::actual_one()(pos, indent_level, CONDITION_END);
@@ -156,13 +156,13 @@ void clause_builder::add_if(int indent_level, util::sptr<Expression const> condi
 
 void clause_builder::add_ifnot(int indent_level, util::sptr<Expression const> condition)
 {
-    misc::pos_type pos(condition->pos);
+    misc::position pos(condition->pos);
     data_tree::actual_one()(pos, indent_level, BRANCH_IFNOT)(pos, indent_level, CONDITION_BEGIN);
     util::sptr<Expression const>(std::move(condition))->compile();
     data_tree::actual_one()(pos, indent_level, CONDITION_END);
 }
 
-void clause_builder::add_else(int indent_level, misc::pos_type const& pos)
+void clause_builder::add_else(int indent_level, misc::position const& pos)
 {
     data_tree::actual_one()(pos, indent_level, BRANCH_ELSE);
 }

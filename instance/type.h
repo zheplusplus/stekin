@@ -18,7 +18,7 @@ namespace inst {
         virtual std::string name() const = 0;
     public:
         virtual util::sptr<inst::Expression const> call_func(
-                  misc::pos_type const& call_pos
+                  misc::position const& call_pos
                 , int level
                 , int stack_offset
                 , std::vector<util::sref<inst::type const>> const& arg_types
@@ -36,7 +36,7 @@ namespace inst {
         virtual bool lt_as_func_reference(util::sref<proto::Function> lhs_func
                                         , std::map<std::string, variable const> const& rhs_cr) const = 0;
     public:
-        virtual void check_condition_type(misc::pos_type const& pos) const;
+        virtual void check_condition_type(misc::position const& pos) const;
     protected:
         explicit type(int s)
             : size(s)
@@ -63,7 +63,7 @@ namespace inst {
         std::string name() const;
     public:
         util::sptr<inst::Expression const> call_func(
-                  misc::pos_type const& call_pos
+                  misc::position const& call_pos
                 , int
                 , int
                 , std::vector<util::sref<inst::type const>> const&
@@ -76,7 +76,7 @@ namespace inst {
         bool lt_as_func_reference(util::sref<proto::Function>
                                 , std::map<std::string, variable const> const&) const;
     public:
-        void check_condition_type(misc::pos_type const& pos) const;
+        void check_condition_type(misc::position const& pos) const;
     };
 
 }

@@ -42,7 +42,7 @@ bool type::lt_as_func_reference(util::sref<proto::Function>, std::map<std::strin
     return false;
 }
 
-void type::check_condition_type(misc::pos_type const& pos) const
+void type::check_condition_type(misc::position const& pos) const
 {
     error::cond_not_bool(pos, name());
 }
@@ -83,7 +83,7 @@ bool built_in_primitive::lt_as_func_reference(util::sref<proto::Function>
     return false;
 }
 
-void built_in_primitive::check_condition_type(misc::pos_type const& pos) const
+void built_in_primitive::check_condition_type(misc::position const& pos) const
 {
     if (&BOOL != this && &BAD_TYPE_DEF != this) {
         type::check_condition_type(pos);
@@ -91,7 +91,7 @@ void built_in_primitive::check_condition_type(misc::pos_type const& pos) const
 }
 
 util::sptr<inst::Expression const> built_in_primitive::call_func(
-                  misc::pos_type const& call_pos
+                  misc::position const& call_pos
                 , int
                 , int
                 , std::vector<util::sref<inst::type const>> const&

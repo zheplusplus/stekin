@@ -38,8 +38,8 @@ namespace inst {
             , _external_defs(std::move(rhs._external_defs))
         {}
     public:
-        variable def_var(misc::pos_type const& pos, util::sref<type const> vtype, std::string const& name);
-        variable query_var(misc::pos_type const& pos, std::string const& name) const;
+        variable def_var(misc::position const& pos, util::sref<type const> vtype, std::string const& name);
+        variable query_var(misc::position const& pos, std::string const& name) const;
     public:
         int const level;
     public:

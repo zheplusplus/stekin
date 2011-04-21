@@ -8,7 +8,7 @@
 
 using namespace inst;
 
-conjunction::conjunction(misc::pos_type const& p, util::sptr<Expression const> l, util::sptr<Expression const> r)
+conjunction::conjunction(misc::position const& p, util::sptr<Expression const> l, util::sptr<Expression const> r)
     : lhs(std::move(l))
     , rhs(std::move(r))
 {
@@ -16,7 +16,7 @@ conjunction::conjunction(misc::pos_type const& p, util::sptr<Expression const> l
     rhs->typeof()->check_condition_type(p);
 }
 
-disjunction::disjunction(misc::pos_type const& p, util::sptr<Expression const> l, util::sptr<Expression const> r)
+disjunction::disjunction(misc::position const& p, util::sptr<Expression const> l, util::sptr<Expression const> r)
     : lhs(std::move(l))
     , rhs(std::move(r))
 {
@@ -24,7 +24,7 @@ disjunction::disjunction(misc::pos_type const& p, util::sptr<Expression const> l
     rhs->typeof()->check_condition_type(p);
 }
 
-negation::negation(misc::pos_type const& p, util::sptr<Expression const> r)
+negation::negation(misc::position const& p, util::sptr<Expression const> r)
     : rhs(std::move(r))
 {
     rhs->typeof()->check_condition_type(p);

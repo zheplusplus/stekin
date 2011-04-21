@@ -8,29 +8,29 @@
 namespace test {
 
     struct consq_branch_terminated_rec {
-        explicit consq_branch_terminated_rec(misc::pos_type const& ps)
+        explicit consq_branch_terminated_rec(misc::position const& ps)
             : pos(ps)
         {}
 
-        misc::pos_type const pos;
+        misc::position const pos;
     };
 
     struct alter_branch_terminated_rec {
-        explicit alter_branch_terminated_rec(misc::pos_type const& ps)
+        explicit alter_branch_terminated_rec(misc::position const& ps)
             : pos(ps)
         {}
 
-        misc::pos_type const pos;
+        misc::position const pos;
     };
 
     struct both_branches_terminated_rec {
-        both_branches_terminated_rec(misc::pos_type const& consq_ps, misc::pos_type const& alter_ps)
+        both_branches_terminated_rec(misc::position const& consq_ps, misc::position const& alter_ps)
             : consq_pos(consq_ps)
             , alter_pos(alter_ps)
         {}
 
-        misc::pos_type const consq_pos;
-        misc::pos_type const alter_pos;
+        misc::position const consq_pos;
+        misc::position const alter_pos;
     };
 
     void clear_warn();

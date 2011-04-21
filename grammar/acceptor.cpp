@@ -6,7 +6,7 @@
 
 using namespace grammar;
 
-void acceptor::accept_else(misc::pos_type const& else_pos)
+void acceptor::accept_else(misc::position const& else_pos)
 {
     error::else_not_match_if(else_pos);
 }
@@ -35,13 +35,13 @@ void if_acceptor::deliver_to(util::sref<acceptor> acc)
     }
 }
 
-void if_acceptor::accept_else(misc::pos_type const& else_pos)
+void if_acceptor::accept_else(misc::position const& else_pos)
 {
     if (_else_matched()) {
         error::if_already_match_else(*_last_else_pos, else_pos);
     } else {
         _current_branch = &_alternative;
-        _last_else_pos.reset(new misc::pos_type(else_pos));
+        _last_else_pos.reset(new misc::position(else_pos));
     }
 }
 

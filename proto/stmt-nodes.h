@@ -10,7 +10,7 @@ namespace proto {
     struct arithmetics
         : public Statement
     {
-        arithmetics(misc::pos_type const& ps, util::sptr<Expression const> e)
+        arithmetics(misc::position const& ps, util::sptr<Expression const> e)
             : Statement(ps)
             , expr(std::move(e))
         {}
@@ -23,7 +23,7 @@ namespace proto {
     struct branch
         : public Statement
     {
-        branch(misc::pos_type const& ps, util::sptr<Expression const> p, Block c, Block a)
+        branch(misc::position const& ps, util::sptr<Expression const> p, Block c, Block a)
             : Statement(ps)
             , _predicate(std::move(p))
             , _consequence(std::move(c))
@@ -40,7 +40,7 @@ namespace proto {
     struct var_def
         : public Statement
     {
-        var_def(misc::pos_type const& ps, std::string const& n, util::sptr<Expression const> i)
+        var_def(misc::position const& ps, std::string const& n, util::sptr<Expression const> i)
             : Statement(ps)
             , name(n)
             , init(std::move(i))
@@ -55,7 +55,7 @@ namespace proto {
     struct func_ret
         : public Statement
     {
-        func_ret(misc::pos_type const& ps, util::sptr<Expression const> r)
+        func_ret(misc::position const& ps, util::sptr<Expression const> r)
             : Statement(ps)
             , ret_val(std::move(r))
         {}
@@ -68,7 +68,7 @@ namespace proto {
     struct func_ret_nothing
         : public Statement
     {
-        explicit func_ret_nothing(misc::pos_type const& ps)
+        explicit func_ret_nothing(misc::position const& ps)
             : Statement(ps)
         {}
 

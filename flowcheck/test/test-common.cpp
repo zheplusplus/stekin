@@ -9,19 +9,19 @@ using namespace test;
 
 util::sref<inst::scope> const test::nul_inst_scope(NULL);
 
-data_tree& data_tree::operator()(misc::pos_type const& pos, node_type const& type, std::string const& str)
+data_tree& data_tree::operator()(misc::position const& pos, node_type const& type, std::string const& str)
 {
     base_type::operator()(type, flowcheck_data(pos), str);
     return *this;
 }
 
-data_tree& data_tree::operator()(misc::pos_type const& pos, node_type const& type)
+data_tree& data_tree::operator()(misc::position const& pos, node_type const& type)
 {
     base_type::operator()(type, flowcheck_data(pos));
     return *this;
 }
 
-data_tree& data_tree::operator()(misc::pos_type const& pos
+data_tree& data_tree::operator()(misc::position const& pos
                                , node_type const& type
                                , std::string const& str
                                , int func_arg_size

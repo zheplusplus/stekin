@@ -9,7 +9,7 @@ namespace inst {
     struct func_reference_type
         : public type
     {
-        func_reference_type(misc::pos_type const& reference_pos
+        func_reference_type(misc::position const& reference_pos
                           , util::sref<proto::Function> func_proto
                           , int level
                           , std::map<std::string, variable const> const& cr)
@@ -22,7 +22,7 @@ namespace inst {
         std::string exported_name() const;
         std::string name() const;
     public:
-        util::sptr<inst::Expression const> call_func(misc::pos_type const&
+        util::sptr<inst::Expression const> call_func(misc::position const&
                                                   , int level
                                                   , int stack_offset
                                                   , std::vector<util::sref<inst::type const>> const& arg_types
@@ -44,7 +44,7 @@ namespace inst {
         util::sref<proto::Function> const _func_proto;
     private:
         static std::map<std::string, variable const> _enclose_reference(
-                        misc::pos_type const& pos
+                        misc::position const& pos
                       , int level
                       , std::map<std::string, variable const> const& cr);
         static int _calc_size(std::map<std::string, variable const> const& cr);

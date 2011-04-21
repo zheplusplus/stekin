@@ -20,10 +20,10 @@ namespace parser {
     };
 
     struct identifier {
-        misc::pos_type const pos;
+        misc::position const pos;
         std::string const id;
 
-        identifier(misc::pos_type const& ps, char const* id_text)
+        identifier(misc::position const& ps, char const* id_text)
             : pos(ps)
             , id(id_text)
         {}

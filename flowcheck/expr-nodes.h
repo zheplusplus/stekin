@@ -12,7 +12,7 @@ namespace flchk {
     struct pre_unary_op
         : public Expression
     {
-        pre_unary_op(misc::pos_type const& pos, std::string const& op, util::sptr<Expression const> r)
+        pre_unary_op(misc::position const& pos, std::string const& op, util::sptr<Expression const> r)
             : Expression(pos)
             , op_img(op)
             , rhs(std::move(r))
@@ -31,7 +31,7 @@ namespace flchk {
     struct binary_op
         : public Expression
     {
-        binary_op(misc::pos_type const& pos
+        binary_op(misc::position const& pos
                 , util::sptr<Expression const> l
                 , std::string const& op
                 , util::sptr<Expression const> r)
@@ -55,7 +55,7 @@ namespace flchk {
     struct conjunction
         : public Expression
     {
-        conjunction(misc::pos_type const& pos, util::sptr<Expression const> l, util::sptr<Expression const> r)
+        conjunction(misc::position const& pos, util::sptr<Expression const> l, util::sptr<Expression const> r)
             : Expression(pos)
             , lhs(std::move(l))
             , rhs(std::move(r))
@@ -74,7 +74,7 @@ namespace flchk {
     struct disjunction
         : public Expression
     {
-        disjunction(misc::pos_type const& pos, util::sptr<Expression const> l, util::sptr<Expression const> r)
+        disjunction(misc::position const& pos, util::sptr<Expression const> l, util::sptr<Expression const> r)
             : Expression(pos)
             , lhs(std::move(l))
             , rhs(std::move(r))
@@ -93,7 +93,7 @@ namespace flchk {
     struct negation
         : public Expression
     {
-        negation(misc::pos_type const& pos, util::sptr<Expression const> r)
+        negation(misc::position const& pos, util::sptr<Expression const> r)
             : Expression(pos)
             , rhs(std::move(r))
         {}
@@ -110,7 +110,7 @@ namespace flchk {
     struct reference
         : public Expression
     {
-        reference(misc::pos_type const& pos, std::string const& n)
+        reference(misc::position const& pos, std::string const& n)
             : Expression(pos)
             , name(n)
         {}
@@ -125,7 +125,7 @@ namespace flchk {
     struct BoolLiteral
         : public Expression
     {
-        BoolLiteral(misc::pos_type const& pos, bool v)
+        BoolLiteral(misc::position const& pos, bool v)
             : Expression(pos)
             , value(v)
         {}
@@ -136,20 +136,20 @@ namespace flchk {
         std::string type_name() const;
         util::sptr<Expression const> fold() const;
 
-        util::sptr<Expression const> operate(misc::pos_type const& op_pos
+        util::sptr<Expression const> operate(misc::position const& op_pos
                                           , std::string const& op_img
                                           , mpz_class const&) const;
-        util::sptr<Expression const> operate(misc::pos_type const& op_pos
+        util::sptr<Expression const> operate(misc::position const& op_pos
                                           , std::string const& op_img
                                           , mpf_class const&) const;
-        util::sptr<Expression const> operate(misc::pos_type const& op_pos
+        util::sptr<Expression const> operate(misc::position const& op_pos
                                           , std::string const& op_img
                                           , bool rhs) const;
 
-        util::sptr<Expression const> as_rhs(misc::pos_type const& op_pos
+        util::sptr<Expression const> as_rhs(misc::position const& op_pos
                                          , std::string const& op_img
                                          , util::sptr<Expression const> lhs) const;
-        util::sptr<Expression const> as_rhs(misc::pos_type const& op_pos, std::string const& op_img) const;
+        util::sptr<Expression const> as_rhs(misc::position const& op_pos, std::string const& op_img) const;
 
         bool const value;
     public:
@@ -159,12 +159,12 @@ namespace flchk {
     struct IntLiteral
         : public Expression
     {
-        IntLiteral(misc::pos_type const& pos, std::string const& image)
+        IntLiteral(misc::position const& pos, std::string const& image)
             : Expression(pos)
             , value(image)
         {}
 
-        IntLiteral(misc::pos_type const& pos, mpz_class const& v)
+        IntLiteral(misc::position const& pos, mpz_class const& v)
             : Expression(pos)
             , value(v)
         {}
@@ -175,20 +175,20 @@ namespace flchk {
         std::string type_name() const;
         util::sptr<Expression const> fold() const;
 
-        util::sptr<Expression const> operate(misc::pos_type const& op_pos
+        util::sptr<Expression const> operate(misc::position const& op_pos
                                           , std::string const& op_img
                                           , mpz_class const& rhs) const;
-        util::sptr<Expression const> operate(misc::pos_type const& op_pos
+        util::sptr<Expression const> operate(misc::position const& op_pos
                                           , std::string const& op_img
                                           , mpf_class const& rhs) const;
-        util::sptr<Expression const> operate(misc::pos_type const& op_pos
+        util::sptr<Expression const> operate(misc::position const& op_pos
                                           , std::string const& op_img
                                           , bool) const;
 
-        util::sptr<Expression const> as_rhs(misc::pos_type const& op_pos
+        util::sptr<Expression const> as_rhs(misc::position const& op_pos
                                          , std::string const& op_img
                                          , util::sptr<Expression const> lhs) const;
-        util::sptr<Expression const> as_rhs(misc::pos_type const& op_pos, std::string const& op_img) const;
+        util::sptr<Expression const> as_rhs(misc::position const& op_pos, std::string const& op_img) const;
 
         mpz_class const value;
     };
@@ -196,12 +196,12 @@ namespace flchk {
     struct FloatLiteral
         : public Expression
     {
-        FloatLiteral(misc::pos_type const& pos, std::string const& image)
+        FloatLiteral(misc::position const& pos, std::string const& image)
             : Expression(pos)
             , value(image)
         {}
 
-        FloatLiteral(misc::pos_type const& pos, mpf_class const& v)
+        FloatLiteral(misc::position const& pos, mpf_class const& v)
             : Expression(pos)
             , value(v)
         {}
@@ -212,20 +212,20 @@ namespace flchk {
         std::string type_name() const;
         util::sptr<Expression const> fold() const;
 
-        util::sptr<Expression const> operate(misc::pos_type const& op_pos
+        util::sptr<Expression const> operate(misc::position const& op_pos
                                           , std::string const& op_img
                                           , mpz_class const& rhs) const;
-        util::sptr<Expression const> operate(misc::pos_type const& op_pos
+        util::sptr<Expression const> operate(misc::position const& op_pos
                                           , std::string const& op_img
                                           , mpf_class const& rhs) const;
-        util::sptr<Expression const> operate(misc::pos_type const& op_pos
+        util::sptr<Expression const> operate(misc::position const& op_pos
                                           , std::string const& op_img
                                           , bool) const;
 
-        util::sptr<Expression const> as_rhs(misc::pos_type const& op_pos
+        util::sptr<Expression const> as_rhs(misc::position const& op_pos
                                          , std::string const& op_img
                                          , util::sptr<Expression const> lhs) const;
-        util::sptr<Expression const> as_rhs(misc::pos_type const& op_pos, std::string const& op_img) const;
+        util::sptr<Expression const> as_rhs(misc::position const& op_pos, std::string const& op_img) const;
 
         mpf_class const value;
     };
@@ -233,7 +233,7 @@ namespace flchk {
     struct call
         : public Expression
     {
-        call(misc::pos_type const& pos, std::string const& n, std::vector<util::sptr<Expression const>> a)
+        call(misc::position const& pos, std::string const& n, std::vector<util::sptr<Expression const>> a)
             : Expression(pos)
             , name(n)
             , args(std::move(a))
@@ -250,7 +250,7 @@ namespace flchk {
     struct func_reference
         : public Expression
     {
-        func_reference(misc::pos_type const& pos, std::string const& n, int pc)
+        func_reference(misc::position const& pos, std::string const& n, int pc)
             : Expression(pos)
             , name(n)
             , param_count(pc)

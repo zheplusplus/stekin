@@ -20,7 +20,7 @@ struct ExprNodesTest
 
 TEST_F(ExprNodesTest, Literals)
 {
-    misc::pos_type pos(1);
+    misc::position pos(1);
     proto::BoolLiteral bool0(pos, true);
     proto::BoolLiteral bool1(pos, false);
     proto::IntLiteral int0(pos, 0);
@@ -48,7 +48,7 @@ TEST_F(ExprNodesTest, Literals)
 
 TEST_F(ExprNodesTest, Reference)
 {
-    misc::pos_type pos(2);
+    misc::position pos(2);
     proto::reference ref0(pos, "ushiro");
     proto::reference ref1(pos, "moji");
     ref0.inst(*inst_scope)->typeof();
@@ -65,7 +65,7 @@ TEST_F(ExprNodesTest, Reference)
 
 TEST_F(ExprNodesTest, Operations)
 {
-    misc::pos_type pos(3);
+    misc::position pos(3);
     proto::binary_op bin(pos
                        , std::move(util::mkptr(new proto::IntLiteral(pos, 20110122)))
                        , "+"
@@ -99,7 +99,7 @@ TEST_F(ExprNodesTest, Operations)
 
 TEST_F(ExprNodesTest, Logic)
 {
-    misc::pos_type pos(4);
+    misc::position pos(4);
     proto::conjunction conj(pos
                           , std::move(util::mkptr(new proto::BoolLiteral(pos, true)))
                           , std::move(util::mkptr(new proto::BoolLiteral(pos, false))));

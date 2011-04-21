@@ -8,7 +8,7 @@
 
 using namespace inst;
 
-static variable const BAD_REF(misc::pos_type(0), type::BIT_VOID, 0, 0);
+static variable const BAD_REF(misc::position(0), type::BIT_VOID, 0, 0);
 
 symbol_table::symbol_table(int ext_lvl
                          , std::list<arg_name_type_pair> const& args
@@ -21,7 +21,7 @@ symbol_table::symbol_table(int ext_lvl
                 , args.end()
                 , [&](arg_name_type_pair const& arg_info)
                   {
-                      _args.push_back(def_var(misc::pos_type(0), arg_info.atype, arg_info.name));
+                      _args.push_back(def_var(misc::position(0), arg_info.atype, arg_info.name));
                   });
 }
 
@@ -37,7 +37,7 @@ static int calc_offset_on_align(int base, int new_size)
     return base - mod + platform::WORD_LENGTH_INBYTE;
 }
 
-variable symbol_table::def_var(misc::pos_type const& pos
+variable symbol_table::def_var(misc::position const& pos
                              , util::sref<type const> var_type
                              , std::string const& name)
 {
@@ -47,7 +47,7 @@ variable symbol_table::def_var(misc::pos_type const& pos
     return insert_result.first->second;
 }
 
-variable symbol_table::query_var(misc::pos_type const& pos, std::string const& name) const
+variable symbol_table::query_var(misc::position const& pos, std::string const& name) const
 {
     auto find_result = _local_defs.find(name);
     if (_local_defs.end() != find_result) {

@@ -7,7 +7,7 @@
 
 namespace test {
 
-    std::ostream& operator<<(std::ostream& os, misc::pos_type const& pos); 
+    std::ostream& operator<<(std::ostream& os, misc::position const& pos); 
 
 }
 

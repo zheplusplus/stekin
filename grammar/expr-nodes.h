@@ -10,7 +10,7 @@ namespace grammar {
     struct pre_unary_op
         : public Expression
     {
-        pre_unary_op(misc::pos_type const& pos, std::string const& op, util::sptr<Expression const> r)
+        pre_unary_op(misc::position const& pos, std::string const& op, util::sptr<Expression const> r)
             : Expression(pos)
             , op_img(op)
             , rhs(std::move(r))
@@ -25,7 +25,7 @@ namespace grammar {
     struct binary_op
         : public Expression
     {
-        binary_op(misc::pos_type const& pos
+        binary_op(misc::position const& pos
                 , util::sptr<Expression const> l
                 , std::string const& op
                 , util::sptr<Expression const> r)
@@ -45,7 +45,7 @@ namespace grammar {
     struct conjunction
         : public Expression
     {
-        conjunction(misc::pos_type const& pos, util::sptr<Expression const> l, util::sptr<Expression const> r)
+        conjunction(misc::position const& pos, util::sptr<Expression const> l, util::sptr<Expression const> r)
             : Expression(pos)
             , lhs(std::move(l))
             , rhs(std::move(r))
@@ -60,7 +60,7 @@ namespace grammar {
     struct disjunction
         : public Expression
     {
-        disjunction(misc::pos_type const& pos, util::sptr<Expression const> l, util::sptr<Expression const> r)
+        disjunction(misc::position const& pos, util::sptr<Expression const> l, util::sptr<Expression const> r)
             : Expression(pos)
             , lhs(std::move(l))
             , rhs(std::move(r))
@@ -75,7 +75,7 @@ namespace grammar {
     struct negation
         : public Expression
     {
-        negation(misc::pos_type const& pos, util::sptr<Expression const> r)
+        negation(misc::position const& pos, util::sptr<Expression const> r)
             : Expression(pos)
             , rhs(std::move(r))
         {}
@@ -88,7 +88,7 @@ namespace grammar {
     struct reference
         : public Expression
     {
-        reference(misc::pos_type const& pos, std::string const& n)
+        reference(misc::position const& pos, std::string const& n)
             : Expression(pos)
             , name(n)
         {}
@@ -101,7 +101,7 @@ namespace grammar {
     struct BoolLiteral
         : public Expression
     {
-        BoolLiteral(misc::pos_type const& pos, bool val)
+        BoolLiteral(misc::position const& pos, bool val)
             : Expression(pos)
             , value(val)
         {}
@@ -114,7 +114,7 @@ namespace grammar {
     struct IntLiteral
         : public Expression
     {
-        IntLiteral(misc::pos_type const& pos, std::string const& val)
+        IntLiteral(misc::position const& pos, std::string const& val)
             : Expression(pos)
             , value(val)
         {}
@@ -127,7 +127,7 @@ namespace grammar {
     struct FloatLiteral
         : public Expression
     {
-        FloatLiteral(misc::pos_type const& pos, std::string const& val)
+        FloatLiteral(misc::position const& pos, std::string const& val)
             : Expression(pos)
             , value(val)
         {}
@@ -140,7 +140,7 @@ namespace grammar {
     struct call
         : public Expression
     {
-        call(misc::pos_type const& pos, std::string const& n, std::vector<util::sptr<Expression const>> a)
+        call(misc::position const& pos, std::string const& n, std::vector<util::sptr<Expression const>> a)
             : Expression(pos)
             , name(n)
             , args(std::move(a))
@@ -155,7 +155,7 @@ namespace grammar {
     struct func_reference
         : public Expression
     {
-        func_reference(misc::pos_type const& pos, std::string const& n, int pc)
+        func_reference(misc::position const& pos, std::string const& n, int pc)
             : Expression(pos)
             , name(n)
             , param_count(pc)

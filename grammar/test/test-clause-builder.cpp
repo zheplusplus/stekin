@@ -18,8 +18,8 @@ typedef grammar_test ClauseBuilderTest;
 
 TEST_F(ClauseBuilderTest, AcceptorStackNext)
 {
-    misc::pos_type item_pos(1);
-    misc::pos_type acc_pos(100);
+    misc::position item_pos(1);
+    misc::position acc_pos(100);
 
     grammar::acceptor_stack stack0;
     stack0.next_stmt(0, std::move(
@@ -50,8 +50,8 @@ TEST_F(ClauseBuilderTest, AcceptorStackNext)
         (BLOCK_END)
     ;
 
-    misc::pos_type err_pos0(101);
-    misc::pos_type err_pos1(102);
+    misc::position err_pos0(101);
+    misc::position err_pos1(102);
     ASSERT_FALSE(error::has_error());
     stack0.next_stmt(1, std::move(
                 util::mkptr(new grammar::arithmetics(err_pos0, std::move(
@@ -71,8 +71,8 @@ TEST_F(ClauseBuilderTest, AcceptorStackNext)
 
 TEST_F(ClauseBuilderTest, AcceptorStackAdd)
 {
-    misc::pos_type item_pos(2);
-    misc::pos_type acc_pos(100);
+    misc::position item_pos(2);
+    misc::position acc_pos(100);
 
     grammar::acceptor_stack stack0;
     stack0.next_stmt(0, std::move(
@@ -126,9 +126,9 @@ TEST_F(ClauseBuilderTest, AcceptorStackAdd)
 
 TEST_F(ClauseBuilderTest, AcceptorStackMatchElse)
 {
-    misc::pos_type item_pos(3);
-    misc::pos_type acc_pos(210);
-    misc::pos_type else_pos(211);
+    misc::position item_pos(3);
+    misc::position acc_pos(210);
+    misc::position else_pos(211);
 
     grammar::acceptor_stack stack0;
     stack0.next_stmt(0, std::move(
@@ -188,9 +188,9 @@ TEST_F(ClauseBuilderTest, AcceptorStackMatchElse)
 
 TEST_F(ClauseBuilderTest, ClauseBuilder)
 {
-    misc::pos_type item_pos0(4);
-    misc::pos_type item_pos1(5);
-    misc::pos_type item_pos2(6);
+    misc::position item_pos0(4);
+    misc::position item_pos1(5);
+    misc::position item_pos2(6);
 
     grammar::clause_builder builder0;
     builder0.add_if(0, std::move(util::mkptr(new grammar::BoolLiteral(item_pos0, true))));

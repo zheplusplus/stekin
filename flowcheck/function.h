@@ -11,7 +11,7 @@
 namespace flchk {
 
     struct Function {
-        Function(misc::pos_type const& ps
+        Function(misc::position const& ps
                , std::string const& func_name
                , std::vector<std::string> const& params
                , Block func_body
@@ -26,7 +26,7 @@ namespace flchk {
         void compile(util::sref<proto::scope> scope) const;
         util::sref<proto::Function> declare(util::sref<proto::scope> scope) const;
 
-        misc::pos_type const pos;
+        misc::position const pos;
         std::string const name;
         std::vector<std::string> const param_names;
         Block const body;

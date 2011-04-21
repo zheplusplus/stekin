@@ -7,27 +7,27 @@
 
 using namespace flchk;
 
-void accumulator::add_func_ret(misc::pos_type const& pos, util::sptr<Expression const> ret_val)
+void accumulator::add_func_ret(misc::position const& pos, util::sptr<Expression const> ret_val)
 {
     _check_not_terminated(pos);
     _set_terminated_not_by_void_return(pos);
     _Block.add_stmt(std::move(util::mkptr(new func_ret(pos, std::move(ret_val)))));
 }
 
-void accumulator::add_func_ret_nothing(misc::pos_type const& pos)
+void accumulator::add_func_ret_nothing(misc::position const& pos)
 {
     _check_not_terminated(pos);
     _set_terminated_by_void_return(pos);
     _Block.add_stmt(std::move(util::mkptr(new func_ret_nothing(pos))));
 }
 
-void accumulator::add_arith(misc::pos_type const& pos, util::sptr<Expression const> expr)
+void accumulator::add_arith(misc::position const& pos, util::sptr<Expression const> expr)
 {
     _check_not_terminated(pos);
     _Block.add_stmt(std::move(util::mkptr(new arithmetics(pos, std::move(expr)))));
 }
 
-void accumulator::add_branch(misc::pos_type const& pos
+void accumulator::add_branch(misc::position const& pos
                            , util::sptr<Expression const> predicate
                            , accumulator consequence
                            , accumulator alternative)
@@ -42,7 +42,7 @@ void accumulator::add_branch(misc::pos_type const& pos
                                                    , std::move(alternative._Block)))));
 }
 
-void accumulator::add_branch(misc::pos_type const& pos
+void accumulator::add_branch(misc::position const& pos
                            , util::sptr<Expression const> predicate
                            , accumulator consequence)
 {
@@ -54,7 +54,7 @@ void accumulator::add_branch(misc::pos_type const& pos
                                                    , std::move(Block())))));
 }
 
-void accumulator::add_branch_alt_only(misc::pos_type const& pos
+void accumulator::add_branch_alt_only(misc::position const& pos
                                     , util::sptr<Expression const> predicate
                                     , accumulator alternative)
 {
@@ -72,13 +72,13 @@ void accumulator::add_Block(accumulator b)
     _set_self_terminated(std::move(b));
 }
 
-void accumulator::def_var(misc::pos_type const& pos, std::string const& name, util::sptr<Expression const> init)
+void accumulator::def_var(misc::position const& pos, std::string const& name, util::sptr<Expression const> init)
 {
     _check_not_terminated(pos);
     _Block.add_stmt(std::move(util::mkptr(new var_def(pos, name, std::move(init)))));
 }
 
-void accumulator::def_func(misc::pos_type const& pos
+void accumulator::def_func(misc::position const& pos
                          , std::string const& name
                          , std::vector<std::string> const& param_names
                          , accumulator body)
@@ -95,15 +95,15 @@ Block accumulator::deliver()
     return std::move(_Block);
 }
 
-void accumulator::_set_terminated_by_void_return(misc::pos_type const& pos)
+void accumulator::_set_terminated_by_void_return(misc::position const& pos)
 {
     _set_terminated_not_by_void_return(pos);
     _contains_void_return = true;
 }
 
-void accumulator::_set_terminated_not_by_void_return(misc::pos_type const& pos)
+void accumulator::_set_terminated_not_by_void_return(misc::position const& pos)
 {
-    _termination_pos.reset(new misc::pos_type(pos));
+    _termination_pos.reset(new misc::position(pos));
 }
 
 void accumulator::_set_termination_by_sub_accumulator(accumulator const& sub)
@@ -118,14 +118,14 @@ void accumulator::_check_branches_temination(accumulator const& consequence, acc
     }
 }
 
-void accumulator::_check_not_terminated(misc::pos_type const& pos)
+void accumulator::_check_not_terminated(misc::position const& pos)
 {
     if (_terminated()) {
         _report_terminated(pos);
     }
 }
 
-void accumulator::_report_terminated(misc::pos_type const& pos)
+void accumulator::_report_terminated(misc::position const& pos)
 {
     if (!_error_reported) {
         error::flow_terminated(pos, _termination_pos.cp());

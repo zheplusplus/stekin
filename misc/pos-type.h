@@ -5,16 +5,16 @@
 
 namespace misc {
 
-    struct pos_type {
+    struct position {
         int const line;
 
-        explicit pos_type(int l)
+        explicit position(int l)
             : line(l)
         {}
 
         std::string str() const;
 
-        bool operator==(pos_type const& rhs) const;
+        bool operator==(position const& rhs) const;
     };
 
 }

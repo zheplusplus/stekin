@@ -14,7 +14,7 @@ void Block::add_stmt(util::sptr<Statement const> stmt)
     _stmts.push_back(std::move(stmt));
 }
 
-void Block::def_func(misc::pos_type const& pos
+void Block::def_func(misc::position const& pos
                    , std::string const& name
                    , std::vector<std::string> const& param_names
                    , Block body

@@ -12,15 +12,15 @@ namespace test {
     extern util::sref<proto::scope> const nulscope;
 
     struct grammar_data {
-        misc::pos_type const pos;
+        misc::position const pos;
         int const func_arg_size;
 
-        grammar_data(misc::pos_type const& ps, int arg_size)
+        grammar_data(misc::position const& ps, int arg_size)
             : pos(ps)
             , func_arg_size(arg_size)
         {}
 
-        explicit grammar_data(misc::pos_type const ps)
+        explicit grammar_data(misc::position const ps)
             : pos(ps)
             , func_arg_size(-1)
         {}
@@ -45,13 +45,13 @@ namespace test {
     {
         typedef data_tree_templ<grammar_data, data_tree> base_type;
 
-        data_tree& operator()(misc::pos_type const& pos, node_type const& type, std::string const& str);
-        data_tree& operator()(misc::pos_type const& pos
+        data_tree& operator()(misc::position const& pos, node_type const& type, std::string const& str);
+        data_tree& operator()(misc::position const& pos
                             , node_type const& type
                             , std::string const& str
                             , int func_arg_size);
         data_tree& operator()(node_type const& type);
-        data_tree& operator()(misc::pos_type const& pos, node_type const& type);
+        data_tree& operator()(misc::position const& pos, node_type const& type);
     };
 
     extern std::string const VAR_DEF_FILTERED;

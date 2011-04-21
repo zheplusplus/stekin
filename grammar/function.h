@@ -11,7 +11,7 @@
 namespace grammar {
 
     struct Function {
-        Function(misc::pos_type const& ps
+        Function(misc::position const& ps
                , std::string const& func_name
                , std::vector<std::string> const& params
                , Block func_body)
@@ -23,7 +23,7 @@ namespace grammar {
 
         void compile(util::sref<flchk::filter> filter) const;
 
-        misc::pos_type const pos;
+        misc::position const pos;
         std::string const name;
         std::vector<std::string> const param_names;
         Block const body;

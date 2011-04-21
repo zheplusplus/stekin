@@ -22,8 +22,8 @@ namespace parser {
     extern grammar::clause_builder builder;
     extern int last_indent;
 
-    misc::pos_type here();
-    misc::pos_type here(int lineno);
+    misc::position here();
+    misc::position here(int lineno);
 
 }
 

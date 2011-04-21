@@ -10,19 +10,19 @@
 namespace inst {
 
     struct variable {
-        misc::pos_type const def_pos;
+        misc::position const def_pos;
         util::sref<type const> const vtype;
         int const stack_offset;
         int const level;
 
-        variable(misc::pos_type const& pos, util::sref<type const> t, int offset, int lvl)
+        variable(misc::position const& pos, util::sref<type const> t, int offset, int lvl)
             : def_pos(pos)
             , vtype(t)
             , stack_offset(offset)
             , level(lvl)
         {}
 
-        util::sptr<inst::Expression const> call_func(misc::pos_type const& call_pos
+        util::sptr<inst::Expression const> call_func(misc::position const& call_pos
                                                   , std::vector<util::sref<inst::type const>> const& arg_types
                                                   , std::vector<util::sptr<Expression const>> args) const;
 

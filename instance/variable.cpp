@@ -27,7 +27,7 @@ bool variable::operator!=(variable const& rhs) const
     return !operator==(rhs);
 }
 
-util::sptr<inst::Expression const> variable::call_func(misc::pos_type const& call_pos
+util::sptr<inst::Expression const> variable::call_func(misc::position const& call_pos
                                                     , std::vector<util::sref<inst::type const>> const& arg_types
                                                     , std::vector<util::sptr<Expression const>> args) const
 {

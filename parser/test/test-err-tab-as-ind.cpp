@@ -14,7 +14,7 @@ TEST(Syntax, ErrTabAsIndent)
     std::vector<tab_as_ind_rec> recs = get_tab_as_ind_recs();
     ASSERT_EQ(3, recs.size());
 
-    EXPECT_EQ(misc::pos_type(2), recs[0].pos);
-    EXPECT_EQ(misc::pos_type(4), recs[1].pos);
-    EXPECT_EQ(misc::pos_type(7), recs[2].pos);
+    EXPECT_EQ(misc::position(2), recs[0].pos);
+    EXPECT_EQ(misc::position(4), recs[1].pos);
+    EXPECT_EQ(misc::position(7), recs[2].pos);
 }

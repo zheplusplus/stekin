@@ -38,7 +38,7 @@ struct ScopeTest
 
 TEST_F(ScopeTest, ExprNodesCreation)
 {
-    misc::pos_type pos(1);
+    misc::position pos(1);
 
     scope->make_bool(pos, true)->inst(*inst_scope)->typeof();
     scope->make_bool(pos, false)->inst(*inst_scope)->typeof();
@@ -115,7 +115,7 @@ TEST_F(ScopeTest, ExprNodesCreation)
 
 TEST_F(ScopeTest, Symbol)
 {
-    misc::pos_type pos(2);
+    misc::position pos(2);
     scope->add_stmt(std::move(util::mkptr(new proto::arithmetics(pos
                                                                , std::move(scope->make_ref(pos, "four"))))));
     ASSERT_FALSE(error::has_error());

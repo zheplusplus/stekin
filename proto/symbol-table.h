@@ -64,23 +64,23 @@ namespace proto {
             , _func_entities(std::move(rhs._func_entities))
         {}
 
-        util::sptr<Expression const> ref_var(misc::pos_type const& pos, std::string const& name);
-        void def_var(misc::pos_type const& pos, std::string const& name);
-        util::sref<Function> def_func(misc::pos_type const& pos
+        util::sptr<Expression const> ref_var(misc::position const& pos, std::string const& name);
+        void def_var(misc::position const& pos, std::string const& name);
+        util::sref<Function> def_func(misc::position const& pos
                                     , std::string const& name
                                     , std::vector<std::string> const& param_names
                                     , bool hint_void_return);
-        util::sptr<Expression const> query_call(misc::pos_type const& pos
+        util::sptr<Expression const> query_call(misc::position const& pos
                                              , std::string const& name
                                              , std::vector<util::sptr<Expression const>> args) const;
-        util::sref<Function> query_func(misc::pos_type const& pos
+        util::sref<Function> query_func(misc::position const& pos
                                       , std::string const& name
                                       , int param_count) const;
         std::map<std::string, inst::variable const>
-            bind_external_var_refs(misc::pos_type const& pos, util::sref<inst::scope const> ext_scope) const;
+            bind_external_var_refs(misc::position const& pos, util::sref<inst::scope const> ext_scope) const;
     private:
-        std::map<std::string, std::list<misc::pos_type>> _external_var_refs;
-        std::map<std::string, misc::pos_type> _var_defs;
+        std::map<std::string, std::list<misc::position>> _external_var_refs;
+        std::map<std::string, misc::position> _var_defs;
 
         overloads _overloads;
         std::list<Function> _func_entities;

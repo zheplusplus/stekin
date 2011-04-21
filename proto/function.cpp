@@ -12,7 +12,7 @@
 
 using namespace proto;
 
-Function::Function(misc::pos_type const& ps
+Function::Function(misc::position const& ps
                  , std::string const& name
                  , std::vector<std::string> const& params
                  , util::sref<symbol_table const> ext_symbols
@@ -36,7 +36,7 @@ void Function::_fill_param_names()
                   });
 }
 
-util::sref<inst::Function> Function::inst(misc::pos_type const& pos
+util::sref<inst::Function> Function::inst(misc::position const& pos
                                         , util::sref<inst::scope> ext_scope
                                         , std::vector<util::sref<inst::type const>> const& arg_types)
 {
@@ -76,7 +76,7 @@ util::sref<inst::Function> Function::inst(int level
 }
 
 std::map<std::string, inst::variable const>
-    Function::bind_external_vars(misc::pos_type const& pos, util::sref<inst::scope const> ext_scope) const
+    Function::bind_external_vars(misc::position const& pos, util::sref<inst::scope const> ext_scope) const
 {
     return _symbols.bind_external_var_refs(pos, ext_scope);
 }

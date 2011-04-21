@@ -22,7 +22,7 @@ namespace inst {
     struct branch
         : public Statement
     {
-        branch(misc::pos_type const& pos
+        branch(misc::position const& pos
              , util::sptr<Expression const> p
              , util::sptr<Statement const> c
              , util::sptr<Statement const> a);

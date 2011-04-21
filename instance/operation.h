@@ -18,11 +18,11 @@ namespace inst {
             , op_img(oi)
         {}
 
-        static operation const* query_binary(misc::pos_type const& pos
+        static operation const* query_binary(misc::position const& pos
                                            , std::string const& op
                                            , util::sref<type const> lhs
                                            , util::sref<type const> rhs);
-        static operation const* query_pre_unary(misc::pos_type const& pos
+        static operation const* query_pre_unary(misc::position const& pos
                                               , std::string const& op
                                               , util::sref<type const> rhs);
     };

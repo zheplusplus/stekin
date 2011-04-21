@@ -17,7 +17,7 @@ typedef grammar_test StmtNodesTest;
 
 TEST_F(StmtNodesTest, Arithmetics)
 {
-    misc::pos_type pos(1);
+    misc::position pos(1);
     util::sptr<flchk::filter> filter(std::move(util::mkmptr(new flchk::filter)));
     grammar::arithmetics arith0(pos, std::move(util::mkptr(new grammar::IntLiteral(pos, "1840"))));
     grammar::arithmetics arith1(pos, std::move(util::mkptr(new grammar::BoolLiteral(pos, false))));
@@ -37,7 +37,7 @@ TEST_F(StmtNodesTest, Arithmetics)
 
 TEST_F(StmtNodesTest, VarDef)
 {
-    misc::pos_type pos(2);
+    misc::position pos(2);
     util::sptr<flchk::filter> filter(std::move(util::mkmptr(new flchk::filter)));
     grammar::var_def def0(pos, "Shinji", std::move(util::mkptr(new grammar::FloatLiteral(pos, "18.47"))));
     grammar::var_def def1(pos, "Asuka", std::move(util::mkptr(new grammar::reference(pos, "tsundere"))));
@@ -57,7 +57,7 @@ TEST_F(StmtNodesTest, VarDef)
 
 TEST_F(StmtNodesTest, Returns)
 {
-    misc::pos_type pos(3);
+    misc::position pos(3);
     util::sptr<flchk::filter> filter(std::move(util::mkmptr(new flchk::filter)));
     grammar::func_ret ret0(pos, std::move(util::mkptr(new grammar::reference(pos, "KaworuNagisa"))));
     grammar::func_ret_nothing ret1(pos);
@@ -76,7 +76,7 @@ TEST_F(StmtNodesTest, Returns)
 
 TEST_F(StmtNodesTest, Block)
 {
-    misc::pos_type pos(4);
+    misc::position pos(4);
     util::sptr<flchk::filter> filter(std::move(util::mkmptr(new flchk::filter)));
     grammar::Block Block;
     Block.add_stmt(std::move(
@@ -96,7 +96,7 @@ TEST_F(StmtNodesTest, Block)
 
 TEST_F(StmtNodesTest, Branch)
 {
-    misc::pos_type pos(6);
+    misc::position pos(6);
     util::sptr<flchk::filter> filter(std::move(util::mkmptr(new flchk::filter)));
     grammar::branch(pos
                   , std::move(util::mkptr(new grammar::BoolLiteral(pos, true)))
@@ -187,7 +187,7 @@ TEST_F(StmtNodesTest, Branch)
 
 TEST_F(StmtNodesTest, Functions)
 {
-    misc::pos_type pos(8);
+    misc::position pos(8);
     util::sptr<flchk::filter> filter(std::move(util::mkmptr(new flchk::filter)));
     grammar::Function func0(pos, "func0", std::vector<std::string>(), std::move(grammar::Block()));
     func0.compile(*filter);
@@ -225,7 +225,7 @@ TEST_F(StmtNodesTest, Functions)
 
 TEST_F(StmtNodesTest, Mixed)
 {
-    misc::pos_type pos(9);
+    misc::position pos(9);
     util::sptr<flchk::filter> filter(std::move(util::mkmptr(new flchk::filter)));
 
     grammar::Block Block_nested;

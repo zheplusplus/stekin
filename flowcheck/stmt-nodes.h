@@ -13,7 +13,7 @@ namespace flchk {
     struct arithmetics
         : public Statement
     {
-        arithmetics(misc::pos_type const& pos, util::sptr<Expression const> e)
+        arithmetics(misc::position const& pos, util::sptr<Expression const> e)
             : Statement(pos)
             , expr(std::move(e))
         {}
@@ -26,7 +26,7 @@ namespace flchk {
     struct branch
         : public Statement
     {
-        branch(misc::pos_type const& pos, util::sptr<Expression const> p, Block c, Block a)
+        branch(misc::position const& pos, util::sptr<Expression const> p, Block c, Block a)
             : Statement(pos)
             , predicate(std::move(p))
             , consequence(std::move(c))
@@ -43,7 +43,7 @@ namespace flchk {
     struct func_ret
         : public Statement
     {
-        func_ret(misc::pos_type const& pos, util::sptr<Expression const> retval)
+        func_ret(misc::position const& pos, util::sptr<Expression const> retval)
             : Statement(pos)
             , ret_val(std::move(retval))
         {}
@@ -56,7 +56,7 @@ namespace flchk {
     struct func_ret_nothing
         : public Statement
     {
-        explicit func_ret_nothing(misc::pos_type const& pos)
+        explicit func_ret_nothing(misc::position const& pos)
             : Statement(pos)
         {}
 
@@ -66,7 +66,7 @@ namespace flchk {
     struct var_def
         : public Statement
     {
-        var_def(misc::pos_type const& pos, std::string const& var_name, util::sptr<Expression const> var_init)
+        var_def(misc::position const& pos, std::string const& var_name, util::sptr<Expression const> var_init)
             : Statement(pos)
             , name(var_name)
             , init(std::move(var_init))

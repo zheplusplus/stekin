@@ -13,13 +13,13 @@ namespace grammar {
         virtual void accept_stmt(util::sptr<Statement const> stmt) = 0;
         virtual void deliver_to(util::sref<acceptor> acc) = 0;
 
-        virtual void accept_else(misc::pos_type const& else_pos);
+        virtual void accept_else(misc::position const& else_pos);
 
         virtual ~acceptor() {}
 
-        misc::pos_type const pos;
+        misc::position const pos;
     protected:
-        explicit acceptor(misc::pos_type const& ps)
+        explicit acceptor(misc::position const& ps)
             : pos(ps)
         {}
 
@@ -32,9 +32,9 @@ namespace grammar {
         void accept_func(util::sptr<Function const> func);
         void accept_stmt(util::sptr<Statement const> stmt);
         void deliver_to(util::sref<acceptor> acc);
-        void accept_else(misc::pos_type const& else_pos);
+        void accept_else(misc::position const& else_pos);
 
-        if_acceptor(misc::pos_type const& pos, util::sptr<Expression const> predicate)
+        if_acceptor(misc::position const& pos, util::sptr<Expression const> predicate)
             : acceptor(pos)
             , _predicate(std::move(predicate))
             , _current_branch(&_consequence)
@@ -44,7 +44,7 @@ namespace grammar {
     private:
         util::sptr<Expression const> _predicate;
 
-        util::sptr<misc::pos_type> _last_else_pos;
+        util::sptr<misc::position> _last_else_pos;
         Block* _current_branch;
 
         Block _consequence;
@@ -58,7 +58,7 @@ namespace grammar {
         void accept_stmt(util::sptr<Statement const> stmt);
         void deliver_to(util::sref<acceptor> acc);
 
-        ifnot_acceptor(misc::pos_type const& pos, util::sptr<Expression const> predicate)
+        ifnot_acceptor(misc::position const& pos, util::sptr<Expression const> predicate)
             : acceptor(pos)
             , _predicate(std::move(predicate))
         {}
@@ -75,7 +75,7 @@ namespace grammar {
         void accept_stmt(util::sptr<Statement const> stmt);
         void deliver_to(util::sref<acceptor> acc);
 
-        Function_acceptor(misc::pos_type const& pos
+        Function_acceptor(misc::position const& pos
                         , std::string const& func_name
                         , std::vector<std::string> const& params)
             : acceptor(pos)

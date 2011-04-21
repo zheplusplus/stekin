@@ -7,13 +7,13 @@ using namespace test;
 inst::built_in_primitive const test::PROTO_TEST_TYPE("proto_test_type", 1);
 inst::built_in_primitive const test::PROTO_TEST_VOID("proto_test_void", 0);
 
-data_tree& data_tree::operator()(misc::pos_type const& pos, node_type const& type, std::string const& str)
+data_tree& data_tree::operator()(misc::position const& pos, node_type const& type, std::string const& str)
 {
     base_type::operator()(type, proto_data(pos), str);
     return *this;
 }
 
-data_tree& data_tree::operator()(misc::pos_type const& pos
+data_tree& data_tree::operator()(misc::position const& pos
                                , node_type const& type
                                , std::string const& str
                                , int func_arg_size)
@@ -22,7 +22,7 @@ data_tree& data_tree::operator()(misc::pos_type const& pos
     return *this;
 }
 
-data_tree& data_tree::operator()(misc::pos_type const& pos, node_type const& type)
+data_tree& data_tree::operator()(misc::position const& pos, node_type const& type)
 {
     base_type::operator()(type, proto_data(pos));
     return *this;

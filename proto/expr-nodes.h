@@ -14,7 +14,7 @@ namespace proto {
     struct BoolLiteral
         : public Expression
     {
-        BoolLiteral(misc::pos_type const& pos, bool v)
+        BoolLiteral(misc::position const& pos, bool v)
             : Expression(pos)
             , value(v)
         {}
@@ -27,7 +27,7 @@ namespace proto {
     struct IntLiteral
         : public Expression
     {
-        IntLiteral(misc::pos_type const& pos, mpz_class const& v)
+        IntLiteral(misc::position const& pos, mpz_class const& v)
             : Expression(pos)
             , value(v)
         {}
@@ -40,7 +40,7 @@ namespace proto {
     struct FloatLiteral
         : public Expression
     {
-        FloatLiteral(misc::pos_type const& pos, mpf_class const& v)
+        FloatLiteral(misc::position const& pos, mpf_class const& v)
             : Expression(pos)
             , value(v)
         {}
@@ -53,7 +53,7 @@ namespace proto {
     struct reference
         : public Expression
     {
-        reference(misc::pos_type const& pos, std::string const& n)
+        reference(misc::position const& pos, std::string const& n)
             : Expression(pos)
             , name(n)
         {}
@@ -66,7 +66,7 @@ namespace proto {
     struct call
         : public Expression
     {
-        call(misc::pos_type const& pos, util::sref<Function> f, std::vector<util::sptr<Expression const>> a)
+        call(misc::position const& pos, util::sref<Function> f, std::vector<util::sptr<Expression const>> a)
             : Expression(pos)
             , func(f)
             , args(std::move(a))
@@ -81,7 +81,7 @@ namespace proto {
     struct functor
         : public Expression
     {
-        functor(misc::pos_type const& pos, std::string const& n, std::vector<util::sptr<Expression const>> a)
+        functor(misc::position const& pos, std::string const& n, std::vector<util::sptr<Expression const>> a)
             : Expression(pos)
             , name(n)
             , args(std::move(a))
@@ -96,7 +96,7 @@ namespace proto {
     struct func_reference
         : public Expression
     {
-        func_reference(misc::pos_type const& pos, util::sref<Function> f)
+        func_reference(misc::position const& pos, util::sref<Function> f)
             : Expression(pos)
             , func(f)
         {}
@@ -109,7 +109,7 @@ namespace proto {
     struct binary_op
         : public Expression
     {
-        binary_op(misc::pos_type const& pos
+        binary_op(misc::position const& pos
                 , util::sptr<Expression const> l
                 , std::string const& o
                 , util::sptr<Expression const> r)
@@ -129,7 +129,7 @@ namespace proto {
     struct pre_unary_op
         : public Expression
     {
-        pre_unary_op(misc::pos_type const& pos, std::string const& o, util::sptr<Expression const> r)
+        pre_unary_op(misc::position const& pos, std::string const& o, util::sptr<Expression const> r)
             : Expression(pos)
             , op(o)
             , rhs(std::move(r))
@@ -144,7 +144,7 @@ namespace proto {
     struct conjunction
         : public Expression
     {
-        conjunction(misc::pos_type const& pos, util::sptr<Expression const> l, util::sptr<Expression const> r)
+        conjunction(misc::position const& pos, util::sptr<Expression const> l, util::sptr<Expression const> r)
             : Expression(pos)
             , lhs(std::move(l))
             , rhs(std::move(r))
@@ -159,7 +159,7 @@ namespace proto {
     struct disjunction
         : public Expression
     {
-        disjunction(misc::pos_type const& pos, util::sptr<Expression const> l, util::sptr<Expression const> r)
+        disjunction(misc::position const& pos, util::sptr<Expression const> l, util::sptr<Expression const> r)
             : Expression(pos)
             , lhs(std::move(l))
             , rhs(std::move(r))
@@ -174,7 +174,7 @@ namespace proto {
     struct negation
         : public Expression
     {
-        negation(misc::pos_type const& pos, util::sptr<Expression const> r)
+        negation(misc::position const& pos, util::sptr<Expression const> r)
             : Expression(pos)
             , rhs(std::move(r))
         {}

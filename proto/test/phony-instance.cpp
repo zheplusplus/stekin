@@ -109,11 +109,11 @@ bool func_reference_type::lt_as_built_in(type const&) const
     return false;
 }
 
-void type::check_condition_type(misc::pos_type const&) const {}
-void built_in_primitive::check_condition_type(misc::pos_type const&) const {}
+void type::check_condition_type(misc::position const&) const {}
+void built_in_primitive::check_condition_type(misc::position const&) const {}
 
 util::sptr<inst::Expression const> func_reference_type::call_func(
-                  misc::pos_type const&
+                  misc::position const&
                 , int
                 , int
                 , std::vector<util::sref<inst::type const>> const&
@@ -123,7 +123,7 @@ util::sptr<inst::Expression const> func_reference_type::call_func(
 }
 
 std::map<std::string, variable const> func_reference_type::_enclose_reference(
-                                            misc::pos_type const&
+                                            misc::position const&
                                           , int
                                           , std::map<std::string, variable const> const& cr)
 {
@@ -136,7 +136,7 @@ int func_reference_type::_calc_size(std::map<std::string, variable const> const&
 }
 
 util::sptr<inst::Expression const> built_in_primitive::call_func(
-                  misc::pos_type const&
+                  misc::position const&
                 , int
                 , int
                 , std::vector<util::sref<inst::type const>> const&
@@ -145,7 +145,7 @@ util::sptr<inst::Expression const> built_in_primitive::call_func(
     return std::move(util::sptr<inst::Expression const>(NULL));
 }
 
-util::sptr<inst::Expression const> variable::call_func(misc::pos_type const&
+util::sptr<inst::Expression const> variable::call_func(misc::position const&
                                                     , std::vector<util::sref<inst::type const>> const&
                                                     , std::vector<util::sptr<Expression const>>) const
 {
@@ -167,7 +167,7 @@ bool variable::operator!=(variable const& rhs) const
     return !operator==(rhs);
 }
 
-void Function::set_return_type(misc::pos_type const& pos, util::sref<type const> t)
+void Function::set_return_type(misc::position const& pos, util::sref<type const> t)
 {
     test_func_inst_resolved = true;
     data_tree::actual_one()(pos, t == type::BIT_VOID ? SET_RETURN_TYPE_VOID : SET_RETURN_TYPE);
@@ -201,18 +201,18 @@ bool Function::has_more_path() const
     return path_count > 0;
 }
 
-variable Function::def_var(misc::pos_type const& pos, util::sref<type const> vtype, std::string const&)
+variable Function::def_var(misc::position const& pos, util::sref<type const> vtype, std::string const&)
 {
     return variable(pos, vtype, 0, 0);
 }
 
-variable Function::query_var(misc::pos_type const& pos, std::string const& name) const
+variable Function::query_var(misc::position const& pos, std::string const& name) const
 {
     data_tree::actual_one()(pos, QUERY_VAR, name);
-    return variable(misc::pos_type(0), util::mkref(test::PROTO_TEST_TYPE), 0, 0);
+    return variable(misc::position(0), util::mkref(test::PROTO_TEST_TYPE), 0, 0);
 }
 
-operation const* scope::query_binary(misc::pos_type const& pos
+operation const* scope::query_binary(misc::position const& pos
                                    , std::string const& op
                                    , util::sref<type const>
                                    , util::sref<type const>) const
@@ -221,7 +221,7 @@ operation const* scope::query_binary(misc::pos_type const& pos
     return NULL;
 }
 
-operation const* scope::query_pre_unary(misc::pos_type const& pos, std::string const& op, util::sref<type const>) const
+operation const* scope::query_pre_unary(misc::position const& pos, std::string const& op, util::sref<type const>) const
 {
     data_tree::actual_one()(pos, QUERY_PRE_UNARY_OP, op);
     return NULL;
@@ -337,21 +337,21 @@ util::sref<type const> negation::typeof() const
     return util::mkref(PROTO_TEST_TYPE);
 }
 
-conjunction::conjunction(misc::pos_type const&, util::sptr<Expression const> l, util::sptr<Expression const> r)
+conjunction::conjunction(misc::position const&, util::sptr<Expression const> l, util::sptr<Expression const> r)
     : lhs(std::move(l))
     , rhs(std::move(r))
 {}
 
-disjunction::disjunction(misc::pos_type const&, util::sptr<Expression const> l, util::sptr<Expression const> r)
+disjunction::disjunction(misc::position const&, util::sptr<Expression const> l, util::sptr<Expression const> r)
     : lhs(std::move(l))
     , rhs(std::move(r))
 {}
 
-negation::negation(misc::pos_type const&, util::sptr<Expression const> r)
+negation::negation(misc::position const&, util::sptr<Expression const> r)
     : rhs(std::move(r))
 {}
 
-branch::branch(misc::pos_type const&
+branch::branch(misc::position const&
              , util::sptr<Expression const> p
              , util::sptr<Statement const> c
              , util::sptr<Statement const> a)

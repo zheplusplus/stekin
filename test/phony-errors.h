@@ -8,83 +8,83 @@
 namespace test {
 
     struct tab_as_ind_rec {
-        explicit tab_as_ind_rec(misc::pos_type const& ps)
+        explicit tab_as_ind_rec(misc::position const& ps)
             : pos(ps)
         {}
 
-        misc::pos_type const pos;
+        misc::position const pos;
     };
 
     struct bad_indent_rec {
-        explicit bad_indent_rec(misc::pos_type const& ps)
+        explicit bad_indent_rec(misc::position const& ps)
             : pos(ps)
         {}
 
-        misc::pos_type const pos;
+        misc::position const pos;
     };
 
     struct inv_char_rec {
-        inv_char_rec(misc::pos_type const& ps, int ch)
+        inv_char_rec(misc::position const& ps, int ch)
             : pos(ps)
             , character(ch)
         {}
 
-        misc::pos_type const pos;
+        misc::position const pos;
         int const character;
     };
 
     struct else_not_match_rec {
-        misc::pos_type const pos;
+        misc::position const pos;
 
-        explicit else_not_match_rec(misc::pos_type const& ps)
+        explicit else_not_match_rec(misc::position const& ps)
             : pos(ps)
         {}
     };
 
     struct if_matched_rec {
-        misc::pos_type const prev_pos;
-        misc::pos_type const this_pos;
+        misc::position const prev_pos;
+        misc::position const this_pos;
 
-        if_matched_rec(misc::pos_type const& ppos, misc::pos_type const& tpos)
+        if_matched_rec(misc::position const& ppos, misc::position const& tpos)
             : prev_pos(ppos)
             , this_pos(tpos)
         {}
     };
 
     struct excess_ind_rec {
-        misc::pos_type const pos;
+        misc::position const pos;
 
-        explicit excess_ind_rec(misc::pos_type const& ps)
+        explicit excess_ind_rec(misc::position const& ps)
             : pos(ps)
         {}
     };
 
     struct flow_terminated_rec {
-        misc::pos_type const this_pos;
-        misc::pos_type const prev_pos;
+        misc::position const this_pos;
+        misc::position const prev_pos;
 
-        flow_terminated_rec(misc::pos_type const tpos, misc::pos_type const& ppos)
+        flow_terminated_rec(misc::position const tpos, misc::position const& ppos)
             : this_pos(tpos)
             , prev_pos(ppos)
         {}
     };
 
     struct func_forbidden_rec {
-        misc::pos_type const pos;
+        misc::position const pos;
         std::string const name;
 
-        func_forbidden_rec(misc::pos_type const& ps, std::string const& n)
+        func_forbidden_rec(misc::position const& ps, std::string const& n)
             : pos(ps)
             , name(n)
         {}
     };
 
     struct var_redef_rec {
-        misc::pos_type const prev_pos;
-        misc::pos_type const this_pos;
+        misc::position const prev_pos;
+        misc::position const this_pos;
         std::string const name;
 
-        var_redef_rec(misc::pos_type const& ppos, misc::pos_type const& tpos, std::string const& n)
+        var_redef_rec(misc::position const& ppos, misc::position const& tpos, std::string const& n)
             : prev_pos(ppos)
             , this_pos(tpos)
             , name(n)
@@ -92,14 +92,14 @@ namespace test {
     };
 
     struct invalid_ref_rec {
-        std::vector<misc::pos_type> const ref_positions;
-        misc::pos_type const def_pos;
+        std::vector<misc::position> const ref_positions;
+        misc::position const def_pos;
         std::string const name;
 
         template <typename _LineNoIterator>
         invalid_ref_rec(_LineNoIterator pos_begin
                       , _LineNoIterator pos_end
-                      , misc::pos_type def_ps
+                      , misc::position def_ps
                       , std::string const& n)
             : ref_positions(pos_begin, pos_end)
             , def_pos(def_ps)
@@ -108,23 +108,23 @@ namespace test {
     };
 
     struct func_ref_ambiguous_rec {
-        misc::pos_type const ref_pos;
+        misc::position const ref_pos;
         std::string const name;
 
-        func_ref_ambiguous_rec(misc::pos_type const& rpos, std::string const& n)
+        func_ref_ambiguous_rec(misc::position const& rpos, std::string const& n)
             : ref_pos(rpos)
             , name(n)
         {}
     };
 
     struct func_redef_rec {
-        misc::pos_type const prev_def_pos;
-        misc::pos_type const this_def_pos;
+        misc::position const prev_def_pos;
+        misc::position const this_def_pos;
         std::string const name;
         int const param_count;
 
-        func_redef_rec(misc::pos_type prev_def_ps
-                     , misc::pos_type this_def_ps
+        func_redef_rec(misc::position prev_def_ps
+                     , misc::position this_def_ps
                      , std::string const& n
                      , int pc)
             : prev_def_pos(prev_def_ps)
@@ -135,11 +135,11 @@ namespace test {
     };
 
     struct func_nondef_rec {
-        misc::pos_type const call_pos;
+        misc::position const call_pos;
         std::string const name;
         int const param_count;
 
-        func_nondef_rec(misc::pos_type call_ps, std::string const& n, int pc)
+        func_nondef_rec(misc::position call_ps, std::string const& n, int pc)
             : call_pos(call_ps)
             , name(n)
             , param_count(pc)
@@ -147,32 +147,32 @@ namespace test {
     };
 
     struct forbid_def_rec {
-        misc::pos_type const pos;
+        misc::position const pos;
         std::string const name;
 
-        forbid_def_rec(misc::pos_type ps, std::string const& n)
+        forbid_def_rec(misc::position ps, std::string const& n)
             : pos(ps)
             , name(n)
         {}
     };
 
     struct var_nondef_rec {
-        misc::pos_type const ref_pos;
+        misc::position const ref_pos;
         std::string const name;
 
-        var_nondef_rec(misc::pos_type const& rpos, std::string const& n)
+        var_nondef_rec(misc::position const& rpos, std::string const& n)
             : ref_pos(rpos)
             , name(n)
         {}
     };
 
     struct na_binary_op_rec {
-        misc::pos_type const pos;
+        misc::position const pos;
         std::string const op_img;
         std::string const lhst_name;
         std::string const rhst_name;
 
-        na_binary_op_rec(misc::pos_type const& ps
+        na_binary_op_rec(misc::position const& ps
                        , std::string const& op
                        , std::string const& lhst
                        , std::string const& rhst)
@@ -184,11 +184,11 @@ namespace test {
     };
 
     struct na_pre_unary_op_rec {
-        misc::pos_type const pos;
+        misc::position const pos;
         std::string const op_img;
         std::string const rhst_name;
 
-        na_pre_unary_op_rec(misc::pos_type const& ps, std::string const& op, std::string const& rhst)
+        na_pre_unary_op_rec(misc::position const& ps, std::string const& op, std::string const& rhst)
             : pos(ps)
             , op_img(op)
             , rhst_name(rhst)
@@ -196,11 +196,11 @@ namespace test {
     };
 
     struct ret_type_conflict_rec {
-        misc::pos_type const this_pos;
+        misc::position const this_pos;
         std::string const prev_type_name;
         std::string const this_type_name;
 
-        ret_type_conflict_rec(misc::pos_type const& tpos
+        ret_type_conflict_rec(misc::position const& tpos
                             , std::string const& prev_ret_type_name
                             , std::string const& this_ret_type_name)
             : this_pos(tpos)
@@ -220,19 +220,19 @@ namespace test {
     };
 
     struct cond_not_bool_rec {
-        misc::pos_type const pos;
+        misc::position const pos;
         std::string const type_name;
 
-        cond_not_bool_rec(misc::pos_type const& ps, std::string const& tname)
+        cond_not_bool_rec(misc::position const& ps, std::string const& tname)
             : pos(ps)
             , type_name(tname)
         {}
     };
 
     struct variable_not_callable_rec {
-        misc::pos_type const call_pos;
+        misc::position const call_pos;
 
-        explicit variable_not_callable_rec(misc::pos_type const& cp)
+        explicit variable_not_callable_rec(misc::position const& cp)
             : call_pos(cp)
         {}
     };

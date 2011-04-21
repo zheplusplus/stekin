@@ -9,14 +9,14 @@ namespace test {
 
     struct parser_data {
         int const indent_level;
-        misc::pos_type const pos;
+        misc::position const pos;
 
-        parser_data(int level, misc::pos_type const& ps)
+        parser_data(int level, misc::position const& ps)
             : indent_level(level)
             , pos(ps)
         {}
 
-        explicit parser_data(misc::pos_type const ps)
+        explicit parser_data(misc::position const ps)
             : indent_level(-1)
             , pos(ps)
         {}
@@ -36,13 +36,13 @@ namespace test {
     {
         typedef data_tree_templ<parser_data, data_tree> base_type;
 
-        data_tree& operator()(misc::pos_type const& pos, node_type const& type, std::string const& str);
-        data_tree& operator()(misc::pos_type const& pos
+        data_tree& operator()(misc::position const& pos, node_type const& type, std::string const& str);
+        data_tree& operator()(misc::position const& pos
                              , int indent
                              , node_type const& type
                              , std::string const& str);
-        data_tree& operator()(misc::pos_type const& pos, node_type const& type);
-        data_tree& operator()(misc::pos_type const& pos, int indent, node_type const& type);
+        data_tree& operator()(misc::position const& pos, node_type const& type);
+        data_tree& operator()(misc::position const& pos, int indent, node_type const& type);
     };
 
     extern node_type const BOOLEAN;

@@ -8,13 +8,13 @@
 namespace grammar {
 
     struct Statement {
-        misc::pos_type const pos;
+        misc::position const pos;
 
         virtual void compile(util::sref<flchk::filter> scope) const = 0;
 
         virtual ~Statement() {}
     protected:
-        explicit Statement(misc::pos_type const& ps)
+        explicit Statement(misc::position const& ps)
             : pos(ps)
         {}
 
@@ -22,13 +22,13 @@ namespace grammar {
     };
 
     struct Expression {
-        misc::pos_type const pos;
+        misc::position const pos;
 
         virtual util::sptr<flchk::Expression const> compile() const = 0;
 
         virtual ~Expression() {}
     protected:
-        explicit Expression(misc::pos_type const& ps)
+        explicit Expression(misc::position const& ps)
             : pos(ps)
         {}
 

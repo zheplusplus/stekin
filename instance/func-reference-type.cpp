@@ -56,7 +56,7 @@ bool func_reference_type::lt_as_built_in(type const&) const
 }
 
 std::map<std::string, variable const> func_reference_type::_enclose_reference(
-                                            misc::pos_type const& pos
+                                            misc::position const& pos
                                           , int level
                                           , std::map<std::string, variable const> const& cr)
 {
@@ -86,7 +86,7 @@ int func_reference_type::_calc_size(std::map<std::string, variable const> const&
 }
 
 util::sptr<inst::Expression const> func_reference_type::call_func(
-            misc::pos_type const&
+            misc::position const&
           , int level
           , int stack_offset
           , std::vector<util::sref<inst::type const>> const& arg_types

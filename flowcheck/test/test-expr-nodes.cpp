@@ -16,7 +16,7 @@ typedef flowcheck_test ExprNodesTest;
 
 TEST_F(ExprNodesTest, Literals)
 {
-    misc::pos_type pos(1);
+    misc::position pos(1);
     util::sptr<proto::scope> scope(std::move(new proto::global_scope));
     flchk::IntLiteral int0(pos, "20110116");
     int0.compile(*scope)->inst(nul_inst_scope);
@@ -58,7 +58,7 @@ TEST_F(ExprNodesTest, Literals)
 
 TEST_F(ExprNodesTest, Reference)
 {
-    misc::pos_type pos(1);
+    misc::position pos(1);
     util::sptr<proto::scope> scope(std::move(new proto::global_scope));
     flchk::reference ref0(pos, "a20110116");
     EXPECT_FALSE(ref0.is_literal());
@@ -78,7 +78,7 @@ TEST_F(ExprNodesTest, Reference)
 
 TEST_F(ExprNodesTest, Operations)
 {
-    misc::pos_type pos(2);
+    misc::position pos(2);
     util::sptr<proto::scope> scope(std::move(new proto::global_scope));
     flchk::binary_op binary0(pos
                            , std::move(util::mkptr(new flchk::IntLiteral(pos, "1")))
@@ -157,7 +157,7 @@ TEST_F(ExprNodesTest, Operations)
 
 TEST_F(ExprNodesTest, Calls)
 {
-    misc::pos_type pos(3);
+    misc::position pos(3);
     util::sptr<proto::scope> scope(std::move(new proto::global_scope));
 
     std::vector<util::sptr<flchk::Expression const>> params;
@@ -195,7 +195,7 @@ TEST_F(ExprNodesTest, Calls)
 
 TEST_F(ExprNodesTest, FuncReference)
 {
-    misc::pos_type pos(4);
+    misc::position pos(4);
     util::sptr<proto::scope> scope(std::move(new proto::global_scope));
 
     flchk::func_reference func_ref0(pos, "fib", 2);
@@ -222,7 +222,7 @@ TEST_F(ExprNodesTest, FuncReference)
 
 TEST_F(ExprNodesTest, LiteralBoolValueError)
 {
-    misc::pos_type pos(5);
+    misc::position pos(5);
     flchk::IntLiteral int0(pos, "20110409");
     int0.bool_value();
 
@@ -239,7 +239,7 @@ TEST_F(ExprNodesTest, LiteralBoolValueError)
 
 TEST_F(ExprNodesTest, OperationLiteralBoolValueError)
 {
-    misc::pos_type pos(6);
+    misc::position pos(6);
     flchk::conjunction conj(pos
                           , std::move(util::mkptr(new flchk::BoolLiteral(pos, true)))
                           , std::move(util::mkptr(new flchk::FloatLiteral(pos, "20110.4"))));

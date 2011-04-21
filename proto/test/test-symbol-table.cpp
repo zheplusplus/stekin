@@ -30,7 +30,7 @@ struct SymbolTableTest
 
 TEST_F(SymbolTableTest, DefVar)
 {
-    misc::pos_type pos(1);
+    misc::position pos(1);
     symbols->def_var(pos, "nerv");
     symbols->def_var(pos, "seele");
     symbols->def_var(pos, "lilith");
@@ -45,7 +45,7 @@ TEST_F(SymbolTableTest, DefVar)
 
 TEST_F(SymbolTableTest, RefLocalVar)
 {
-    misc::pos_type pos(2);
+    misc::position pos(2);
     symbols->def_var(pos, "nerv");
     symbols->def_var(pos, "seele");
     symbols->def_var(pos, "lilith");
@@ -70,7 +70,7 @@ TEST_F(SymbolTableTest, RefLocalVar)
 
 TEST_F(SymbolTableTest, RefExternal)
 {
-    misc::pos_type pos(3);
+    misc::position pos(3);
     symbols->ref_var(pos, "soryu");
     symbols->ref_var(pos, "ikari");
     symbols->ref_var(pos, "horaki");
@@ -90,8 +90,8 @@ TEST_F(SymbolTableTest, RefExternal)
 
 TEST_F(SymbolTableTest, BindExternalVar)
 {
-    misc::pos_type pos(4);
-    misc::pos_type bind_pos(100);
+    misc::position pos(4);
+    misc::position bind_pos(100);
     std::map<std::string, inst::variable const> ext_refs;
 
     ext_refs = symbols->bind_external_var_refs(pos, *inst_scope);
@@ -113,9 +113,9 @@ TEST_F(SymbolTableTest, BindExternalVar)
 
 TEST_F(SymbolTableTest, RedefVar)
 {
-    misc::pos_type pos(5);
-    misc::pos_type err_pos0(200);
-    misc::pos_type err_pos1(201);
+    misc::position pos(5);
+    misc::position err_pos0(200);
+    misc::position err_pos1(201);
 
     symbols->def_var(pos, "suzuhara");
     symbols->def_var(pos, "aida");
@@ -141,9 +141,9 @@ TEST_F(SymbolTableTest, RedefVar)
 
 TEST_F(SymbolTableTest, VarRefBeforeDef)
 {
-    misc::pos_type pos(6);
-    misc::pos_type ref_pos0(300);
-    misc::pos_type ref_pos1(301);
+    misc::position pos(6);
+    misc::position ref_pos0(300);
+    misc::position ref_pos1(301);
 
     symbols->ref_var(ref_pos0, "katsuragi");
     symbols->ref_var(ref_pos1, "katsuragi");
@@ -168,7 +168,7 @@ TEST_F(SymbolTableTest, VarRefBeforeDef)
 
 TEST_F(SymbolTableTest, DefFunc)
 {
-    misc::pos_type pos(7);
+    misc::position pos(7);
     util::sref<proto::Function const> func(NULL);
     std::vector<std::string> param_names;
     func = symbols->def_func(pos, "f0", param_names, true);
@@ -197,8 +197,8 @@ TEST_F(SymbolTableTest, DefFunc)
 
 TEST_F(SymbolTableTest, RefFunc)
 {
-    misc::pos_type pos(8);
-    misc::pos_type ref_pos(400);
+    misc::position pos(8);
+    misc::position ref_pos(400);
     util::sref<proto::Function const> func(NULL);
     std::vector<std::string> param_names;
     param_names = { "m", "n" };
@@ -257,9 +257,9 @@ TEST_F(SymbolTableTest, RefFunc)
 
 TEST_F(SymbolTableTest, RedefFunc)
 {
-    misc::pos_type pos(9);
-    misc::pos_type err_pos0(500);
-    misc::pos_type err_pos1(501);
+    misc::position pos(9);
+    misc::position err_pos0(500);
+    misc::position err_pos1(501);
     std::vector<std::string> param_names;
 
     param_names = { "m", "n" };
@@ -295,9 +295,9 @@ TEST_F(SymbolTableTest, RedefFunc)
 
 TEST_F(SymbolTableTest, NondefFunc)
 {
-    misc::pos_type pos(10);
-    misc::pos_type err_pos0(600);
-    misc::pos_type err_pos1(601);
+    misc::position pos(10);
+    misc::position err_pos0(600);
+    misc::position err_pos1(601);
     std::vector<func_nondef_rec> func_nondefs;
     std::vector<std::string> param_names;
 
@@ -329,7 +329,7 @@ TEST_F(SymbolTableTest, NondefFunc)
 
 TEST_F(SymbolTableTest, References)
 {
-    misc::pos_type pos(11);
+    misc::position pos(11);
     util::sptr<inst::scope> inst_scope(new phony_func);
 
     symbols->def_var(pos, "otonashi");
@@ -355,9 +355,9 @@ TEST_F(SymbolTableTest, References)
 
 TEST_F(SymbolTableTest, FuncRefAmbiguous)
 {
-    misc::pos_type pos(12);
-    misc::pos_type err_pos0(1200);
-    misc::pos_type err_pos1(1201);
+    misc::position pos(12);
+    misc::position err_pos0(1200);
+    misc::position err_pos1(1201);
     std::vector<std::string> param_names;
     param_names = { "nakamura" };
     symbols->def_func(pos, "guild", param_names, true);

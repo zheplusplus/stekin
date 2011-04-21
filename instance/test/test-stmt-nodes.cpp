@@ -12,7 +12,7 @@ typedef instance_test StmtNodesTest;
 
 TEST_F(StmtNodesTest, BranchConditionTypeCheck)
 {
-    misc::pos_type pos(1);
+    misc::position pos(1);
     inst::branch(pos
                , std::move(util::mkptr(new cond_type_expr))
                , std::move(util::mkptr(new inst::Block))
