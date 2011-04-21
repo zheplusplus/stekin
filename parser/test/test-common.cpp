@@ -39,7 +39,7 @@ std::ostream& operator<<(std::ostream& os, parser_data const& data)
 node_type const test::BOOLEAN("boolean");
 node_type const test::INTEGER("integer");
 node_type const test::FLOATING("floating");
-node_type const test::IDENTIFIER("identifier");
+node_type const test::IDENTIFIER("Identifier");
 
 node_type const test::BINARY_OP_BEGIN("binary operation begin");
 node_type const test::BINARY_OP_END("binary operation end");

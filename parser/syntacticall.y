@@ -6,10 +6,10 @@
     int indent_type;
     int line_num_type;
 
-    parser::op_img* op_type;
-    parser::identifier* ident_type;
-    parser::param_names* param_names_type;
-    parser::arg_list* args_type;
+    parser::OpImage* op_type;
+    parser::Identifier* ident_type;
+    parser::ParamNames* ParamNames_type;
+    parser::ArgList* args_type;
 
     grammar::Expression* expr_node;
 }
@@ -20,8 +20,8 @@
 
 %type <ident_type> ident
 
-%type <param_names_type> param_list
-%type <param_names_type> additional_param
+%type <ParamNames_type> param_list
+%type <ParamNames_type> additional_param
 
 %type <args_type> actual_param_list
 %type <args_type> additional_actual_param
@@ -150,7 +150,7 @@ param_list:
     }
     |
     {
-        $$ = new parser::param_names;
+        $$ = new parser::ParamNames;
     }
 ;
 
@@ -161,7 +161,7 @@ additional_param:
     }
     |
     {
-        $$ = new parser::param_names;
+        $$ = new parser::ParamNames;
     }
 ;
 
@@ -203,7 +203,7 @@ ref:
 ident:
     IDENT
     {
-        $$ = new parser::identifier(parser::here(), yytext);
+        $$ = new parser::Identifier(parser::here(), yytext);
     }
 ;
 
@@ -335,73 +335,73 @@ factor:
 cmp_op:
     '<'
     {
-        $$ = new parser::op_img(yytext);
+        $$ = new parser::OpImage(yytext);
     }
     |
     '>'
     {
-        $$ = new parser::op_img(yytext);
+        $$ = new parser::OpImage(yytext);
     }
     |
     GE
     {
-        $$ = new parser::op_img(yytext);
+        $$ = new parser::OpImage(yytext);
     }
     |
     LE
     {
-        $$ = new parser::op_img(yytext);
+        $$ = new parser::OpImage(yytext);
     }
     |
     '='
     {
-        $$ = new parser::op_img(yytext);
+        $$ = new parser::OpImage(yytext);
     }
     |
     NE
     {
-        $$ = new parser::op_img(yytext);
+        $$ = new parser::OpImage(yytext);
     }
 ;
 
 add_op:
     '+'
     {
-        $$ = new parser::op_img(yytext);
+        $$ = new parser::OpImage(yytext);
     }
     |
     '-'
     {
-        $$ = new parser::op_img(yytext);
+        $$ = new parser::OpImage(yytext);
     }
 ;
 
 mul_op:
     '*'
     {
-        $$ = new parser::op_img(yytext);
+        $$ = new parser::OpImage(yytext);
     }
     |
     '/'
     {
-        $$ = new parser::op_img(yytext);
+        $$ = new parser::OpImage(yytext);
     }
     |
     '%'
     {
-        $$ = new parser::op_img(yytext);
+        $$ = new parser::OpImage(yytext);
     }
 ;
 
 pm_sign:
     '+'
     {
-        $$ = new parser::op_img(yytext);
+        $$ = new parser::OpImage(yytext);
     }
     |
     '-'
     {
-        $$ = new parser::op_img(yytext);
+        $$ = new parser::OpImage(yytext);
     }
 ;
 
@@ -421,7 +421,7 @@ actual_param_list:
     }
     |
     {
-        $$ = new parser::arg_list; 
+        $$ = new parser::ArgList; 
     }
 ;
 
@@ -432,6 +432,6 @@ additional_actual_param:
     }
     |
     {
-        $$ = new parser::arg_list; 
+        $$ = new parser::ArgList; 
     }
 ;

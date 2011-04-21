@@ -11,26 +11,26 @@
 
 namespace parser {
 
-    struct op_img {
+    struct OpImage {
         std::string const img;
 
-        explicit op_img(char const* image)
+        explicit OpImage(char const* image)
             : img(image)
         {}
     };
 
-    struct identifier {
+    struct Identifier {
         misc::position const pos;
         std::string const id;
 
-        identifier(misc::position const& ps, char const* id_text)
+        Identifier(misc::position const& ps, char const* id_text)
             : pos(ps)
             , id(id_text)
         {}
     };
 
-    struct param_names {
-        param_names* add(std::string const& name)
+    struct ParamNames {
+        ParamNames* add(std::string const& name)
         {
             _names.push_back(name);
             return this;
@@ -44,8 +44,8 @@ namespace parser {
         std::vector<std::string> _names;
     };
 
-    struct arg_list {
-        arg_list* add(grammar::Expression const* expr)
+    struct ArgList {
+        ArgList* add(grammar::Expression const* expr)
         {
             _params.push_back(std::move(util::mkptr(expr)));
             return this;
