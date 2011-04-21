@@ -54,7 +54,7 @@ node_type const test::BINARY_OP("binary operation");
 node_type const test::PRE_UNARY_OP("prefix unary operation");
 
 node_type const test::CALL("call");
-node_type const test::FUNC_REFERENCE("function reference");
+node_type const test::FUNC_REFERENCE("Function reference");
 
 node_type const test::VAR_DEF("var def");
 node_type const test::ARITHMETICS("arithmetics");
@@ -70,8 +70,8 @@ node_type const test::BRANCH_ALTER_ONLY("branch alternative only");
 node_type const test::CONSEQUENCE("consequence");
 node_type const test::ALTERNATIVE("alternative");
 
-node_type const test::BLOCK_BEGIN("block begin");
-node_type const test::BLOCK_END("block end");
+node_type const test::BLOCK_BEGIN("Block begin");
+node_type const test::BLOCK_END("Block end");
 
 void grammar_test::SetUp()
 {

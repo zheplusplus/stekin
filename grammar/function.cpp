@@ -7,7 +7,7 @@
 
 using namespace grammar;
 
-void function::compile(util::sref<flchk::filter> filter) const
+void Function::compile(util::sref<flchk::filter> filter) const
 {
     filter->def_func(pos
                    , name

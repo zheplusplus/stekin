@@ -6,19 +6,19 @@
 
 using namespace inst;
 
-void block::add_stmt(util::sptr<Statement const> stmt)
+void Block::add_stmt(util::sptr<Statement const> stmt)
 {
     _stmts.push_back(std::move(stmt));
 }
 
-void block::write() const
+void Block::write() const
 {
-    output::block_begin();
+    output::Block_begin();
     std::for_each(_stmts.begin()
                 , _stmts.end()
                 , [&](util::sptr<Statement const> const& stmt)
                   {
                       stmt->write();
                   });
-    output::block_end();
+    output::Block_end();
 }

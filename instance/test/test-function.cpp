@@ -25,7 +25,7 @@ TEST_F(FunctionTest, Resolved)
     std::vector<ret_type_conflict_rec> ret_type_conflicts;
     std::list<inst::arg_name_type_pair> args;
     std::map<std::string, inst::variable const> extvars;
-    util::sref<inst::function> func = inst::function::create_instance(0, args, extvars, true);
+    util::sref<inst::Function> func = inst::Function::create_instance(0, args, extvars, true);
     ASSERT_TRUE(bool(func));
     ASSERT_FALSE(error::has_error());
 
@@ -52,7 +52,7 @@ TEST_F(FunctionTest, Unresolved)
     std::vector<ret_type_conflict_rec> ret_type_conflicts;
     std::list<inst::arg_name_type_pair> args;
     std::map<std::string, inst::variable const> extvars;
-    util::sref<inst::function> func = inst::function::create_instance(0, args, extvars, false);
+    util::sref<inst::Function> func = inst::Function::create_instance(0, args, extvars, false);
     ASSERT_TRUE(bool(func));
     ASSERT_FALSE(error::has_error());
     ASSERT_FALSE(func->is_return_type_resolved());

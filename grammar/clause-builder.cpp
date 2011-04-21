@@ -18,7 +18,7 @@ namespace {
         {}
 
         void accept_stmt(util::sptr<Statement const>) {}
-        void accept_func(util::sptr<function const>) {}
+        void accept_func(util::sptr<Function const>) {}
         void deliver_to(util::sref<acceptor>) {}
     };
 
@@ -36,7 +36,7 @@ void acceptor_stack::next_stmt(int level, util::sptr<Statement const> stmt)
     _acceptors.back()->accept_stmt(std::move(stmt));
 }
 
-void acceptor_stack::next_func(int level, util::sptr<function const> func)
+void acceptor_stack::next_func(int level, util::sptr<Function const> func)
 {
     _prepare_level(level, func->pos);
     _acceptors.back()->accept_func(std::move(func));
@@ -73,7 +73,7 @@ void acceptor_stack::_prepare_level(int level, misc::pos_type const& pos)
     _shrink_to(level);
 }
 
-block acceptor_stack::pack_all()
+Block acceptor_stack::pack_all()
 {
     _shrink_to(0);
     return std::move(_packer->pack());
@@ -96,12 +96,12 @@ void acceptor_stack::acceptor_of_pack::accept_stmt(util::sptr<Statement const> s
     _pack.add_stmt(std::move(stmt));
 }
 
-void acceptor_stack::acceptor_of_pack::accept_func(util::sptr<function const> func)
+void acceptor_stack::acceptor_of_pack::accept_func(util::sptr<Function const> func)
 {
     _pack.add_func(std::move(func));
 }
 
-block acceptor_stack::acceptor_of_pack::pack()
+Block acceptor_stack::acceptor_of_pack::pack()
 {
     return std::move(_pack);
 }
@@ -129,12 +129,12 @@ void clause_builder::add_return_nothing(int indent_len, misc::pos_type const& po
     _stack.next_stmt(indent_len, std::move(util::mkptr(new func_ret_nothing(pos))));
 }
 
-void clause_builder::add_function(int indent_len
+void clause_builder::add_Function(int indent_len
                                 , misc::pos_type const& pos
                                 , std::string const& name
                                 , std::vector<std::string> const& params)
 {
-    _stack.add(indent_len, std::move(util::mkmptr(new function_acceptor(pos, name, params))));
+    _stack.add(indent_len, std::move(util::mkmptr(new Function_acceptor(pos, name, params))));
 }
 
 void clause_builder::add_if(int indent_len, util::sptr<Expression const> condition)
@@ -154,7 +154,7 @@ void clause_builder::add_else(int indent_len, misc::pos_type const& pos)
     _stack.match_else(indent_len, pos);
 }
 
-flchk::block clause_builder::build_and_clear()
+flchk::Block clause_builder::build_and_clear()
 {
     return std::move(_stack.pack_all().compile(std::move(util::mkmptr(new flchk::filter)))->deliver());
 }

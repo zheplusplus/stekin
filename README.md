@@ -103,7 +103,7 @@ What will be added / changed next?
 ----------------------------------------------------------------------------
 主要
 
-设计: 修正现在 `instance` 和 `proto` 就 `proto::function` 而互相依赖的问题;
+设计: 修正现在 `instance` 和 `proto` 就 `proto::Function` 而互相依赖的问题;
 
 测试: 完善测试案例;
 

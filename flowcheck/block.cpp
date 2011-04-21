@@ -9,39 +9,39 @@
 
 using namespace flchk;
 
-void block::add_stmt(util::sptr<Statement const> stmt)
+void Block::add_stmt(util::sptr<Statement const> stmt)
 {
     _stmts.push_back(std::move(stmt));
 }
 
-void block::def_func(misc::pos_type const& pos
+void Block::def_func(misc::pos_type const& pos
                    , std::string const& name
                    , std::vector<std::string> const& param_names
-                   , block body
+                   , Block body
                    , bool contains_void_return)
 {
-    _funcs.push_back(std::move(util::mkptr(new function(pos
+    _funcs.push_back(std::move(util::mkptr(new Function(pos
                                                       , name
                                                       , param_names
                                                       , std::move(body)
                                                       , contains_void_return))));
 }
 
-void block::compile(util::sref<proto::scope> scope) const 
+void Block::compile(util::sref<proto::scope> scope) const 
 {
-    std::vector<util::sref<proto::function>> decls;
+    std::vector<util::sref<proto::Function>> decls;
     decls.reserve(_funcs.size());
     std::for_each(_funcs.begin()
                 , _funcs.end()
-                , [&](util::sptr<function const> const& func)
+                , [&](util::sptr<Function const> const& func)
                   {
                       decls.push_back(func->declare(scope));
                   });
 
-    std::vector<util::sref<proto::function>>::iterator func_decl_iter = decls.begin();
+    std::vector<util::sref<proto::Function>>::iterator func_decl_iter = decls.begin();
     std::for_each(_funcs.begin()
                 , _funcs.end()
-                , [&](util::sptr<function const> const& func)
+                , [&](util::sptr<Function const> const& func)
                   {
                       func->body.compile(*func_decl_iter++);
                   });
@@ -54,11 +54,11 @@ void block::compile(util::sref<proto::scope> scope) const
                   });
 }
 
-void block::append(block following)
+void Block::append(Block following)
 {
     std::for_each(following._funcs.begin()
                 , following._funcs.end()
-                , [&](util::sptr<function const>& func)
+                , [&](util::sptr<Function const>& func)
                   {
                       _funcs.push_back(std::move(func));
                   });

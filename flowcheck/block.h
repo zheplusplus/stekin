@@ -11,11 +11,11 @@
 
 namespace flchk {
 
-    struct block {
-        block() = default;
-        block(block const&) = delete;
+    struct Block {
+        Block() = default;
+        Block(Block const&) = delete;
 
-        block(block&& rhs)
+        Block(Block&& rhs)
             : _stmts(std::move(rhs._stmts))
             , _funcs(std::move(rhs._funcs))
         {}
@@ -26,12 +26,12 @@ namespace flchk {
         void def_func(misc::pos_type const& pos
                     , std::string const& name
                     , std::vector<std::string> const& param_names
-                    , block body
+                    , Block body
                     , bool contains_void_return);
-        void append(block following);
+        void append(Block following);
     private:
         std::list<util::sptr<Statement const>> _stmts;
-        std::list<util::sptr<function const>> _funcs;
+        std::list<util::sptr<Function const>> _funcs;
     };
 
 }

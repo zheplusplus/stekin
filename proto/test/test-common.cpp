@@ -46,7 +46,7 @@ std::ostream& operator<<(std::ostream& os, proto_data const& data)
 }
 
 node_type const test::ADD_STMT_TO_SCOPE("add statement to scope");
-node_type const test::ADD_STMT_TO_BLOCK("add statement to block");
+node_type const test::ADD_STMT_TO_BLOCK("add statement to Block");
 
 node_type const test::QUERY_VAR("query var");
 node_type const test::QUERY_BINARY_OP("query binary op");

@@ -45,7 +45,7 @@ namespace flchk {
                             , std::vector<std::string> const& param_names
                             , util::sptr<filter> body);
     public:
-        block deliver();
+        Block deliver();
     protected:
         accumulator _accumulator;
     };

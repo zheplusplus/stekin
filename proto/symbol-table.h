@@ -25,16 +25,16 @@ namespace proto {
 
             std::string const name;
         public:
-            util::sref<function> query_or_null_if_nonexist(int param_count) const;
-            void declare(util::sref<function> func);
-            std::vector<util::sref<function>> all() const;
+            util::sref<Function> query_or_null_if_nonexist(int param_count) const;
+            void declare(util::sref<Function> func);
+            std::vector<util::sref<Function>> all() const;
         private:
-            std::map<int, util::sref<function> const> _funcs;
+            std::map<int, util::sref<Function> const> _funcs;
         };
     public:
-        std::vector<util::sref<function>> all_funcs_of_name(std::string const& name) const;
-        util::sref<function> query_or_null_if_nonexist(std::string const& name, int param_count) const;
-        void declare(util::sref<function> func);
+        std::vector<util::sref<Function>> all_funcs_of_name(std::string const& name) const;
+        util::sref<Function> query_or_null_if_nonexist(std::string const& name, int param_count) const;
+        void declare(util::sref<Function> func);
     private:
         util::sref<overload> _overload_by_name(std::string const& name);
         util::sref<overload const> _overload_by_name_or_null_if_nonexist(std::string const& name) const;
@@ -66,14 +66,14 @@ namespace proto {
 
         util::sptr<Expression const> ref_var(misc::pos_type const& pos, std::string const& name);
         void def_var(misc::pos_type const& pos, std::string const& name);
-        util::sref<function> def_func(misc::pos_type const& pos
+        util::sref<Function> def_func(misc::pos_type const& pos
                                     , std::string const& name
                                     , std::vector<std::string> const& param_names
                                     , bool hint_void_return);
         util::sptr<Expression const> query_call(misc::pos_type const& pos
                                              , std::string const& name
                                              , std::vector<util::sptr<Expression const>> args) const;
-        util::sref<function> query_func(misc::pos_type const& pos
+        util::sref<Function> query_func(misc::pos_type const& pos
                                       , std::string const& name
                                       , int param_count) const;
         std::map<std::string, inst::variable const>
@@ -83,9 +83,9 @@ namespace proto {
         std::map<std::string, misc::pos_type> _var_defs;
 
         overloads _overloads;
-        std::list<function> _func_entities;
+        std::list<Function> _func_entities;
     private:
-        static function _fake_prototype;
+        static Function _fake_prototype;
     };
 
 }

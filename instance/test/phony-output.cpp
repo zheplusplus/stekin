@@ -24,8 +24,8 @@ void output::begin_expr() {}
 void output::end_expr() {}
 void output::branch_if() {}
 void output::branch_else() {}
-void output::block_begin() {}
-void output::block_end() {}
+void output::Block_begin() {}
+void output::Block_end() {}
 void output::end_of_statement() {}
 void output::construct_func_reference(std::string const&) {}
 void output::func_reference_next_variable(int, stack_var_record const&) {}
@@ -40,9 +40,9 @@ std::string output::form_type(std::string const&)
     return "";
 }
 
-util::sref<inst::function> proto::function::inst(int
+util::sref<inst::Function> proto::Function::inst(int
                                                , std::map<std::string, inst::variable const> const&
                                                , std::vector<util::sref<inst::type const>> const&)
 {
-    return util::sref<inst::function>(NULL);
+    return util::sref<inst::Function>(NULL);
 }

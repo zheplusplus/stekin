@@ -41,7 +41,7 @@ namespace proto {
         util::sptr<Expression const> make_nega(misc::pos_type const& pos, util::sptr<Expression const> rhs) const;
     public:
         virtual void def_var(misc::pos_type const& pos, std::string const& name) = 0;
-        virtual util::sref<function> declare(misc::pos_type const& pos
+        virtual util::sref<Function> declare(misc::pos_type const& pos
                                            , std::string const& name
                                            , std::vector<std::string> const& param_names
                                            , bool contains_void_return) = 0;
@@ -49,15 +49,15 @@ namespace proto {
     public:
         void add_stmt(util::sptr<Statement const> stmt);
     public:
-        block deliver();
+        Block deliver();
         std::list<util::sptr<Statement const>> const& get_stmts() const;
     protected:
-        block _block;
+        Block _Block;
     protected:
         scope() {}
 
         scope(scope&& rhs)
-            : _block(std::move(rhs._block))
+            : _Block(std::move(rhs._Block))
         {}
 
         scope(scope const&) = delete;

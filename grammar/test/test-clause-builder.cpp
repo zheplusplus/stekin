@@ -28,13 +28,13 @@ TEST_F(ClauseBuilderTest, AcceptorStackNext)
     stack0.next_stmt(0, std::move(
                 util::mkptr(new grammar::var_def(item_pos, "topiz", std::move(
                             util::mkptr(new grammar::reference(item_pos, "ruby")))))));
-    stack0.next_func(0, std::move(util::mkptr(new grammar::function(item_pos
+    stack0.next_func(0, std::move(util::mkptr(new grammar::Function(item_pos
                                                                   , "skull"
                                                                   , std::vector<std::string>({ "chipped" })
-                                                                  , std::move(grammar::block())))));
+                                                                  , std::move(grammar::Block())))));
     ASSERT_FALSE(error::has_error());
-    grammar::block block0(std::move(stack0.pack_all()));
-    block0.compile(std::move(util::mkmptr(new flchk::filter)))->deliver().compile(nulscope);
+    grammar::Block Block0(std::move(stack0.pack_all()));
+    Block0.compile(std::move(util::mkmptr(new flchk::filter)))->deliver().compile(nulscope);
 
     data_tree::expect_one()
         (BLOCK_BEGIN)
@@ -58,11 +58,11 @@ TEST_F(ClauseBuilderTest, AcceptorStackNext)
                             util::mkptr(new grammar::IntLiteral(item_pos, "20110119")))))));
     stack0.next_stmt(1, std::move(
                 util::mkptr(new grammar::arithmetics(item_pos, std::move(
-                            util::mkptr(new grammar::float_literal(item_pos, "19.55")))))));
-    stack0.next_func(4, std::move(util::mkptr(new grammar::function(err_pos1
+                            util::mkptr(new grammar::FloatLiteral(item_pos, "19.55")))))));
+    stack0.next_func(4, std::move(util::mkptr(new grammar::Function(err_pos1
                                                                   , "ith"
                                                                   , std::vector<std::string>({ "el", "eth" })
-                                                                  , std::move(grammar::block())))));
+                                                                  , std::move(grammar::Block())))));
     ASSERT_TRUE(error::has_error());
     ASSERT_EQ(2, get_excess_inds().size());
     ASSERT_EQ(err_pos0, get_excess_inds()[0].pos);
@@ -78,7 +78,7 @@ TEST_F(ClauseBuilderTest, AcceptorStackAdd)
     stack0.next_stmt(0, std::move(
                 util::mkptr(new grammar::arithmetics(item_pos, std::move(
                             util::mkptr(new grammar::reference(item_pos, "eaglehorn")))))));
-    stack0.add(0, std::move(util::mkmptr(new grammar::function_acceptor(acc_pos
+    stack0.add(0, std::move(util::mkmptr(new grammar::Function_acceptor(acc_pos
                                                                       , "witherstring"
                                                                       , std::vector<std::string>()))));
     stack0.next_stmt(1, std::move(
@@ -88,8 +88,8 @@ TEST_F(ClauseBuilderTest, AcceptorStackAdd)
                 util::mkptr(new grammar::arithmetics(item_pos, std::move(
                             util::mkptr(new grammar::reference(item_pos, "buriza_do_kyanon"))))))); 
     ASSERT_FALSE(error::has_error());
-    grammar::block block0(std::move(stack0.pack_all()));
-    block0.compile(std::move(util::mkmptr(new flchk::filter)))->deliver().compile(nulscope);
+    grammar::Block Block0(std::move(stack0.pack_all()));
+    Block0.compile(std::move(util::mkmptr(new flchk::filter)))->deliver().compile(nulscope);
 
     data_tree::expect_one()
         (BLOCK_BEGIN)
@@ -107,7 +107,7 @@ TEST_F(ClauseBuilderTest, AcceptorStackAdd)
     ;
 
     grammar::acceptor_stack stack1;
-    stack1.add(0, std::move(util::mkmptr(new grammar::function_acceptor(acc_pos
+    stack1.add(0, std::move(util::mkmptr(new grammar::Function_acceptor(acc_pos
                                                                       , "witherstring"
                                                                       , std::vector<std::string>()))));
     stack1.next_stmt(1, std::move(
@@ -145,8 +145,8 @@ TEST_F(ClauseBuilderTest, AcceptorStackMatchElse)
                 util::mkptr(new grammar::arithmetics(item_pos, std::move(
                             util::mkptr(new grammar::reference(item_pos, "magewrath"))))))); 
     ASSERT_FALSE(error::has_error());
-    grammar::block block0(std::move(stack0.pack_all()));
-    block0.compile(std::move(util::mkmptr(new flchk::filter)))->deliver().compile(nulscope);
+    grammar::Block Block0(std::move(stack0.pack_all()));
+    Block0.compile(std::move(util::mkmptr(new flchk::filter)))->deliver().compile(nulscope);
 
     data_tree::expect_one()
         (BLOCK_BEGIN)
@@ -193,16 +193,16 @@ TEST_F(ClauseBuilderTest, ClauseBuilder)
     misc::pos_type item_pos2(6);
 
     grammar::clause_builder builder0;
-    builder0.add_if(0, std::move(util::mkptr(new grammar::bool_literal(item_pos0, true))));
+    builder0.add_if(0, std::move(util::mkptr(new grammar::BoolLiteral(item_pos0, true))));
         builder0.add_var_def(1, "wind_force", std::move(util::mkptr(new grammar::IntLiteral(item_pos1
                                                                                            , "13571"))));
         builder0.add_ifnot(1, std::move(util::mkptr(new grammar::reference(item_pos2, "raven_claw"))));
-            builder0.add_return(2, std::move(util::mkptr(new grammar::float_literal(item_pos0, "0.000123"))));
+            builder0.add_return(2, std::move(util::mkptr(new grammar::FloatLiteral(item_pos0, "0.000123"))));
         builder0.add_return_nothing(1, item_pos1);
     builder0.add_else(0, item_pos2);
         builder0.add_ifnot(1, std::move(util::mkptr(new grammar::reference(item_pos2, "cliffkiller"))));
             builder0.add_ifnot(2, std::move(util::mkptr(new grammar::reference(item_pos0, "skystrike"))));
-    builder0.add_function(0, item_pos1, "goldenstrike_arch", std::vector<std::string>({ "amn", "tir" }));
+    builder0.add_Function(0, item_pos1, "goldenstrike_arch", std::vector<std::string>({ "amn", "tir" }));
         builder0.add_arith(1, std::move(util::mkptr(new grammar::reference(item_pos1, "widowmaker"))));
 
     builder0.build_and_clear().compile(nulscope);
@@ -252,7 +252,7 @@ TEST_F(ClauseBuilderTest, ClauseBuilder)
     ;
 
     grammar::clause_builder builder1;
-    builder1.add_if(0, std::move(util::mkptr(new grammar::bool_literal(item_pos0, true))));
+    builder1.add_if(0, std::move(util::mkptr(new grammar::BoolLiteral(item_pos0, true))));
     builder1.add_var_def(0, "wind_force", std::move(util::mkptr(new grammar::IntLiteral(item_pos1, "13571"))));
     builder1.add_else(0, item_pos2);
     ASSERT_TRUE(error::has_error());

@@ -10,21 +10,21 @@
 
 using namespace grammar;
 
-void block::add_stmt(util::sptr<Statement const> stmt)
+void Block::add_stmt(util::sptr<Statement const> stmt)
 {
     _stmts.push_back(std::move(stmt));
 }
 
-void block::add_func(util::sptr<function const> function)
+void Block::add_func(util::sptr<Function const> Function)
 {
-    _funcs.push_back(std::move(function));
+    _funcs.push_back(std::move(Function));
 }
 
-util::sptr<flchk::filter> block::compile(util::sptr<flchk::filter> filter) const
+util::sptr<flchk::filter> Block::compile(util::sptr<flchk::filter> filter) const
 {
     std::for_each(_funcs.begin()
                 , _funcs.end()
-                , [&](util::sptr<function const> const& def)
+                , [&](util::sptr<Function const> const& def)
                   {
                       def->compile(*filter);
                   });

@@ -13,7 +13,7 @@ namespace {
 
     static util::sptr<Expression const> make_fake_expr(misc::pos_type const& pos)
     {
-        return std::move(util::mkptr(new bool_literal(pos, false)));
+        return std::move(util::mkptr(new BoolLiteral(pos, false)));
     }
 
     struct literal_binary_operation {
@@ -78,7 +78,7 @@ namespace {
                                              , _LHS const& lhs
                                              , _RHS const& rhs) const
         {
-            return std::move(util::mkptr(new bool_literal(pos, lhs < rhs)));
+            return std::move(util::mkptr(new BoolLiteral(pos, lhs < rhs)));
         }
     };
     binary_op_implement<lt_binary> lt_binary_obj;
@@ -89,7 +89,7 @@ namespace {
                                              , _LHS const& lhs
                                              , _RHS const& rhs) const
         {
-            return std::move(util::mkptr(new bool_literal(pos, lhs <= rhs)));
+            return std::move(util::mkptr(new BoolLiteral(pos, lhs <= rhs)));
         }
     };
     binary_op_implement<le_binary> le_binary_obj;
@@ -100,7 +100,7 @@ namespace {
                                              , _LHS const& lhs
                                              , _RHS const& rhs) const
         {
-            return std::move(util::mkptr(new bool_literal(pos, lhs >= rhs)));
+            return std::move(util::mkptr(new BoolLiteral(pos, lhs >= rhs)));
         }
     };
     binary_op_implement<ge_binary> ge_binary_obj;
@@ -111,7 +111,7 @@ namespace {
                                              , _LHS const& lhs
                                              , _RHS const& rhs) const
         {
-            return std::move(util::mkptr(new bool_literal(pos, lhs > rhs)));
+            return std::move(util::mkptr(new BoolLiteral(pos, lhs > rhs)));
         }
     };
     binary_op_implement<gt_binary> gt_binary_obj;
@@ -122,7 +122,7 @@ namespace {
                                              , _LHS const& lhs
                                              , _RHS const& rhs) const
         {
-            return std::move(util::mkptr(new bool_literal(pos, lhs == rhs)));
+            return std::move(util::mkptr(new BoolLiteral(pos, lhs == rhs)));
         }
     };
     binary_op_implement<eq_binary> eq_binary_obj;
@@ -133,7 +133,7 @@ namespace {
                                              , _LHS const& lhs
                                              , _RHS const& rhs) const
         {
-            return std::move(util::mkptr(new bool_literal(pos, lhs != rhs)));
+            return std::move(util::mkptr(new BoolLiteral(pos, lhs != rhs)));
         }
     };
     binary_op_implement<ne_binary> ne_binary_obj;
@@ -151,7 +151,7 @@ namespace {
                                              , _LHS const& lhs
                                              , _RHS const& rhs) const
         {
-            return std::move(util::mkptr(new float_literal(pos, lhs + rhs)));
+            return std::move(util::mkptr(new FloatLiteral(pos, lhs + rhs)));
         }
     };
     binary_op_implement<add_binary> add_binary_obj;
@@ -169,7 +169,7 @@ namespace {
                                              , _LHS const& lhs
                                              , _RHS const& rhs) const
         {
-            return std::move(util::mkptr(new float_literal(pos, lhs - rhs)));
+            return std::move(util::mkptr(new FloatLiteral(pos, lhs - rhs)));
         }
     };
     binary_op_implement<sub_binary> sub_binary_obj;
@@ -187,7 +187,7 @@ namespace {
                                              , _LHS const& lhs
                                              , _RHS const& rhs) const
         {
-            return std::move(util::mkptr(new float_literal(pos, lhs * rhs)));
+            return std::move(util::mkptr(new FloatLiteral(pos, lhs * rhs)));
         }
     };
     binary_op_implement<mul_binary> mul_binary_obj;
@@ -212,7 +212,7 @@ namespace {
                 error::binary_op_not_avai(pos, "/", "int", "integer literal(0)");
                 return std::move(make_fake_expr(pos));
             }
-            return std::move(util::mkptr(new float_literal(pos, lhs / rhs)));
+            return std::move(util::mkptr(new FloatLiteral(pos, lhs / rhs)));
         }
 
         template <typename _LHS, typename _RHS>
@@ -220,7 +220,7 @@ namespace {
                                              , _LHS const& lhs
                                              , _RHS const& rhs) const
         {
-            return std::move(util::mkptr(new float_literal(pos, lhs / rhs)));
+            return std::move(util::mkptr(new FloatLiteral(pos, lhs / rhs)));
         }
     };
     binary_op_implement<div_binary> div_binary_obj;
@@ -354,7 +354,7 @@ std::string conjunction::type_name() const
 util::sptr<Expression const> conjunction::fold() const
 {
     if (is_literal()) {
-        return std::move(util::mkptr(new bool_literal(pos, lhs->bool_value() && rhs->bool_value())));
+        return std::move(util::mkptr(new BoolLiteral(pos, lhs->bool_value() && rhs->bool_value())));
     }
     return std::move(util::mkptr(new conjunction(pos, std::move(lhs->fold()), std::move(rhs->fold()))));
 }
@@ -382,7 +382,7 @@ std::string disjunction::type_name() const
 util::sptr<Expression const> disjunction::fold() const
 {
     if (is_literal()) {
-        return std::move(util::mkptr(new bool_literal(pos, lhs->bool_value() || rhs->bool_value())));
+        return std::move(util::mkptr(new BoolLiteral(pos, lhs->bool_value() || rhs->bool_value())));
     }
     return std::move(util::mkptr(new disjunction(pos, std::move(lhs->fold()), std::move(rhs->fold()))));
 }
@@ -410,7 +410,7 @@ std::string negation::type_name() const
 util::sptr<Expression const> negation::fold() const
 {
     if (is_literal()) {
-        return std::move(util::mkptr(new bool_literal(pos, !rhs->bool_value())));
+        return std::move(util::mkptr(new BoolLiteral(pos, !rhs->bool_value())));
     }
     return std::move(util::mkptr(new negation(pos, std::move(rhs->fold()))));
 }
@@ -430,32 +430,32 @@ util::sptr<Expression const> reference::fold() const
     return std::move(util::mkptr(new reference(pos, name)));
 }
 
-util::sptr<proto::Expression const> bool_literal::compile(util::sref<proto::scope> scope) const
+util::sptr<proto::Expression const> BoolLiteral::compile(util::sref<proto::scope> scope) const
 {
     return std::move(scope->make_bool(pos, value));
 }
 
-bool bool_literal::is_literal() const
+bool BoolLiteral::is_literal() const
 {
     return true;
 }
 
-bool bool_literal::bool_value() const
+bool BoolLiteral::bool_value() const
 {
     return value;
 }
 
-std::string bool_literal::type_name() const
+std::string BoolLiteral::type_name() const
 {
     return "(bool(" + util::str(value) + "))";
 }
 
-util::sptr<Expression const> bool_literal::fold() const
+util::sptr<Expression const> BoolLiteral::fold() const
 {
-    return std::move(util::mkptr(new bool_literal(pos, value)));
+    return std::move(util::mkptr(new BoolLiteral(pos, value)));
 }
 
-util::sptr<Expression const> bool_literal::operate(misc::pos_type const& op_pos
+util::sptr<Expression const> BoolLiteral::operate(misc::pos_type const& op_pos
                                                 , std::string const& op_img
                                                 , mpz_class const&) const
 {
@@ -463,7 +463,7 @@ util::sptr<Expression const> bool_literal::operate(misc::pos_type const& op_pos
     return std::move(make_fake_expr(op_pos));
 }
 
-util::sptr<Expression const> bool_literal::operate(misc::pos_type const& op_pos
+util::sptr<Expression const> BoolLiteral::operate(misc::pos_type const& op_pos
                                                 , std::string const& op_img
                                                 , mpf_class const&) const
 {
@@ -471,24 +471,24 @@ util::sptr<Expression const> bool_literal::operate(misc::pos_type const& op_pos
     return std::move(make_fake_expr(op_pos));
 }
 
-util::sptr<Expression const> bool_literal::operate(misc::pos_type const& op_pos
+util::sptr<Expression const> BoolLiteral::operate(misc::pos_type const& op_pos
                                                 , std::string const& op_img
                                                 , bool rhs) const
 {
     if ("=" == op_img) {
-        return std::move(util::mkptr(new bool_literal(op_pos, value == rhs)));
+        return std::move(util::mkptr(new BoolLiteral(op_pos, value == rhs)));
     }
-    return std::move(util::mkptr(new bool_literal(op_pos, value != rhs)));
+    return std::move(util::mkptr(new BoolLiteral(op_pos, value != rhs)));
 }
 
-util::sptr<Expression const> bool_literal::as_rhs(misc::pos_type const& op_pos
+util::sptr<Expression const> BoolLiteral::as_rhs(misc::pos_type const& op_pos
                                                , std::string const& op_img
                                                , util::sptr<Expression const> lhs) const
 {
     return std::move(lhs->operate(op_pos, op_img, value));
 }
 
-util::sptr<Expression const> bool_literal::as_rhs(misc::pos_type const& op_pos, std::string const& op_img) const
+util::sptr<Expression const> BoolLiteral::as_rhs(misc::pos_type const& op_pos, std::string const& op_img) const
 {
     error::pre_unary_op_not_avai(op_pos, op_img, "bool");
     return std::move(make_fake_expr(op_pos));
@@ -557,47 +557,47 @@ util::sptr<Expression const> IntLiteral::as_rhs(misc::pos_type const& op_pos, st
     return std::move(util::mkptr(new IntLiteral(op_pos, value)));
 }
 
-util::sptr<proto::Expression const> float_literal::compile(util::sref<proto::scope> scope) const
+util::sptr<proto::Expression const> FloatLiteral::compile(util::sref<proto::scope> scope) const
 {
     return std::move(scope->make_float(pos, value));
 }
 
-bool float_literal::is_literal() const
+bool FloatLiteral::is_literal() const
 {
     return true;
 }
 
-bool float_literal::bool_value() const
+bool FloatLiteral::bool_value() const
 {
     error::cond_not_bool(pos, type_name());
     return false;
 }
 
-std::string float_literal::type_name() const
+std::string FloatLiteral::type_name() const
 {
     return "(float(" + util::str(value) + "))";
 }
 
-util::sptr<Expression const> float_literal::fold() const
+util::sptr<Expression const> FloatLiteral::fold() const
 {
-    return std::move(util::mkptr(new float_literal(pos, value)));
+    return std::move(util::mkptr(new FloatLiteral(pos, value)));
 }
 
-util::sptr<Expression const> float_literal::operate(misc::pos_type const& op_pos
+util::sptr<Expression const> FloatLiteral::operate(misc::pos_type const& op_pos
                                                  , std::string const& op_img
                                                  , mpz_class const& rhs) const
 {
     return std::move(ALL_OPS.find(op_img)->second->operate(op_pos, value, rhs));
 }
 
-util::sptr<Expression const> float_literal::operate(misc::pos_type const& op_pos
+util::sptr<Expression const> FloatLiteral::operate(misc::pos_type const& op_pos
                                                  , std::string const& op_img
                                                  , mpf_class const& rhs) const
 {
     return std::move(ALL_OPS.find(op_img)->second->operate(op_pos, value, rhs));
 }
 
-util::sptr<Expression const> float_literal::operate(misc::pos_type const& op_pos
+util::sptr<Expression const> FloatLiteral::operate(misc::pos_type const& op_pos
                                                  , std::string const& op_img
                                                  , bool) const
 {
@@ -605,19 +605,19 @@ util::sptr<Expression const> float_literal::operate(misc::pos_type const& op_pos
     return std::move(make_fake_expr(op_pos));
 }
 
-util::sptr<Expression const> float_literal::as_rhs(misc::pos_type const& op_pos
+util::sptr<Expression const> FloatLiteral::as_rhs(misc::pos_type const& op_pos
                                                 , std::string const& op_img
                                                 , util::sptr<Expression const> lhs) const
 {
     return std::move(lhs->operate(op_pos, op_img, value));
 }
 
-util::sptr<Expression const> float_literal::as_rhs(misc::pos_type const& op_pos, std::string const& op_img) const
+util::sptr<Expression const> FloatLiteral::as_rhs(misc::pos_type const& op_pos, std::string const& op_img) const
 {
     if ("-" == op_img) {
-        return std::move(util::mkptr(new float_literal(op_pos, -value)));
+        return std::move(util::mkptr(new FloatLiteral(op_pos, -value)));
     }
-    return std::move(util::mkptr(new float_literal(op_pos, value)));
+    return std::move(util::mkptr(new FloatLiteral(op_pos, value)));
 }
 
 util::sptr<proto::Expression const> call::compile(util::sref<proto::scope> scope) const

@@ -10,17 +10,17 @@
 
 namespace proto {
 
-    struct block_mediate
+    struct Block_mediate
         : public inst::mediate_base
     {
-        block_mediate(std::list<util::sptr<Statement const>> const& stmts, util::sref<inst::scope> sc);
+        Block_mediate(std::list<util::sptr<Statement const>> const& stmts, util::sref<inst::scope> sc);
 
         util::sptr<inst::Statement const> inst(util::sref<inst::scope> sc);
         void mediate_inst(util::sref<inst::scope> sc);
     private:
         std::list<util::sptr<Statement const>> const& _stmts;
         util::sptr<std::list<util::sptr<inst::mediate_base>>> _mediates;
-        util::sptr<inst::block> _inst_block;
+        util::sptr<inst::Block> _inst_Block;
     };
 
     struct direct_inst
@@ -56,8 +56,8 @@ namespace proto {
         misc::pos_type const pos;
     private:
         util::sptr<inst::Expression const> _predicate;
-        block_mediate _consequence_mediate;
-        block_mediate _alternative_mediate;
+        Block_mediate _consequence_mediate;
+        Block_mediate _alternative_mediate;
     };
 
 }

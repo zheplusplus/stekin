@@ -30,7 +30,7 @@ util::sptr<Expression const> Expression::operate(misc::pos_type const& op_pos
     return std::move(util::mkptr(new binary_op(op_pos
                                              , std::move(fold())
                                              , op_img
-                                             , std::move(util::mkptr(new float_literal(op_pos, rhs))))));
+                                             , std::move(util::mkptr(new FloatLiteral(op_pos, rhs))))));
 }
 
 util::sptr<Expression const> Expression::operate(misc::pos_type const& op_pos
@@ -40,7 +40,7 @@ util::sptr<Expression const> Expression::operate(misc::pos_type const& op_pos
     return std::move(util::mkptr(new binary_op(op_pos
                                              , std::move(fold())
                                              , op_img
-                                             , std::move(util::mkptr(new bool_literal(op_pos, rhs))))));
+                                             , std::move(util::mkptr(new BoolLiteral(op_pos, rhs))))));
 }
 
 util::sptr<Expression const> Expression::as_rhs(misc::pos_type const& op_pos

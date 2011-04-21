@@ -26,7 +26,7 @@ namespace grammar {
     struct branch
         : public Statement
     {
-        branch(misc::pos_type const& pos, util::sptr<Expression const> p, block c, block a)
+        branch(misc::pos_type const& pos, util::sptr<Expression const> p, Block c, Block a)
             : Statement(pos)
             , predicate(std::move(p))
             , consequence(std::move(c))
@@ -36,14 +36,14 @@ namespace grammar {
         void compile(util::sref<flchk::filter> filter) const;
 
         util::sptr<Expression const> const predicate;
-        block const consequence;
-        block const alternative;
+        Block const consequence;
+        Block const alternative;
     };
 
     struct branch_cons_only
         : public Statement
     {
-        branch_cons_only(misc::pos_type const& pos, util::sptr<Expression const> p, block c)
+        branch_cons_only(misc::pos_type const& pos, util::sptr<Expression const> p, Block c)
             : Statement(pos)
             , predicate(std::move(p))
             , consequence(std::move(c))
@@ -52,13 +52,13 @@ namespace grammar {
         void compile(util::sref<flchk::filter> filter) const;
 
         util::sptr<Expression const> const predicate;
-        block const consequence;
+        Block const consequence;
     };
 
     struct branch_alt_only
         : public Statement
     {
-        branch_alt_only(misc::pos_type const& pos, util::sptr<Expression const> p, block a)
+        branch_alt_only(misc::pos_type const& pos, util::sptr<Expression const> p, Block a)
             : Statement(pos)
             , predicate(std::move(p))
             , alternative(std::move(a))
@@ -67,7 +67,7 @@ namespace grammar {
         void compile(util::sref<flchk::filter> filter) const;
 
         util::sptr<Expression const> const predicate;
-        block const alternative;
+        Block const alternative;
     };
 
     struct func_ret

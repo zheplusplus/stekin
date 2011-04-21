@@ -11,62 +11,62 @@
 
 using namespace proto;
 
-static std::vector<util::sref<function>> append_funcs(std::vector<util::sref<function>> a
-                                                    , std::vector<util::sref<function>> b)
+static std::vector<util::sref<Function>> append_funcs(std::vector<util::sref<Function>> a
+                                                    , std::vector<util::sref<Function>> b)
 {
     std::for_each(b.begin()
                 , b.end()
-                , [&](util::sref<function> f)
+                , [&](util::sref<Function> f)
                   {
                       a.push_back(f);
                   });
     return std::move(a);
 }
 
-util::sref<function> overloads::overload::query_or_null_if_nonexist(int param_count) const
+util::sref<Function> overloads::overload::query_or_null_if_nonexist(int param_count) const
 {
     auto func = _funcs.find(param_count);
     if (_funcs.end() == func) {
-        return util::sref<function>(NULL);
+        return util::sref<Function>(NULL);
     }
     return func->second;
 }
 
-void overloads::overload::declare(util::sref<function> func)
+void overloads::overload::declare(util::sref<Function> func)
 {
     _funcs.insert(std::make_pair(func->param_names.size(), func));
 }
 
-std::vector<util::sref<function>> overloads::overload::all() const
+std::vector<util::sref<Function>> overloads::overload::all() const
 {
-    std::vector<util::sref<function>> result_funcs;
+    std::vector<util::sref<Function>> result_funcs;
     std::for_each(_funcs.begin()
                 , _funcs.end()
-                , [&](std::pair<int, util::sref<function>> const& func)
+                , [&](std::pair<int, util::sref<Function>> const& func)
                   {
                       result_funcs.push_back(func.second);
                   });
     return result_funcs;
 }
 
-std::vector<util::sref<function>> overloads::all_funcs_of_name(std::string const& name) const
+std::vector<util::sref<Function>> overloads::all_funcs_of_name(std::string const& name) const
 {
-    std::vector<util::sref<function>> external_funcs_of_name(
+    std::vector<util::sref<Function>> external_funcs_of_name(
                                 bool(_external_overloads_or_null_on_global)
                               ? (_external_overloads_or_null_on_global->all_funcs_of_name(name))
-                              : (std::vector<util::sref<function>>()));
+                              : (std::vector<util::sref<Function>>()));
     util::sref<overload const> o = _overload_by_name_or_null_if_nonexist(name);
     if (bool(o)) {
         return append_funcs(std::move(external_funcs_of_name), o->all());
     }
-    return append_funcs(std::move(external_funcs_of_name), std::vector<util::sref<function>>());
+    return append_funcs(std::move(external_funcs_of_name), std::vector<util::sref<Function>>());
 }
 
-util::sref<function> overloads::query_or_null_if_nonexist(std::string const& name, int param_count) const
+util::sref<Function> overloads::query_or_null_if_nonexist(std::string const& name, int param_count) const
 {
     util::sref<overload const> o = _overload_by_name_or_null_if_nonexist(name);
     if (bool(o)) {
-        util::sref<function> f = o->query_or_null_if_nonexist(param_count);
+        util::sref<Function> f = o->query_or_null_if_nonexist(param_count);
         if (bool(f)) {
             return f;
         }
@@ -74,10 +74,10 @@ util::sref<function> overloads::query_or_null_if_nonexist(std::string const& nam
     if (bool(_external_overloads_or_null_on_global)) {
         return _external_overloads_or_null_on_global->query_or_null_if_nonexist(name, param_count);
     }
-    return util::sref<function>(NULL);
+    return util::sref<Function>(NULL);
 }
 
-void overloads::declare(util::sref<function> func)
+void overloads::declare(util::sref<Function> func)
 {
     _overload_by_name(func->name)->declare(func);
 }
@@ -114,7 +114,7 @@ util::sref<overloads::overload const>
 
 util::sptr<Expression const> symbol_table::ref_var(misc::pos_type const& pos, std::string const& name)
 {
-    std::vector<util::sref<function>> all_funcs = _overloads.all_funcs_of_name(name);
+    std::vector<util::sref<Function>> all_funcs = _overloads.all_funcs_of_name(name);
     if (!all_funcs.empty()) {
         if (all_funcs.size() > 1) {
             error::func_reference_ambiguous(pos, name);
@@ -140,18 +140,18 @@ void symbol_table::def_var(misc::pos_type const& pos, std::string const& name)
     }
 }
 
-util::sref<function> symbol_table::def_func(misc::pos_type const& pos
+util::sref<Function> symbol_table::def_func(misc::pos_type const& pos
                                           , std::string const& name
                                           , std::vector<std::string> const& params
                                           , bool hint_void_return)
 {
-    util::sref<function> func = _overloads.query_or_null_if_nonexist(name, params.size());
+    util::sref<Function> func = _overloads.query_or_null_if_nonexist(name, params.size());
     if (bool(func)) {
         error::func_already_def(func->pos, pos, name, params.size());
         return func;
     }
 
-    _func_entities.push_back(std::move(function(pos, name, params, util::mkref(*this), hint_void_return)));
+    _func_entities.push_back(std::move(Function(pos, name, params, util::mkref(*this), hint_void_return)));
     _overloads.declare(util::mkref(_func_entities.back()));
     return util::mkref(_func_entities.back());
 }
@@ -160,7 +160,7 @@ util::sptr<Expression const> symbol_table::query_call(misc::pos_type const& pos
                                                    , std::string const& name
                                                    , std::vector<util::sptr<Expression const>> args) const
 {
-    util::sref<function> func = _overloads.query_or_null_if_nonexist(name, args.size());
+    util::sref<Function> func = _overloads.query_or_null_if_nonexist(name, args.size());
     if (bool(func)) {
         return std::move(util::mkptr(new call(pos, func, std::move(args))));
     }
@@ -172,11 +172,11 @@ util::sptr<Expression const> symbol_table::query_call(misc::pos_type const& pos
     return std::move(util::mkptr(new call(pos, util::mkref(_fake_prototype), std::move(args))));
 }
 
-util::sref<function> symbol_table::query_func(misc::pos_type const& pos
+util::sref<Function> symbol_table::query_func(misc::pos_type const& pos
                                             , std::string const& name
                                             , int param_count) const
 {
-    util::sref<function> func = _overloads.query_or_null_if_nonexist(name, param_count);
+    util::sref<Function> func = _overloads.query_or_null_if_nonexist(name, param_count);
     if (bool(func)) {
         return func;
     }
@@ -199,7 +199,7 @@ std::map<std::string, inst::variable const>
 }
 
 static symbol_table fake_symbols;
-function symbol_table::_fake_prototype(misc::pos_type(0)
+Function symbol_table::_fake_prototype(misc::pos_type(0)
                                      , ""
                                      , std::vector<std::string>()
                                      , util::mkref(fake_symbols)

@@ -73,7 +73,7 @@ void error::forbid_def_func(misc::pos_type const& pos, std::string const& name)
 {
     _has_error = true;
     std::cerr << pos.str() << std::endl;
-    std::cerr << "    " << "attempt define function `" << name << "' but forbidden here." << std::endl;
+    std::cerr << "    " << "attempt define Function `" << name << "' but forbidden here." << std::endl;
 }
 
 void error::forbid_def_var(misc::pos_type const& pos, std::string const& name)
@@ -112,7 +112,7 @@ void error::func_reference_ambiguous(misc::pos_type const& pos, std::string cons
 {
     _has_error = true;
     std::cerr << pos.str() << std::endl;
-    std::cerr << "    reference function of  `" << name << "' is ambiguous." << std::endl;
+    std::cerr << "    reference Function of  `" << name << "' is ambiguous." << std::endl;
 }
 
 void error::func_already_def(misc::pos_type const& prev_def_pos
@@ -122,7 +122,7 @@ void error::func_already_def(misc::pos_type const& prev_def_pos
 {
     _has_error = true;
     std::cerr << this_def_pos.str() << std::endl;
-    std::cerr << "    function `" << name << "' with " << param_count << " parameter(s) already defined."
+    std::cerr << "    Function `" << name << "' with " << param_count << " parameter(s) already defined."
               << std::endl;
     std::cerr << "    see previous definition at " << prev_def_pos.str() << std::endl;
 }
@@ -131,7 +131,7 @@ void error::func_not_def(misc::pos_type const& ref_pos, std::string const& name,
 {
     _has_error = true;
     std::cerr << ref_pos.str() << std::endl;
-    std::cerr << "    function `" << name << "' with " << param_count << " parameter(s) not defined."
+    std::cerr << "    Function `" << name << "' with " << param_count << " parameter(s) not defined."
               << std::endl;
 }
 
@@ -169,7 +169,7 @@ void error::conflict_return_type(misc::pos_type const& this_pos
 {
     _has_error = true;
     std::cerr << this_pos.str() << std::endl;
-    std::cerr << "    function return type conflict, previous return type: " << prev_ret_type_name << std::endl;
+    std::cerr << "    Function return type conflict, previous return type: " << prev_ret_type_name << std::endl;
     std::cerr << "                                       this return type: " << this_ret_type_name << std::endl;
 }
 

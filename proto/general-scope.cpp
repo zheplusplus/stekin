@@ -30,7 +30,7 @@ void general_scope::def_var(misc::pos_type const& pos, std::string const& name)
     _symbols.def_var(pos, name);
 }
 
-util::sref<function> general_scope::declare(misc::pos_type const& pos
+util::sref<Function> general_scope::declare(misc::pos_type const& pos
                                           , std::string const& name
                                           , std::vector<std::string> const& param_names
                                           , bool hint_void_return)

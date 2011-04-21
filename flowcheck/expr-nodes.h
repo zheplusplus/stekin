@@ -122,10 +122,10 @@ namespace flchk {
         std::string const name;
     };
 
-    struct bool_literal
+    struct BoolLiteral
         : public Expression
     {
-        bool_literal(misc::pos_type const& pos, bool v)
+        BoolLiteral(misc::pos_type const& pos, bool v)
             : Expression(pos)
             , value(v)
         {}
@@ -193,15 +193,15 @@ namespace flchk {
         mpz_class const value;
     };
 
-    struct float_literal
+    struct FloatLiteral
         : public Expression
     {
-        float_literal(misc::pos_type const& pos, std::string const& image)
+        FloatLiteral(misc::pos_type const& pos, std::string const& image)
             : Expression(pos)
             , value(image)
         {}
 
-        float_literal(misc::pos_type const& pos, mpf_class const& v)
+        FloatLiteral(misc::pos_type const& pos, mpf_class const& v)
             : Expression(pos)
             , value(v)
         {}

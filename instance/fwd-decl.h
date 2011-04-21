@@ -3,7 +3,7 @@
 
 namespace inst {
 
-    struct function;
+    struct Function;
     struct operation;
     struct symbol_table;
     struct Expression;
@@ -11,7 +11,7 @@ namespace inst {
     struct scope;
     struct mediate_base;
     struct type;
-    struct block;
+    struct Block;
     struct variable;
 
 }

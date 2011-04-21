@@ -169,7 +169,7 @@ TEST_F(SymbolTableTest, VarRefBeforeDef)
 TEST_F(SymbolTableTest, DefFunc)
 {
     misc::pos_type pos(7);
-    util::sref<proto::function const> func(NULL);
+    util::sref<proto::Function const> func(NULL);
     std::vector<std::string> param_names;
     func = symbols->def_func(pos, "f0", param_names, true);
     ASSERT_EQ(pos, func->pos);
@@ -199,7 +199,7 @@ TEST_F(SymbolTableTest, RefFunc)
 {
     misc::pos_type pos(8);
     misc::pos_type ref_pos(400);
-    util::sref<proto::function const> func(NULL);
+    util::sref<proto::Function const> func(NULL);
     std::vector<std::string> param_names;
     param_names = { "m", "n" };
     symbols->def_func(pos, "fa", param_names, true);

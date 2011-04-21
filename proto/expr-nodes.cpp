@@ -7,9 +7,9 @@
 
 using namespace proto;
 
-util::sptr<inst::Expression const> bool_literal::inst(util::sref<inst::scope>) const
+util::sptr<inst::Expression const> BoolLiteral::inst(util::sref<inst::scope>) const
 {
-    return std::move(util::mkptr(new inst::bool_literal(value)));
+    return std::move(util::mkptr(new inst::BoolLiteral(value)));
 }
 
 util::sptr<inst::Expression const> IntLiteral::inst(util::sref<inst::scope>) const
@@ -17,9 +17,9 @@ util::sptr<inst::Expression const> IntLiteral::inst(util::sref<inst::scope>) con
     return std::move(util::mkptr(new inst::IntLiteral(value.get_si())));
 }
 
-util::sptr<inst::Expression const> float_literal::inst(util::sref<inst::scope>) const
+util::sptr<inst::Expression const> FloatLiteral::inst(util::sref<inst::scope>) const
 {
-    return std::move(util::mkptr(new inst::float_literal(value.get_d())));
+    return std::move(util::mkptr(new inst::FloatLiteral(value.get_d())));
 }
 
 util::sptr<inst::Expression const> reference::inst(util::sref<inst::scope> scope) const
@@ -28,7 +28,7 @@ util::sptr<inst::Expression const> reference::inst(util::sref<inst::scope> scope
 }
 
 template <typename _CallMaker>
-static util::sptr<inst::Expression const> instantiate_function(
+static util::sptr<inst::Expression const> instantiate_Function(
             std::vector<util::sptr<Expression const>> const& args
           , util::sref<inst::scope> scope
           , _CallMaker call_maker)
@@ -48,7 +48,7 @@ static util::sptr<inst::Expression const> instantiate_function(
 
 util::sptr<inst::Expression const> call::inst(util::sref<inst::scope> scope) const
 {
-    return std::move(instantiate_function(
+    return std::move(instantiate_Function(
                 args
               , scope
               , [&](std::vector<util::sref<inst::type const>> const& arg_types
@@ -61,7 +61,7 @@ util::sptr<inst::Expression const> call::inst(util::sref<inst::scope> scope) con
 
 util::sptr<inst::Expression const> functor::inst(util::sref<inst::scope> scope) const
 {
-    return std::move(instantiate_function(
+    return std::move(instantiate_Function(
                 args
               , scope
               , [&](std::vector<util::sref<inst::type const>> const& arg_types

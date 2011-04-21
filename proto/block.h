@@ -9,11 +9,11 @@
 
 namespace proto {
 
-    struct block {
-        block(block const&) = delete;
-        block() = default;
+    struct Block {
+        Block(Block const&) = delete;
+        Block() = default;
 
-        block(block&& rhs)
+        Block(Block&& rhs)
             : _stmts(std::move(rhs._stmts))
         {}
 

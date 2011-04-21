@@ -38,9 +38,9 @@ util::sptr<flchk::Expression const> reference::compile() const
     return std::move(util::mkptr(new flchk::reference(pos, name)));
 }
 
-util::sptr<flchk::Expression const> bool_literal::compile() const
+util::sptr<flchk::Expression const> BoolLiteral::compile() const
 {
-    return std::move(util::mkptr(new flchk::bool_literal(pos, value)));
+    return std::move(util::mkptr(new flchk::BoolLiteral(pos, value)));
 }
 
 util::sptr<flchk::Expression const> IntLiteral::compile() const
@@ -48,9 +48,9 @@ util::sptr<flchk::Expression const> IntLiteral::compile() const
     return std::move(util::mkptr(new flchk::IntLiteral(pos, value)));
 }
 
-util::sptr<flchk::Expression const> float_literal::compile() const
+util::sptr<flchk::Expression const> FloatLiteral::compile() const
 {
-    return std::move(util::mkptr(new flchk::float_literal(pos, value)));
+    return std::move(util::mkptr(new flchk::FloatLiteral(pos, value)));
 }
 
 util::sptr<flchk::Expression const> call::compile() const

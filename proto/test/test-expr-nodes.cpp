@@ -21,12 +21,12 @@ struct ExprNodesTest
 TEST_F(ExprNodesTest, Literals)
 {
     misc::pos_type pos(1);
-    proto::bool_literal bool0(pos, true);
-    proto::bool_literal bool1(pos, false);
+    proto::BoolLiteral bool0(pos, true);
+    proto::BoolLiteral bool1(pos, false);
     proto::IntLiteral int0(pos, 0);
     proto::IntLiteral int1(pos, 1048576);
-    proto::float_literal float0(pos, 0.4321);
-    proto::float_literal float1(pos, 1234.56);
+    proto::FloatLiteral float0(pos, 0.4321);
+    proto::FloatLiteral float1(pos, 1234.56);
 
     bool0.inst(*inst_scope)->typeof();
     bool1.inst(*inst_scope)->typeof();
@@ -101,12 +101,12 @@ TEST_F(ExprNodesTest, Logic)
 {
     misc::pos_type pos(4);
     proto::conjunction conj(pos
-                          , std::move(util::mkptr(new proto::bool_literal(pos, true)))
-                          , std::move(util::mkptr(new proto::bool_literal(pos, false))));
+                          , std::move(util::mkptr(new proto::BoolLiteral(pos, true)))
+                          , std::move(util::mkptr(new proto::BoolLiteral(pos, false))));
     proto::disjunction disj(pos
                           , std::move(util::mkptr(new proto::IntLiteral(pos, 198765432)))
                           , std::move(util::mkptr(new proto::IntLiteral(pos, 0))));
-    proto::negation nega(pos, std::move(util::mkptr(new proto::bool_literal(pos, true))));
+    proto::negation nega(pos, std::move(util::mkptr(new proto::BoolLiteral(pos, true))));
 
     conj.inst(*inst_scope)->typeof();
     disj.inst(*inst_scope)->typeof();

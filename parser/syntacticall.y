@@ -136,7 +136,7 @@ func_return:
 func_clue:
     indent KW_FUNC ident '(' param_list ')' eol
     {
-        parser::builder.add_function($1, parser::here($7), $3->id, $5->get());
+        parser::builder.add_Function($1, parser::here($7), $3->id, $5->get());
         delete $3;
         delete $5;
     }
@@ -303,12 +303,12 @@ factor:
     |
     BOOL_TRUE
     {
-        $$ = new grammar::bool_literal(parser::here(), true);
+        $$ = new grammar::BoolLiteral(parser::here(), true);
     }
     |
     BOOL_FALSE
     {
-        $$ = new grammar::bool_literal(parser::here(), false);
+        $$ = new grammar::BoolLiteral(parser::here(), false);
     }
     |
     INT_LITERAL
@@ -318,7 +318,7 @@ factor:
     |
     DOUBLE_LITERAL
     {
-        $$ = new grammar::float_literal(parser::here(), yytext);
+        $$ = new grammar::FloatLiteral(parser::here(), yytext);
     }
     |
     '(' cond ')'

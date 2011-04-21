@@ -11,7 +11,7 @@ void acceptor::accept_else(misc::pos_type const& else_pos)
     error::else_not_match_if(else_pos);
 }
 
-void if_acceptor::accept_func(util::sptr<function const> func)
+void if_acceptor::accept_func(util::sptr<Function const> func)
 {
     _current_branch->add_func(std::move(func));
 }
@@ -50,7 +50,7 @@ bool if_acceptor::_else_matched() const
     return bool(_last_else_pos);
 }
 
-void ifnot_acceptor::accept_func(util::sptr<function const> func)
+void ifnot_acceptor::accept_func(util::sptr<Function const> func)
 {
     _alternative.add_func(std::move(func));
 }
@@ -67,17 +67,17 @@ void ifnot_acceptor::deliver_to(util::sref<acceptor> acc)
                                                              , std::move(_alternative)))));
 }
 
-void function_acceptor::accept_func(util::sptr<function const> func)
+void Function_acceptor::accept_func(util::sptr<Function const> func)
 {
     _body.add_func(std::move(func));
 }
 
-void function_acceptor::accept_stmt(util::sptr<Statement const> stmt)
+void Function_acceptor::accept_stmt(util::sptr<Statement const> stmt)
 {
     _body.add_stmt(std::move(stmt));
 }
 
-void function_acceptor::deliver_to(util::sref<acceptor> acc)
+void Function_acceptor::deliver_to(util::sref<acceptor> acc)
 {
-    acc->accept_func(std::move(util::mkptr(new function(pos, name, param_names, std::move(_body)))));
+    acc->accept_func(std::move(util::mkptr(new Function(pos, name, param_names, std::move(_body)))));
 }

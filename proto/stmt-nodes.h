@@ -23,7 +23,7 @@ namespace proto {
     struct branch
         : public Statement
     {
-        branch(misc::pos_type const& ps, util::sptr<Expression const> p, block c, block a)
+        branch(misc::pos_type const& ps, util::sptr<Expression const> p, Block c, Block a)
             : Statement(ps)
             , _predicate(std::move(p))
             , _consequence(std::move(c))
@@ -33,8 +33,8 @@ namespace proto {
         util::sptr<inst::mediate_base> inst(util::sref<inst::scope> scope) const;
     private:
         util::sptr<Expression const> const _predicate;
-        block _consequence;
-        block _alternative;
+        Block _consequence;
+        Block _alternative;
     };
 
     struct var_def

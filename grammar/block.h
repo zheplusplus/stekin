@@ -9,23 +9,23 @@
 
 namespace grammar {
 
-    struct block {
+    struct Block {
         util::sptr<flchk::filter> compile(util::sptr<flchk::filter> filter) const;
 
         void add_stmt(util::sptr<Statement const> stmt);
-        void add_func(util::sptr<function const> func);
+        void add_func(util::sptr<Function const> func);
 
-        block() = default;
+        Block() = default;
 
-        block(block const&) = delete;
+        Block(Block const&) = delete;
 
-        block(block&& rhs)
+        Block(Block&& rhs)
             : _stmts(std::move(rhs._stmts))
             , _funcs(std::move(rhs._funcs))
         {}
     private:
         std::list<util::sptr<Statement const>> _stmts;
-        std::list<util::sptr<function const>> _funcs;
+        std::list<util::sptr<Function const>> _funcs;
     };
 
 }

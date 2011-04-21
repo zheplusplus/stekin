@@ -9,7 +9,7 @@
 namespace grammar {
 
     struct acceptor {
-        virtual void accept_func(util::sptr<function const> func) = 0;
+        virtual void accept_func(util::sptr<Function const> func) = 0;
         virtual void accept_stmt(util::sptr<Statement const> stmt) = 0;
         virtual void deliver_to(util::sref<acceptor> acc) = 0;
 
@@ -29,7 +29,7 @@ namespace grammar {
     struct if_acceptor
         : public acceptor
     {
-        void accept_func(util::sptr<function const> func);
+        void accept_func(util::sptr<Function const> func);
         void accept_stmt(util::sptr<Statement const> stmt);
         void deliver_to(util::sref<acceptor> acc);
         void accept_else(misc::pos_type const& else_pos);
@@ -45,16 +45,16 @@ namespace grammar {
         util::sptr<Expression const> _predicate;
 
         util::sptr<misc::pos_type> _last_else_pos;
-        block* _current_branch;
+        Block* _current_branch;
 
-        block _consequence;
-        block _alternative;
+        Block _consequence;
+        Block _alternative;
     };
 
     struct ifnot_acceptor
         : public acceptor
     {
-        void accept_func(util::sptr<function const> func);
+        void accept_func(util::sptr<Function const> func);
         void accept_stmt(util::sptr<Statement const> stmt);
         void deliver_to(util::sref<acceptor> acc);
 
@@ -65,17 +65,17 @@ namespace grammar {
     private:
         util::sptr<Expression const> _predicate;
 
-        block _alternative;
+        Block _alternative;
     };
 
-    struct function_acceptor
+    struct Function_acceptor
         : public acceptor
     {
-        void accept_func(util::sptr<function const> func);
+        void accept_func(util::sptr<Function const> func);
         void accept_stmt(util::sptr<Statement const> stmt);
         void deliver_to(util::sref<acceptor> acc);
 
-        function_acceptor(misc::pos_type const& pos
+        Function_acceptor(misc::pos_type const& pos
                         , std::string const& func_name
                         , std::vector<std::string> const& params)
             : acceptor(pos)
@@ -86,7 +86,7 @@ namespace grammar {
         std::string const name;
         std::vector<std::string> const param_names;
     private:
-        block _body;
+        Block _body;
     };
 
 }

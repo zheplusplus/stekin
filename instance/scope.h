@@ -40,7 +40,7 @@ namespace inst {
     protected:
         scope() {}
 
-        block _block;
+        Block _Block;
     };
 
 }

@@ -35,13 +35,13 @@ bool func_reference_type::operator<(type const& rhs) const
     return rhs.lt_as_func_reference(_func_proto, context_references);
 }
 
-bool func_reference_type::eq_as_func_reference(util::sref<proto::function> lhs_func
+bool func_reference_type::eq_as_func_reference(util::sref<proto::Function> lhs_func
                                              , std::map<std::string, variable const> const& rhs_cr) const
 {
     return _func_proto.id() == lhs_func.id() && context_references == rhs_cr;
 }
 
-bool func_reference_type::lt_as_func_reference(util::sref<proto::function> lhs_func
+bool func_reference_type::lt_as_func_reference(util::sref<proto::Function> lhs_func
                                              , std::map<std::string, variable const> const& rhs_cr) const
 {
     if (_func_proto.id() == lhs_func.id()) {

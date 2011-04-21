@@ -26,10 +26,10 @@ namespace inst {
         platform::i4_type const value;
     };
 
-    struct float_literal
+    struct FloatLiteral
         : public Expression
     {
-        explicit float_literal(platform::f8_type v)
+        explicit FloatLiteral(platform::f8_type v)
             : value(v)
         {}
 
@@ -39,10 +39,10 @@ namespace inst {
         platform::f8_type const value;
     };
 
-    struct bool_literal
+    struct BoolLiteral
         : public Expression
     {
-        explicit bool_literal(bool v)
+        explicit BoolLiteral(bool v)
             : value(v)
         {}
 
@@ -68,7 +68,7 @@ namespace inst {
     struct call
         : public Expression
     {
-        call(util::sref<function const> f, std::vector<util::sptr<Expression const>> a)
+        call(util::sref<Function const> f, std::vector<util::sptr<Expression const>> a)
             : func(f)
             , args(std::move(a))
         {}
@@ -76,7 +76,7 @@ namespace inst {
         util::sref<type const> typeof() const;
         void write() const;
 
-        util::sref<function const> const func;
+        util::sref<Function const> const func;
         std::vector<util::sptr<Expression const>> args;
     };
 
@@ -84,7 +84,7 @@ namespace inst {
         : public Expression
     {
         func_reference(misc::pos_type const& reference_pos
-                     , util::sref<proto::function> func_proto
+                     , util::sref<proto::Function> func_proto
                      , int level
                      , std::map<std::string, variable const> const& cr)
             : _type(reference_pos, func_proto, level, cr)

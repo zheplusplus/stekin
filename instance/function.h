@@ -14,7 +14,7 @@
 
 namespace inst {
 
-    struct function
+    struct Function
         : public scope
     {
         variable def_var(misc::pos_type const& pos, util::sref<type const> vtype, std::string const& name);
@@ -30,7 +30,7 @@ namespace inst {
 
         int level() const;
     public:
-        static util::sref<function> create_instance(int ext_level
+        static util::sref<Function> create_instance(int ext_level
                                                   , std::list<arg_name_type_pair> const& args
                                                   , std::map<std::string, variable const> const& extvars
                                                   , bool has_void_returns);
@@ -38,13 +38,13 @@ namespace inst {
         static void write_decls();
         static void write_impls();
     protected:
-        function(int ext_level
+        Function(int ext_level
                , std::list<arg_name_type_pair> const& args
                , std::map<std::string, variable const> const& ext_vars)
             : _symbols(ext_level, args, ext_vars)
         {}
     protected:
-        function(function const&) = delete;
+        Function(Function const&) = delete;
     private:
         std::list<util::sref<mediate_base>> _candidate_paths;
         symbol_table _symbols;

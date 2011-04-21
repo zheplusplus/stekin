@@ -35,12 +35,12 @@ util::sref<type const> IntLiteral::typeof() const
     return type::BIT_INT;
 }
 
-util::sref<type const> float_literal::typeof() const
+util::sref<type const> FloatLiteral::typeof() const
 {
     return type::BIT_FLOAT;
 }
 
-util::sref<type const> bool_literal::typeof() const
+util::sref<type const> BoolLiteral::typeof() const
 {
     return type::BIT_BOOL;
 }
@@ -90,12 +90,12 @@ void IntLiteral::write() const
     output::write_int(value);
 }
 
-void float_literal::write() const
+void FloatLiteral::write() const
 {
     output::write_float(value);
 }
 
-void bool_literal::write() const
+void BoolLiteral::write() const
 {
     output::write_bool(value);
 }

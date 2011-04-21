@@ -5,12 +5,12 @@
 
 using namespace flchk;
 
-void function::compile(util::sref<proto::scope> scope) const
+void Function::compile(util::sref<proto::scope> scope) const
 {
     body.compile(scope);
 }
 
-util::sref<proto::function> function::declare(util::sref<proto::scope> scope) const
+util::sref<proto::Function> Function::declare(util::sref<proto::scope> scope) const
 {
     return scope->declare(pos, name, param_names, contains_void_return);
 }

@@ -11,23 +11,23 @@
 
 namespace proto {
 
-    struct function
+    struct Function
         : public general_scope
     {
-        util::sref<inst::function> inst(misc::pos_type const& pos
+        util::sref<inst::Function> inst(misc::pos_type const& pos
                                       , util::sref<inst::scope> ext_scope
                                       , std::vector<util::sref<inst::type const>> const& arg_types);
-        util::sref<inst::function> inst(int level
+        util::sref<inst::Function> inst(int level
                                       , std::map<std::string, inst::variable const> const& ext_vars
                                       , std::vector<util::sref<inst::type const>> const& arg_types);
 
-        function(misc::pos_type const& ps
+        Function(misc::pos_type const& ps
                , std::string const& func_name
                , std::vector<std::string> const& params
                , util::sref<symbol_table const> ext_symbols
                , bool func_hint_void_return);
 
-        function(function&& rhs)
+        Function(Function&& rhs)
             : general_scope(std::move(rhs))
             , pos(rhs.pos)
             , name(rhs.name)
@@ -35,7 +35,7 @@ namespace proto {
             , hint_void_return(rhs.hint_void_return)
         {}
 
-        function(function const&) = delete;
+        Function(Function const&) = delete;
 
         misc::pos_type const pos;
         std::string const name;
@@ -57,7 +57,7 @@ namespace proto {
             bool operator<(instance_info const& rhs) const;
         };
 
-        std::map<instance_info, util::sref<inst::function>> _instance_cache;
+        std::map<instance_info, util::sref<inst::Function>> _instance_cache;
     public:
         std::map<std::string, inst::variable const>
                 bind_external_vars(misc::pos_type const& pos, util::sref<inst::scope const> ext_scope) const;

@@ -29,11 +29,11 @@ namespace inst {
         virtual bool operator<(type const& rhs) const = 0;
     public:
         virtual bool eq_as_built_in(type const& lhs) const;
-        virtual bool eq_as_func_reference(util::sref<proto::function> lhs_func
+        virtual bool eq_as_func_reference(util::sref<proto::Function> lhs_func
                                         , std::map<std::string, variable const> const& rhs_cr) const;
 
         virtual bool lt_as_built_in(type const& lhs) const = 0;
-        virtual bool lt_as_func_reference(util::sref<proto::function> lhs_func
+        virtual bool lt_as_func_reference(util::sref<proto::Function> lhs_func
                                         , std::map<std::string, variable const> const& rhs_cr) const = 0;
     public:
         virtual void check_condition_type(misc::pos_type const& pos) const;
@@ -73,7 +73,7 @@ namespace inst {
         bool operator<(type const& rhs) const;
         bool eq_as_built_in(type const& lhs) const;
         bool lt_as_built_in(type const& lhs) const;
-        bool lt_as_func_reference(util::sref<proto::function>
+        bool lt_as_func_reference(util::sref<proto::Function>
                                 , std::map<std::string, variable const> const&) const;
     public:
         void check_condition_type(misc::pos_type const& pos) const;

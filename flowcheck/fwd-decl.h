@@ -6,8 +6,8 @@ namespace flchk {
     struct Statement;
     struct Expression;
     struct filter;
-    struct block;
-    struct function;
+    struct Block;
+    struct Function;
 
 }
 

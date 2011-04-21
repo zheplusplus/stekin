@@ -11,10 +11,10 @@
 
 namespace proto {
 
-    struct bool_literal
+    struct BoolLiteral
         : public Expression
     {
-        bool_literal(misc::pos_type const& pos, bool v)
+        BoolLiteral(misc::pos_type const& pos, bool v)
             : Expression(pos)
             , value(v)
         {}
@@ -37,10 +37,10 @@ namespace proto {
         mpz_class value;
     };
 
-    struct float_literal
+    struct FloatLiteral
         : public Expression
     {
-        float_literal(misc::pos_type const& pos, mpf_class const& v)
+        FloatLiteral(misc::pos_type const& pos, mpf_class const& v)
             : Expression(pos)
             , value(v)
         {}
@@ -66,7 +66,7 @@ namespace proto {
     struct call
         : public Expression
     {
-        call(misc::pos_type const& pos, util::sref<function> f, std::vector<util::sptr<Expression const>> a)
+        call(misc::pos_type const& pos, util::sref<Function> f, std::vector<util::sptr<Expression const>> a)
             : Expression(pos)
             , func(f)
             , args(std::move(a))
@@ -74,7 +74,7 @@ namespace proto {
 
         util::sptr<inst::Expression const> inst(util::sref<inst::scope> scope) const;
 
-        util::sref<function> const func;
+        util::sref<Function> const func;
         std::vector<util::sptr<Expression const>> const args;
     };
 
@@ -96,14 +96,14 @@ namespace proto {
     struct func_reference
         : public Expression
     {
-        func_reference(misc::pos_type const& pos, util::sref<function> f)
+        func_reference(misc::pos_type const& pos, util::sref<Function> f)
             : Expression(pos)
             , func(f)
         {}
 
         util::sptr<inst::Expression const> inst(util::sref<inst::scope> scope) const;
 
-        util::sref<function> const func;
+        util::sref<Function> const func;
     };
 
     struct binary_op

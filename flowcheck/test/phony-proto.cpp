@@ -33,7 +33,7 @@ namespace {
         return std::move(util::sptr<inst::Expression const>(NULL));
     }
 
-    std::list<util::sptr<function>> func_entities;
+    std::list<util::sptr<Function>> func_entities;
 
     util::sptr<Expression const> nul_proto_expr()
     {
@@ -59,12 +59,12 @@ namespace {
 
 }
 
-void block::add_stmt(util::sptr<Statement const> stmt)
+void Block::add_stmt(util::sptr<Statement const> stmt)
 {
     _stmts.push_back(std::move(stmt));
 }
 
-util::sptr<inst::mediate_base> block::inst(util::sref<inst::scope>) const
+util::sptr<inst::mediate_base> Block::inst(util::sref<inst::scope>) const
 {
     data_tree::actual_one()(SCOPE_BEGIN);
     std::for_each(_stmts.begin()
@@ -77,9 +77,9 @@ util::sptr<inst::mediate_base> block::inst(util::sref<inst::scope>) const
     return std::move(nul_mediate());
 }
 
-block scope::deliver()
+Block scope::deliver()
 {
-    return std::move(_block);
+    return std::move(_Block);
 }
 
 util::sptr<inst::mediate_base> func_ret::inst(util::sref<inst::scope>) const
@@ -118,7 +118,7 @@ util::sptr<inst::mediate_base> arithmetics::inst(util::sref<inst::scope>) const
     return std::move(nul_mediate());
 }
 
-util::sptr<inst::Expression const> bool_literal::inst(util::sref<inst::scope>) const
+util::sptr<inst::Expression const> BoolLiteral::inst(util::sref<inst::scope>) const
 {
     data_tree::actual_one()(pos, BOOLEAN, util::str(value));
     return std::move(nul_inst_expr());
@@ -130,7 +130,7 @@ util::sptr<inst::Expression const> IntLiteral::inst(util::sref<inst::scope>) con
     return std::move(nul_inst_expr());
 }
 
-util::sptr<inst::Expression const> float_literal::inst(util::sref<inst::scope>) const
+util::sptr<inst::Expression const> FloatLiteral::inst(util::sref<inst::scope>) const
 {
     data_tree::actual_one()(pos, FLOATING, util::str(value));
     return std::move(nul_inst_expr());
@@ -200,7 +200,7 @@ util::sptr<inst::Expression const> negation::inst(util::sref<inst::scope>) const
 
 util::sptr<Expression const> scope::make_bool(misc::pos_type const& pos, bool value) const
 {
-    return std::move(util::mkptr(new bool_literal(pos, value)));
+    return std::move(util::mkptr(new BoolLiteral(pos, value)));
 }
 
 util::sptr<Expression const> scope::make_int(misc::pos_type const& pos, mpz_class const& value) const
@@ -210,7 +210,7 @@ util::sptr<Expression const> scope::make_int(misc::pos_type const& pos, mpz_clas
 
 util::sptr<Expression const> scope::make_float(misc::pos_type const& pos, mpf_class const& value) const
 {
-    return std::move(util::mkptr(new float_literal(pos, value)));
+    return std::move(util::mkptr(new FloatLiteral(pos, value)));
 }
 
 util::sptr<Expression const> scope::make_binary(misc::pos_type const& pos
@@ -249,7 +249,7 @@ util::sptr<Expression const> scope::make_nega(misc::pos_type const& pos, util::s
 
 void scope::add_stmt(util::sptr<Statement const> stmt)
 {
-    _block.add_stmt(std::move(stmt));
+    _Block.add_stmt(std::move(stmt));
 }
 
 util::sptr<Expression const> general_scope::make_ref(misc::pos_type const& pos, std::string const& name)
@@ -261,7 +261,7 @@ util::sptr<Expression const> general_scope::make_call(misc::pos_type const& pos
                                                    , std::string const& name
                                                    , std::vector<util::sptr<Expression const>> args) const
 {
-    func_entities.push_back(std::move(util::mkmptr(new function(pos
+    func_entities.push_back(std::move(util::mkmptr(new Function(pos
                                                               , name
                                                               , std::vector<std::string>(args.size())
                                                               , util::mkref(phony_symbols)
@@ -273,7 +273,7 @@ util::sptr<Expression const> general_scope::make_func_reference(misc::pos_type c
                                                              , std::string const& name
                                                              , int param_count) const
 {
-    func_entities.push_back(std::move(util::mkmptr(new function(pos
+    func_entities.push_back(std::move(util::mkmptr(new Function(pos
                                                               , name
                                                               , std::vector<std::string>(param_count)
                                                               , util::mkref(phony_symbols)
@@ -291,7 +291,7 @@ util::sptr<scope> general_scope::create_branch_scope()
     return std::move(mkscope());
 }
 
-util::sref<function> general_scope::declare(misc::pos_type const& pos
+util::sref<Function> general_scope::declare(misc::pos_type const& pos
                                           , std::string const& name
                                           , std::vector<std::string> const& param_names
                                           , bool hint_func_ret_void)
@@ -303,7 +303,7 @@ util::sref<function> general_scope::declare(misc::pos_type const& pos
                   {
                       data_tree::actual_one()(pos, PARAMETER, param);
                   });
-    func_entities.push_back(std::move(util::mkmptr(new function(pos
+    func_entities.push_back(std::move(util::mkmptr(new Function(pos
                                                               , name
                                                               , param_names
                                                               , util::mkref(phony_symbols)
@@ -313,7 +313,7 @@ util::sref<function> general_scope::declare(misc::pos_type const& pos
 
 global_scope::global_scope() {}
 
-function::function(misc::pos_type const& p
+Function::Function(misc::pos_type const& p
                  , std::string const& n
                  , std::vector<std::string> const& params
                  , util::sref<symbol_table const>

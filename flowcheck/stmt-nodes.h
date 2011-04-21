@@ -26,7 +26,7 @@ namespace flchk {
     struct branch
         : public Statement
     {
-        branch(misc::pos_type const& pos, util::sptr<Expression const> p, block c, block a)
+        branch(misc::pos_type const& pos, util::sptr<Expression const> p, Block c, Block a)
             : Statement(pos)
             , predicate(std::move(p))
             , consequence(std::move(c))
@@ -36,8 +36,8 @@ namespace flchk {
         util::sptr<proto::Statement const> compile(util::sref<proto::scope> scope) const;
 
         util::sptr<Expression const> const predicate;
-        block const consequence;
-        block const alternative;
+        Block const consequence;
+        Block const alternative;
     };
 
     struct func_ret

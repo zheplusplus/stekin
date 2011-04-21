@@ -28,7 +28,7 @@ void filter::add_branch(misc::pos_type const& pos
 {
     util::sptr<Expression const> pred(std::move(predicate->fold()));
     if (pred->is_literal()) {
-        _accumulator.add_block(std::move((pred->bool_value() ? consequence : alternative)->_accumulator));
+        _accumulator.add_Block(std::move((pred->bool_value() ? consequence : alternative)->_accumulator));
         return;
     }
     _accumulator.add_branch(pos
@@ -44,7 +44,7 @@ void filter::add_branch(misc::pos_type const& pos
     util::sptr<Expression const> pred(std::move(predicate->fold()));
     if (pred->is_literal()) {
         if (pred->bool_value()) {
-            _accumulator.add_block(std::move(consequence->_accumulator));
+            _accumulator.add_Block(std::move(consequence->_accumulator));
         }
         return;
     }
@@ -58,7 +58,7 @@ void filter::add_branch_alt_only(misc::pos_type const& pos
     util::sptr<Expression const> pred(std::move(predicate->fold()));
     if (pred->is_literal()) {
         if (!pred->bool_value()) {
-            _accumulator.add_block(std::move(alternative->_accumulator));
+            _accumulator.add_Block(std::move(alternative->_accumulator));
         }
         return;
     }
@@ -78,7 +78,7 @@ void filter::def_func(misc::pos_type const& pos
     _accumulator.def_func(pos, name, param_names, std::move(body->_accumulator));
 }
 
-block filter::deliver()
+Block filter::deliver()
 {
     return std::move(_accumulator.deliver());
 }

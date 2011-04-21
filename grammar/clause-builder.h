@@ -16,11 +16,11 @@ namespace grammar {
         void add(int level, util::sptr<acceptor> acc);
 
         void next_stmt(int level, util::sptr<Statement const> stmt);
-        void next_func(int level, util::sptr<function const> func);
+        void next_func(int level, util::sptr<Function const> func);
 
         void match_else(int level, misc::pos_type const& pos);
 
-        block pack_all();
+        Block pack_all();
 
         acceptor_stack();
     private:
@@ -36,13 +36,13 @@ namespace grammar {
             {}
 
             void accept_stmt(util::sptr<Statement const> stmt);
-            void accept_func(util::sptr<function const> func);
+            void accept_func(util::sptr<Function const> func);
 
             void deliver_to(util::sref<acceptor>) {}
 
-            block pack();
+            Block pack();
         private:
-            block _pack;
+            Block _pack;
         };
 
         std::list<util::sptr<acceptor>> _acceptors;
@@ -57,7 +57,7 @@ namespace grammar {
         void add_return(int indent_len, util::sptr<Expression const> ret_val);
         void add_return_nothing(int indent_len, misc::pos_type const& pos);
 
-        void add_function(int indent_len
+        void add_Function(int indent_len
                         , misc::pos_type const& pos
                         , std::string const& name
                         , std::vector<std::string> const& params);
@@ -65,7 +65,7 @@ namespace grammar {
         void add_ifnot(int indent_len, util::sptr<Expression const> condition);
         void add_else(int indent_len, misc::pos_type const& pos);
 
-        flchk::block build_and_clear();
+        flchk::Block build_and_clear();
     private:
         acceptor_stack _stack;
     };

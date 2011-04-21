@@ -32,7 +32,7 @@ namespace proto {
 
         void def_var(misc::pos_type const& pos, std::string const& name);
 
-        util::sref<function> declare(misc::pos_type const& pos
+        util::sref<Function> declare(misc::pos_type const& pos
                                    , std::string const& name
                                    , std::vector<std::string> const& param_names
                                    , bool hint_void_return);

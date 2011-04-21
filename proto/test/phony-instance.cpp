@@ -21,7 +21,7 @@ bool type::eq_as_built_in(type const&) const
     return false;
 }
 
-bool type::eq_as_func_reference(util::sref<proto::function>, std::map<std::string, variable const> const&) const
+bool type::eq_as_func_reference(util::sref<proto::Function>, std::map<std::string, variable const> const&) const
 {
     return false;
 }
@@ -31,7 +31,7 @@ bool type::lt_as_built_in(type const&) const
     return false;
 }
 
-bool type::lt_as_func_reference(util::sref<proto::function>, std::map<std::string, variable const> const&) const
+bool type::lt_as_func_reference(util::sref<proto::Function>, std::map<std::string, variable const> const&) const
 {
     return false;
 }
@@ -66,7 +66,7 @@ bool built_in_primitive::lt_as_built_in(type const& lhs) const
     return &lhs < this;
 }
 
-bool built_in_primitive::lt_as_func_reference(util::sref<proto::function>
+bool built_in_primitive::lt_as_func_reference(util::sref<proto::Function>
                                             , std::map<std::string, variable const> const&) const
 {
     return false;
@@ -92,13 +92,13 @@ bool func_reference_type::operator<(type const& rhs) const
     return this < &rhs;
 }
 
-bool func_reference_type::eq_as_func_reference(util::sref<proto::function>
+bool func_reference_type::eq_as_func_reference(util::sref<proto::Function>
                                              , std::map<std::string, variable const> const&) const
 {
     return false;
 }
 
-bool func_reference_type::lt_as_func_reference(util::sref<proto::function>
+bool func_reference_type::lt_as_func_reference(util::sref<proto::Function>
                                              , std::map<std::string, variable const> const&) const
 {
     return false;
@@ -167,46 +167,46 @@ bool variable::operator!=(variable const& rhs) const
     return !operator==(rhs);
 }
 
-void function::set_return_type(misc::pos_type const& pos, util::sref<type const> t)
+void Function::set_return_type(misc::pos_type const& pos, util::sref<type const> t)
 {
     test_func_inst_resolved = true;
     data_tree::actual_one()(pos, t == type::BIT_VOID ? SET_RETURN_TYPE_VOID : SET_RETURN_TYPE);
 }
 
-util::sref<type const> function::get_return_type() const
+util::sref<type const> Function::get_return_type() const
 {
     return util::mkref(PROTO_TEST_TYPE);
 }
 
-bool function::is_return_type_resolved() const
+bool Function::is_return_type_resolved() const
 {
     data_tree::actual_one()(QUERY_RETURN_TYPE_RESOLVE_STATUS);
     return test_func_inst_resolved ;
 }
 
-void function::add_path(util::sref<mediate_base>)
+void Function::add_path(util::sref<mediate_base>)
 {
     data_tree::actual_one()(ADD_PATH);
     ++path_count;
 }
 
-void function::inst_next_path()
+void Function::inst_next_path()
 {
     data_tree::actual_one()(NEXT_PATH);
     --path_count;
 }
 
-bool function::has_more_path() const
+bool Function::has_more_path() const
 {
     return path_count > 0;
 }
 
-variable function::def_var(misc::pos_type const& pos, util::sref<type const> vtype, std::string const&)
+variable Function::def_var(misc::pos_type const& pos, util::sref<type const> vtype, std::string const&)
 {
     return variable(pos, vtype, 0, 0);
 }
 
-variable function::query_var(misc::pos_type const& pos, std::string const& name) const
+variable Function::query_var(misc::pos_type const& pos, std::string const& name) const
 {
     data_tree::actual_one()(pos, QUERY_VAR, name);
     return variable(misc::pos_type(0), util::mkref(test::PROTO_TEST_TYPE), 0, 0);
@@ -232,7 +232,7 @@ void scope::add_stmt(util::sptr<Statement const>)
     data_tree::actual_one()(ADD_STMT_TO_SCOPE);
 }
 
-int function::level() const
+int Function::level() const
 {
     return 0;
 }
@@ -244,7 +244,7 @@ symbol_table::symbol_table(int
     , _ss_used(0)
 {}
 
-util::sref<function> function::create_instance(int
+util::sref<Function> Function::create_instance(int
                                              , std::list<arg_name_type_pair> const&
                                              , std::map<std::string, variable const> const&
                                              , bool has_void_returns)
@@ -258,7 +258,7 @@ util::sref<function> function::create_instance(int
     return util::mkref(func);
 }
 
-void block::add_stmt(util::sptr<Statement const>)
+void Block::add_stmt(util::sptr<Statement const>)
 {
     data_tree::actual_one()(ADD_STMT_TO_BLOCK);
 }
@@ -269,13 +269,13 @@ util::sref<type const> IntLiteral::typeof() const
     return util::mkref(PROTO_TEST_TYPE);
 }
 
-util::sref<type const> float_literal::typeof() const
+util::sref<type const> FloatLiteral::typeof() const
 {
     data_tree::actual_one()(FLOATING, util::str(value));
     return util::mkref(PROTO_TEST_TYPE);
 }
 
-util::sref<type const> bool_literal::typeof() const
+util::sref<type const> BoolLiteral::typeof() const
 {
     data_tree::actual_one()(BOOLEAN, util::str(value));
     return util::mkref(PROTO_TEST_TYPE);
@@ -361,8 +361,8 @@ branch::branch(misc::pos_type const&
 {}
 
 void IntLiteral::write() const {}
-void float_literal::write() const {}
-void bool_literal::write() const {}
+void FloatLiteral::write() const {}
+void BoolLiteral::write() const {}
 void reference::write() const {}
 void call::write() const {}
 void func_reference::write() const {}
@@ -376,4 +376,4 @@ void branch::write() const {}
 void initialization::write() const {}
 void func_ret::write() const {}
 void func_ret_nothing::write() const {}
-void block::write() const {}
+void Block::write() const {}

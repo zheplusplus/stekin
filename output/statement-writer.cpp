@@ -51,12 +51,12 @@ void output::branch_else()
     std::cout << " else ";
 }
 
-void output::block_begin()
+void output::Block_begin()
 {
     std::cout << "{" << std::endl;
 }
 
-void output::block_end()
+void output::Block_end()
 {
     std::cout << "}" << std::endl;
 }

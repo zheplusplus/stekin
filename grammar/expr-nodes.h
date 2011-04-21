@@ -98,10 +98,10 @@ namespace grammar {
         std::string const name;
     };
 
-    struct bool_literal
+    struct BoolLiteral
         : public Expression
     {
-        bool_literal(misc::pos_type const& pos, bool val)
+        BoolLiteral(misc::pos_type const& pos, bool val)
             : Expression(pos)
             , value(val)
         {}
@@ -124,10 +124,10 @@ namespace grammar {
         std::string const value;
     };
 
-    struct float_literal
+    struct FloatLiteral
         : public Expression
     {
-        float_literal(misc::pos_type const& pos, std::string const& val)
+        FloatLiteral(misc::pos_type const& pos, std::string const& val)
             : Expression(pos)
             , value(val)
         {}

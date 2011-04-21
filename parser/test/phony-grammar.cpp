@@ -70,7 +70,7 @@ util::sptr<flchk::Expression const> reference::compile() const
     return std::move(nullptr());;
 }
 
-util::sptr<flchk::Expression const> bool_literal::compile() const
+util::sptr<flchk::Expression const> BoolLiteral::compile() const
 {
     data_tree::actual_one()(pos, BOOLEAN, util::str(value));
     return std::move(nullptr());;
@@ -82,7 +82,7 @@ util::sptr<flchk::Expression const> IntLiteral::compile() const
     return std::move(nullptr());;
 }
 
-util::sptr<flchk::Expression const> float_literal::compile() const
+util::sptr<flchk::Expression const> FloatLiteral::compile() const
 {
     data_tree::actual_one()(pos, FLOATING, value);
     return std::move(nullptr());;
@@ -131,7 +131,7 @@ void clause_builder::add_return_nothing(int indent_level, misc::pos_type const& 
     data_tree::actual_one()(pos, indent_level, RETURN, "");
 }
 
-void clause_builder::add_function(int indent_level
+void clause_builder::add_Function(int indent_level
                                 , misc::pos_type const& pos
                                 , std::string const& name
                                 , std::vector<std::string> const& params)
@@ -167,9 +167,9 @@ void clause_builder::add_else(int indent_level, misc::pos_type const& pos)
     data_tree::actual_one()(pos, indent_level, BRANCH_ELSE);
 }
 
-flchk::block clause_builder::build_and_clear()
+flchk::Block clause_builder::build_and_clear()
 {
-    return std::move(flchk::block());
+    return std::move(flchk::Block());
 }
 
 acceptor_stack::acceptor_stack()

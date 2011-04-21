@@ -24,7 +24,7 @@ struct FuncNCallTest
     {
         ext_symbols.reset(new proto::symbol_table);
         misc::pos_type pos(65535);
-        func.reset(new proto::function(pos
+        func.reset(new proto::Function(pos
                                      , "f"
                                      , std::vector<std::string>()
                                      , *ext_symbols
@@ -32,7 +32,7 @@ struct FuncNCallTest
     }
 
     util::sptr<proto::symbol_table> ext_symbols;
-    util::sptr<proto::function> func;
+    util::sptr<proto::Function> func;
     util::sptr<inst::scope> inst_scope;
 };
 
@@ -80,7 +80,7 @@ TEST_F(FuncNCallTest, FuncWithBranchRecursion)
     misc::pos_type pos(2);
     util::sptr<proto::scope> sub_scope0(NULL);
     util::sptr<proto::scope> sub_scope1(NULL);
-    util::sref<proto::function> test_func(NULL);
+    util::sref<proto::Function> test_func(NULL);
 
     test_func = func->declare(pos, "test_func", std::vector<std::string>(), false);
     sub_scope0 = std::move(test_func->create_branch_scope());
@@ -127,7 +127,7 @@ TEST_F(FuncNCallTest, CouldNotResolve)
     misc::pos_type pos(3);
     util::sptr<proto::scope> sub_scope0(NULL);
     util::sptr<proto::scope> sub_scope1(NULL);
-    util::sref<proto::function> test_func(NULL);
+    util::sref<proto::Function> test_func(NULL);
 
     test_func = func->declare(pos, "test_func", std::vector<std::string>(), false);
     sub_scope0 = std::move(test_func->create_branch_scope());

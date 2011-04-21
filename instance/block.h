@@ -8,16 +8,16 @@
 
 namespace inst {
 
-    struct block
+    struct Block
         : public Statement
     {
         void add_stmt(util::sptr<Statement const> stmt);
 
-        block() = default;
+        Block() = default;
 
-        block(block const&) = delete;
+        Block(Block const&) = delete;
 
-        block(block&& rhs)
+        Block(Block&& rhs)
             : _stmts(std::move(rhs._stmts))
         {}
 

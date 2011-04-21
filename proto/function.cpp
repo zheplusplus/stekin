@@ -12,7 +12,7 @@
 
 using namespace proto;
 
-function::function(misc::pos_type const& ps
+Function::Function(misc::pos_type const& ps
                  , std::string const& name
                  , std::vector<std::string> const& params
                  , util::sref<symbol_table const> ext_symbols
@@ -26,7 +26,7 @@ function::function(misc::pos_type const& ps
     _fill_param_names();
 }
 
-void function::_fill_param_names()
+void Function::_fill_param_names()
 {
     std::for_each(param_names.begin()
                 , param_names.end()
@@ -36,20 +36,20 @@ void function::_fill_param_names()
                   });
 }
 
-util::sref<inst::function> function::inst(misc::pos_type const& pos
+util::sref<inst::Function> Function::inst(misc::pos_type const& pos
                                         , util::sref<inst::scope> ext_scope
                                         , std::vector<util::sref<inst::type const>> const& arg_types)
 {
     return inst(ext_scope->level(), bind_external_vars(pos, ext_scope), arg_types);
 }
 
-util::sref<inst::function> function::inst(int level
+util::sref<inst::Function> Function::inst(int level
                                         , std::map<std::string, inst::variable const> const& ext_vars
                                         , std::vector<util::sref<inst::type const>> const& arg_types)
 {
     auto find_result = _instance_cache.find(instance_info(ext_vars, arg_types));
     if (_instance_cache.end() != find_result) {
-        util::sref<inst::function> instance = find_result->second;
+        util::sref<inst::Function> instance = find_result->second;
         while (!instance->is_return_type_resolved() && instance->has_more_path()) {
             instance->inst_next_path();
         }
@@ -63,25 +63,25 @@ util::sref<inst::function> function::inst(int level
     for (unsigned i = 0; i < arg_types.size(); ++i) {
         args.push_back(inst::arg_name_type_pair(param_names[i], arg_types[i]));
     }
-    util::sref<inst::function> instance = inst::function::create_instance(level
+    util::sref<inst::Function> instance = inst::Function::create_instance(level
                                                                         , args
                                                                         , ext_vars
                                                                         , hint_void_return);
     _instance_cache.insert(std::make_pair(instance_info(ext_vars, arg_types), instance));
 
-    block_mediate body_mediate(_block.get_stmts(), instance);
+    Block_mediate body_mediate(_Block.get_stmts(), instance);
     instance->inst_next_path();
     instance->add_stmt(std::move(body_mediate.inst(instance)));
     return instance;
 }
 
 std::map<std::string, inst::variable const>
-    function::bind_external_vars(misc::pos_type const& pos, util::sref<inst::scope const> ext_scope) const
+    Function::bind_external_vars(misc::pos_type const& pos, util::sref<inst::scope const> ext_scope) const
 {
     return _symbols.bind_external_var_refs(pos, ext_scope);
 }
 
-bool function::instance_info::operator<(function::instance_info const& rhs) const
+bool Function::instance_info::operator<(Function::instance_info const& rhs) const
 {
     if (arg_types != rhs.arg_types) {
         return arg_types < rhs.arg_types;

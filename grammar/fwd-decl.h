@@ -6,7 +6,7 @@ namespace grammar {
     struct Statement;
     struct Expression;
     struct clause_builder;
-    struct function;
+    struct Function;
 
 }
 

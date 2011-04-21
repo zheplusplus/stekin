@@ -11,10 +11,10 @@
 namespace test {
 
     struct phony_func
-        : public inst::function
+        : public inst::Function
     {
         phony_func()
-            : function(0, std::list<inst::arg_name_type_pair>(), std::map<std::string, inst::variable const>())
+            : Function(0, std::list<inst::arg_name_type_pair>(), std::map<std::string, inst::variable const>())
         {}
     };
 

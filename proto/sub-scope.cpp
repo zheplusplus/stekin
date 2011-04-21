@@ -28,12 +28,12 @@ util::sptr<Expression const> sub_scope::make_func_reference(misc::pos_type const
 
 void sub_scope::def_var(misc::pos_type const&, std::string const&) {}
 
-util::sref<function> sub_scope::declare(misc::pos_type const&
+util::sref<Function> sub_scope::declare(misc::pos_type const&
                                       , std::string const&
                                       , std::vector<std::string> const&
                                       , bool)
 {
-    return util::sref<function>(NULL);
+    return util::sref<Function>(NULL);
 }
 
 util::sptr<scope> sub_scope::create_branch_scope()

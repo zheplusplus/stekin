@@ -5,7 +5,7 @@ namespace proto {
 
     struct Expression;
     struct Statement;
-    struct function;
+    struct Function;
     struct symbol_table;
     struct scope;
 

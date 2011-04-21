@@ -27,10 +27,10 @@ TEST_F(FilterTest, FilterNormal)
             new flchk::binary_op(pos
                                , std::move(util::mkptr(new flchk::IntLiteral(pos, "1")))
                                , "+"
-                               , std::move(util::mkptr(new flchk::float_literal(pos, "235.7")))));
+                               , std::move(util::mkptr(new flchk::FloatLiteral(pos, "235.7")))));
 
     flchk::filter filter0;
-    filter0.add_arith(pos, std::move(util::mkptr(new flchk::bool_literal(pos, true))));
+    filter0.add_arith(pos, std::move(util::mkptr(new flchk::BoolLiteral(pos, true))));
     filter0.def_var(pos, "soujirou", std::move(binary));
     filter0.def_var(pos, "iwasaki", std::move(util::mkptr(new flchk::reference(pos, "minami"))));
 
@@ -113,7 +113,7 @@ TEST_F(FilterTest, TerminatedWarningIfConsequence)
     filter_consq->add_func_ret_nothing(pos_warning);
 
     util::sptr<flchk::filter> filter_alter(new flchk::filter);
-    filter_alter->add_arith(pos, std::move(util::mkptr(new flchk::bool_literal(pos, true))));
+    filter_alter->add_arith(pos, std::move(util::mkptr(new flchk::BoolLiteral(pos, true))));
 
     filter0.add_branch(pos
                      , std::move(util::mkptr(new flchk::reference(pos, "minegishi")))
@@ -159,7 +159,7 @@ TEST_F(FilterTest, TerminatedWarningBothBranches)
     flchk::filter filter0;
 
     util::sptr<flchk::filter> filter_consq(new flchk::filter);
-    filter_consq->add_func_ret(pos_warning_consq, std::move(util::mkptr(new flchk::float_literal(pos, ".1"))));
+    filter_consq->add_func_ret(pos_warning_consq, std::move(util::mkptr(new flchk::FloatLiteral(pos, ".1"))));
 
     util::sptr<flchk::filter> filter_alter(new flchk::filter);
     filter_alter->add_func_ret(pos_warning_alter, std::move(util::mkptr(new flchk::reference(pos, "minoru"))));
@@ -184,7 +184,7 @@ TEST_F(FilterTest, TwoPathBranchFoldedOnFalse)
             new flchk::binary_op(pos
                                , std::move(util::mkptr(new flchk::IntLiteral(pos, "2048")))
                                , ">"
-                               , std::move(util::mkptr(new flchk::float_literal(pos, "11235.8")))));
+                               , std::move(util::mkptr(new flchk::FloatLiteral(pos, "11235.8")))));
 
     flchk::filter filter0;
 
@@ -222,7 +222,7 @@ TEST_F(FilterTest, TwoPathBranchFoldedOnTrue)
             new flchk::binary_op(pos
                                , std::move(util::mkptr(new flchk::IntLiteral(pos, "2048")))
                                , "<"
-                               , std::move(util::mkptr(new flchk::float_literal(pos, "11235.8")))));
+                               , std::move(util::mkptr(new flchk::FloatLiteral(pos, "11235.8")))));
 
     flchk::filter filter0;
 
@@ -260,7 +260,7 @@ TEST_F(FilterTest, IfNotFoldedOnFalse)
             new flchk::binary_op(pos
                                , std::move(util::mkptr(new flchk::IntLiteral(pos, "2048")))
                                , ">"
-                               , std::move(util::mkptr(new flchk::float_literal(pos, "11235.8")))));
+                               , std::move(util::mkptr(new flchk::FloatLiteral(pos, "11235.8")))));
 
     flchk::filter filter0;
 
@@ -294,7 +294,7 @@ TEST_F(FilterTest, IfNotFoldedOnTrue)
             new flchk::binary_op(pos
                                , std::move(util::mkptr(new flchk::IntLiteral(pos, "2048")))
                                , "<"
-                               , std::move(util::mkptr(new flchk::float_literal(pos, "11235.8")))));
+                               , std::move(util::mkptr(new flchk::FloatLiteral(pos, "11235.8")))));
 
     flchk::filter filter0;
 

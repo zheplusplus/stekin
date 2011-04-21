@@ -10,7 +10,7 @@ namespace inst {
         : public type
     {
         func_reference_type(misc::pos_type const& reference_pos
-                          , util::sref<proto::function> func_proto
+                          , util::sref<proto::Function> func_proto
                           , int level
                           , std::map<std::string, variable const> const& cr)
             : type(_calc_size(cr))
@@ -30,9 +30,9 @@ namespace inst {
 
         bool operator==(type const& rhs) const;
         bool operator<(type const& rhs) const;
-        bool eq_as_func_reference(util::sref<proto::function> lhs_func
+        bool eq_as_func_reference(util::sref<proto::Function> lhs_func
                                 , std::map<std::string, variable const> const& rhs_cr) const;
-        bool lt_as_func_reference(util::sref<proto::function> lhs_func
+        bool lt_as_func_reference(util::sref<proto::Function> lhs_func
                                 , std::map<std::string, variable const> const& rhs_cr) const;
         bool lt_as_built_in(type const&) const;
     public:
@@ -41,7 +41,7 @@ namespace inst {
     public:
         void write() const;
     private:
-        util::sref<proto::function> const _func_proto;
+        util::sref<proto::Function> const _func_proto;
     private:
         static std::map<std::string, variable const> _enclose_reference(
                         misc::pos_type const& pos

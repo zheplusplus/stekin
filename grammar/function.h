@@ -10,11 +10,11 @@
 
 namespace grammar {
 
-    struct function {
-        function(misc::pos_type const& ps
+    struct Function {
+        Function(misc::pos_type const& ps
                , std::string const& func_name
                , std::vector<std::string> const& params
-               , block func_body)
+               , Block func_body)
             : pos(ps)
             , name(func_name)
             , param_names(params)
@@ -26,7 +26,7 @@ namespace grammar {
         misc::pos_type const pos;
         std::string const name;
         std::vector<std::string> const param_names;
-        block const body;
+        Block const body;
     };
 
 }
