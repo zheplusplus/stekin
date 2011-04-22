@@ -9,7 +9,7 @@
 
 namespace test {
 
-    extern util::sref<proto::scope> const nulscope;
+    extern util::sref<proto::Scope> const nulscope;
 
     struct GrammarData {
         misc::position const pos;
@@ -35,10 +35,6 @@ namespace test {
             return pos == rhs.pos && func_arg_size == rhs.func_arg_size;
         }
     };
-
-    typedef data_node_templ<GrammarData> data_node_base;
-    typedef nothing_node_templ<GrammarData> nothing_node;
-    typedef string_node_templ<GrammarData> string_node;
 
     struct DataTree
         : public DataTreeTempl<GrammarData, DataTree>

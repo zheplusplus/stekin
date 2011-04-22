@@ -44,7 +44,7 @@ bool type::lt_as_FuncReference(util::sref<proto::Function>, std::map<std::string
 
 void type::check_condition_type(misc::position const& pos) const
 {
-    error::cond_not_bool(pos, name());
+    error::condNotBool(pos, name());
 }
 
 std::string built_in_primitive::exported_name() const

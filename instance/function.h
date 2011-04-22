@@ -15,7 +15,7 @@
 namespace inst {
 
     struct Function
-        : public scope
+        : public Scope
     {
         variable defVar(misc::position const& pos, util::sref<type const> vtype, std::string const& name);
         variable query_var(misc::position const& pos, std::string const& name) const;
@@ -24,7 +24,7 @@ namespace inst {
         virtual util::sref<type const> get_return_type() const;
         virtual bool is_return_type_resolved() const;
 
-        void add_path(util::sref<mediate_base> path);
+        void add_path(util::sref<MediateBase> path);
         void inst_next_path();
         bool has_more_path() const;
 
@@ -46,8 +46,8 @@ namespace inst {
     protected:
         Function(Function const&) = delete;
     private:
-        std::list<util::sref<mediate_base>> _candidate_paths;
-        symbol_table _symbols;
+        std::list<util::sref<MediateBase>> _candidate_paths;
+        SymbolTable _symbols;
     };
 
 }

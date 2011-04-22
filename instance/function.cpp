@@ -116,7 +116,7 @@ util::sref<Function> Function::create_instance(int ext_level
     return fref;
 }
 
-void Function::add_path(util::sref<mediate_base> path)
+void Function::add_path(util::sref<MediateBase> path)
 {
     _candidate_paths.push_back(path);
 }
@@ -126,7 +126,7 @@ void Function::inst_next_path()
     if (!has_more_path()) {
         return;
     }
-    util::sref<mediate_base> next_path = _candidate_paths.front();
+    util::sref<MediateBase> next_path = _candidate_paths.front();
     _candidate_paths.pop_front();
     next_path->mediate_inst(util::mkref(*this));
 }

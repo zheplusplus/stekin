@@ -8,7 +8,7 @@
 
 using namespace inst;
 
-operation const* scope::query_binary(misc::position const& pos
+operation const* Scope::query_binary(misc::position const& pos
                                    , std::string const& op
                                    , util::sref<type const> lhs
                                    , util::sref<type const> rhs) const
@@ -16,14 +16,14 @@ operation const* scope::query_binary(misc::position const& pos
     return operation::query_binary(pos, op, lhs, rhs);
 }
 
-operation const* scope::query_pre_unary(misc::position const& pos
+operation const* Scope::query_pre_unary(misc::position const& pos
                                       , std::string const& op
                                       , util::sref<type const> rhs) const
 {
     return operation::query_pre_unary(pos, op, rhs);
 }
 
-void scope::addStmt(util::sptr<Statement const> stmt)
+void Scope::addStmt(util::sptr<Statement const> stmt)
 {
     _block.addStmt(std::move(stmt));
 }

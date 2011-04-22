@@ -18,7 +18,7 @@ namespace flchk {
             , rhs(std::move(r))
         {}
 
-        util::sptr<proto::Expression const> compile(util::sref<proto::scope> scope) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope) const;
         bool isLiteral() const;
         bool boolValue() const;
         util::sptr<Expression const> fold() const;
@@ -32,16 +32,16 @@ namespace flchk {
         : public Expression
     {
         BinaryOp(misc::position const& pos
-                , util::sptr<Expression const> l
-                , std::string const& op
-                , util::sptr<Expression const> r)
+               , util::sptr<Expression const> l
+               , std::string const& op
+               , util::sptr<Expression const> r)
             : Expression(pos)
             , lhs(std::move(l))
             , op_img(op)
             , rhs(std::move(r))
         {}
 
-        util::sptr<proto::Expression const> compile(util::sref<proto::scope> scope) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope) const;
         bool isLiteral() const;
         bool boolValue() const;
         std::string typeName() const;
@@ -55,13 +55,15 @@ namespace flchk {
     struct Conjunction
         : public Expression
     {
-        Conjunction(misc::position const& pos, util::sptr<Expression const> l, util::sptr<Expression const> r)
+        Conjunction(misc::position const& pos
+                  , util::sptr<Expression const> l
+                  , util::sptr<Expression const> r)
             : Expression(pos)
             , lhs(std::move(l))
             , rhs(std::move(r))
         {}
 
-        util::sptr<proto::Expression const> compile(util::sref<proto::scope> scope) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope) const;
         bool isLiteral() const;
         bool boolValue() const;
         std::string typeName() const;
@@ -74,13 +76,15 @@ namespace flchk {
     struct Disjunction
         : public Expression
     {
-        Disjunction(misc::position const& pos, util::sptr<Expression const> l, util::sptr<Expression const> r)
+        Disjunction(misc::position const& pos
+                  , util::sptr<Expression const> l
+                  , util::sptr<Expression const> r)
             : Expression(pos)
             , lhs(std::move(l))
             , rhs(std::move(r))
         {}
 
-        util::sptr<proto::Expression const> compile(util::sref<proto::scope> scope) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope) const;
         bool isLiteral() const;
         bool boolValue() const;
         std::string typeName() const;
@@ -98,7 +102,7 @@ namespace flchk {
             , rhs(std::move(r))
         {}
 
-        util::sptr<proto::Expression const> compile(util::sref<proto::scope> scope) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope) const;
         bool isLiteral() const;
         bool boolValue() const;
         std::string typeName() const;
@@ -107,15 +111,15 @@ namespace flchk {
         util::sptr<Expression const> const rhs;
     };
 
-    struct reference
+    struct Reference
         : public Expression
     {
-        reference(misc::position const& pos, std::string const& n)
+        Reference(misc::position const& pos, std::string const& n)
             : Expression(pos)
             , name(n)
         {}
 
-        util::sptr<proto::Expression const> compile(util::sref<proto::scope> scope) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope) const;
         std::string typeName() const;
         util::sptr<Expression const> fold() const;
 
@@ -130,26 +134,27 @@ namespace flchk {
             , value(v)
         {}
 
-        util::sptr<proto::Expression const> compile(util::sref<proto::scope> scope) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope) const;
         bool isLiteral() const;
         bool boolValue() const;
         std::string typeName() const;
         util::sptr<Expression const> fold() const;
 
         util::sptr<Expression const> operate(misc::position const& op_pos
-                                          , std::string const& op_img
-                                          , mpz_class const&) const;
+                                           , std::string const& op_img
+                                           , mpz_class const&) const;
         util::sptr<Expression const> operate(misc::position const& op_pos
-                                          , std::string const& op_img
-                                          , mpf_class const&) const;
+                                           , std::string const& op_img
+                                           , mpf_class const&) const;
         util::sptr<Expression const> operate(misc::position const& op_pos
-                                          , std::string const& op_img
-                                          , bool rhs) const;
+                                           , std::string const& op_img
+                                           , bool rhs) const;
 
         util::sptr<Expression const> asRHS(misc::position const& op_pos
                                          , std::string const& op_img
                                          , util::sptr<Expression const> lhs) const;
-        util::sptr<Expression const> asRHS(misc::position const& op_pos, std::string const& op_img) const;
+        util::sptr<Expression const> asRHS(misc::position const& op_pos
+                                         , std::string const& op_img) const;
 
         bool const value;
     public:
@@ -169,26 +174,27 @@ namespace flchk {
             , value(v)
         {}
 
-        util::sptr<proto::Expression const> compile(util::sref<proto::scope> scope) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope) const;
         bool isLiteral() const;
         bool boolValue() const;
         std::string typeName() const;
         util::sptr<Expression const> fold() const;
 
         util::sptr<Expression const> operate(misc::position const& op_pos
-                                          , std::string const& op_img
-                                          , mpz_class const& rhs) const;
+                                           , std::string const& op_img
+                                           , mpz_class const& rhs) const;
         util::sptr<Expression const> operate(misc::position const& op_pos
-                                          , std::string const& op_img
-                                          , mpf_class const& rhs) const;
+                                           , std::string const& op_img
+                                           , mpf_class const& rhs) const;
         util::sptr<Expression const> operate(misc::position const& op_pos
-                                          , std::string const& op_img
-                                          , bool) const;
+                                           , std::string const& op_img
+                                           , bool) const;
 
         util::sptr<Expression const> asRHS(misc::position const& op_pos
                                          , std::string const& op_img
                                          , util::sptr<Expression const> lhs) const;
-        util::sptr<Expression const> asRHS(misc::position const& op_pos, std::string const& op_img) const;
+        util::sptr<Expression const> asRHS(misc::position const& op_pos
+                                         , std::string const& op_img) const;
 
         mpz_class const value;
     };
@@ -206,26 +212,27 @@ namespace flchk {
             , value(v)
         {}
 
-        util::sptr<proto::Expression const> compile(util::sref<proto::scope> scope) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope) const;
         bool isLiteral() const;
         bool boolValue() const;
         std::string typeName() const;
         util::sptr<Expression const> fold() const;
 
         util::sptr<Expression const> operate(misc::position const& op_pos
-                                          , std::string const& op_img
-                                          , mpz_class const& rhs) const;
+                                           , std::string const& op_img
+                                           , mpz_class const& rhs) const;
         util::sptr<Expression const> operate(misc::position const& op_pos
-                                          , std::string const& op_img
-                                          , mpf_class const& rhs) const;
+                                           , std::string const& op_img
+                                           , mpf_class const& rhs) const;
         util::sptr<Expression const> operate(misc::position const& op_pos
-                                          , std::string const& op_img
-                                          , bool) const;
+                                           , std::string const& op_img
+                                           , bool) const;
 
         util::sptr<Expression const> asRHS(misc::position const& op_pos
-                                         , std::string const& op_img
-                                         , util::sptr<Expression const> lhs) const;
-        util::sptr<Expression const> asRHS(misc::position const& op_pos, std::string const& op_img) const;
+                                          , std::string const& op_img
+                                          , util::sptr<Expression const> lhs) const;
+        util::sptr<Expression const> asRHS(misc::position const& op_pos
+                                         , std::string const& op_img) const;
 
         mpf_class const value;
     };
@@ -233,13 +240,15 @@ namespace flchk {
     struct Call
         : public Expression
     {
-        Call(misc::position const& pos, std::string const& n, std::vector<util::sptr<Expression const>> a)
-            : Expression(pos)
-            , name(n)
-            , args(std::move(a))
+        Call(misc::position const& pos
+           , std::string const& n
+           , std::vector<util::sptr<Expression const>> a)
+                : Expression(pos)
+                , name(n)
+                , args(std::move(a))
         {}
 
-        util::sptr<proto::Expression const> compile(util::sref<proto::scope> scope) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope) const;
         std::string typeName() const;
         util::sptr<Expression const> fold() const;
 
@@ -256,7 +265,7 @@ namespace flchk {
             , param_count(pc)
         {}
 
-        util::sptr<proto::Expression const> compile(util::sref<proto::scope> scope) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope) const;
         std::string typeName() const;
         util::sptr<Expression const> fold() const;
 
@@ -266,4 +275,4 @@ namespace flchk {
 
 }
 
-#endif /* _STEKIN_FLOW_CHECK_EXPRESSION_NODES_H__ */
+#endif /* __STEKIN_FLOW_CHECK_EXPRESSION_NODES_H__ */

@@ -16,13 +16,13 @@ namespace test {
     struct DataTreeTempl {
         DataTreeTempl& operator()(NodeType const& type, _NodeData const& sub, std::string const& str)
         {
-            _nodes.push_back(std::move(util::mkptr(new string_node_templ<_NodeData>(type, sub, str))));
+            _nodes.push_back(std::move(util::mkptr(new StringNodeTempl<_NodeData>(type, sub, str))));
             return *this;
         }
 
         DataTreeTempl& operator()(NodeType const& type, _NodeData const& sub)
         {
-            _nodes.push_back(std::move(util::mkptr(new nothing_node_templ<_NodeData>(type, sub))));
+            _nodes.push_back(std::move(util::mkptr(new NothingNodeTempl<_NodeData>(type, sub))));
             return *this;
         }
     protected:
@@ -59,7 +59,7 @@ namespace test {
             }
         }
 
-        std::list<util::sptr<data_node_templ<_NodeData> const>> _nodes;
+        std::list<util::sptr<DataNodeTempl<_NodeData> const>> _nodes;
     };
 
 }

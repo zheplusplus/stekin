@@ -62,7 +62,7 @@ void error::excessiveIndent(misc::position const& pos)
     std::cerr << "    excessive indentation" << std::endl;
 }
 
-void error::flow_terminated(misc::position const& this_pos, misc::position const& prev_pos)
+void error::flowTerminated(misc::position const& this_pos, misc::position const& prev_pos)
 {
     _has_error = true;
     std::cerr << this_pos.str() << std::endl;
@@ -108,11 +108,11 @@ void error::var_ref_before_def(misc::position const& def_pos
                   });
 }
 
-void error::FuncReference_ambiguous(misc::position const& pos, std::string const& name)
+void error::funcReferenceAmbiguous(misc::position const& pos, std::string const& name)
 {
     _has_error = true;
     std::cerr << pos.str() << std::endl;
-    std::cerr << "    reference Function of  `" << name << "' is ambiguous." << std::endl;
+    std::cerr << "    reference function of  `" << name << "' is ambiguous." << std::endl;
 }
 
 void error::func_already_def(misc::position const& prev_def_pos
@@ -142,7 +142,7 @@ void error::var_not_def(misc::position const& ref_pos, std::string const& name)
     std::cerr << "    variable `" << name << "' not defined in context." << std::endl;
 }
 
-void error::BinaryOp_not_avai(misc::position const& pos
+void error::binaryOpNotAvai(misc::position const& pos
                              , std::string const& op_img
                              , std::string const& lhst_name
                              , std::string const& rhst_name)
@@ -180,7 +180,7 @@ void error::returnTypeUnresolvable(std::string const& name, int arg_count)
     std::cerr << "    name: `" << name << "' arg_count: " << arg_count << std::endl;
 }
 
-void error::cond_not_bool(misc::position const& pos, std::string const& actual_type)
+void error::condNotBool(misc::position const& pos, std::string const& actual_type)
 {
     _has_error = true;
     std::cerr << pos.str() << std::endl;

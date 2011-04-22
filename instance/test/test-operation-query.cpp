@@ -160,10 +160,7 @@ TEST_F(QueryOperationTest, BadInputType)
 
 TEST_F(QueryOperationTest, BadOperation)
 {
-    inst::operation const* result;
-
-    result = inst::operation::query_binary(
-            misc::position(10), "%", inst::type::BIT_FLOAT, inst::type::BIT_FLOAT);
+    inst::operation::query_binary(misc::position(10), "%", inst::type::BIT_FLOAT, inst::type::BIT_FLOAT);
     ASSERT_TRUE(error::hasError());
     ASSERT_EQ(1, getNABinaryOps().size());
     ASSERT_EQ(misc::position(10), getNABinaryOps()[0].pos);
@@ -171,7 +168,7 @@ TEST_F(QueryOperationTest, BadOperation)
     ASSERT_EQ(inst::type::BIT_FLOAT->name(), getNABinaryOps()[0].rhst_name);
     clear_err();
 
-    result = inst::operation::query_binary(misc::position(11), "<", inst::type::BIT_INT, inst::type::BIT_FLOAT);
+    inst::operation::query_binary(misc::position(11), "<", inst::type::BIT_INT, inst::type::BIT_FLOAT);
     ASSERT_TRUE(error::hasError());
     ASSERT_EQ(1, getNABinaryOps().size());
     ASSERT_EQ(misc::position(11), getNABinaryOps()[0].pos);
@@ -180,7 +177,7 @@ TEST_F(QueryOperationTest, BadOperation)
     ASSERT_EQ(inst::type::BIT_FLOAT->name(), getNABinaryOps()[0].rhst_name);
     clear_err();
 
-    result = inst::operation::query_binary(misc::position(12), "+", inst::type::BIT_INT, inst::type::BIT_BOOL);
+    inst::operation::query_binary(misc::position(12), "+", inst::type::BIT_INT, inst::type::BIT_BOOL);
     ASSERT_TRUE(error::hasError());
     ASSERT_EQ(1, getNABinaryOps().size());
     ASSERT_EQ(misc::position(12), getNABinaryOps()[0].pos);
@@ -189,7 +186,7 @@ TEST_F(QueryOperationTest, BadOperation)
     ASSERT_EQ(inst::type::BIT_BOOL->name(), getNABinaryOps()[0].rhst_name);
     clear_err();
 
-    result = inst::operation::query_pre_unary(misc::position(13), "-", inst::type::BIT_VOID);
+    inst::operation::query_pre_unary(misc::position(13), "-", inst::type::BIT_VOID);
     ASSERT_TRUE(error::hasError());
     ASSERT_EQ(1, getNAPreUnaryOps().size());
     ASSERT_EQ(misc::position(13), getNAPreUnaryOps()[0].pos);

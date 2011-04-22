@@ -7,17 +7,17 @@
 
 using namespace proto;
 
-static util::sptr<inst::mediate_base> mkdirect(inst::Statement* stmt)
+static util::sptr<inst::MediateBase> mkdirect(inst::Statement* stmt)
 {
-    return std::move(util::mkmptr(new direct_inst(std::move(util::mkptr(stmt)))));
+    return std::move(util::mkmptr(new DirectInst(std::move(util::mkptr(stmt)))));
 }
 
-util::sptr<inst::mediate_base> Arithmetics::inst(util::sref<inst::scope> scope) const
+util::sptr<inst::MediateBase> Arithmetics::inst(util::sref<inst::Scope> scope) const
 {
     return std::move(mkdirect(new inst::Arithmetics(std::move(expr->inst(scope)))));
 }
 
-util::sptr<inst::mediate_base> VarDef::inst(util::sref<inst::scope> scope) const
+util::sptr<inst::MediateBase> VarDef::inst(util::sref<inst::Scope> scope) const
 {
     util::sptr<inst::Expression const> init_val = init->inst(scope);
     util::sref<inst::type const> init_type = init_val->typeof();
@@ -25,23 +25,23 @@ util::sptr<inst::mediate_base> VarDef::inst(util::sref<inst::scope> scope) const
                                                      , std::move(init_val))));
 }
 
-util::sptr<inst::mediate_base> branch::inst(util::sref<inst::scope> scope) const
+util::sptr<inst::MediateBase> Branch::inst(util::sref<inst::Scope> scope) const
 {
-    return std::move(util::mkmptr(new branch_mediate(pos
+    return std::move(util::mkmptr(new BranchMediate(pos
                                                    , std::move(_predicate->inst(scope))
-                                                   , _consequence.get_stmts()
-                                                   , _alternative.get_stmts()
+                                                   , _consequence.getStmts()
+                                                   , _alternative.getStmts()
                                                    , scope)));
 }
 
-util::sptr<inst::mediate_base> Return::inst(util::sref<inst::scope> scope) const
+util::sptr<inst::MediateBase> Return::inst(util::sref<inst::Scope> scope) const
 {
     util::sptr<inst::Expression const> e = ret_val->inst(scope);
     scope->set_return_type(pos, e->typeof());
     return std::move(mkdirect(new inst::Return(std::move(e))));
 }
 
-util::sptr<inst::mediate_base> ReturnNothing::inst(util::sref<inst::scope> scope) const
+util::sptr<inst::MediateBase> ReturnNothing::inst(util::sref<inst::Scope> scope) const
 {
     scope->set_return_type(pos, inst::type::BIT_VOID);
     return std::move(mkdirect(new inst::ReturnNothing));

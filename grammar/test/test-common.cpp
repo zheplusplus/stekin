@@ -8,7 +8,7 @@
 
 using namespace test;
 
-util::sref<proto::scope> const test::nulscope(NULL);
+util::sref<proto::Scope> const test::nulscope(NULL);
 
 DataTree& DataTree::operator()(misc::position const& pos
                              , NodeType const& type

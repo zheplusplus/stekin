@@ -7,37 +7,39 @@
 
 using namespace test;
 
-util::sref<inst::scope> const test::nul_inst_scope(NULL);
+util::sref<inst::Scope> const test::nul_inst_scope(NULL);
 
-DataTree& DataTree::operator()(misc::position const& pos, NodeType const& type, std::string const& str)
+DataTree& DataTree::operator()(misc::position const& pos
+                             , NodeType const& type
+                             , std::string const& str)
 {
-    BaseType::operator()(type, flowcheck_data(pos), str);
+    BaseType::operator()(type, FlowcheckData(pos), str);
     return *this;
 }
 
 DataTree& DataTree::operator()(misc::position const& pos, NodeType const& type)
 {
-    BaseType::operator()(type, flowcheck_data(pos));
+    BaseType::operator()(type, FlowcheckData(pos));
     return *this;
 }
 
 DataTree& DataTree::operator()(misc::position const& pos
-                               , NodeType const& type
-                               , std::string const& str
-                               , int func_arg_size
-                               , bool func_hint_ret_void)
+                             , NodeType const& type
+                             , std::string const& str
+                             , int func_arg_size
+                             , bool func_hint_ret_void)
 {
-    BaseType::operator()(type, flowcheck_data(pos, func_arg_size, func_hint_ret_void), str);
+    BaseType::operator()(type, FlowcheckData(pos, func_arg_size, func_hint_ret_void), str);
     return *this;
 }
 
 DataTree& DataTree::operator()(NodeType const& type)
 {
-    BaseType::operator()(type, flowcheck_data());
+    BaseType::operator()(type, FlowcheckData());
     return *this;
 }
 
-std::ostream& operator<<(std::ostream& os, flowcheck_data const& data)
+std::ostream& operator<<(std::ostream& os, FlowcheckData const& data)
 {
     return -1 == data.func_arg_size
         ? (os << data.pos)
@@ -70,13 +72,13 @@ NodeType const test::SCOPE_END("scope end");
 
 NodeType const test::BRANCH("branch");
 
-void flowcheck_test::SetUp()
+void FlowcheckTest::SetUp()
 {
     clear_err();
     clear_warn();
 }
 
-void flowcheck_test::TearDown()
+void FlowcheckTest::TearDown()
 {
     DataTree::verify();
 }

@@ -7,7 +7,7 @@
 
 using namespace inst;
 
-branch::branch(misc::position const& pos
+Branch::Branch(misc::position const& pos
              , util::sptr<Expression const> p
              , util::sptr<Statement const> c
              , util::sptr<Statement const> a)
@@ -24,12 +24,12 @@ void Arithmetics::write() const
     output::end_of_statement();
 }
 
-void branch::write() const
+void Branch::write() const
 {
-    output::branch_if();
+    output::branchIf();
     predicate->write();
     consequence->write();
-    output::branch_else();
+    output::branchElse();
     alternative->write();
 }
 

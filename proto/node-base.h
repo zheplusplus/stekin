@@ -10,7 +10,7 @@ namespace proto {
     struct Expression {
         virtual ~Expression() {}
 
-        virtual util::sptr<inst::Expression const> inst(util::sref<inst::scope> sc) const = 0;
+        virtual util::sptr<inst::Expression const> inst(util::sref<inst::Scope> sc) const = 0;
 
         misc::position const pos;
     protected:
@@ -22,7 +22,7 @@ namespace proto {
     struct Statement {
         virtual ~Statement() {}
 
-        virtual util::sptr<inst::mediate_base> inst(util::sref<inst::scope> sc) const = 0;
+        virtual util::sptr<inst::MediateBase> inst(util::sref<inst::Scope> sc) const = 0;
 
         misc::position const pos;
     protected:

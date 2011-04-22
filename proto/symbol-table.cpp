@@ -112,12 +112,12 @@ util::sref<overloads::overload const>
     return util::sref<overload const>(NULL);
 }
 
-util::sptr<Expression const> symbol_table::ref_var(misc::position const& pos, std::string const& name)
+util::sptr<Expression const> SymbolTable::ref_var(misc::position const& pos, std::string const& name)
 {
     std::vector<util::sref<Function>> all_funcs = _overloads.all_funcs_of_name(name);
     if (!all_funcs.empty()) {
         if (all_funcs.size() > 1) {
-            error::FuncReference_ambiguous(pos, name);
+            error::funcReferenceAmbiguous(pos, name);
         }
         return std::move(util::mkptr(new FuncReference(pos, all_funcs[0])));
     }
@@ -125,10 +125,10 @@ util::sptr<Expression const> symbol_table::ref_var(misc::position const& pos, st
     if (_VarDefs.end() == _VarDefs.find(name)) {
         _external_var_refs[name].push_back(pos);
     }
-    return std::move(util::mkptr(new reference(pos, name)));
+    return std::move(util::mkptr(new Reference(pos, name)));
 }
 
-void symbol_table::defVar(misc::position const& pos, std::string const& name)
+void SymbolTable::defVar(misc::position const& pos, std::string const& name)
 {
     auto local_refs = _external_var_refs.find(name);
     if (_external_var_refs.end() != local_refs) {
@@ -140,7 +140,7 @@ void symbol_table::defVar(misc::position const& pos, std::string const& name)
     }
 }
 
-util::sref<Function> symbol_table::defFunc(misc::position const& pos
+util::sref<Function> SymbolTable::defFunc(misc::position const& pos
                                           , std::string const& name
                                           , std::vector<std::string> const& params
                                           , bool hint_void_return)
@@ -156,7 +156,7 @@ util::sref<Function> symbol_table::defFunc(misc::position const& pos
     return util::mkref(_func_entities.back());
 }
 
-util::sptr<Expression const> symbol_table::query_call(misc::position const& pos
+util::sptr<Expression const> SymbolTable::query_call(misc::position const& pos
                                                    , std::string const& name
                                                    , std::vector<util::sptr<Expression const>> args) const
 {
@@ -172,7 +172,7 @@ util::sptr<Expression const> symbol_table::query_call(misc::position const& pos
     return std::move(util::mkptr(new call(pos, util::mkref(_fake_prototype), std::move(args))));
 }
 
-util::sref<Function> symbol_table::query_func(misc::position const& pos
+util::sref<Function> SymbolTable::query_func(misc::position const& pos
                                             , std::string const& name
                                             , int param_count) const
 {
@@ -185,8 +185,8 @@ util::sref<Function> symbol_table::query_func(misc::position const& pos
 }
 
 std::map<std::string, inst::variable const>
-        symbol_table::bind_external_var_refs(misc::position const& pos
-                                           , util::sref<inst::scope const> ext_scope) const
+        SymbolTable::bind_external_var_refs(misc::position const& pos
+                                           , util::sref<inst::Scope const> ext_scope) const
 {
     std::map<std::string, inst::variable const> result;
     std::for_each(_external_var_refs.begin()
@@ -198,8 +198,8 @@ std::map<std::string, inst::variable const>
     return result;
 }
 
-static symbol_table fake_symbols;
-Function symbol_table::_fake_prototype(misc::position(0)
+static SymbolTable fake_symbols;
+Function SymbolTable::_fake_prototype(misc::position(0)
                                      , ""
                                      , std::vector<std::string>()
                                      , util::mkref(fake_symbols)

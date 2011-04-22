@@ -6,7 +6,7 @@
 
 namespace warning {
 
-    void one_or_two_branches_terminated(util::sref<misc::position const> consq_term_pos_or_null_if_not_term
+    void oneOrTwoBranchesTerminated(util::sref<misc::position const> consq_term_pos_or_null_if_not_term
                                       , util::sref<misc::position const> alter_term_pos_or_null_if_not_term);
 
 }

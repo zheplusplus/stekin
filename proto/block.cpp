@@ -12,12 +12,12 @@ void Block::addStmt(util::sptr<Statement const> stmt)
     _stmts.push_back(std::move(stmt));
 }
 
-util::sptr<inst::mediate_base> Block::inst(util::sref<inst::scope> scope) const
+util::sptr<inst::MediateBase> Block::inst(util::sref<inst::Scope> scope) const
 {
     return std::move(util::mkmptr(new BlockMediate(_stmts, scope)));
 }
 
-std::list<util::sptr<Statement const>> const& Block::get_stmts() const
+std::list<util::sptr<Statement const>> const& Block::getStmts() const
 {
     return _stmts;
 }

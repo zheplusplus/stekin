@@ -21,48 +21,48 @@ struct ScopeTest
 
     void reset_scope()
     {
-        ext_symbols.reset(new proto::symbol_table);
-        scope.reset(new proto::general_scope(*ext_symbols));
+        ext_symbols.reset(new proto::SymbolTable);
+        scope.reset(new proto::GeneralScope(*ext_symbols));
         inst_scope.reset(new phony_func);
     }
 
-    util::sptr<proto::scope> mkscope() const
+    util::sptr<proto::Scope> mkscope() const
     {
-        return std::move(scope->create_branch_scope());
+        return std::move(scope->createBranchScope());
     }
 
-    util::sptr<proto::symbol_table> ext_symbols;
-    util::sptr<proto::general_scope> scope;
-    util::sptr<inst::scope> inst_scope;
+    util::sptr<proto::SymbolTable> ext_symbols;
+    util::sptr<proto::GeneralScope> scope;
+    util::sptr<inst::Scope> inst_scope;
 };
 
 TEST_F(ScopeTest, ExprNodesCreation)
 {
     misc::position pos(1);
 
-    scope->make_bool(pos, true)->inst(*inst_scope)->typeof();
-    scope->make_bool(pos, false)->inst(*inst_scope)->typeof();
-    scope->make_int(pos, 0)->inst(*inst_scope)->typeof();
-    scope->make_int(pos, 2048)->inst(*inst_scope)->typeof();
-    scope->make_float(pos, 21.36)->inst(*inst_scope)->typeof();
-    scope->make_float(pos, 0.0)->inst(*inst_scope)->typeof();
-    scope->make_ref(pos, "zero")->inst(*inst_scope)->typeof();
-    scope->make_ref(pos, "one")->inst(*inst_scope)->typeof();
-    scope->make_binary(pos, std::move(scope->make_int(pos, 1)), "+", std::move(scope->make_bool(pos, true)))
+    scope->makeBool(pos, true)->inst(*inst_scope)->typeof();
+    scope->makeBool(pos, false)->inst(*inst_scope)->typeof();
+    scope->makeInt(pos, 0)->inst(*inst_scope)->typeof();
+    scope->makeInt(pos, 2048)->inst(*inst_scope)->typeof();
+    scope->makeFloat(pos, 21.36)->inst(*inst_scope)->typeof();
+    scope->makeFloat(pos, 0.0)->inst(*inst_scope)->typeof();
+    scope->makeRef(pos, "zero")->inst(*inst_scope)->typeof();
+    scope->makeRef(pos, "one")->inst(*inst_scope)->typeof();
+    scope->makeBinary(pos, std::move(scope->makeInt(pos, 1)), "+", std::move(scope->makeBool(pos, true)))
          ->inst(*inst_scope)
          ->typeof();
-    scope->make_binary(pos, std::move(scope->make_int(pos, 4)), "<=", std::move(scope->make_bool(pos, false)))
+    scope->makeBinary(pos, std::move(scope->makeInt(pos, 4)), "<=", std::move(scope->makeBool(pos, false)))
          ->inst(*inst_scope)
          ->typeof();
-    scope->make_pre_unary(pos, "-", std::move(scope->make_float(pos, 0.9)))->inst(*inst_scope)->typeof();
-    scope->make_pre_unary(pos, "+", std::move(scope->make_float(pos, 1.6)))->inst(*inst_scope)->typeof();
-    scope->make_conj(pos, std::move(scope->make_int(pos, 25)), std::move(scope->make_bool(pos, true)))
+    scope->makePreUnary(pos, "-", std::move(scope->makeFloat(pos, 0.9)))->inst(*inst_scope)->typeof();
+    scope->makePreUnary(pos, "+", std::move(scope->makeFloat(pos, 1.6)))->inst(*inst_scope)->typeof();
+    scope->makeConj(pos, std::move(scope->makeInt(pos, 25)), std::move(scope->makeBool(pos, true)))
          ->inst(*inst_scope)
          ->typeof();
-    scope->make_disj(pos, std::move(scope->make_bool(pos, false)), std::move(scope->make_int(pos, 36)))
+    scope->makeDisj(pos, std::move(scope->makeBool(pos, false)), std::move(scope->makeInt(pos, 36)))
          ->inst(*inst_scope)
          ->typeof();
-    scope->make_nega(pos, std::move(scope->make_int(pos, 49)))->inst(*inst_scope)->typeof();
+    scope->makeNega(pos, std::move(scope->makeInt(pos, 49)))->inst(*inst_scope)->typeof();
     ASSERT_FALSE(error::hasError());
 
     DataTree::expectOne()
@@ -117,7 +117,7 @@ TEST_F(ScopeTest, Symbol)
 {
     misc::position pos(2);
     scope->addStmt(std::move(util::mkptr(new proto::Arithmetics(pos
-                                                               , std::move(scope->make_ref(pos, "four"))))));
+                                                               , std::move(scope->makeRef(pos, "four"))))));
     ASSERT_FALSE(error::hasError());
     scope->defVar(pos, "four");
     ASSERT_TRUE(error::hasError());

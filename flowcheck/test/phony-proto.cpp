@@ -18,44 +18,25 @@ using namespace proto;
 
 namespace {
 
-    util::sref<symbol_table> nul_symbols()
+    util::sptr<inst::MediateBase> nulMediate()
     {
-        return util::sref<symbol_table>(NULL);
+        return std::move(util::sptr<inst::MediateBase>(NULL));
     }
 
-    util::sptr<inst::mediate_base> nul_mediate()
-    {
-        return std::move(util::sptr<inst::mediate_base>(NULL));
-    }
-
-    util::sptr<inst::Expression const> nul_inst_expr()
+    util::sptr<inst::Expression const> nulInstExpr()
     {
         return std::move(util::sptr<inst::Expression const>(NULL));
     }
 
     std::list<util::sptr<Function>> func_entities;
 
-    util::sptr<Expression const> nul_proto_expr()
+    util::sptr<Scope> mkscope()
     {
-        return std::move(util::sptr<Expression const>(NULL));
+        return std::move(util::mkmptr(new GlobalScope));
     }
 
-    util::sptr<scope> mkscope()
-    {
-        return std::move(util::mkmptr(new global_scope));
-    }
-
-    struct dummy_stmt
-        : public Statement
-    {
-        util::sptr<inst::mediate_base> inst(util::sref<inst::scope>) const
-        {
-            return std::move(nul_mediate());
-        }
-    };
-
-    std::vector<util::sptr<scope>> func_scope_entities;
-    symbol_table phony_symbols;
+    std::vector<util::sptr<Scope>> func_scope_entities;
+    SymbolTable phony_symbols;
 
 }
 
@@ -64,7 +45,7 @@ void Block::addStmt(util::sptr<Statement const> stmt)
     _stmts.push_back(std::move(stmt));
 }
 
-util::sptr<inst::mediate_base> Block::inst(util::sref<inst::scope>) const
+util::sptr<inst::MediateBase> Block::inst(util::sref<inst::Scope>) const
 {
     DataTree::actualOne()(SCOPE_BEGIN);
     std::for_each(_stmts.begin()
@@ -74,75 +55,75 @@ util::sptr<inst::mediate_base> Block::inst(util::sref<inst::scope>) const
                       stmt->inst(nul_inst_scope);
                   });
     DataTree::actualOne()(SCOPE_END);
-    return std::move(nul_mediate());
+    return std::move(nulMediate());
 }
 
-Block scope::deliver()
+Block Scope::deliver()
 {
     return std::move(_block);
 }
 
-util::sptr<inst::mediate_base> Return::inst(util::sref<inst::scope>) const
+util::sptr<inst::MediateBase> Return::inst(util::sref<inst::Scope>) const
 {
     DataTree::actualOne()(pos, RETURN);
     ret_val->inst(nul_inst_scope);
-    return std::move(nul_mediate());
+    return std::move(nulMediate());
 }
 
-util::sptr<inst::mediate_base> ReturnNothing::inst(util::sref<inst::scope>) const
+util::sptr<inst::MediateBase> ReturnNothing::inst(util::sref<inst::Scope>) const
 {
     DataTree::actualOne()(pos, RETURN_NOTHING);
-    return std::move(nul_mediate());
+    return std::move(nulMediate());
 }
 
-util::sptr<inst::mediate_base> VarDef::inst(util::sref<inst::scope>) const
+util::sptr<inst::MediateBase> VarDef::inst(util::sref<inst::Scope>) const
 {
     DataTree::actualOne()(pos, VAR_DEF, name);
     init->inst(nul_inst_scope);
-    return std::move(nul_mediate());
+    return std::move(nulMediate());
 }
 
-util::sptr<inst::mediate_base> branch::inst(util::sref<inst::scope>) const
+util::sptr<inst::MediateBase> Branch::inst(util::sref<inst::Scope>) const
 {
     DataTree::actualOne()(pos, BRANCH);
     _predicate->inst(nul_inst_scope);
     _consequence.inst(nul_inst_scope);
     _alternative.inst(nul_inst_scope);
-    return std::move(nul_mediate());
+    return std::move(nulMediate());
 }
 
-util::sptr<inst::mediate_base> Arithmetics::inst(util::sref<inst::scope>) const
+util::sptr<inst::MediateBase> Arithmetics::inst(util::sref<inst::Scope>) const
 {
     DataTree::actualOne()(pos, ARITHMETICS);
     expr->inst(nul_inst_scope);
-    return std::move(nul_mediate());
+    return std::move(nulMediate());
 }
 
-util::sptr<inst::Expression const> BoolLiteral::inst(util::sref<inst::scope>) const
+util::sptr<inst::Expression const> BoolLiteral::inst(util::sref<inst::Scope>) const
 {
     DataTree::actualOne()(pos, BOOLEAN, util::str(value));
-    return std::move(nul_inst_expr());
+    return std::move(nulInstExpr());
 }
 
-util::sptr<inst::Expression const> IntLiteral::inst(util::sref<inst::scope>) const
+util::sptr<inst::Expression const> IntLiteral::inst(util::sref<inst::Scope>) const
 {
     DataTree::actualOne()(pos, INTEGER, util::str(value));
-    return std::move(nul_inst_expr());
+    return std::move(nulInstExpr());
 }
 
-util::sptr<inst::Expression const> FloatLiteral::inst(util::sref<inst::scope>) const
+util::sptr<inst::Expression const> FloatLiteral::inst(util::sref<inst::Scope>) const
 {
     DataTree::actualOne()(pos, FLOATING, util::str(value));
-    return std::move(nul_inst_expr());
+    return std::move(nulInstExpr());
 }
 
-util::sptr<inst::Expression const> reference::inst(util::sref<inst::scope>) const
+util::sptr<inst::Expression const> Reference::inst(util::sref<inst::Scope>) const
 {
     DataTree::actualOne()(pos, REFERENCE, name);
-    return std::move(nul_inst_expr());
+    return std::move(nulInstExpr());
 }
 
-util::sptr<inst::Expression const> call::inst(util::sref<inst::scope>) const
+util::sptr<inst::Expression const> call::inst(util::sref<inst::Scope>) const
 {
     DataTree::actualOne()(pos, CALL, func->name, args.size(), false);
     std::for_each(args.begin()
@@ -151,69 +132,70 @@ util::sptr<inst::Expression const> call::inst(util::sref<inst::scope>) const
                   {
                       arg->inst(nul_inst_scope);
                   });
-    return std::move(nul_inst_expr());
+    return std::move(nulInstExpr());
 }
 
-util::sptr<inst::Expression const> FuncReference::inst(util::sref<inst::scope>) const
+util::sptr<inst::Expression const> FuncReference::inst(util::sref<inst::Scope>) const
 {
     DataTree::actualOne()(pos, FUNC_REFERENCE, func->name, func->param_names.size(), false);
-    return std::move(nul_inst_expr());
+    return std::move(nulInstExpr());
 }
 
-util::sptr<inst::Expression const> BinaryOp::inst(util::sref<inst::scope>) const
+util::sptr<inst::Expression const> BinaryOp::inst(util::sref<inst::Scope>) const
 {
     DataTree::actualOne()(pos, BINARY_OP, op);
     lhs->inst(nul_inst_scope);
     rhs->inst(nul_inst_scope);
-    return std::move(nul_inst_expr());
+    return std::move(nulInstExpr());
 }
 
-util::sptr<inst::Expression const> PreUnaryOp::inst(util::sref<inst::scope>) const
+util::sptr<inst::Expression const> PreUnaryOp::inst(util::sref<inst::Scope>) const
 {
     DataTree::actualOne()(pos, PRE_UNARY_OP, op);
     rhs->inst(nul_inst_scope);
-    return std::move(nul_inst_expr());
+    return std::move(nulInstExpr());
 }
 
-util::sptr<inst::Expression const> Conjunction::inst(util::sref<inst::scope>) const
+util::sptr<inst::Expression const> Conjunction::inst(util::sref<inst::Scope>) const
 {
     DataTree::actualOne()(pos, BINARY_OP, "&&");
     lhs->inst(nul_inst_scope);
     rhs->inst(nul_inst_scope);
-    return std::move(nul_inst_expr());
+    return std::move(nulInstExpr());
 }
 
-util::sptr<inst::Expression const> Disjunction::inst(util::sref<inst::scope>) const
+util::sptr<inst::Expression const> Disjunction::inst(util::sref<inst::Scope>) const
 {
     DataTree::actualOne()(pos, BINARY_OP, "||");
     lhs->inst(nul_inst_scope);
     rhs->inst(nul_inst_scope);
-    return std::move(nul_inst_expr());
+    return std::move(nulInstExpr());
 }
 
-util::sptr<inst::Expression const> Negation::inst(util::sref<inst::scope>) const
+util::sptr<inst::Expression const> Negation::inst(util::sref<inst::Scope>) const
 {
     DataTree::actualOne()(pos, PRE_UNARY_OP, "!");
     rhs->inst(nul_inst_scope);
-    return std::move(nul_inst_expr());
+    return std::move(nulInstExpr());
 }
 
-util::sptr<Expression const> scope::make_bool(misc::position const& pos, bool value) const
+util::sptr<Expression const> Scope::makeBool(misc::position const& pos, bool value) const
 {
     return std::move(util::mkptr(new BoolLiteral(pos, value)));
 }
 
-util::sptr<Expression const> scope::make_int(misc::position const& pos, mpz_class const& value) const
+util::sptr<Expression const> Scope::makeInt(misc::position const& pos, mpz_class const& value) const
 {
     return std::move(util::mkptr(new IntLiteral(pos, value)));
 }
 
-util::sptr<Expression const> scope::make_float(misc::position const& pos, mpf_class const& value) const
+util::sptr<Expression const> Scope::makeFloat(misc::position const& pos
+                                            , mpf_class const& value) const
 {
     return std::move(util::mkptr(new FloatLiteral(pos, value)));
 }
 
-util::sptr<Expression const> scope::make_binary(misc::position const& pos
+util::sptr<Expression const> Scope::makeBinary(misc::position const& pos
                                              , util::sptr<Expression const> lhs
                                              , std::string const& op
                                              , util::sptr<Expression const> rhs) const
@@ -221,80 +203,85 @@ util::sptr<Expression const> scope::make_binary(misc::position const& pos
     return std::move(util::mkptr(new BinaryOp(pos, std::move(lhs), op, std::move(rhs))));
 }
 
-util::sptr<Expression const> scope::make_pre_unary(misc::position const& pos
-                                                , std::string const& op
-                                                , util::sptr<Expression const> rhs) const
+util::sptr<Expression const> Scope::makePreUnary(misc::position const& pos
+                                               , std::string const& op
+                                               , util::sptr<Expression const> rhs) const
 {
     return std::move(util::mkptr(new PreUnaryOp(pos, op, std::move(rhs))));
 }
 
-util::sptr<Expression const> scope::make_conj(misc::position const& pos
+util::sptr<Expression const> Scope::makeConj(misc::position const& pos
                                            , util::sptr<Expression const> lhs
                                            , util::sptr<Expression const> rhs) const
 {
     return std::move(util::mkptr(new Conjunction(pos, std::move(lhs), std::move(rhs))));
 }
 
-util::sptr<Expression const> scope::make_disj(misc::position const& pos
+util::sptr<Expression const> Scope::makeDisj(misc::position const& pos
                                            , util::sptr<Expression const> lhs
                                            , util::sptr<Expression const> rhs) const
 {
     return std::move(util::mkptr(new Disjunction(pos, std::move(lhs), std::move(rhs))));
 }
 
-util::sptr<Expression const> scope::make_nega(misc::position const& pos, util::sptr<Expression const> rhs) const
+util::sptr<Expression const> Scope::makeNega(misc::position const& pos
+                                           , util::sptr<Expression const> rhs) const
 {
     return std::move(util::mkptr(new Negation(pos, std::move(rhs))));
 }
 
-void scope::addStmt(util::sptr<Statement const> stmt)
+void Scope::addStmt(util::sptr<Statement const> stmt)
 {
     _block.addStmt(std::move(stmt));
 }
 
-util::sptr<Expression const> general_scope::make_ref(misc::position const& pos, std::string const& name)
+util::sptr<Expression const> GeneralScope::makeRef(misc::position const& pos
+                                                 , std::string const& name)
 {
-    return std::move(util::mkptr(new reference(pos, name)));
+    return std::move(util::mkptr(new Reference(pos, name)));
 }
 
-util::sptr<Expression const> general_scope::make_call(misc::position const& pos
-                                                   , std::string const& name
-                                                   , std::vector<util::sptr<Expression const>> args) const
+util::sptr<Expression const> GeneralScope::makeCall(misc::position const& pos
+                                                  , std::string const& name
+                                                  , std::vector<util::sptr<Expression const>> args)
+                                                  const
 {
-    func_entities.push_back(std::move(util::mkmptr(new Function(pos
-                                                              , name
-                                                              , std::vector<std::string>(args.size())
-                                                              , util::mkref(phony_symbols)
-                                                              , false))));
+    func_entities.push_back(std::move(
+                util::mkmptr(new Function(pos
+                                        , name
+                                        , std::vector<std::string>(args.size())
+                                        , util::mkref(phony_symbols)
+                                        , false))));
     return std::move(util::mkptr(new call(pos, *func_entities.back(), std::move(args))));
 }
 
-util::sptr<Expression const> general_scope::make_FuncReference(misc::position const& pos
-                                                             , std::string const& name
-                                                             , int param_count) const
+util::sptr<Expression const> GeneralScope::makeFuncReference(misc::position const& pos
+                                                           , std::string const& name
+                                                           , int param_count) const
 {
-    func_entities.push_back(std::move(util::mkmptr(new Function(pos
-                                                              , name
-                                                              , std::vector<std::string>(param_count)
-                                                              , util::mkref(phony_symbols)
-                                                              , false))));
+    func_entities.push_back(std::move(
+                util::mkmptr(new Function(pos
+                                        , name
+                                        , std::vector<std::string>(param_count)
+                                        , util::mkref(phony_symbols)
+                                        , false))));
     return std::move(util::mkptr(new FuncReference(pos, *func_entities.back())));
 }
 
-void general_scope::defVar(misc::position const& pos, std::string const& name)
+void GeneralScope::defVar(misc::position const& pos, std::string const& name)
 {
     DataTree::actualOne()(pos, SCOPE_VAR_DEF, name);
 }
 
-util::sptr<scope> general_scope::create_branch_scope()
+util::sptr<Scope> GeneralScope::createBranchScope()
 {
     return std::move(mkscope());
 }
 
-util::sref<Function> general_scope::declare(misc::position const& pos
-                                          , std::string const& name
-                                          , std::vector<std::string> const& param_names
-                                          , bool hint_return_void)
+util::sref<Function> GeneralScope::declare(misc::position const& pos
+                                         , std::string const& name
+                                         , std::vector<std::string> const& param_names
+                                         , bool hint_return_void)
 {
     DataTree::actualOne()(pos, FUNC_DECL, name, param_names.size(), hint_return_void);
     std::for_each(param_names.begin()
@@ -311,12 +298,12 @@ util::sref<Function> general_scope::declare(misc::position const& pos
     return *func_entities.back();
 }
 
-global_scope::global_scope() {}
+GlobalScope::GlobalScope() {}
 
 Function::Function(misc::position const& p
                  , std::string const& n
                  , std::vector<std::string> const& params
-                 , util::sref<symbol_table const>
+                 , util::sref<SymbolTable const>
                  , bool func_hint_void_return)
     : pos(p)
     , name(n)

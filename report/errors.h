@@ -18,7 +18,7 @@ namespace error {
     void ifAlreadyMatchElse(misc::position const& prev_else_pos, misc::position const& this_else_pos);
     void excessiveIndent(misc::position const& pos);
 
-    void flow_terminated(misc::position const& this_pos, misc::position const& prev_pos);
+    void flowTerminated(misc::position const& this_pos, misc::position const& prev_pos);
 
     void forbidDefFunc(misc::position const& pos, std::string const& name);
     void forbidDefVar(misc::position const& pos, std::string const& name);
@@ -30,7 +30,7 @@ namespace error {
                           , std::list<misc::position> const& ref_positions
                           , std::string const& name);
 
-    void FuncReference_ambiguous(misc::position const& pos, std::string const& name);
+    void funcReferenceAmbiguous(misc::position const& pos, std::string const& name);
     void func_already_def(misc::position const& prev_def_pos
                         , misc::position const& this_def_pos
                         , std::string const& name
@@ -39,7 +39,7 @@ namespace error {
 
     void var_not_def(misc::position const& ref_pos, std::string const& name);
 
-    void BinaryOp_not_avai(misc::position const& pos
+    void binaryOpNotAvai(misc::position const& pos
                           , std::string const& op_img
                           , std::string const& lhst_name
                           , std::string const& rhst_name);
@@ -53,7 +53,7 @@ namespace error {
 
     void returnTypeUnresolvable(std::string const& name, int arg_count);
 
-    void cond_not_bool(misc::position const& pos, std::string const& actual_type);
+    void condNotBool(misc::position const& pos, std::string const& actual_type);
 
     void request_variable_not_callable(misc::position const& call_pos);
 

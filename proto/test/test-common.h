@@ -46,10 +46,6 @@ namespace test {
         }
     };
 
-    typedef data_node_templ<proto_data> data_node_base;
-    typedef nothing_node_templ<proto_data> nothing_node;
-    typedef string_node_templ<proto_data> string_node;
-
     struct DataTree
         : public DataTreeTempl<proto_data, DataTree>
     {

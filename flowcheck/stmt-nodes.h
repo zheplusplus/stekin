@@ -18,7 +18,7 @@ namespace flchk {
             , expr(std::move(e))
         {}
 
-        util::sptr<proto::Statement const> compile(util::sref<proto::scope> scope) const;
+        util::sptr<proto::Statement const> compile(util::sref<proto::Scope> scope) const;
 
         util::sptr<Expression const> const expr;
     };
@@ -33,7 +33,7 @@ namespace flchk {
             , alternative(std::move(a))
         {}
 
-        util::sptr<proto::Statement const> compile(util::sref<proto::scope> scope) const;
+        util::sptr<proto::Statement const> compile(util::sref<proto::Scope> scope) const;
 
         util::sptr<Expression const> const predicate;
         Block const consequence;
@@ -48,7 +48,7 @@ namespace flchk {
             , ret_val(std::move(retval))
         {}
 
-        util::sptr<proto::Statement const> compile(util::sref<proto::scope> scope) const;
+        util::sptr<proto::Statement const> compile(util::sref<proto::Scope> scope) const;
 
         util::sptr<Expression const> const ret_val;
     };
@@ -60,19 +60,19 @@ namespace flchk {
             : Statement(pos)
         {}
 
-        util::sptr<proto::Statement const> compile(util::sref<proto::scope> scope) const;
+        util::sptr<proto::Statement const> compile(util::sref<proto::Scope> scope) const;
     };
 
     struct VarDef
         : public Statement
     {
-        VarDef(misc::position const& pos, std::string const& var_name, util::sptr<Expression const> var_init)
+        VarDef(misc::position const& pos, std::string const& n, util::sptr<Expression const> i)
             : Statement(pos)
-            , name(var_name)
-            , init(std::move(var_init))
+            , name(n)
+            , init(std::move(i))
         {}
 
-        util::sptr<proto::Statement const> compile(util::sref<proto::scope> scope) const;
+        util::sptr<proto::Statement const> compile(util::sref<proto::Scope> scope) const;
 
         std::string const name;
         util::sptr<Expression const> const init;

@@ -12,8 +12,8 @@
 
 namespace inst {
 
-    struct scope {
-        virtual ~scope() {}
+    struct Scope {
+        virtual ~Scope() {}
     public:
         virtual void set_return_type(misc::position const& pos, util::sref<type const> type) = 0;
 
@@ -22,7 +22,7 @@ namespace inst {
                                , std::string const& name) = 0;
         virtual variable query_var(misc::position const& pos, std::string const& name) const = 0;
 
-        virtual void add_path(util::sref<mediate_base> path) = 0;
+        virtual void add_path(util::sref<MediateBase> path) = 0;
         virtual void inst_next_path() = 0;
         virtual bool has_more_path() const = 0;
 
@@ -38,7 +38,7 @@ namespace inst {
 
         void addStmt(util::sptr<Statement const> stmt);
     protected:
-        scope() {}
+        Scope() {}
 
         Block _block;
     };

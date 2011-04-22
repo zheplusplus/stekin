@@ -11,47 +11,47 @@
 namespace proto {
 
     struct BlockMediate
-        : public inst::mediate_base
+        : public inst::MediateBase
     {
-        BlockMediate(std::list<util::sptr<Statement const>> const& stmts, util::sref<inst::scope> sc);
+        BlockMediate(std::list<util::sptr<Statement const>> const& stmts, util::sref<inst::Scope> sc);
 
-        util::sptr<inst::Statement const> inst(util::sref<inst::scope> sc);
-        void mediate_inst(util::sref<inst::scope> sc);
+        util::sptr<inst::Statement const> inst(util::sref<inst::Scope> sc);
+        void mediate_inst(util::sref<inst::Scope> sc);
     private:
         std::list<util::sptr<Statement const>> const& _stmts;
-        util::sptr<std::list<util::sptr<inst::mediate_base>>> _mediates;
+        util::sptr<std::list<util::sptr<inst::MediateBase>>> _mediates;
         util::sptr<inst::Block> _inst_block;
     };
 
-    struct direct_inst
-        : public inst::mediate_base
+    struct DirectInst
+        : public inst::MediateBase
     {
-        explicit direct_inst(util::sptr<inst::Statement const> stmt)
+        explicit DirectInst(util::sptr<inst::Statement const> stmt)
             : _stmt(std::move(stmt))
         {}
 
-        util::sptr<inst::Statement const> inst(util::sref<inst::scope>);
-        void mediate_inst(util::sref<inst::scope>);
+        util::sptr<inst::Statement const> inst(util::sref<inst::Scope>);
+        void mediate_inst(util::sref<inst::Scope>);
     private:
         util::sptr<inst::Statement const> _stmt;
     };
 
-    struct branch_mediate
-        : public inst::mediate_base
+    struct BranchMediate
+        : public inst::MediateBase
     {
-        branch_mediate(misc::position const& ps
+        BranchMediate(misc::position const& ps
                      , util::sptr<inst::Expression const> predicate
                      , std::list<util::sptr<Statement const>> const& consequence_stmts
                      , std::list<util::sptr<Statement const>> const& alternative_stmts
-                     , util::sref<inst::scope> sc)
+                     , util::sref<inst::Scope> sc)
             : pos(ps)
             , _predicate(std::move(predicate))
             , _consequence_mediate(consequence_stmts, sc)
             , _alternative_mediate(alternative_stmts, sc)
         {}
 
-        util::sptr<inst::Statement const> inst(util::sref<inst::scope> sc);
-        void mediate_inst(util::sref<inst::scope> sc);
+        util::sptr<inst::Statement const> inst(util::sref<inst::Scope> sc);
+        void mediate_inst(util::sref<inst::Scope> sc);
     public:
         misc::position const pos;
     private:

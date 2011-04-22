@@ -43,20 +43,20 @@ namespace proto {
         std::list<overload> _overloads;
     };
 
-    struct symbol_table {
+    struct SymbolTable {
         int const level;
 
-        explicit symbol_table(util::sref<symbol_table const> ext_symbols)
+        explicit SymbolTable(util::sref<SymbolTable const> ext_symbols)
             : level(ext_symbols->level + 1)
             , _overloads(util::mkref(ext_symbols->_overloads))
         {}
 
-        symbol_table()
+        SymbolTable()
             : level(0)
             , _overloads(util::sref<overloads const>(NULL))
         {}
 
-        symbol_table(symbol_table&& rhs)
+        SymbolTable(SymbolTable&& rhs)
             : level(rhs.level)
             , _external_var_refs(rhs._external_var_refs)
             , _VarDefs(rhs._VarDefs)
@@ -77,7 +77,7 @@ namespace proto {
                                       , std::string const& name
                                       , int param_count) const;
         std::map<std::string, inst::variable const>
-            bind_external_var_refs(misc::position const& pos, util::sref<inst::scope const> ext_scope) const;
+            bind_external_var_refs(misc::position const& pos, util::sref<inst::Scope const> ext_scope) const;
     private:
         std::map<std::string, std::list<misc::position>> _external_var_refs;
         std::map<std::string, misc::position> _VarDefs;

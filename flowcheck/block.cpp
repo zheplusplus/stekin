@@ -15,10 +15,10 @@ void Block::addStmt(util::sptr<Statement const> stmt)
 }
 
 void Block::defFunc(misc::position const& pos
-                   , std::string const& name
-                   , std::vector<std::string> const& param_names
-                   , Block body
-                   , bool contains_void_return)
+                  , std::string const& name
+                  , std::vector<std::string> const& param_names
+                  , Block body
+                  , bool contains_void_return)
 {
     _funcs.push_back(std::move(util::mkptr(new Function(pos
                                                       , name
@@ -27,7 +27,7 @@ void Block::defFunc(misc::position const& pos
                                                       , contains_void_return))));
 }
 
-void Block::compile(util::sref<proto::scope> scope) const 
+void Block::compile(util::sref<proto::Scope> scope) const 
 {
     std::vector<util::sref<proto::Function>> decls;
     decls.reserve(_funcs.size());

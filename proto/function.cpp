@@ -15,9 +15,9 @@ using namespace proto;
 Function::Function(misc::position const& ps
                  , std::string const& name
                  , std::vector<std::string> const& params
-                 , util::sref<symbol_table const> ext_symbols
+                 , util::sref<SymbolTable const> ext_symbols
                  , bool func_hint_void_return)
-    : general_scope(ext_symbols)
+    : GeneralScope(ext_symbols)
     , pos(ps)
     , name(name)
     , param_names(params)
@@ -37,7 +37,7 @@ void Function::_fill_param_names()
 }
 
 util::sref<inst::Function> Function::inst(misc::position const& pos
-                                        , util::sref<inst::scope> ext_scope
+                                        , util::sref<inst::Scope> ext_scope
                                         , std::vector<util::sref<inst::type const>> const& arg_types)
 {
     return inst(ext_scope->level(), bind_external_vars(pos, ext_scope), arg_types);
@@ -69,14 +69,14 @@ util::sref<inst::Function> Function::inst(int level
                                                                         , hint_void_return);
     _instance_cache.insert(std::make_pair(instance_info(ext_vars, arg_types), instance));
 
-    BlockMediate body_mediate(_block.get_stmts(), instance);
+    BlockMediate body_mediate(_block.getStmts(), instance);
     instance->inst_next_path();
     instance->addStmt(std::move(body_mediate.inst(instance)));
     return instance;
 }
 
 std::map<std::string, inst::variable const>
-    Function::bind_external_vars(misc::position const& pos, util::sref<inst::scope const> ext_scope) const
+    Function::bind_external_vars(misc::position const& pos, util::sref<inst::Scope const> ext_scope) const
 {
     return _symbols.bind_external_var_refs(pos, ext_scope);
 }

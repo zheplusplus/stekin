@@ -12,19 +12,19 @@ static std::list<InvCharRec> inv_char_recs;
 static std::list<ElseNotMatchRec> else_not_matches_recs;
 static std::list<IfMatchedRec> if_matched_recs;
 static std::list<ExcessIndRec> excess_ind_recs;
-static std::list<flow_terminated_rec> flow_terminated_recs;
+static std::list<FlowTerminatedRec> flow_terminated_recs;
 
 static std::list<func_forbidden_rec> forbidden_func_recs;
 static std::list<ForbidDefRec> forbid_var_def_recs;
 static std::list<var_redef_rec> local_redefs;
 static std::list<invalid_ref_rec> invalid_refs;
-static std::list<func_ref_ambiguous_rec> ambiguous_refs;
+static std::list<FuncRefAmbiguousRec> ambiguous_refs;
 static std::list<func_redef_rec> func_redefs;
 static std::list<func_nondef_rec> func_nondefs;
 
 static std::list<ret_type_conflict_rec> ret_type_conflict_recs;
 static std::list<RetTypeUnresolvableRec> ret_type_unresolvable_recs;
-static std::list<cond_not_bool_rec> cond_not_bool_recs;
+static std::list<CondNotBoolRec> CondNotBoolRecs;
 static std::list<var_nondef_rec> var_nondefs;
 static std::list<NABinaryOpRec> na_BinaryOps;
 static std::list<NAPreUnaryOpRec> na_PreUnaryOps;
@@ -58,7 +58,7 @@ void test::clear_err()
     na_PreUnaryOps.clear();
     ret_type_conflict_recs.clear();
     ret_type_unresolvable_recs.clear();
-    cond_not_bool_recs.clear();
+    CondNotBoolRecs.clear();
 
     variable_not_callables.clear();
 }
@@ -109,10 +109,10 @@ void error::excessiveIndent(misc::position const& pos)
     excess_ind_recs.push_back(ExcessIndRec(pos));
 }
 
-void error::flow_terminated(misc::position const& this_pos, misc::position const& prev_pos)
+void error::flowTerminated(misc::position const& this_pos, misc::position const& prev_pos)
 {
     has_err = true;
-    flow_terminated_recs.push_back(flow_terminated_rec(this_pos, prev_pos));
+    flow_terminated_recs.push_back(FlowTerminatedRec(this_pos, prev_pos));
 }
 
 void error::forbidDefFunc(misc::position const& pos, std::string const& name)
@@ -143,10 +143,10 @@ void error::var_ref_before_def(misc::position const& def_pos
     invalid_refs.push_back(invalid_ref_rec(ref_positions.begin(), ref_positions.end(), def_pos, name));
 }
 
-void error::FuncReference_ambiguous(misc::position const& pos, std::string const& name)
+void error::funcReferenceAmbiguous(misc::position const& pos, std::string const& name)
 {
     has_err =true;
-    ambiguous_refs.push_back(func_ref_ambiguous_rec(pos, name));
+    ambiguous_refs.push_back(FuncRefAmbiguousRec(pos, name));
 }
 
 void error::func_already_def(misc::position const& prev_def_pos
@@ -170,7 +170,7 @@ void error::var_not_def(misc::position const& ref_pos, std::string const& name)
     var_nondefs.push_back(var_nondef_rec(ref_pos, name));
 }
 
-void error::BinaryOp_not_avai(misc::position const& pos
+void error::binaryOpNotAvai(misc::position const& pos
                              , std::string const& op_img
                              , std::string const& lhst
                              , std::string const& rhst)
@@ -199,10 +199,10 @@ void error::returnTypeUnresolvable(std::string const& name, int arg_count)
     ret_type_unresolvable_recs.push_back(RetTypeUnresolvableRec(name, arg_count));
 }
 
-void error::cond_not_bool(misc::position const& pos, std::string const& actual_type)
+void error::condNotBool(misc::position const& pos, std::string const& actual_type)
 {
     has_err = true;
-    cond_not_bool_recs.push_back(cond_not_bool_rec(pos, actual_type));
+    CondNotBoolRecs.push_back(CondNotBoolRec(pos, actual_type));
 }
 
 void error::request_variable_not_callable(misc::position const& call_pos)
@@ -241,9 +241,9 @@ std::vector<ExcessIndRec> test::get_excess_inds()
     return std::vector<ExcessIndRec>(excess_ind_recs.begin(), excess_ind_recs.end());
 }
 
-std::vector<flow_terminated_rec> test::get_flow_terminated_recs()
+std::vector<FlowTerminatedRec> test::getFlowTerminatedRecs()
 {
-    return std::vector<flow_terminated_rec>(flow_terminated_recs.begin(), flow_terminated_recs.end());
+    return std::vector<FlowTerminatedRec>(flow_terminated_recs.begin(), flow_terminated_recs.end());
 }
 
 std::vector<func_forbidden_rec> test::get_forbidden_funcs()
@@ -266,9 +266,9 @@ std::vector<invalid_ref_rec> test::get_invalid_refs()
     return std::vector<invalid_ref_rec>(invalid_refs.begin(), invalid_refs.end());
 }
 
-std::vector<func_ref_ambiguous_rec> test::get_ambiguous_refs()
+std::vector<FuncRefAmbiguousRec> test::getAmbiguousRefs()
 {
-    return std::vector<func_ref_ambiguous_rec>(ambiguous_refs.begin(), ambiguous_refs.end());
+    return std::vector<FuncRefAmbiguousRec>(ambiguous_refs.begin(), ambiguous_refs.end());
 }
 
 std::vector<func_redef_rec> test::get_func_redefs()
@@ -307,9 +307,9 @@ std::vector<RetTypeUnresolvableRec> test::getRetTypeUnresolvables()
                                                 , ret_type_unresolvable_recs.end());
 }
 
-std::vector<cond_not_bool_rec> test::get_cond_not_bools()
+std::vector<CondNotBoolRec> test::getCondNotBools()
 {
-    return std::vector<cond_not_bool_rec>(cond_not_bool_recs.begin(), cond_not_bool_recs.end());
+    return std::vector<CondNotBoolRec>(CondNotBoolRecs.begin(), CondNotBoolRecs.end());
 }
 
 std::vector<variable_not_callable_rec> test::get_variable_not_callables()

@@ -9,32 +9,32 @@
 
 namespace test {
 
-    extern util::sref<inst::scope> const nul_inst_scope;
+    extern util::sref<inst::Scope> const nul_inst_scope;
 
-    struct flowcheck_data {
+    struct FlowcheckData {
         misc::position const pos;
         int const func_arg_size;
         bool const func_hint_ret_void;
 
-        flowcheck_data(misc::position const& ps, int arg_size, bool hint_ret_void)
+        FlowcheckData(misc::position const& ps, int arg_size, bool hint_ret_void)
             : pos(ps)
             , func_arg_size(arg_size)
             , func_hint_ret_void(hint_ret_void)
         {}
 
-        explicit flowcheck_data(misc::position const ps)
+        explicit FlowcheckData(misc::position const ps)
             : pos(ps)
             , func_arg_size(-1)
             , func_hint_ret_void(false)
         {}
 
-        flowcheck_data()
+        FlowcheckData()
             : pos(-1)
             , func_arg_size(-1)
             , func_hint_ret_void(false)
         {}
 
-        bool operator==(flowcheck_data const& rhs) const
+        bool operator==(FlowcheckData const& rhs) const
         {
             return pos == rhs.pos
                 && func_arg_size == rhs.func_arg_size
@@ -42,21 +42,19 @@ namespace test {
         }
     };
 
-    typedef data_node_templ<flowcheck_data> data_node_base;
-    typedef nothing_node_templ<flowcheck_data> nothing_node;
-    typedef string_node_templ<flowcheck_data> string_node;
-
     struct DataTree
-        : public DataTreeTempl<flowcheck_data, DataTree>
+        : public DataTreeTempl<FlowcheckData, DataTree>
     {
-        typedef DataTreeTempl<flowcheck_data, DataTree> BaseType;
+        typedef DataTreeTempl<FlowcheckData, DataTree> BaseType;
 
-        DataTree& operator()(misc::position const& pos, NodeType const& type, std::string const& str);
         DataTree& operator()(misc::position const& pos
-                            , NodeType const& type
-                            , std::string const& str
-                            , int func_arg_size
-                            , bool func_hint_return_void);
+                           , NodeType const& type
+                           , std::string const& str);
+        DataTree& operator()(misc::position const& pos
+                           , NodeType const& type
+                           , std::string const& str
+                           , int func_arg_size
+                           , bool func_hint_return_void);
         DataTree& operator()(NodeType const& type);
         DataTree& operator()(misc::position const& pos, NodeType const& type);
     };
@@ -86,7 +84,7 @@ namespace test {
 
     extern NodeType const BRANCH;
 
-    struct flowcheck_test
+    struct FlowcheckTest
         : public testing::Test
     {
         void SetUp();
@@ -95,6 +93,6 @@ namespace test {
 
 }
 
-std::ostream& operator<<(std::ostream& os, test::flowcheck_data const& data);
+std::ostream& operator<<(std::ostream& os, test::FlowcheckData const& data);
 
 #endif /* __STEKIN_FLOW_CHECK_TEST_TEST_COMMON_H__ */

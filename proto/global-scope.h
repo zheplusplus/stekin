@@ -5,10 +5,10 @@
 
 namespace proto {
 
-    struct global_scope
-        : public general_scope
+    struct GlobalScope
+        : public GeneralScope
     {
-        global_scope();
+        GlobalScope();
     };
 
 }

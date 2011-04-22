@@ -31,26 +31,28 @@ namespace flchk {
         void addArith(misc::position const& pos, util::sptr<Expression const> expr);
 
         void addBranch(misc::position const& pos
-                      , util::sptr<Expression const> predicate
-                      , Accumulator consequence
-                      , Accumulator alternative);
+                     , util::sptr<Expression const> predicate
+                     , Accumulator consequence
+                     , Accumulator alternative);
 
         void addBranch(misc::position const& pos
-                      , util::sptr<Expression const> predicate
-                      , Accumulator consequence);
+                     , util::sptr<Expression const> predicate
+                     , Accumulator consequence);
 
         void addBranchAlterOnly(misc::position const& pos
-                               , util::sptr<Expression const> predicate
-                               , Accumulator alternative);
+                              , util::sptr<Expression const> predicate
+                              , Accumulator alternative);
 
-        void add_block(Accumulator b);
+        void addBlock(Accumulator b);
     public:
-        void defVar(misc::position const& pos, std::string const& name, util::sptr<Expression const> init);
+        void defVar(misc::position const& pos
+                  , std::string const& name
+                  , util::sptr<Expression const> init);
 
         void defFunc(misc::position const& pos
-                    , std::string const& name
-                    , std::vector<std::string> const& param_names
-                    , Accumulator body);
+                   , std::string const& name
+                   , std::vector<std::string> const& param_names
+                   , Accumulator body);
     public:
         Block deliver();
     private:
@@ -58,7 +60,8 @@ namespace flchk {
         void _setTerminatedNotByVoidReturn(misc::position const& pos);
         void _setTerminationBySubAccumulator(Accumulator const& sub);
 
-        static void _checkBranchesTermination(Accumulator const& consequence, Accumulator const& alternative);
+        static void _checkBranchesTermination(Accumulator const& consequence
+                                            , Accumulator const& alternative);
         void _checkNotTerminated(misc::position const& pos);
 
         void _reportTerminated(misc::position const& pos);

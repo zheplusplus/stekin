@@ -15,22 +15,22 @@ namespace proto {
             , expr(std::move(e))
         {}
 
-        util::sptr<inst::mediate_base> inst(util::sref<inst::scope> scope) const;
+        util::sptr<inst::MediateBase> inst(util::sref<inst::Scope> scope) const;
 
         util::sptr<Expression const> const expr;
     };
 
-    struct branch
+    struct Branch
         : public Statement
     {
-        branch(misc::position const& ps, util::sptr<Expression const> p, Block c, Block a)
+        Branch(misc::position const& ps, util::sptr<Expression const> p, Block c, Block a)
             : Statement(ps)
             , _predicate(std::move(p))
             , _consequence(std::move(c))
             , _alternative(std::move(a))
         {}
 
-        util::sptr<inst::mediate_base> inst(util::sref<inst::scope> scope) const;
+        util::sptr<inst::MediateBase> inst(util::sref<inst::Scope> scope) const;
     private:
         util::sptr<Expression const> const _predicate;
         Block _consequence;
@@ -46,7 +46,7 @@ namespace proto {
             , init(std::move(i))
         {}
 
-        util::sptr<inst::mediate_base> inst(util::sref<inst::scope> scope) const;
+        util::sptr<inst::MediateBase> inst(util::sref<inst::Scope> scope) const;
 
         std::string const name;
         util::sptr<Expression const> const init;
@@ -60,7 +60,7 @@ namespace proto {
             , ret_val(std::move(r))
         {}
 
-        util::sptr<inst::mediate_base> inst(util::sref<inst::scope> scope) const;
+        util::sptr<inst::MediateBase> inst(util::sref<inst::Scope> scope) const;
 
         util::sptr<Expression const> const ret_val;
     };
@@ -72,7 +72,7 @@ namespace proto {
             : Statement(ps)
         {}
 
-        util::sptr<inst::mediate_base> inst(util::sref<inst::scope> scope) const;
+        util::sptr<inst::MediateBase> inst(util::sref<inst::Scope> scope) const;
     };
 
 }

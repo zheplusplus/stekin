@@ -19,8 +19,8 @@ namespace output {
     void begin_expr();
     void end_expr();
 
-    void branch_if();
-    void branch_else();
+    void branchIf();
+    void branchElse();
 
     void block_begin();
     void block_end();

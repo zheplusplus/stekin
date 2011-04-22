@@ -52,10 +52,10 @@ namespace inst {
         bool const value;
     };
 
-    struct reference
+    struct Reference
         : public Expression
     {
-        explicit reference(variable const& v)
+        explicit Reference(variable const& v)
             : var(v)
         {}
 

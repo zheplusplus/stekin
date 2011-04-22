@@ -10,23 +10,23 @@
 
 namespace proto {
 
-    struct general_scope
-        : public scope
+    struct GeneralScope
+        : public Scope
     {
-        explicit general_scope(util::sref<symbol_table const> ext_symbols)
+        explicit GeneralScope(util::sref<SymbolTable const> ext_symbols)
             : _symbols(ext_symbols)
         {}
 
-        general_scope(general_scope&& rhs)
-            : scope(std::move(rhs))
+        GeneralScope(GeneralScope&& rhs)
+            : Scope(std::move(rhs))
             , _symbols(std::move(rhs._symbols))
         {}
     public:
-        util::sptr<Expression const> make_ref(misc::position const& pos, std::string const& name);
-        util::sptr<Expression const> make_call(misc::position const& pos
+        util::sptr<Expression const> makeRef(misc::position const& pos, std::string const& name);
+        util::sptr<Expression const> makeCall(misc::position const& pos
                                             , std::string const& name
                                             , std::vector<util::sptr<Expression const>> args) const;
-        util::sptr<Expression const> make_FuncReference(misc::position const& pos
+        util::sptr<Expression const> makeFuncReference(misc::position const& pos
                                                       , std::string const& name
                                                       , int param_count) const;
 
@@ -37,11 +37,11 @@ namespace proto {
                                    , std::vector<std::string> const& param_names
                                    , bool hint_void_return);
 
-        util::sptr<scope> create_branch_scope();
+        util::sptr<Scope> createBranchScope();
     protected:
-        symbol_table _symbols;
+        SymbolTable _symbols;
     protected:
-        general_scope() {}
+        GeneralScope() {}
     };
 
 }

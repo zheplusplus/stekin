@@ -17,10 +17,10 @@ namespace proto {
             : _stmts(std::move(rhs._stmts))
         {}
 
-        util::sptr<inst::mediate_base> inst(util::sref<inst::scope> scope) const;
+        util::sptr<inst::MediateBase> inst(util::sref<inst::Scope> scope) const;
 
         void addStmt(util::sptr<Statement const> stmt);
-        std::list<util::sptr<Statement const>> const& get_stmts() const;
+        std::list<util::sptr<Statement const>> const& getStmts() const;
     private:
         std::list<util::sptr<Statement const>> _stmts;
     };

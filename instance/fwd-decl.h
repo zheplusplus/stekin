@@ -5,11 +5,11 @@ namespace inst {
 
     struct Function;
     struct operation;
-    struct symbol_table;
+    struct SymbolTable;
     struct Expression;
     struct Statement;
-    struct scope;
-    struct mediate_base;
+    struct Scope;
+    struct MediateBase;
     struct type;
     struct Block;
     struct variable;

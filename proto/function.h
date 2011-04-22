@@ -12,10 +12,10 @@
 namespace proto {
 
     struct Function
-        : public general_scope
+        : public GeneralScope
     {
         util::sref<inst::Function> inst(misc::position const& pos
-                                      , util::sref<inst::scope> ext_scope
+                                      , util::sref<inst::Scope> ext_scope
                                       , std::vector<util::sref<inst::type const>> const& arg_types);
         util::sref<inst::Function> inst(int level
                                       , std::map<std::string, inst::variable const> const& ext_vars
@@ -24,11 +24,11 @@ namespace proto {
         Function(misc::position const& ps
                , std::string const& func_name
                , std::vector<std::string> const& params
-               , util::sref<symbol_table const> ext_symbols
+               , util::sref<SymbolTable const> ext_symbols
                , bool func_hint_void_return);
 
         Function(Function&& rhs)
-            : general_scope(std::move(rhs))
+            : GeneralScope(std::move(rhs))
             , pos(rhs.pos)
             , name(rhs.name)
             , param_names(rhs.param_names)
@@ -60,7 +60,7 @@ namespace proto {
         std::map<instance_info, util::sref<inst::Function>> _instance_cache;
     public:
         std::map<std::string, inst::variable const>
-                bind_external_vars(misc::position const& pos, util::sref<inst::scope const> ext_scope) const;
+                bind_external_vars(misc::position const& pos, util::sref<inst::Scope const> ext_scope) const;
     };
 
 }

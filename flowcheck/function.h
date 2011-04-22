@@ -23,8 +23,8 @@ namespace flchk {
             , contains_void_return(func_contains_void_return)
         {}
 
-        void compile(util::sref<proto::scope> scope) const;
-        util::sref<proto::Function> declare(util::sref<proto::scope> scope) const;
+        void compile(util::sref<proto::Scope> scope) const;
+        util::sref<proto::Function> declare(util::sref<proto::Scope> scope) const;
 
         misc::position const pos;
         std::string const name;

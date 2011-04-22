@@ -184,7 +184,7 @@ bool Function::is_return_type_resolved() const
     return test_func_inst_resolved ;
 }
 
-void Function::add_path(util::sref<mediate_base>)
+void Function::add_path(util::sref<MediateBase>)
 {
     DataTree::actualOne()(ADD_PATH);
     ++path_count;
@@ -212,7 +212,7 @@ variable Function::query_var(misc::position const& pos, std::string const& name)
     return variable(misc::position(0), util::mkref(test::PROTO_TEST_TYPE), 0, 0);
 }
 
-operation const* scope::query_binary(misc::position const& pos
+operation const* Scope::query_binary(misc::position const& pos
                                    , std::string const& op
                                    , util::sref<type const>
                                    , util::sref<type const>) const
@@ -221,13 +221,13 @@ operation const* scope::query_binary(misc::position const& pos
     return NULL;
 }
 
-operation const* scope::query_pre_unary(misc::position const& pos, std::string const& op, util::sref<type const>) const
+operation const* Scope::query_pre_unary(misc::position const& pos, std::string const& op, util::sref<type const>) const
 {
     DataTree::actualOne()(pos, QUERY_PRE_UNARY_OP, op);
     return NULL;
 }
 
-void scope::addStmt(util::sptr<Statement const>)
+void Scope::addStmt(util::sptr<Statement const>)
 {
     DataTree::actualOne()(ADD_STMT_TO_SCOPE);
 }
@@ -237,7 +237,7 @@ int Function::level() const
     return 0;
 }
 
-symbol_table::symbol_table(int
+SymbolTable::SymbolTable(int
                          , std::list<arg_name_type_pair> const&
                          , std::map<std::string, variable const> const&)
     : level(0)
@@ -281,7 +281,7 @@ util::sref<type const> BoolLiteral::typeof() const
     return util::mkref(PROTO_TEST_TYPE);
 }
 
-util::sref<type const> reference::typeof() const
+util::sref<type const> Reference::typeof() const
 {
     DataTree::actualOne()(REFERENCE);
     return util::mkref(PROTO_TEST_TYPE);
@@ -351,7 +351,7 @@ Negation::Negation(misc::position const&, util::sptr<Expression const> r)
     : rhs(std::move(r))
 {}
 
-branch::branch(misc::position const&
+Branch::Branch(misc::position const&
              , util::sptr<Expression const> p
              , util::sptr<Statement const> c
              , util::sptr<Statement const> a)
@@ -363,7 +363,7 @@ branch::branch(misc::position const&
 void IntLiteral::write() const {}
 void FloatLiteral::write() const {}
 void BoolLiteral::write() const {}
-void reference::write() const {}
+void Reference::write() const {}
 void call::write() const {}
 void FuncReference::write() const {}
 void BinaryOp::write() const {}
@@ -372,7 +372,7 @@ void Conjunction::write() const {}
 void Disjunction::write() const {}
 void Negation::write() const {}
 void Arithmetics::write() const {}
-void branch::write() const {}
+void Branch::write() const {}
 void initialization::write() const {}
 void Return::write() const {}
 void ReturnNothing::write() const {}

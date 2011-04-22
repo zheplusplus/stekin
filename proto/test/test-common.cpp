@@ -60,9 +60,9 @@ NodeType const test::BINARY_OP("binary operation");
 NodeType const test::PRE_UNARY_OP("prefix unary operation");
 NodeType const test::CALL("call");
 NodeType const test::FUNC_REFERENCE("func reference");
-NodeType const test::CONJUNCTION("Conjunction");
-NodeType const test::DISJUNCTION("Disjunction");
-NodeType const test::NEGATION("Negation");
+NodeType const test::CONJUNCTION("conjunction");
+NodeType const test::DISJUNCTION("disjunction");
+NodeType const test::NEGATION("negation");
 
 NodeType const test::INIT_AS_VOID_RET("init as void return");
 NodeType const test::SET_RETURN_TYPE_VOID("set return type void");

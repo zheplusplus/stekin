@@ -6,13 +6,13 @@
 
 namespace inst {
 
-    struct mediate_base {
-        virtual ~mediate_base() {}
+    struct MediateBase {
+        virtual ~MediateBase() {}
 
-        virtual util::sptr<Statement const> inst(util::sref<scope> sc) = 0;
-        virtual void mediate_inst(util::sref<scope> sc) = 0;
+        virtual util::sptr<Statement const> inst(util::sref<Scope> sc) = 0;
+        virtual void mediate_inst(util::sref<Scope> sc) = 0;
     protected:
-        mediate_base() {}
+        MediateBase() {}
     };
 
 }

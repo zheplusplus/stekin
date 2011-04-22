@@ -7,24 +7,24 @@
 
 namespace test {
 
-    struct consq_branch_terminated_rec {
-        explicit consq_branch_terminated_rec(misc::position const& ps)
+    struct ConsqBranchTerminatedRec {
+        explicit ConsqBranchTerminatedRec(misc::position const& ps)
             : pos(ps)
         {}
 
         misc::position const pos;
     };
 
-    struct alter_branch_terminated_rec {
-        explicit alter_branch_terminated_rec(misc::position const& ps)
+    struct AlterBranchTerminatedRec {
+        explicit AlterBranchTerminatedRec(misc::position const& ps)
             : pos(ps)
         {}
 
         misc::position const pos;
     };
 
-    struct both_branches_terminated_rec {
-        both_branches_terminated_rec(misc::position const& consq_ps, misc::position const& alter_ps)
+    struct BothBranchesTerminatedRec {
+        BothBranchesTerminatedRec(misc::position const& consq_ps, misc::position const& alter_ps)
             : consq_pos(consq_ps)
             , alter_pos(alter_ps)
         {}
@@ -35,9 +35,9 @@ namespace test {
 
     void clear_warn();
 
-    std::vector<consq_branch_terminated_rec> get_consq_branch_terminated();
-    std::vector<alter_branch_terminated_rec> get_alter_branch_terminated();
-    std::vector<both_branches_terminated_rec> get_both_branches_terminated();
+    std::vector<ConsqBranchTerminatedRec> getConsqBranchTerminated();
+    std::vector<AlterBranchTerminatedRec> getAlterBranchTerminated();
+    std::vector<BothBranchesTerminatedRec> getBothBranchesTerminated();
 
 }
 

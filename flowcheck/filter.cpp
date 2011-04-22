@@ -28,7 +28,8 @@ void Filter::addBranch(misc::position const& pos
 {
     util::sptr<Expression const> pred(std::move(predicate->fold()));
     if (pred->isLiteral()) {
-        _accumulator.add_block(std::move((pred->boolValue() ? consequence : alternative)->_accumulator));
+        _accumulator.addBlock(std::move((pred->boolValue() ? consequence : alternative)
+                                                                ->_accumulator));
         return;
     }
     _accumulator.addBranch(pos
@@ -44,7 +45,7 @@ void Filter::addBranch(misc::position const& pos
     util::sptr<Expression const> pred(std::move(predicate->fold()));
     if (pred->isLiteral()) {
         if (pred->boolValue()) {
-            _accumulator.add_block(std::move(consequence->_accumulator));
+            _accumulator.addBlock(std::move(consequence->_accumulator));
         }
         return;
     }
@@ -58,7 +59,7 @@ void Filter::addBranchAlterOnly(misc::position const& pos
     util::sptr<Expression const> pred(std::move(predicate->fold()));
     if (pred->isLiteral()) {
         if (!pred->boolValue()) {
-            _accumulator.add_block(std::move(alternative->_accumulator));
+            _accumulator.addBlock(std::move(alternative->_accumulator));
         }
         return;
     }

@@ -19,10 +19,10 @@ namespace inst {
         util::sptr<Expression const> const expr;
     };
 
-    struct branch
+    struct Branch
         : public Statement
     {
-        branch(misc::position const& pos
+        Branch(misc::position const& pos
              , util::sptr<Expression const> p
              , util::sptr<Statement const> c
              , util::sptr<Statement const> a);

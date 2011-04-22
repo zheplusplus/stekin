@@ -53,7 +53,9 @@ namespace flchk {
     struct SymbolDefFilter
         : public Filter
     {
-        void defVar(misc::position const& pos, std::string const& name, util::sptr<Expression const>);
+        void defVar(misc::position const& pos
+                  , std::string const& name
+                  , util::sptr<Expression const>);
 
         void defFunc(misc::position const& pos
                    , std::string const& name

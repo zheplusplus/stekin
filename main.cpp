@@ -27,8 +27,8 @@ int main()
         return 1;
     }
 
-    util::sptr<proto::scope> proto_global_scope(new proto::global_scope);
-    global_flow.compile(*proto_global_scope);
+    util::sptr<proto::Scope> proto_GlobalScope(new proto::GlobalScope);
+    global_flow.compile(*proto_GlobalScope);
     if (error::hasError()) {
         return 1;
     }
@@ -38,7 +38,7 @@ int main()
                                                            , std::list<inst::arg_name_type_pair>()
                                                            , std::map<std::string, inst::variable const>()
                                                            , true));
-    proto::BlockMediate mediate(proto_global_scope->get_stmts(), inst_global_func);
+    proto::BlockMediate mediate(proto_GlobalScope->getStmts(), inst_global_func);
     inst_global_func->inst_next_path();
     inst_global_func->addStmt(std::move(mediate.inst(inst_global_func)));
     if (error::hasError()) {

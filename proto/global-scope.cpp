@@ -35,21 +35,21 @@ namespace {
             , ref(misc::position(0), "value to write")
         {}
 
-        util::sptr<inst::mediate_base> inst(util::sref<inst::scope> inst_scope) const
+        util::sptr<inst::MediateBase> inst(util::sref<inst::Scope> inst_scope) const
         {
             return std::move(
-                    util::mkmptr(new proto::direct_inst(std::move(
+                    util::mkmptr(new proto::DirectInst(std::move(
                                 util::mkptr(new write_stmt_inst(std::move(ref.inst(inst_scope))))))));
         }
 
-        proto::reference const ref;
+        proto::Reference const ref;
     };
 
 }
 
 using namespace proto;
 
-global_scope::global_scope()
+GlobalScope::GlobalScope()
 {
     util::sref<proto::Function> func_write
                 = declare(misc::position(0), "write", std::vector<std::string>({ "value to write" }), true);

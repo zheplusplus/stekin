@@ -14,7 +14,7 @@ namespace flchk {
     struct Statement {
         misc::position const pos;
 
-        virtual util::sptr<proto::Statement const> compile(util::sref<proto::scope> scope) const = 0;
+        virtual util::sptr<proto::Statement const> compile(util::sref<proto::Scope> scope) const = 0;
 
         virtual ~Statement() {}
     protected:
@@ -28,7 +28,7 @@ namespace flchk {
     struct Expression {
         misc::position const pos;
     public:
-        virtual util::sptr<proto::Expression const> compile(util::sref<proto::scope> scope) const = 0;
+        virtual util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope) const = 0;
     public:
         virtual std::string typeName() const = 0;
     public:

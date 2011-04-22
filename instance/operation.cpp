@@ -169,7 +169,7 @@ operation const* operation::query_binary(misc::position const& pos
     try {
         return BinaryOp_map::instance().query(op, lhs, rhs);
     } catch (bad_op_exception) {
-        error::BinaryOp_not_avai(pos, op, lhs->name(), rhs->name());
+        error::binaryOpNotAvai(pos, op, lhs->name(), rhs->name());
         return &BAD_OPERATION;
     }
 }

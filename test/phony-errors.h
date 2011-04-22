@@ -59,11 +59,11 @@ namespace test {
         {}
     };
 
-    struct flow_terminated_rec {
+    struct FlowTerminatedRec {
         misc::position const this_pos;
         misc::position const prev_pos;
 
-        flow_terminated_rec(misc::position const tpos, misc::position const& ppos)
+        FlowTerminatedRec(misc::position const tpos, misc::position const& ppos)
             : this_pos(tpos)
             , prev_pos(ppos)
         {}
@@ -107,11 +107,11 @@ namespace test {
         {}
     };
 
-    struct func_ref_ambiguous_rec {
+    struct FuncRefAmbiguousRec {
         misc::position const ref_pos;
         std::string const name;
 
-        func_ref_ambiguous_rec(misc::position const& rpos, std::string const& n)
+        FuncRefAmbiguousRec(misc::position const& rpos, std::string const& n)
             : ref_pos(rpos)
             , name(n)
         {}
@@ -219,11 +219,11 @@ namespace test {
         {}
     };
 
-    struct cond_not_bool_rec {
+    struct CondNotBoolRec {
         misc::position const pos;
         std::string const type_name;
 
-        cond_not_bool_rec(misc::position const& ps, std::string const& tname)
+        CondNotBoolRec(misc::position const& ps, std::string const& tname)
             : pos(ps)
             , type_name(tname)
         {}
@@ -245,12 +245,12 @@ namespace test {
     std::vector<ElseNotMatchRec> getElseNotMatches();
     std::vector<IfMatchedRec> getIfMatchedRecs();
     std::vector<ExcessIndRec> get_excess_inds();
-    std::vector<flow_terminated_rec> get_flow_terminated_recs();
+    std::vector<FlowTerminatedRec> getFlowTerminatedRecs();
     std::vector<func_forbidden_rec> get_forbidden_funcs();
     std::vector<ForbidDefRec> getForbidVarDefs();
     std::vector<var_redef_rec> get_local_redefs();
     std::vector<invalid_ref_rec> get_invalid_refs();
-    std::vector<func_ref_ambiguous_rec> get_ambiguous_refs();
+    std::vector<FuncRefAmbiguousRec> getAmbiguousRefs();
     std::vector<func_redef_rec> get_func_redefs();
     std::vector<func_nondef_rec> get_func_nondefs();
     std::vector<var_nondef_rec> get_nondefs();
@@ -258,7 +258,7 @@ namespace test {
     std::vector<NAPreUnaryOpRec> getNAPreUnaryOps();
     std::vector<ret_type_conflict_rec> get_ret_type_conflicts();
     std::vector<RetTypeUnresolvableRec> getRetTypeUnresolvables();
-    std::vector<cond_not_bool_rec> get_cond_not_bools();
+    std::vector<CondNotBoolRec> getCondNotBools();
     std::vector<variable_not_callable_rec> get_variable_not_callables();
 
 }

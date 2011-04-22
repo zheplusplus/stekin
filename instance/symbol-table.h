@@ -21,17 +21,17 @@ namespace inst {
         {}
     };
 
-    struct symbol_table {
-        symbol_table(int ext_lvl
+    struct SymbolTable {
+        SymbolTable(int ext_lvl
                    , std::list<arg_name_type_pair> const& args
                    , std::map<std::string, variable const> const& ext_vars);
 
-        symbol_table()
+        SymbolTable()
             : level(0)
             , _ss_used(0)
         {}
 
-        symbol_table(symbol_table&& rhs)
+        SymbolTable(SymbolTable&& rhs)
             : level(rhs.level)
             , _ss_used(0)
             , _args(rhs._args)
@@ -51,7 +51,7 @@ namespace inst {
         std::map<std::string, variable const> _local_defs;
         std::map<std::string, variable const> const _external_defs;
 
-        symbol_table(symbol_table const&) = delete;
+        SymbolTable(SymbolTable const&) = delete;
     };
 
 }

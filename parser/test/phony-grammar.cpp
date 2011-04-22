@@ -13,17 +13,14 @@
 using namespace grammar;
 using namespace test;
 
-static util::sptr<flchk::Expression const> nullptr()
-{
-    return std::move(util::sptr<flchk::Expression const>(NULL));
-}
+static util::sptr<flchk::Expression const> nulptr(NULL);
 
 util::sptr<flchk::Expression const> PreUnaryOp::compile() const
 {
     DataTree::actualOne()(pos, PRE_UNARY_OP_BEGIN, op_img)(pos, OPERAND);
     rhs->compile();
     DataTree::actualOne()(pos, PRE_UNARY_OP_END);
-    return std::move(nullptr());
+    return std::move(nulptr);
 }
 
 util::sptr<flchk::Expression const> BinaryOp::compile() const
@@ -33,7 +30,7 @@ util::sptr<flchk::Expression const> BinaryOp::compile() const
     DataTree::actualOne()(pos, OPERAND);
     rhs->compile();
     DataTree::actualOne()(pos, BINARY_OP_END);
-    return std::move(nullptr());
+    return std::move(nulptr);
 }
 
 util::sptr<flchk::Expression const> Conjunction::compile() const
@@ -43,7 +40,7 @@ util::sptr<flchk::Expression const> Conjunction::compile() const
     DataTree::actualOne()(pos, OPERAND);
     rhs->compile();
     DataTree::actualOne()(pos, BINARY_OP_END);
-    return std::move(nullptr());
+    return std::move(nulptr);
 }
 
 util::sptr<flchk::Expression const> Disjunction::compile() const
@@ -53,7 +50,7 @@ util::sptr<flchk::Expression const> Disjunction::compile() const
     DataTree::actualOne()(pos, OPERAND);
     rhs->compile();
     DataTree::actualOne()(pos, BINARY_OP_END);
-    return std::move(nullptr());
+    return std::move(nulptr);
 }
 
 util::sptr<flchk::Expression const> Negation::compile() const
@@ -61,31 +58,31 @@ util::sptr<flchk::Expression const> Negation::compile() const
     DataTree::actualOne()(pos, PRE_UNARY_OP_BEGIN, "!")(pos, OPERAND);
     rhs->compile();
     DataTree::actualOne()(pos, PRE_UNARY_OP_END);
-    return std::move(nullptr());
+    return std::move(nulptr);
 }
 
 util::sptr<flchk::Expression const> Reference::compile() const
 {
     DataTree::actualOne()(pos, IDENTIFIER, name);
-    return std::move(nullptr());
+    return std::move(nulptr);
 }
 
 util::sptr<flchk::Expression const> BoolLiteral::compile() const
 {
     DataTree::actualOne()(pos, BOOLEAN, util::str(value));
-    return std::move(nullptr());
+    return std::move(nulptr);
 }
 
 util::sptr<flchk::Expression const> IntLiteral::compile() const
 {
     DataTree::actualOne()(pos, INTEGER, value);
-    return std::move(nullptr());
+    return std::move(nulptr);
 }
 
 util::sptr<flchk::Expression const> FloatLiteral::compile() const
 {
     DataTree::actualOne()(pos, FLOATING, value);
-    return std::move(nullptr());
+    return std::move(nulptr);
 }
 
 util::sptr<flchk::Expression const> Call::compile() const
@@ -99,13 +96,13 @@ util::sptr<flchk::Expression const> Call::compile() const
                       expr->compile();
                   });
     DataTree::actualOne()(pos, FUNC_CALL_END);
-    return std::move(nullptr());
+    return std::move(nulptr);
 }
 
 util::sptr<flchk::Expression const> FuncReference::compile() const
 {
     DataTree::actualOne()(pos, IDENTIFIER, name + '@' + util::str(param_count));
-    return std::move(nullptr());
+    return std::move(nulptr);
 }
 
 void ClauseBuilder::addArith(int indent_level, util::sptr<Expression const> arith)

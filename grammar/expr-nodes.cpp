@@ -35,7 +35,7 @@ util::sptr<flchk::Expression const> Negation::compile() const
 
 util::sptr<flchk::Expression const> Reference::compile() const
 {
-    return std::move(util::mkptr(new flchk::reference(pos, name)));
+    return std::move(util::mkptr(new flchk::Reference(pos, name)));
 }
 
 util::sptr<flchk::Expression const> BoolLiteral::compile() const

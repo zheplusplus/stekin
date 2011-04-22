@@ -41,12 +41,12 @@ void output::end_expr()
     std::cout << ")";
 }
 
-void output::branch_if()
+void output::branchIf()
 {
     std::cout << "if ";
 }
 
-void output::branch_else()
+void output::branchElse()
 {
     std::cout << " else ";
 }

@@ -12,12 +12,12 @@
 
 using namespace test;
 
-typedef flowcheck_test ExprNodesTest;
+typedef FlowcheckTest ExprNodesTest;
 
 TEST_F(ExprNodesTest, Literals)
 {
     misc::position pos(1);
-    util::sptr<proto::scope> scope(std::move(new proto::global_scope));
+    util::sptr<proto::Scope> scope(std::move(new proto::GlobalScope));
     flchk::IntLiteral int0(pos, "20110116");
     int0.compile(*scope)->inst(nul_inst_scope);
     EXPECT_TRUE(int0.isLiteral());
@@ -59,12 +59,12 @@ TEST_F(ExprNodesTest, Literals)
 TEST_F(ExprNodesTest, Reference)
 {
     misc::position pos(1);
-    util::sptr<proto::scope> scope(std::move(new proto::global_scope));
-    flchk::reference ref0(pos, "a20110116");
+    util::sptr<proto::Scope> scope(std::move(new proto::GlobalScope));
+    flchk::Reference ref0(pos, "a20110116");
     EXPECT_FALSE(ref0.isLiteral());
     ref0.compile(*scope)->inst(nul_inst_scope);
 
-    flchk::reference ref1(pos, "b1950");
+    flchk::Reference ref1(pos, "b1950");
     EXPECT_FALSE(ref0.isLiteral());
     ref1.compile(*scope)->inst(nul_inst_scope);
 
@@ -79,29 +79,29 @@ TEST_F(ExprNodesTest, Reference)
 TEST_F(ExprNodesTest, Operations)
 {
     misc::position pos(2);
-    util::sptr<proto::scope> scope(std::move(new proto::global_scope));
+    util::sptr<proto::Scope> scope(std::move(new proto::GlobalScope));
     flchk::BinaryOp binary0(pos
-                           , std::move(util::mkptr(new flchk::IntLiteral(pos, "1")))
-                           , "+"
-                           , std::move(util::mkptr(new flchk::FloatLiteral(pos, "11235.8"))));
+                          , std::move(util::mkptr(new flchk::IntLiteral(pos, "1")))
+                          , "+"
+                          , std::move(util::mkptr(new flchk::FloatLiteral(pos, "11235.8"))));
     flchk::BinaryOp binary1(pos
-                           , std::move(util::mkptr(new flchk::FloatLiteral(pos, "1.12358")))
-                           , "<="
-                           , std::move(util::mkptr(new flchk::IntLiteral(pos, "2357111317"))));
+                          , std::move(util::mkptr(new flchk::FloatLiteral(pos, "1.12358")))
+                          , "<="
+                          , std::move(util::mkptr(new flchk::IntLiteral(pos, "2357111317"))));
 
     flchk::PreUnaryOp pre_unary0(pos, "+", std::move(util::mkptr(new flchk::FloatLiteral(pos, ".13"))));
     flchk::PreUnaryOp pre_unary1(
             pos
           , "-"
           , std::move(util::mkptr(
-                    new flchk::BinaryOp(pos
-                                       , std::move(util::mkptr(new flchk::reference(pos, "wasureru")))
-                                       , "%"
-                                       , std::move(util::mkptr(new flchk::IntLiteral(pos, "1")))))));
+                  new flchk::BinaryOp(pos
+                                    , std::move(util::mkptr(new flchk::Reference(pos, "wasureru")))
+                                    , "%"
+                                    , std::move(util::mkptr(new flchk::IntLiteral(pos, "1")))))));
 
     flchk::Conjunction conj(pos
                           , std::move(util::mkptr(new flchk::BoolLiteral(pos, true)))
-                          , std::move(util::mkptr(new flchk::reference(pos, "koto"))));
+                          , std::move(util::mkptr(new flchk::Reference(pos, "koto"))));
     flchk::Disjunction disj(pos
                           , std::move(util::mkptr(new flchk::BoolLiteral(pos, false)))
                           , std::move(util::mkptr(new flchk::IntLiteral(pos, "2"))));
@@ -158,7 +158,7 @@ TEST_F(ExprNodesTest, Operations)
 TEST_F(ExprNodesTest, Calls)
 {
     misc::position pos(3);
-    util::sptr<proto::scope> scope(std::move(new proto::global_scope));
+    util::sptr<proto::Scope> scope(std::move(new proto::GlobalScope));
 
     std::vector<util::sptr<flchk::Expression const>> params;
     flchk::Call call0(pos, "fib", std::move(params));
@@ -170,7 +170,7 @@ TEST_F(ExprNodesTest, Calls)
     params.push_back(std::move(util::mkptr(
                     new flchk::Negation(pos, std::move(util::mkptr(
                                 new flchk::IntLiteral(pos, "21")))))));
-    params.push_back(std::move(util::mkptr(new flchk::reference(pos, "dareka_tasukete_kudasai"))));
+    params.push_back(std::move(util::mkptr(new flchk::Reference(pos, "dareka_tasukete_kudasai"))));
     flchk::Call call1(pos, "leap", std::move(params));
 
     call0.compile(*scope)->inst(nul_inst_scope);
@@ -196,7 +196,7 @@ TEST_F(ExprNodesTest, Calls)
 TEST_F(ExprNodesTest, FuncReference)
 {
     misc::position pos(4);
-    util::sptr<proto::scope> scope(std::move(new proto::global_scope));
+    util::sptr<proto::Scope> scope(std::move(new proto::GlobalScope));
 
     flchk::FuncReference func_ref0(pos, "fib", 2);
     flchk::FuncReference func_ref1(pos, "fib", 1);
@@ -230,11 +230,11 @@ TEST_F(ExprNodesTest, LiteralBoolValueError)
     float0.boolValue();
 
     ASSERT_TRUE(error::hasError());
-    ASSERT_EQ(2, get_cond_not_bools().size());
-    EXPECT_EQ(pos, get_cond_not_bools()[0].pos);
-    EXPECT_EQ("(int(20110409))", get_cond_not_bools()[0].type_name);
-    EXPECT_EQ(pos, get_cond_not_bools()[1].pos);
-    EXPECT_EQ("(float(10.58))", get_cond_not_bools()[1].type_name);
+    ASSERT_EQ(2, getCondNotBools().size());
+    EXPECT_EQ(pos, getCondNotBools()[0].pos);
+    EXPECT_EQ("(int(20110409))", getCondNotBools()[0].type_name);
+    EXPECT_EQ(pos, getCondNotBools()[1].pos);
+    EXPECT_EQ("(float(10.58))", getCondNotBools()[1].type_name);
 }
 
 TEST_F(ExprNodesTest, OperationLiteralBoolValueError)
@@ -252,24 +252,26 @@ TEST_F(ExprNodesTest, OperationLiteralBoolValueError)
     nega.boolValue();
 
     flchk::BinaryOp binary(pos
-                          , std::move(util::mkptr(new flchk::IntLiteral(pos, "1")))
-                          , "*"
-                          , std::move(util::mkptr(new flchk::FloatLiteral(pos, "11235.8"))));
+                         , std::move(util::mkptr(new flchk::IntLiteral(pos, "1")))
+                         , "*"
+                         , std::move(util::mkptr(new flchk::FloatLiteral(pos, "11235.8"))));
     binary.boolValue();
 
-    flchk::PreUnaryOp pre_unary(pos, "+", std::move(util::mkptr(new flchk::FloatLiteral(pos, ".13"))));
+    flchk::PreUnaryOp pre_unary(pos
+                              , "+"
+                              , std::move(util::mkptr(new flchk::FloatLiteral(pos, ".13"))));
     pre_unary.boolValue();
 
     ASSERT_TRUE(error::hasError());
-    ASSERT_EQ(5, get_cond_not_bools().size());
-    EXPECT_EQ(pos, get_cond_not_bools()[0].pos);
-    EXPECT_EQ("(float(20110.4))", get_cond_not_bools()[0].type_name);
-    EXPECT_EQ(pos, get_cond_not_bools()[1].pos);
-    EXPECT_EQ("(int(2))", get_cond_not_bools()[1].type_name);
-    EXPECT_EQ(pos, get_cond_not_bools()[2].pos);
-    EXPECT_EQ("(float(1.12))", get_cond_not_bools()[2].type_name);
-    EXPECT_EQ(pos, get_cond_not_bools()[3].pos);
-    EXPECT_EQ("((int(1))*(float(11235.8)))", get_cond_not_bools()[3].type_name);
-    EXPECT_EQ(pos, get_cond_not_bools()[4].pos);
-    EXPECT_EQ("(+(float(0.13)))", get_cond_not_bools()[4].type_name);
+    ASSERT_EQ(5, getCondNotBools().size());
+    EXPECT_EQ(pos, getCondNotBools()[0].pos);
+    EXPECT_EQ("(float(20110.4))", getCondNotBools()[0].type_name);
+    EXPECT_EQ(pos, getCondNotBools()[1].pos);
+    EXPECT_EQ("(int(2))", getCondNotBools()[1].type_name);
+    EXPECT_EQ(pos, getCondNotBools()[2].pos);
+    EXPECT_EQ("(float(1.12))", getCondNotBools()[2].type_name);
+    EXPECT_EQ(pos, getCondNotBools()[3].pos);
+    EXPECT_EQ("((int(1))*(float(11235.8)))", getCondNotBools()[3].type_name);
+    EXPECT_EQ(pos, getCondNotBools()[4].pos);
+    EXPECT_EQ("(+(float(0.13)))", getCondNotBools()[4].type_name);
 }

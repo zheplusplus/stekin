@@ -22,7 +22,7 @@ struct SymbolTableTest
 
 TEST_F(SymbolTableTest, OnCorrect)
 {
-    inst::symbol_table st;
+    inst::SymbolTable st;
     inst::variable var_a(st.defVar(misc::position(1), util::mkref(WORD), "a"));
     int word_used = 0;
 
@@ -143,7 +143,7 @@ TEST_F(SymbolTableTest, OnCorrect)
 
 TEST_F(SymbolTableTest, RefNondefVar)
 {
-    inst::symbol_table st;
+    inst::SymbolTable st;
     std::vector<var_nondef_rec> nondef_errors;
 
     st.defVar(misc::position(1), util::mkref(WORD), "a");
@@ -180,7 +180,7 @@ TEST_F(SymbolTableTest, RefNondefVar)
 
 TEST_F(SymbolTableTest, NestedOnCorrect)
 {
-    inst::symbol_table ext_st;
+    inst::SymbolTable ext_st;
 
     inst::variable alice(ext_st.defVar(misc::position(1), util::mkref(WORD), "alice"));
     inst::variable bob(ext_st.defVar(misc::position(2), util::mkref(WORD), "bob"));
@@ -197,7 +197,7 @@ TEST_F(SymbolTableTest, NestedOnCorrect)
     };
 
     int func_word_used = 0;
-    inst::symbol_table sta(ext_st.level, args_info_a, ext_vars);
+    inst::SymbolTable sta(ext_st.level, args_info_a, ext_vars);
     ASSERT_EQ(1, sta.level);
 
     ASSERT_EQ(sta.query_var(misc::position(10000), "alice"), alice);
@@ -242,7 +242,7 @@ TEST_F(SymbolTableTest, NestedOnCorrect)
         { "david", david },
     };
 
-    inst::symbol_table stb(sta.level, args_info_b, ext_vars);
+    inst::SymbolTable stb(sta.level, args_info_b, ext_vars);
     ASSERT_EQ(2, stb.level);
     ASSERT_EQ(stb.query_var(misc::position(11000), "alice"), alicef);
     ASSERT_EQ(stb.query_var(misc::position(11001), "bob"), bobf);

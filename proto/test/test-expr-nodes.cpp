@@ -15,7 +15,7 @@ struct ExprNodesTest
         inst_scope.reset(new phony_func);
     }
 
-    util::sptr<inst::scope> inst_scope;
+    util::sptr<inst::Scope> inst_scope;
 };
 
 TEST_F(ExprNodesTest, Literals)
@@ -49,8 +49,8 @@ TEST_F(ExprNodesTest, Literals)
 TEST_F(ExprNodesTest, Reference)
 {
     misc::position pos(2);
-    proto::reference ref0(pos, "ushiro");
-    proto::reference ref1(pos, "moji");
+    proto::Reference ref0(pos, "ushiro");
+    proto::Reference ref1(pos, "moji");
     ref0.inst(*inst_scope)->typeof();
     ref1.inst(*inst_scope)->typeof();
     ASSERT_FALSE(error::hasError());
@@ -69,10 +69,10 @@ TEST_F(ExprNodesTest, Operations)
     proto::BinaryOp bin(pos
                        , std::move(util::mkptr(new proto::IntLiteral(pos, 20110122)))
                        , "+"
-                       , std::move(util::mkptr(new proto::reference(pos, "littleBird"))));
+                       , std::move(util::mkptr(new proto::Reference(pos, "littleBird"))));
     proto::PreUnaryOp preu(pos
                            , "-"
-                           , std::move(util::mkptr(new proto::reference(pos, "uninstall"))));
+                           , std::move(util::mkptr(new proto::Reference(pos, "uninstall"))));
 
     bin.inst(*inst_scope)->typeof();
     preu.inst(*inst_scope)->typeof();

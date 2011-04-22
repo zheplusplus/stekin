@@ -19,7 +19,7 @@ namespace proto {
             , value(v)
         {}
 
-        util::sptr<inst::Expression const> inst(util::sref<inst::scope>) const; 
+        util::sptr<inst::Expression const> inst(util::sref<inst::Scope>) const; 
 
         bool const value;
     };
@@ -32,7 +32,7 @@ namespace proto {
             , value(v)
         {}
 
-        util::sptr<inst::Expression const> inst(util::sref<inst::scope>) const; 
+        util::sptr<inst::Expression const> inst(util::sref<inst::Scope>) const; 
 
         mpz_class value;
     };
@@ -45,20 +45,20 @@ namespace proto {
             , value(v)
         {}
 
-        util::sptr<inst::Expression const> inst(util::sref<inst::scope>) const; 
+        util::sptr<inst::Expression const> inst(util::sref<inst::Scope>) const; 
 
         mpf_class value;
     };
 
-    struct reference
+    struct Reference
         : public Expression
     {
-        reference(misc::position const& pos, std::string const& n)
+        Reference(misc::position const& pos, std::string const& n)
             : Expression(pos)
             , name(n)
         {}
 
-        util::sptr<inst::Expression const> inst(util::sref<inst::scope> scope) const;
+        util::sptr<inst::Expression const> inst(util::sref<inst::Scope> scope) const;
 
         std::string const name;
     };
@@ -72,7 +72,7 @@ namespace proto {
             , args(std::move(a))
         {}
 
-        util::sptr<inst::Expression const> inst(util::sref<inst::scope> scope) const;
+        util::sptr<inst::Expression const> inst(util::sref<inst::Scope> scope) const;
 
         util::sref<Function> const func;
         std::vector<util::sptr<Expression const>> const args;
@@ -87,7 +87,7 @@ namespace proto {
             , args(std::move(a))
         {}
 
-        util::sptr<inst::Expression const> inst(util::sref<inst::scope> scope) const;
+        util::sptr<inst::Expression const> inst(util::sref<inst::Scope> scope) const;
 
         std::string const name;
         std::vector<util::sptr<Expression const>> const args;
@@ -101,7 +101,7 @@ namespace proto {
             , func(f)
         {}
 
-        util::sptr<inst::Expression const> inst(util::sref<inst::scope> scope) const;
+        util::sptr<inst::Expression const> inst(util::sref<inst::Scope> scope) const;
 
         util::sref<Function> const func;
     };
@@ -119,7 +119,7 @@ namespace proto {
             , rhs(std::move(r))
         {}
 
-        util::sptr<inst::Expression const> inst(util::sref<inst::scope> scope) const;
+        util::sptr<inst::Expression const> inst(util::sref<inst::Scope> scope) const;
 
         util::sptr<Expression const> const lhs;
         std::string const op;
@@ -135,7 +135,7 @@ namespace proto {
             , rhs(std::move(r))
         {}
 
-        util::sptr<inst::Expression const> inst(util::sref<inst::scope> scope) const;
+        util::sptr<inst::Expression const> inst(util::sref<inst::Scope> scope) const;
 
         std::string const op;
         util::sptr<Expression const> const rhs;
@@ -150,7 +150,7 @@ namespace proto {
             , rhs(std::move(r))
         {}
 
-        util::sptr<inst::Expression const> inst(util::sref<inst::scope> scope) const;
+        util::sptr<inst::Expression const> inst(util::sref<inst::Scope> scope) const;
 
         util::sptr<Expression const> const lhs;
         util::sptr<Expression const> const rhs;
@@ -165,7 +165,7 @@ namespace proto {
             , rhs(std::move(r))
         {}
 
-        util::sptr<inst::Expression const> inst(util::sref<inst::scope> scope) const;
+        util::sptr<inst::Expression const> inst(util::sref<inst::Scope> scope) const;
 
         util::sptr<Expression const> const lhs;
         util::sptr<Expression const> const rhs;
@@ -179,7 +179,7 @@ namespace proto {
             , rhs(std::move(r))
         {}
 
-        util::sptr<inst::Expression const> inst(util::sref<inst::scope> scope) const;
+        util::sptr<inst::Expression const> inst(util::sref<inst::Scope> scope) const;
 
         util::sptr<Expression const> const rhs;
     };

@@ -27,10 +27,6 @@ namespace test {
         }
     };
 
-    typedef data_node_templ<ParserData> data_node_base;
-    typedef nothing_node_templ<ParserData> nothing_node;
-    typedef string_node_templ<ParserData> string_node;
-
     struct DataTree
         : public DataTreeTempl<ParserData, DataTree>
     {

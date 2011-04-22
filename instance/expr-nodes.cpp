@@ -45,7 +45,7 @@ util::sref<type const> BoolLiteral::typeof() const
     return type::BIT_BOOL;
 }
 
-util::sref<type const> reference::typeof() const
+util::sref<type const> Reference::typeof() const
 {
     return var.vtype;
 }
@@ -100,7 +100,7 @@ void BoolLiteral::write() const
     output::write_bool(value);
 }
 
-void reference::write() const
+void Reference::write() const
 {
     output::ref_level(var.stack_offset, var.level, typeof()->exported_name());
 }

@@ -22,8 +22,8 @@ void output::write_bool(bool) {}
 void output::write_operator(std::string const&) {}
 void output::begin_expr() {}
 void output::end_expr() {}
-void output::branch_if() {}
-void output::branch_else() {}
+void output::branchIf() {}
+void output::branchElse() {}
 void output::block_begin() {}
 void output::block_end() {}
 void output::end_of_statement() {}

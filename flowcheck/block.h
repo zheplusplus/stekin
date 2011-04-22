@@ -20,14 +20,14 @@ namespace flchk {
             , _funcs(std::move(rhs._funcs))
         {}
 
-        void compile(util::sref<proto::scope> scope) const;
+        void compile(util::sref<proto::Scope> scope) const;
 
         void addStmt(util::sptr<Statement const> stmt);
         void defFunc(misc::position const& pos
-                    , std::string const& name
-                    , std::vector<std::string> const& param_names
-                    , Block body
-                    , bool contains_void_return);
+                   , std::string const& name
+                   , std::vector<std::string> const& param_names
+                   , Block body
+                   , bool contains_void_return);
         void append(Block following);
     private:
         std::list<util::sptr<Statement const>> _stmts;
