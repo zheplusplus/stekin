@@ -78,7 +78,7 @@ NodeType const test::BLOCK_END("block end");
 
 void GrammarTest::SetUp()
 {
-    clear_err();
+    clearErr();
 }
 
 void GrammarTest::TearDown()

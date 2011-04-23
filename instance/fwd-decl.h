@@ -10,9 +10,9 @@ namespace inst {
     struct Statement;
     struct Scope;
     struct MediateBase;
-    struct type;
+    struct Type;
     struct Block;
-    struct variable;
+    struct Variable;
 
 }
 

@@ -83,7 +83,7 @@ void error::forbidDefVar(misc::position const& pos, std::string const& name)
     std::cerr << "    " << "attempt define variable `" << name << "' but forbidden here." << std::endl;
 }
 
-void error::var_already_in_local(misc::position const& prev_def_pos
+void error::varAlreadyInLocal(misc::position const& prev_def_pos
                                , misc::position const& this_def_pos
                                , std::string const& var_name)
 {
@@ -93,7 +93,7 @@ void error::var_already_in_local(misc::position const& prev_def_pos
     std::cerr << "    see previous definition in local space at " << prev_def_pos.str() << std::endl;
 }
 
-void error::var_ref_before_def(misc::position const& def_pos
+void error::varRefBeforeDef(misc::position const& def_pos
                              , std::list<misc::position> const& ref_positions
                              , std::string const& name)
 {
@@ -115,7 +115,7 @@ void error::funcReferenceAmbiguous(misc::position const& pos, std::string const&
     std::cerr << "    reference function of  `" << name << "' is ambiguous." << std::endl;
 }
 
-void error::func_already_def(misc::position const& prev_def_pos
+void error::funcAlreadyDef(misc::position const& prev_def_pos
                            , misc::position const& this_def_pos
                            , std::string const& name
                            , int param_count)
@@ -127,7 +127,7 @@ void error::func_already_def(misc::position const& prev_def_pos
     std::cerr << "    see previous definition at " << prev_def_pos.str() << std::endl;
 }
 
-void error::func_not_def(misc::position const& ref_pos, std::string const& name, int param_count)
+void error::funcNotDef(misc::position const& ref_pos, std::string const& name, int param_count)
 {
     _has_error = true;
     std::cerr << ref_pos.str() << std::endl;
@@ -135,7 +135,7 @@ void error::func_not_def(misc::position const& ref_pos, std::string const& name,
               << std::endl;
 }
 
-void error::var_not_def(misc::position const& ref_pos, std::string const& name)
+void error::varNotDef(misc::position const& ref_pos, std::string const& name)
 {
     _has_error = true;
     std::cerr << ref_pos.str() << std::endl;
@@ -153,7 +153,7 @@ void error::binaryOpNotAvai(misc::position const& pos
               << " for type `" << lhst_name << "' and `" << rhst_name << "'." << std::endl;
 }
 
-void error::PreUnaryOp_not_avai(misc::position const& pos
+void error::preUnaryOpNotAvai(misc::position const& pos
                                 , std::string const& op_img
                                 , std::string const& rhst_name)
 {
@@ -163,7 +163,7 @@ void error::PreUnaryOp_not_avai(misc::position const& pos
               << " for type `" << rhst_name << "'." << std::endl;
 }
 
-void error::conflict_return_type(misc::position const& this_pos
+void error::conflictReturnType(misc::position const& this_pos
                                , std::string const& prev_ret_type_name
                                , std::string const& this_ret_type_name)
 {
@@ -187,9 +187,9 @@ void error::condNotBool(misc::position const& pos, std::string const& actual_typ
     std::cerr << "    condition type is not boolean, actual type: " << actual_type << std::endl;
 }
 
-void error::request_variable_not_callable(misc::position const& call_pos)
+void error::requestVariableNotCallable(misc::position const& call_pos)
 {
     _has_error = true;
     std::cerr << call_pos.str() << std::endl;
-    std::cerr << "    variable not callable" << std::endl;
+    std::cerr << "    variable not Callable" << std::endl;
 }

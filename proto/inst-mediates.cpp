@@ -11,19 +11,20 @@ util::sptr<inst::Statement const> DirectInst::inst(util::sref<inst::Scope>)
     return std::move(_stmt);
 }
 
-void DirectInst::mediate_inst(util::sref<inst::Scope>) {}
+void DirectInst::mediateInst(util::sref<inst::Scope>) {}
 
-BlockMediate::BlockMediate(std::list<util::sptr<Statement const>> const& stmts, util::sref<inst::Scope> sc)
+BlockMediate::BlockMediate(std::list<util::sptr<Statement const>> const& stmts
+                         , util::sref<inst::Scope> sc)
     : _stmts(stmts)
     , _mediates(NULL)
     , _inst_block(NULL)
 {
-    sc->add_path(util::mkref(*this));
+    sc->addPath(util::mkref(*this));
 }
 
 util::sptr<inst::Statement const> BlockMediate::inst(util::sref<inst::Scope> sc)
 {
-    mediate_inst(sc);
+    mediateInst(sc);
     if (!bool(_inst_block)) {
         _inst_block.reset(new inst::Block);
         std::for_each(_mediates->begin()
@@ -36,7 +37,7 @@ util::sptr<inst::Statement const> BlockMediate::inst(util::sref<inst::Scope> sc)
     return std::move(_inst_block);
 }
 
-void BlockMediate::mediate_inst(util::sref<inst::Scope> sc)
+void BlockMediate::mediateInst(util::sref<inst::Scope> sc)
 {
     if (bool(_mediates)) {
         return;
@@ -58,8 +59,8 @@ util::sptr<inst::Statement const> BranchMediate::inst(util::sref<inst::Scope> sc
                                                 , std::move(_alternative_mediate.inst(sc)))));
 }
 
-void BranchMediate::mediate_inst(util::sref<inst::Scope> sc)
+void BranchMediate::mediateInst(util::sref<inst::Scope> sc)
 {
-    _consequence_mediate.mediate_inst(sc);
-    _alternative_mediate.mediate_inst(sc);
+    _consequence_mediate.mediateInst(sc);
+    _alternative_mediate.mediateInst(sc);
 }

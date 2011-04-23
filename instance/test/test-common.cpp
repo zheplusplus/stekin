@@ -5,25 +5,25 @@
 
 using namespace test;
 
-inst::built_in_primitive const test::WORD("word", platform::WORD_LENGTH_INBYTE);
-inst::built_in_primitive const test::DWORD("dword", platform::WORD_LENGTH_INBYTE * 2);
-inst::built_in_primitive const test::HALFWORD("halfword", platform::WORD_LENGTH_INBYTE / 2);
+inst::BuiltInPrimitive const test::WORD("word", platform::WORD_LENGTH_INBYTE);
+inst::BuiltInPrimitive const test::DWORD("dword", platform::WORD_LENGTH_INBYTE * 2);
+inst::BuiltInPrimitive const test::HALFWORD("halfword", platform::WORD_LENGTH_INBYTE / 2);
 
 void instance_test::SetUp()
 {
-    clear_err();
+    clearErr();
 }
 
-std::ostream& operator<<(std::ostream& os, inst::variable const& var)
+std::ostream& operator<<(std::ostream& os, inst::Variable const& var)
 {
-    os << "variable pos=" << var.def_pos
-       << " type=" << var.vtype->name()
+    os << "Variable pos=" << var.def_pos
+       << " type=" << var.type->name()
        << " offset=" << var.stack_offset
        << " level=" << var.level;
     return os;
 }
 
-std::ostream& operator<<(std::ostream& os, util::sref<inst::type const> type)
+std::ostream& operator<<(std::ostream& os, util::sref<inst::Type const> type)
 {
     return os << type->name();
 }

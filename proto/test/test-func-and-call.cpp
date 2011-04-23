@@ -11,16 +11,16 @@
 using namespace test;
 
 struct FuncNCallTest
-    : public proto_test
+    : public ProtoTest
 {
     void SetUp()
     {
-        proto_test::SetUp();
-        reset_func(true);
-        inst_scope.reset(new phony_func);
+        ProtoTest::SetUp();
+        resetFunc(true);
+        inst_scope.reset(new PhonyFunc);
     }
 
-    void reset_func(bool hint_return_void)
+    void resetFunc(bool hint_return_void)
     {
         ext_symbols.reset(new proto::SymbolTable);
         misc::position pos(65535);
@@ -39,18 +39,18 @@ struct FuncNCallTest
 TEST_F(FuncNCallTest, NoBranchRecursionFunc)
 {
     misc::position pos(1);
-    func->inst(pos, *inst_scope, std::vector<util::sref<inst::type const>>());
+    func->inst(pos, *inst_scope, std::vector<util::sref<inst::Type const>>());
     ASSERT_FALSE(error::hasError());
 
-    reset_func(true);
+    resetFunc(true);
     func->addStmt(std::move(util::mkptr(new proto::ReturnNothing(pos))));
-    func->inst(pos, *inst_scope, std::vector<util::sref<inst::type const>>());
+    func->inst(pos, *inst_scope, std::vector<util::sref<inst::Type const>>());
     ASSERT_FALSE(error::hasError());
 
-    reset_func(false);
+    resetFunc(false);
     func->addStmt(std::move(
                 util::mkptr(new proto::Return(pos, std::move(func->makeInt(pos, 20110127))))));
-    func->inst(pos, *inst_scope, std::vector<util::sref<inst::type const>>());
+    func->inst(pos, *inst_scope, std::vector<util::sref<inst::Type const>>());
     ASSERT_FALSE(error::hasError());
 
     DataTree::expectOne()
@@ -86,10 +86,10 @@ TEST_F(FuncNCallTest, FuncWithBranchRecursion)
     sub_scope0 = std::move(test_func->createBranchScope());
     sub_scope1 = std::move(test_func->createBranchScope());
 
-    util::sptr<proto::Expression const> recursive_call(
-            std::move(sub_scope0->makeCall(pos
-                                          , "test_func"
-                                          , std::move(std::vector<util::sptr<proto::Expression const>>()))));
+    util::sptr<proto::Expression const> recursive_call(std::move(sub_scope0->makeCall(
+                                   pos
+                                 , "test_func"
+                                 , std::move(std::vector<util::sptr<proto::Expression const>>()))));
     sub_scope0->addStmt(std::move(util::mkptr(new proto::Return(pos, std::move(recursive_call)))));
     ASSERT_FALSE(error::hasError());
     test_func->addStmt(std::move(
@@ -100,7 +100,7 @@ TEST_F(FuncNCallTest, FuncWithBranchRecursion)
     test_func->addStmt(std::move(
                 util::mkptr(new proto::Return(pos, std::move(test_func->makeInt(pos, 1))))));
 
-    test_func->inst(pos, *inst_scope, std::vector<util::sref<inst::type const>>());
+    test_func->inst(pos, *inst_scope, std::vector<util::sref<inst::Type const>>());
     ASSERT_FALSE(error::hasError());
 
     DataTree::expectOne()
@@ -139,14 +139,14 @@ TEST_F(FuncNCallTest, CouldNotResolve)
                                             , std::move(sub_scope0->deliver())
                                             , std::move(sub_scope1->deliver())))));
 
-    util::sptr<proto::Expression const> recursive_call(
-            std::move(test_func->makeCall(pos
-                                         , "test_func"
-                                         , std::move(std::vector<util::sptr<proto::Expression const>>()))));
+    util::sptr<proto::Expression const> recursive_call(std::move(test_func->makeCall(
+                                   pos
+                                 , "test_func"
+                                 , std::move(std::vector<util::sptr<proto::Expression const>>()))));
     test_func->addStmt(std::move(util::mkptr(new proto::Return(pos, std::move(recursive_call)))));
     ASSERT_FALSE(error::hasError());
 
-    test_func->inst(pos, *inst_scope, std::vector<util::sref<inst::type const>>());
+    test_func->inst(pos, *inst_scope, std::vector<util::sref<inst::Type const>>());
     ASSERT_TRUE(error::hasError());
 
     DataTree::expectOne()

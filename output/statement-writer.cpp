@@ -12,7 +12,7 @@ void output::return_nothing()
 {
     return_kw();
     std::cout << form_type("void") << "()";
-    end_of_statement();
+    endOfStatement();
 }
 
 void output::ref_this_level(int offset, std::string const& type_exported_name)
@@ -61,7 +61,7 @@ void output::block_end()
     std::cout << "}" << std::endl;
 }
 
-void output::end_of_statement()
+void output::endOfStatement()
 {
     std::cout << ";" << std::endl;
 }
@@ -86,12 +86,12 @@ void output::write_operator(std::string const& op_img)
     std::cout << " " << op_img << " ";
 }
 
-void output::begin_write_stmt()
+void output::beginWriteStmt()
 {
     std::cout << "std::cout << ";
 }
 
-void output::end_write_stmt()
+void output::endWriteStmt()
 {
     std::cout << " << std::endl";
 }

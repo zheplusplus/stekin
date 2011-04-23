@@ -12,77 +12,77 @@ Conjunction::Conjunction(misc::position const& p, util::sptr<Expression const> l
     : lhs(std::move(l))
     , rhs(std::move(r))
 {
-    lhs->typeof()->check_condition_type(p);
-    rhs->typeof()->check_condition_type(p);
+    lhs->typeof()->checkCondType(p);
+    rhs->typeof()->checkCondType(p);
 }
 
 Disjunction::Disjunction(misc::position const& p, util::sptr<Expression const> l, util::sptr<Expression const> r)
     : lhs(std::move(l))
     , rhs(std::move(r))
 {
-    lhs->typeof()->check_condition_type(p);
-    rhs->typeof()->check_condition_type(p);
+    lhs->typeof()->checkCondType(p);
+    rhs->typeof()->checkCondType(p);
 }
 
 Negation::Negation(misc::position const& p, util::sptr<Expression const> r)
     : rhs(std::move(r))
 {
-    rhs->typeof()->check_condition_type(p);
+    rhs->typeof()->checkCondType(p);
 }
 
-util::sref<type const> IntLiteral::typeof() const
+util::sref<Type const> IntLiteral::typeof() const
 {
-    return type::BIT_INT;
+    return Type::BIT_INT;
 }
 
-util::sref<type const> FloatLiteral::typeof() const
+util::sref<Type const> FloatLiteral::typeof() const
 {
-    return type::BIT_FLOAT;
+    return Type::BIT_FLOAT;
 }
 
-util::sref<type const> BoolLiteral::typeof() const
+util::sref<Type const> BoolLiteral::typeof() const
 {
-    return type::BIT_BOOL;
+    return Type::BIT_BOOL;
 }
 
-util::sref<type const> Reference::typeof() const
+util::sref<Type const> Reference::typeof() const
 {
-    return var.vtype;
+    return var.type;
 }
 
-util::sref<type const> call::typeof() const
+util::sref<Type const> Call::typeof() const
 {
     return func->get_return_type();
 }
 
-util::sref<type const> FuncReference::typeof() const
+util::sref<Type const> FuncReference::typeof() const
 {
     return util::mkref(_type);
 }
 
-util::sref<type const> BinaryOp::typeof() const
+util::sref<Type const> BinaryOp::typeof() const
 {
     return op->ret_type;
 }
 
-util::sref<type const> PreUnaryOp::typeof() const
+util::sref<Type const> PreUnaryOp::typeof() const
 {
     return op->ret_type;
 }
 
-util::sref<type const> Conjunction::typeof() const
+util::sref<Type const> Conjunction::typeof() const
 {
-    return type::BIT_BOOL;
+    return Type::BIT_BOOL;
 }
 
-util::sref<type const> Disjunction::typeof() const
+util::sref<Type const> Disjunction::typeof() const
 {
-    return type::BIT_BOOL;
+    return Type::BIT_BOOL;
 }
 
-util::sref<type const> Negation::typeof() const
+util::sref<Type const> Negation::typeof() const
 {
-    return type::BIT_BOOL;
+    return Type::BIT_BOOL;
 }
 
 void IntLiteral::write() const
@@ -102,12 +102,12 @@ void BoolLiteral::write() const
 
 void Reference::write() const
 {
-    output::ref_level(var.stack_offset, var.level, typeof()->exported_name());
+    output::ref_level(var.stack_offset, var.level, typeof()->exportedName());
 }
 
-void call::write() const
+void Call::write() const
 {
-    output::write_call_begin(func.id());
+    output::writeCallBegin(func.id());
     std::for_each(args.begin()
                 , args.end()
                 , [&](util::sptr<Expression const> const& expr)
@@ -115,7 +115,7 @@ void call::write() const
                        output::write_arg_seperator();
                        expr->write();
                   });
-    output::write_call_end();
+    output::writeCallEnd();
 }
 
 void FuncReference::write() const

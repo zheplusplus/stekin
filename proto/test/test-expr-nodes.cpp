@@ -7,12 +7,12 @@
 using namespace test;
 
 struct ExprNodesTest
-    : public proto_test
+    : public ProtoTest
 {
     void SetUp()
     {
-        proto_test::SetUp();
-        inst_scope.reset(new phony_func);
+        ProtoTest::SetUp();
+        inst_scope.reset(new PhonyFunc);
     }
 
     util::sptr<inst::Scope> inst_scope;
@@ -67,12 +67,12 @@ TEST_F(ExprNodesTest, Operations)
 {
     misc::position pos(3);
     proto::BinaryOp bin(pos
-                       , std::move(util::mkptr(new proto::IntLiteral(pos, 20110122)))
-                       , "+"
-                       , std::move(util::mkptr(new proto::Reference(pos, "littleBird"))));
+                      , std::move(util::mkptr(new proto::IntLiteral(pos, 20110122)))
+                      , "+"
+                      , std::move(util::mkptr(new proto::Reference(pos, "littleBird"))));
     proto::PreUnaryOp preu(pos
-                           , "-"
-                           , std::move(util::mkptr(new proto::Reference(pos, "uninstall"))));
+                          , "-"
+                          , std::move(util::mkptr(new proto::Reference(pos, "uninstall"))));
 
     bin.inst(*inst_scope)->typeof();
     preu.inst(*inst_scope)->typeof();

@@ -8,7 +8,7 @@ static std::list<ConsqBranchTerminatedRec> consq_branch_terminated_rec;
 static std::list<AlterBranchTerminatedRec> alter_branch_terminated_recs;
 static std::list<BothBranchesTerminatedRec> both_branches_terminated_recs;
 
-void test::clear_warn()
+void test::clearWarn()
 {
     consq_branch_terminated_rec.clear();
     alter_branch_terminated_recs.clear();

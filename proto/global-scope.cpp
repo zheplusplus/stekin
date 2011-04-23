@@ -9,28 +9,28 @@
 
 namespace {
 
-    struct write_stmt_inst
+    struct WriteStmtInst
         : public inst::Statement
     {
-        explicit write_stmt_inst(util::sptr<inst::Expression const> e)
+        explicit WriteStmtInst(util::sptr<inst::Expression const> e)
             : expr(std::move(e))
         {}
 
         void write() const
         {
-            output::begin_write_stmt();
+            output::beginWriteStmt();
             expr->write();
-            output::end_write_stmt();
-            output::end_of_statement();
+            output::endWriteStmt();
+            output::endOfStatement();
         }
 
         util::sptr<inst::Expression const> const expr;
     };
 
-    struct write_stmt_proto
+    struct WriteStmtProto
         : public proto::Statement
     {
-        write_stmt_proto()
+        WriteStmtProto()
             : proto::Statement(misc::position(0))
             , ref(misc::position(0), "value to write")
         {}
@@ -39,7 +39,7 @@ namespace {
         {
             return std::move(
                     util::mkmptr(new proto::DirectInst(std::move(
-                                util::mkptr(new write_stmt_inst(std::move(ref.inst(inst_scope))))))));
+                                util::mkptr(new WriteStmtInst(std::move(ref.inst(inst_scope))))))));
         }
 
         proto::Reference const ref;
@@ -51,7 +51,9 @@ using namespace proto;
 
 GlobalScope::GlobalScope()
 {
-    util::sref<proto::Function> func_write
-                = declare(misc::position(0), "write", std::vector<std::string>({ "value to write" }), true);
-    func_write->addStmt(std::move(util::mkptr(new write_stmt_proto)));
+    util::sref<proto::Function> func_write = declare(misc::position(0)
+                                                   , "write"
+                                                   , std::vector<std::string>({ "value to write" })
+                                                   , true);
+    func_write->addStmt(std::move(util::mkptr(new WriteStmtProto)));
 }

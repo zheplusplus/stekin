@@ -63,13 +63,15 @@ namespace proto {
         std::string const name;
     };
 
-    struct call
+    struct Call
         : public Expression
     {
-        call(misc::position const& pos, util::sref<Function> f, std::vector<util::sptr<Expression const>> a)
-            : Expression(pos)
-            , func(f)
-            , args(std::move(a))
+        Call(misc::position const& pos
+           , util::sref<Function> f
+           , std::vector<util::sptr<Expression const>> a)
+                : Expression(pos)
+                , func(f)
+                , args(std::move(a))
         {}
 
         util::sptr<inst::Expression const> inst(util::sref<inst::Scope> scope) const;
@@ -78,10 +80,12 @@ namespace proto {
         std::vector<util::sptr<Expression const>> const args;
     };
 
-    struct functor
+    struct Functor
         : public Expression
     {
-        functor(misc::position const& pos, std::string const& n, std::vector<util::sptr<Expression const>> a)
+        Functor(misc::position const& pos
+              , std::string const& n
+              , std::vector<util::sptr<Expression const>> a)
             : Expression(pos)
             , name(n)
             , args(std::move(a))
@@ -144,7 +148,9 @@ namespace proto {
     struct Conjunction
         : public Expression
     {
-        Conjunction(misc::position const& pos, util::sptr<Expression const> l, util::sptr<Expression const> r)
+        Conjunction(misc::position const& pos
+                  , util::sptr<Expression const> l
+                  , util::sptr<Expression const> r)
             : Expression(pos)
             , lhs(std::move(l))
             , rhs(std::move(r))
@@ -159,7 +165,9 @@ namespace proto {
     struct Disjunction
         : public Expression
     {
-        Disjunction(misc::position const& pos, util::sptr<Expression const> l, util::sptr<Expression const> r)
+        Disjunction(misc::position const& pos
+                  , util::sptr<Expression const> l
+                  , util::sptr<Expression const> r)
             : Expression(pos)
             , lhs(std::move(l))
             , rhs(std::move(r))

@@ -79,25 +79,25 @@ namespace test {
         {}
     };
 
-    struct var_redef_rec {
+    struct VarRedefRec {
         misc::position const prev_pos;
         misc::position const this_pos;
         std::string const name;
 
-        var_redef_rec(misc::position const& ppos, misc::position const& tpos, std::string const& n)
+        VarRedefRec(misc::position const& ppos, misc::position const& tpos, std::string const& n)
             : prev_pos(ppos)
             , this_pos(tpos)
             , name(n)
         {}
     };
 
-    struct invalid_ref_rec {
+    struct InvalidRefRec {
         std::vector<misc::position> const ref_positions;
         misc::position const def_pos;
         std::string const name;
 
         template <typename _LineNoIterator>
-        invalid_ref_rec(_LineNoIterator pos_begin
+        InvalidRefRec(_LineNoIterator pos_begin
                       , _LineNoIterator pos_end
                       , misc::position def_ps
                       , std::string const& n)
@@ -117,13 +117,13 @@ namespace test {
         {}
     };
 
-    struct func_redef_rec {
+    struct FuncRedefRec {
         misc::position const prev_def_pos;
         misc::position const this_def_pos;
         std::string const name;
         int const param_count;
 
-        func_redef_rec(misc::position prev_def_ps
+        FuncRedefRec(misc::position prev_def_ps
                      , misc::position this_def_ps
                      , std::string const& n
                      , int pc)
@@ -134,13 +134,13 @@ namespace test {
         {}
     };
 
-    struct func_nondef_rec {
+    struct FuncNondefRec {
         misc::position const call_pos;
         std::string const name;
         int const param_count;
 
-        func_nondef_rec(misc::position call_ps, std::string const& n, int pc)
-            : call_pos(call_ps)
+        FuncNondefRec(misc::position cp, std::string const& n, int pc)
+            : call_pos(cp)
             , name(n)
             , param_count(pc)
         {}
@@ -229,15 +229,15 @@ namespace test {
         {}
     };
 
-    struct variable_not_callable_rec {
+    struct VariableNotCallableRec {
         misc::position const call_pos;
 
-        explicit variable_not_callable_rec(misc::position const& cp)
+        explicit VariableNotCallableRec(misc::position const& cp)
             : call_pos(cp)
         {}
     };
 
-    void clear_err();
+    void clearErr();
 
     std::vector<TabAsIndRec> getTabAsIndents();
     std::vector<BadIndentRec> getBadIndents();
@@ -248,18 +248,18 @@ namespace test {
     std::vector<FlowTerminatedRec> getFlowTerminatedRecs();
     std::vector<func_forbidden_rec> get_forbidden_funcs();
     std::vector<ForbidDefRec> getForbidVarDefs();
-    std::vector<var_redef_rec> get_local_redefs();
-    std::vector<invalid_ref_rec> get_invalid_refs();
+    std::vector<VarRedefRec> getLocalRedefs();
+    std::vector<InvalidRefRec> getInvalidRefs();
     std::vector<FuncRefAmbiguousRec> getAmbiguousRefs();
-    std::vector<func_redef_rec> get_func_redefs();
-    std::vector<func_nondef_rec> get_func_nondefs();
+    std::vector<FuncRedefRec> getFuncRedefs();
+    std::vector<FuncNondefRec> getFuncNondefs();
     std::vector<var_nondef_rec> get_nondefs();
     std::vector<NABinaryOpRec> getNABinaryOps();
     std::vector<NAPreUnaryOpRec> getNAPreUnaryOps();
     std::vector<ret_type_conflict_rec> get_ret_type_conflicts();
     std::vector<RetTypeUnresolvableRec> getRetTypeUnresolvables();
     std::vector<CondNotBoolRec> getCondNotBools();
-    std::vector<variable_not_callable_rec> get_variable_not_callables();
+    std::vector<VariableNotCallableRec> getVariableNotCallables();
 
 }
 

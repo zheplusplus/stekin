@@ -27,8 +27,8 @@ namespace proto {
                                             , std::string const& name
                                             , std::vector<util::sptr<Expression const>> args) const;
         util::sptr<Expression const> makeFuncReference(misc::position const& pos
-                                                      , std::string const& name
-                                                      , int param_count) const;
+                                                     , std::string const& name
+                                                     , int param_count) const;
 
         void defVar(misc::position const& pos, std::string const& name);
 

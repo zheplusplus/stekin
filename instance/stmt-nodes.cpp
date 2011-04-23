@@ -15,13 +15,13 @@ Branch::Branch(misc::position const& pos
     , consequence(std::move(c))
     , alternative(std::move(a))
 {
-    predicate->typeof()->check_condition_type(pos);
+    predicate->typeof()->checkCondType(pos);
 }
 
 void Arithmetics::write() const
 {
     expr->write();
-    output::end_of_statement();
+    output::endOfStatement();
 }
 
 void Branch::write() const
@@ -35,17 +35,17 @@ void Branch::write() const
 
 void initialization::write() const
 {
-    output::ref_this_level(offset, init->typeof()->exported_name());
+    output::ref_this_level(offset, init->typeof()->exportedName());
     output::assign_sign();
     init->write();
-    output::end_of_statement();
+    output::endOfStatement();
 }
 
 void Return::write() const
 {
     output::return_kw();
     ret_val->write();
-    output::end_of_statement();
+    output::endOfStatement();
 }
 
 void ReturnNothing::write() const

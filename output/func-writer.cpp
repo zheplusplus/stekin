@@ -106,7 +106,7 @@ void output::write_func_perform_impl(std::string const& ret_type_name, util::id 
     ;
 }
 
-void output::write_call_begin(util::id func_addr)
+void output::writeCallBegin(util::id func_addr)
 {
     std::cout << "(" << form_func_name(func_addr) << "(_stk_bases";
 }
@@ -116,7 +116,7 @@ void output::write_arg_seperator()
     std::cout << ", ";
 }
 
-void output::write_call_end()
+void output::writeCallEnd()
 {
     std::cout << ")._stk_perform())";
 }
@@ -146,12 +146,12 @@ void output::stk_main_func(util::id func_addr)
     std::cout << "    " << form_func_name(func_addr) << "()._stk_perform();" << std::endl;
 }
 
-void output::construct_FuncReference(std::string const& type_exported_name)
+void output::constructFuncReference(std::string const& type_exported_name)
 {
     std::cout << type_exported_name << "()";
 }
 
-void output::FuncReference_next_variable(int offset, stack_var_record const& init)
+void output::funcReferenceNextVariable(int offset, stack_var_record const& init)
 {
     std::cout << (".push(" + util::str(offset) + ", ");
     ref_level(init.offset, init.level, init.type);

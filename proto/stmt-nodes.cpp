@@ -20,29 +20,30 @@ util::sptr<inst::MediateBase> Arithmetics::inst(util::sref<inst::Scope> scope) c
 util::sptr<inst::MediateBase> VarDef::inst(util::sref<inst::Scope> scope) const
 {
     util::sptr<inst::Expression const> init_val = init->inst(scope);
-    util::sref<inst::type const> init_type = init_val->typeof();
-    return std::move(mkdirect(new inst::initialization(scope->defVar(pos, init_type, name).stack_offset
+    util::sref<inst::Type const> init_type = init_val->typeof();
+    return std::move(mkdirect(new inst::initialization(scope->defVar(pos, init_type, name)
+                                                                .stack_offset
                                                      , std::move(init_val))));
 }
 
 util::sptr<inst::MediateBase> Branch::inst(util::sref<inst::Scope> scope) const
 {
     return std::move(util::mkmptr(new BranchMediate(pos
-                                                   , std::move(_predicate->inst(scope))
-                                                   , _consequence.getStmts()
-                                                   , _alternative.getStmts()
-                                                   , scope)));
+                                                  , std::move(_predicate->inst(scope))
+                                                  , _consequence.getStmts()
+                                                  , _alternative.getStmts()
+                                                  , scope)));
 }
 
 util::sptr<inst::MediateBase> Return::inst(util::sref<inst::Scope> scope) const
 {
     util::sptr<inst::Expression const> e = ret_val->inst(scope);
-    scope->set_return_type(pos, e->typeof());
+    scope->setReturnType(pos, e->typeof());
     return std::move(mkdirect(new inst::Return(std::move(e))));
 }
 
 util::sptr<inst::MediateBase> ReturnNothing::inst(util::sref<inst::Scope> scope) const
 {
-    scope->set_return_type(pos, inst::type::BIT_VOID);
+    scope->setReturnType(pos, inst::Type::BIT_VOID);
     return std::move(mkdirect(new inst::ReturnNothing));
 }

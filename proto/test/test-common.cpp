@@ -4,49 +4,52 @@
 
 using namespace test;
 
-inst::built_in_primitive const test::PROTO_TEST_TYPE("proto_test_type", 1);
-inst::built_in_primitive const test::PROTO_TEST_VOID("proto_test_void", 0);
+inst::BuiltInPrimitive const test::PROTO_TEST_TYPE("proto_test_type", 1);
+inst::BuiltInPrimitive const test::PROTO_TEST_VOID("proto_test_void", 0);
 
-DataTree& DataTree::operator()(misc::position const& pos, NodeType const& type, std::string const& str)
+DataTree& DataTree::operator()(misc::position const& pos
+                             , NodeType const& type
+                             , std::string const& str)
 {
-    BaseType::operator()(type, proto_data(pos), str);
+    BaseType::operator()(type, ProtoData(pos), str);
     return *this;
 }
 
 DataTree& DataTree::operator()(misc::position const& pos
-                               , NodeType const& type
-                               , std::string const& str
-                               , int func_arg_size)
+                             , NodeType const& type
+                             , std::string const& str
+                             , int func_arg_size)
 {
-    BaseType::operator()(type, proto_data(pos, func_arg_size), str);
+    BaseType::operator()(type, ProtoData(pos, func_arg_size), str);
     return *this;
 }
 
 DataTree& DataTree::operator()(misc::position const& pos, NodeType const& type)
 {
-    BaseType::operator()(type, proto_data(pos));
+    BaseType::operator()(type, ProtoData(pos));
     return *this;
 }
 
 DataTree& DataTree::operator()(NodeType const& type)
 {
-    BaseType::operator()(type, proto_data());
+    BaseType::operator()(type, ProtoData());
     return *this;
 }
 
 DataTree& DataTree::operator()(NodeType const& type, std::string const& str)
 {
-    BaseType::operator()(type, proto_data(), str);
+    BaseType::operator()(type, ProtoData(), str);
     return *this;
 }
 
-std::ostream& operator<<(std::ostream& os, proto_data const& data)
+std::ostream& operator<<(std::ostream& os, ProtoData const& data)
 {
-    return -1 == data.func_arg_size ? (os << data.pos) : (os << data.pos << " arg size=" << data.func_arg_size);
+    return -1 == data.func_arg_size ? (os << data.pos)
+                                    : (os << data.pos << " arg size=" << data.func_arg_size);
 }
 
 NodeType const test::ADD_STMT_TO_SCOPE("add statement to scope");
-NodeType const test::ADD_STMT_TO_BLOCK("add statement to Block");
+NodeType const test::ADD_STMT_TO_BLOCK("add statement to block");
 
 NodeType const test::QUERY_VAR("query var");
 NodeType const test::QUERY_BINARY_OP("query binary op");
@@ -72,12 +75,12 @@ NodeType const test::QUERY_RETURN_TYPE_RESOLVE_STATUS("is return type resolved")
 NodeType const test::NEXT_PATH("inst next path");
 NodeType const test::ADD_PATH("add path");
 
-void proto_test::SetUp()
+void ProtoTest::SetUp()
 {
-    clear_err();
+    clearErr();
 }
 
-void proto_test::TearDown()
+void ProtoTest::TearDown()
 {
     DataTree::verify();
 }

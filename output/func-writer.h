@@ -28,16 +28,16 @@ namespace output {
 
     void write_func_perform_impl(std::string const& ret_type_name, util::id func_addr);
 
-    void write_call_begin(util::id func_addr);
+    void writeCallBegin(util::id func_addr);
     void write_arg_seperator();
-    void write_call_end();
+    void writeCallEnd();
 
     void write_main_begin();
     void write_main_end();
     void stk_main_func(util::id func_addr);
 
-    void construct_FuncReference(std::string const& type_exported_name);
-    void FuncReference_next_variable(int offset, stack_var_record const& init);
+    void constructFuncReference(std::string const& type_exported_name);
+    void funcReferenceNextVariable(int offset, stack_var_record const& init);
 
 }
 

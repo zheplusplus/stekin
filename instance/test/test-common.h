@@ -8,16 +8,16 @@
 
 namespace test {
 
-    extern inst::built_in_primitive const WORD;
-    extern inst::built_in_primitive const DWORD;
-    extern inst::built_in_primitive const HALFWORD;
+    extern inst::BuiltInPrimitive const WORD;
+    extern inst::BuiltInPrimitive const DWORD;
+    extern inst::BuiltInPrimitive const HALFWORD;
 
     struct cond_type_expr
         : public inst::Expression
     {
-        util::sref<inst::type const> typeof() const
+        util::sref<inst::Type const> typeof() const
         {
-            return inst::type::BIT_BOOL;
+            return inst::Type::BIT_BOOL;
         }
 
         void write() const {}
@@ -26,9 +26,9 @@ namespace test {
     struct void_type_expr
         : public inst::Expression
     {
-        util::sref<inst::type const> typeof() const
+        util::sref<inst::Type const> typeof() const
         {
-            return inst::type::BIT_VOID;
+            return inst::Type::BIT_VOID;
         }
 
         void write() const {}
@@ -37,9 +37,9 @@ namespace test {
     struct bad_type_expr
         : public inst::Expression
     {
-        util::sref<inst::type const> typeof() const
+        util::sref<inst::Type const> typeof() const
         {
-            return inst::type::BAD_TYPE;
+            return inst::Type::BAD_TYPE;
         }
 
         void write() const {}
@@ -53,7 +53,7 @@ namespace test {
 
 }
 
-std::ostream& operator<<(std::ostream& os, inst::variable const& var);
-std::ostream& operator<<(std::ostream& os, util::sref<inst::type const> type);
+std::ostream& operator<<(std::ostream& os, inst::Variable const& var);
+std::ostream& operator<<(std::ostream& os, util::sref<inst::Type const> type);
 
 #endif /* __STEKIN_INSTANCE_TEST_TEST_COMMON_H__ */

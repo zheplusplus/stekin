@@ -11,19 +11,19 @@
 using namespace test;
 
 struct ScopeTest
-    : public proto_test
+    : public ProtoTest
 {
     void SetUp()
     {
-        proto_test::SetUp();
-        reset_scope();
+        ProtoTest::SetUp();
+        resetScope();
     }
 
-    void reset_scope()
+    void resetScope()
     {
         ext_symbols.reset(new proto::SymbolTable);
         scope.reset(new proto::GeneralScope(*ext_symbols));
-        inst_scope.reset(new phony_func);
+        inst_scope.reset(new PhonyFunc);
     }
 
     util::sptr<proto::Scope> mkscope() const
@@ -48,14 +48,24 @@ TEST_F(ScopeTest, ExprNodesCreation)
     scope->makeFloat(pos, 0.0)->inst(*inst_scope)->typeof();
     scope->makeRef(pos, "zero")->inst(*inst_scope)->typeof();
     scope->makeRef(pos, "one")->inst(*inst_scope)->typeof();
-    scope->makeBinary(pos, std::move(scope->makeInt(pos, 1)), "+", std::move(scope->makeBool(pos, true)))
+    scope->makeBinary(pos
+                    , std::move(scope->makeInt(pos, 1))
+                    , "+"
+                    , std::move(scope->makeBool(pos, true)))
          ->inst(*inst_scope)
          ->typeof();
-    scope->makeBinary(pos, std::move(scope->makeInt(pos, 4)), "<=", std::move(scope->makeBool(pos, false)))
+    scope->makeBinary(pos
+                    , std::move(scope->makeInt(pos, 4))
+                    , "<="
+                    , std::move(scope->makeBool(pos, false)))
          ->inst(*inst_scope)
          ->typeof();
-    scope->makePreUnary(pos, "-", std::move(scope->makeFloat(pos, 0.9)))->inst(*inst_scope)->typeof();
-    scope->makePreUnary(pos, "+", std::move(scope->makeFloat(pos, 1.6)))->inst(*inst_scope)->typeof();
+    scope->makePreUnary(pos, "-", std::move(scope->makeFloat(pos, 0.9)))
+         ->inst(*inst_scope)
+         ->typeof();
+    scope->makePreUnary(pos, "+", std::move(scope->makeFloat(pos, 1.6)))
+         ->inst(*inst_scope)
+         ->typeof();
     scope->makeConj(pos, std::move(scope->makeInt(pos, 25)), std::move(scope->makeBool(pos, true)))
          ->inst(*inst_scope)
          ->typeof();
@@ -116,13 +126,14 @@ TEST_F(ScopeTest, ExprNodesCreation)
 TEST_F(ScopeTest, Symbol)
 {
     misc::position pos(2);
-    scope->addStmt(std::move(util::mkptr(new proto::Arithmetics(pos
-                                                               , std::move(scope->makeRef(pos, "four"))))));
+    scope->addStmt(std::move(util::mkptr(new proto::Arithmetics(
+                                  pos
+                                , std::move(scope->makeRef(pos, "four"))))));
     ASSERT_FALSE(error::hasError());
     scope->defVar(pos, "four");
     ASSERT_TRUE(error::hasError());
-    ASSERT_EQ(1, get_invalid_refs().size());
-    ASSERT_EQ(pos, get_invalid_refs()[0].def_pos);
-    ASSERT_EQ(1, get_invalid_refs()[0].ref_positions.size());
-    ASSERT_EQ(pos, get_invalid_refs()[0].ref_positions[0]);
+    ASSERT_EQ(1, getInvalidRefs().size());
+    ASSERT_EQ(pos, getInvalidRefs()[0].def_pos);
+    ASSERT_EQ(1, getInvalidRefs()[0].ref_positions.size());
+    ASSERT_EQ(pos, getInvalidRefs()[0].ref_positions[0]);
 }

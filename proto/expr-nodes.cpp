@@ -24,17 +24,17 @@ util::sptr<inst::Expression const> FloatLiteral::inst(util::sref<inst::Scope>) c
 
 util::sptr<inst::Expression const> Reference::inst(util::sref<inst::Scope> scope) const
 {
-    return std::move(util::mkptr(new inst::Reference(scope->query_var(pos, name))));
+    return std::move(util::mkptr(new inst::Reference(scope->queryVar(pos, name))));
 }
 
 template <typename _CallMaker>
-static util::sptr<inst::Expression const> instantiate_Function(
+static util::sptr<inst::Expression const> instantiateFunction(
             std::vector<util::sptr<Expression const>> const& args
           , util::sref<inst::Scope> scope
           , _CallMaker call_maker)
 {
     std::vector<util::sptr<inst::Expression const>> arg_instances;
-    std::vector<util::sref<inst::type const>> arg_types;
+    std::vector<util::sref<inst::Type const>> arg_types;
     std::for_each(args.begin()
                 , args.end()
                 , [&](util::sptr<Expression const> const& expr)
@@ -46,56 +46,57 @@ static util::sptr<inst::Expression const> instantiate_Function(
     return std::move(call_maker(arg_types, std::move(arg_instances)));
 }
 
-util::sptr<inst::Expression const> call::inst(util::sref<inst::Scope> scope) const
+util::sptr<inst::Expression const> Call::inst(util::sref<inst::Scope> scope) const
 {
-    return std::move(instantiate_Function(
+    return std::move(instantiateFunction(
                 args
               , scope
-              , [&](std::vector<util::sref<inst::type const>> const& arg_types
+              , [&](std::vector<util::sref<inst::Type const>> const& arg_types
                   , std::vector<util::sptr<inst::Expression const>> args)
                 {
-                    return std::move(util::mkptr(new inst::call(func->inst(pos, scope, arg_types)
+                    return std::move(util::mkptr(new inst::Call(func->inst(pos, scope, arg_types)
                                                               , std::move(args))));
                 }));
 }
 
-util::sptr<inst::Expression const> functor::inst(util::sref<inst::Scope> scope) const
+util::sptr<inst::Expression const> Functor::inst(util::sref<inst::Scope> scope) const
 {
-    return std::move(instantiate_Function(
+    return std::move(instantiateFunction(
                 args
               , scope
-              , [&](std::vector<util::sref<inst::type const>> const& arg_types
+              , [&](std::vector<util::sref<inst::Type const>> const& arg_types
                   , std::vector<util::sptr<inst::Expression const>> args)
                 {
-                    return std::move(scope->query_var(pos, name).call_func(pos, arg_types, std::move(args)));
+                    return std::move(scope->queryVar(pos, name)
+                                                .call(pos, arg_types, std::move(args)));
                 }));
 }
 
 util::sptr<inst::Expression const> FuncReference::inst(util::sref<inst::Scope> scope) const
 {
     return std::move(util::mkptr(new inst::FuncReference(pos   
-                                                        , func
-                                                        , scope->level()
-                                                        , func->bind_external_vars(pos, scope))));
+                                                       , func
+                                                       , scope->level()
+                                                       , func->bindExternalVars(pos, scope))));
 }
 
 util::sptr<inst::Expression const> BinaryOp::inst(util::sref<inst::Scope> scope) const
 {
     util::sptr<inst::Expression const> left = lhs->inst(scope);
     util::sptr<inst::Expression const> right = rhs->inst(scope);
-    util::sref<inst::type const> ltype = left->typeof();
-    util::sref<inst::type const> rtype = right->typeof();
+    util::sref<inst::Type const> ltype = left->typeof();
+    util::sref<inst::Type const> rtype = right->typeof();
     return std::move(util::mkptr(new inst::BinaryOp(std::move(left)
-                                                   , scope->query_binary(pos, op, ltype, rtype)
-                                                   , std::move(right))));
+                                                  , scope->queryBinary(pos, op, ltype, rtype)
+                                                  , std::move(right))));
 }
 
 util::sptr<inst::Expression const> PreUnaryOp::inst(util::sref<inst::Scope> scope) const
 {
     util::sptr<inst::Expression const> right = rhs->inst(scope);
-    util::sref<inst::type const> rtype = right->typeof();
-    return std::move(util::mkptr(
-                new inst::PreUnaryOp(scope->query_pre_unary(pos, op, rtype), std::move(right))));
+    util::sref<inst::Type const> rtype = right->typeof();
+    return std::move(util::mkptr(new inst::PreUnaryOp(scope->queryPreUnary(pos, op, rtype)
+                                                    , std::move(right))));
 }
 
 util::sptr<inst::Expression const> Conjunction::inst(util::sref<inst::Scope> scope) const

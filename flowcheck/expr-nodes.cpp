@@ -495,7 +495,7 @@ util::sptr<Expression const> BoolLiteral::asRHS(misc::position const& op_pos
 util::sptr<Expression const> BoolLiteral::asRHS(misc::position const& op_pos
                                               , std::string const& op_img) const
 {
-    error::PreUnaryOp_not_avai(op_pos, op_img, "bool");
+    error::preUnaryOpNotAvai(op_pos, op_img, "bool");
     return std::move(makeFakeExpr(op_pos));
 }
 

@@ -33,7 +33,7 @@ namespace test {
         misc::position const alter_pos;
     };
 
-    void clear_warn();
+    void clearWarn();
 
     std::vector<ConsqBranchTerminatedRec> getConsqBranchTerminated();
     std::vector<AlterBranchTerminatedRec> getAlterBranchTerminated();

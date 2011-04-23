@@ -8,21 +8,23 @@ using namespace proto;
 
 util::sptr<Expression const> GeneralScope::makeRef(misc::position const& pos, std::string const& name)
 {
-    return std::move(_symbols.ref_var(pos, name));
+    return std::move(_symbols.refVar(pos, name));
 }
 
 util::sptr<Expression const> GeneralScope::makeCall(misc::position const& pos
-                                                   , std::string const& name
-                                                   , std::vector<util::sptr<Expression const>> args) const
+                                                  , std::string const& name
+                                                  , std::vector<util::sptr<Expression const>> args)
+                                                const
 {
-    return std::move(_symbols.query_call(pos, name, std::move(args)));
+    return std::move(_symbols.queryCall(pos, name, std::move(args)));
 }
 
 util::sptr<Expression const> GeneralScope::makeFuncReference(misc::position const& pos
-                                                             , std::string const& name
-                                                             , int param_count) const
+                                                           , std::string const& name
+                                                           , int param_count) const
 {
-    return std::move(util::mkptr(new FuncReference(pos, _symbols.query_func(pos, name, param_count))));
+    return std::move(util::mkptr(new FuncReference(pos
+                                                 , _symbols.queryFunc(pos, name, param_count))));
 }
 
 void GeneralScope::defVar(misc::position const& pos, std::string const& name)
@@ -31,9 +33,9 @@ void GeneralScope::defVar(misc::position const& pos, std::string const& name)
 }
 
 util::sref<Function> GeneralScope::declare(misc::position const& pos
-                                          , std::string const& name
-                                          , std::vector<std::string> const& param_names
-                                          , bool hint_void_return)
+                                         , std::string const& name
+                                         , std::vector<std::string> const& param_names
+                                         , bool hint_void_return)
 {
     return _symbols.defFunc(pos, name, param_names, hint_void_return);
 }

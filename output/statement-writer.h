@@ -24,10 +24,10 @@ namespace output {
 
     void block_begin();
     void block_end();
-    void end_of_statement();
+    void endOfStatement();
 
-    void begin_write_stmt();
-    void end_write_stmt();
+    void beginWriteStmt();
+    void endWriteStmt();
 
 }
 

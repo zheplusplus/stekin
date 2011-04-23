@@ -161,7 +161,7 @@ TEST_F(ExprNodesTest, Calls)
     util::sptr<proto::Scope> scope(std::move(new proto::GlobalScope));
 
     std::vector<util::sptr<flchk::Expression const>> params;
-    flchk::Call call0(pos, "fib", std::move(params));
+    flchk::Call Call0(pos, "fib", std::move(params));
 
     params.push_back(std::move(util::mkptr(new flchk::BoolLiteral(pos, false))));
     params.push_back(std::move(util::mkptr(
@@ -171,13 +171,13 @@ TEST_F(ExprNodesTest, Calls)
                     new flchk::Negation(pos, std::move(util::mkptr(
                                 new flchk::IntLiteral(pos, "21")))))));
     params.push_back(std::move(util::mkptr(new flchk::Reference(pos, "dareka_tasukete_kudasai"))));
-    flchk::Call call1(pos, "leap", std::move(params));
+    flchk::Call Call1(pos, "leap", std::move(params));
 
-    call0.compile(*scope)->inst(nul_inst_scope);
-    EXPECT_FALSE(call0.isLiteral());
+    Call0.compile(*scope)->inst(nul_inst_scope);
+    EXPECT_FALSE(Call0.isLiteral());
 
-    call1.compile(*scope)->inst(nul_inst_scope);
-    EXPECT_FALSE(call1.isLiteral());
+    Call1.compile(*scope)->inst(nul_inst_scope);
+    EXPECT_FALSE(Call1.isLiteral());
 
     EXPECT_FALSE(error::hasError());
 

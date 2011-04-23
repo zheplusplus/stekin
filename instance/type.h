@@ -11,72 +11,72 @@
 
 namespace inst {
 
-    struct type {
+    struct Type {
         int const size;
     public:
-        virtual std::string exported_name() const = 0;
+        virtual std::string exportedName() const = 0;
         virtual std::string name() const = 0;
     public:
-        virtual util::sptr<inst::Expression const> call_func(
+        virtual util::sptr<inst::Expression const> call(
                   misc::position const& call_pos
                 , int level
                 , int stack_offset
-                , std::vector<util::sref<inst::type const>> const& arg_types
+                , std::vector<util::sref<inst::Type const>> const& arg_types
                 , std::vector<util::sptr<Expression const>> args) const = 0;
     public:
-        bool operator!=(type const& rhs) const;
-        virtual bool operator==(type const& rhs) const = 0;
-        virtual bool operator<(type const& rhs) const = 0;
+        bool operator!=(Type const& rhs) const;
+        virtual bool operator==(Type const& rhs) const = 0;
+        virtual bool operator<(Type const& rhs) const = 0;
     public:
-        virtual bool eq_as_built_in(type const& lhs) const;
-        virtual bool eq_as_FuncReference(util::sref<proto::Function> lhs_func
-                                        , std::map<std::string, variable const> const& rhs_cr) const;
+        virtual bool eqAsBuiltIn(Type const& lhs) const;
+        virtual bool eqAsFuncReference(util::sref<proto::Function> lhs_func
+                                        , std::map<std::string, Variable const> const& rhs_cr) const;
 
-        virtual bool lt_as_built_in(type const& lhs) const = 0;
-        virtual bool lt_as_FuncReference(util::sref<proto::Function> lhs_func
-                                        , std::map<std::string, variable const> const& rhs_cr) const = 0;
+        virtual bool ltAsBuiltIn(Type const& lhs) const = 0;
+        virtual bool ltAsFuncReference(util::sref<proto::Function> lhs_func
+                                        , std::map<std::string, Variable const> const& rhs_cr) const = 0;
     public:
-        virtual void check_condition_type(misc::position const& pos) const;
+        virtual void checkCondType(misc::position const& pos) const;
     protected:
-        explicit type(int s)
+        explicit Type(int s)
             : size(s)
         {}
     public:
-        static util::sref<type const> const BAD_TYPE;
-        static util::sref<type const> const BIT_VOID;
-        static util::sref<type const> const BIT_BOOL;
-        static util::sref<type const> const BIT_INT;
-        static util::sref<type const> const BIT_FLOAT;
+        static util::sref<Type const> const BAD_TYPE;
+        static util::sref<Type const> const BIT_VOID;
+        static util::sref<Type const> const BIT_BOOL;
+        static util::sref<Type const> const BIT_INT;
+        static util::sref<Type const> const BIT_FLOAT;
     };
 
-    struct built_in_primitive
-        : public type
+    struct BuiltInPrimitive
+        : public Type
     {
-        built_in_primitive(std::string const& n, int size)
-            : type(size)
+        BuiltInPrimitive(std::string const& n, int size)
+            : Type(size)
             , tname(n)
         {}
 
         std::string const tname;
     public:
-        std::string exported_name() const;
+        std::string exportedName() const;
         std::string name() const;
     public:
-        util::sptr<inst::Expression const> call_func(
+        util::sptr<inst::Expression const> call(
                   misc::position const& call_pos
                 , int
                 , int
-                , std::vector<util::sref<inst::type const>> const&
+                , std::vector<util::sref<inst::Type const>> const&
                 , std::vector<util::sptr<Expression const>>) const;
     public:
-        bool operator==(type const& rhs) const;
-        bool operator<(type const& rhs) const;
-        bool eq_as_built_in(type const& lhs) const;
-        bool lt_as_built_in(type const& lhs) const;
-        bool lt_as_FuncReference(util::sref<proto::Function>
-                                , std::map<std::string, variable const> const&) const;
+        bool operator==(Type const& rhs) const;
+        bool operator<(Type const& rhs) const;
+        bool eqAsBuiltIn(Type const& lhs) const;
+        bool ltAsBuiltIn(Type const& lhs) const;
+        bool ltAsFuncReference(util::sref<proto::Function>
+                                , std::map<std::string, Variable const> const&) const;
     public:
-        void check_condition_type(misc::position const& pos) const;
+        void checkCondType(misc::position const& pos) const;
     };
 
 }

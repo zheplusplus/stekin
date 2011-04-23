@@ -16,10 +16,10 @@ namespace proto {
     {
         util::sref<inst::Function> inst(misc::position const& pos
                                       , util::sref<inst::Scope> ext_scope
-                                      , std::vector<util::sref<inst::type const>> const& arg_types);
+                                      , std::vector<util::sref<inst::Type const>> const& arg_types);
         util::sref<inst::Function> inst(int level
-                                      , std::map<std::string, inst::variable const> const& ext_vars
-                                      , std::vector<util::sref<inst::type const>> const& arg_types);
+                                      , std::map<std::string, inst::Variable const> const& ext_vars
+                                      , std::vector<util::sref<inst::Type const>> const& arg_types);
 
         Function(misc::position const& ps
                , std::string const& func_name
@@ -42,25 +42,26 @@ namespace proto {
         std::vector<std::string> const param_names;
         bool hint_void_return;
     private:
-        void _fill_param_names();
+        void _fillParamNames();
     private:
-        struct instance_info {
-            std::map<std::string, inst::variable const> const ext_vars;
-            std::vector<util::sref<inst::type const>> const arg_types;
+        struct InstanceInfo {
+            std::map<std::string, inst::Variable const> const ext_vars;
+            std::vector<util::sref<inst::Type const>> const arg_types;
 
-            instance_info(std::map<std::string, inst::variable const> const& e
-                        , std::vector<util::sref<inst::type const>> const& a)
+            InstanceInfo(std::map<std::string, inst::Variable const> const& e
+                       , std::vector<util::sref<inst::Type const>> const& a)
                 : ext_vars(e)
                 , arg_types(a)
             {}
 
-            bool operator<(instance_info const& rhs) const;
+            bool operator<(InstanceInfo const& rhs) const;
         };
 
-        std::map<instance_info, util::sref<inst::Function>> _instance_cache;
+        std::map<InstanceInfo, util::sref<inst::Function>> _instance_cache;
     public:
-        std::map<std::string, inst::variable const>
-                bind_external_vars(misc::position const& pos, util::sref<inst::Scope const> ext_scope) const;
+        std::map<std::string, inst::Variable const> bindExternalVars(
+                                                misc::position const& pos
+                                              , util::sref<inst::Scope const> ext_scope) const;
     };
 
 }

@@ -4,7 +4,6 @@
 #include <string>
 
 #include "fwd-decl.h"
-#include "variable.h"
 #include "block.h"
 #include "../util/pointer.h"
 #include "../misc/pos-type.h"
@@ -15,26 +14,26 @@ namespace inst {
     struct Scope {
         virtual ~Scope() {}
     public:
-        virtual void set_return_type(misc::position const& pos, util::sref<type const> type) = 0;
+        virtual void setReturnType(misc::position const& pos, util::sref<Type const> type) = 0;
 
-        virtual variable defVar(misc::position const& pos
-                               , util::sref<type const> vtype
+        virtual Variable defVar(misc::position const& pos
+                               , util::sref<Type const> type
                                , std::string const& name) = 0;
-        virtual variable query_var(misc::position const& pos, std::string const& name) const = 0;
+        virtual Variable queryVar(misc::position const& pos, std::string const& name) const = 0;
 
-        virtual void add_path(util::sref<MediateBase> path) = 0;
-        virtual void inst_next_path() = 0;
-        virtual bool has_more_path() const = 0;
+        virtual void addPath(util::sref<MediateBase> path) = 0;
+        virtual void instNextPath() = 0;
+        virtual bool hasMorePath() const = 0;
 
         virtual int level() const = 0;
 
-        operation const* query_binary(misc::position const& pos
+        operation const* queryBinary(misc::position const& pos
                                     , std::string const& op
-                                    , util::sref<type const> lhs
-                                    , util::sref<type const> rhs) const;
-        operation const* query_pre_unary(misc::position const& pos
+                                    , util::sref<Type const> lhs
+                                    , util::sref<Type const> rhs) const;
+        operation const* queryPreUnary(misc::position const& pos
                                        , std::string const& op
-                                       , util::sref<type const> rhs) const;
+                                       , util::sref<Type const> rhs) const;
 
         void addStmt(util::sptr<Statement const> stmt);
     protected:

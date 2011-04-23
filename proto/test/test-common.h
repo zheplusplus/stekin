@@ -10,52 +10,56 @@
 
 namespace test {
 
-    struct phony_func
+    struct PhonyFunc
         : public inst::Function
     {
-        phony_func()
-            : Function(0, std::list<inst::arg_name_type_pair>(), std::map<std::string, inst::variable const>())
+        PhonyFunc()
+            : Function(0
+                     , std::list<inst::ArgNameTypeRec>()
+                     , std::map<std::string, inst::Variable const>())
         {}
     };
 
-    extern inst::built_in_primitive const PROTO_TEST_TYPE;
-    extern inst::built_in_primitive const PROTO_TEST_VOID;
+    extern inst::BuiltInPrimitive const PROTO_TEST_TYPE;
+    extern inst::BuiltInPrimitive const PROTO_TEST_VOID;
 
-    struct proto_data {
+    struct ProtoData {
         misc::position const pos;
         int const func_arg_size;
 
-        proto_data()
+        ProtoData()
             : pos(-1)
             , func_arg_size(-1)
         {}
 
-        explicit proto_data(misc::position const ps)
+        explicit ProtoData(misc::position const ps)
             : pos(ps)
             , func_arg_size(-1)
         {}
 
-        proto_data(misc::position const& ps, int arg_size)
+        ProtoData(misc::position const& ps, int arg_size)
             : pos(ps)
             , func_arg_size(arg_size)
         {}
 
-        bool operator==(proto_data const& rhs) const
+        bool operator==(ProtoData const& rhs) const
         {
             return pos == rhs.pos && func_arg_size == rhs.func_arg_size;
         }
     };
 
     struct DataTree
-        : public DataTreeTempl<proto_data, DataTree>
+        : public DataTreeTempl<ProtoData, DataTree>
     {
-        typedef DataTreeTempl<proto_data, DataTree> BaseType;
+        typedef DataTreeTempl<ProtoData, DataTree> BaseType;
 
-        DataTree& operator()(misc::position const& pos, NodeType const& type, std::string const& str);
         DataTree& operator()(misc::position const& pos
-                            , NodeType const& type
-                            , std::string const& str
-                            , int func_arg_size);
+                           , NodeType const& type
+                           , std::string const& str);
+        DataTree& operator()(misc::position const& pos
+                           , NodeType const& type
+                           , std::string const& str
+                           , int func_arg_size);
         DataTree& operator()(misc::position const& pos, NodeType const& type);
 
         DataTree& operator()(NodeType const& type);
@@ -89,7 +93,7 @@ namespace test {
     extern NodeType const NEXT_PATH;
     extern NodeType const ADD_PATH;
 
-    struct proto_test
+    struct ProtoTest
         : public testing::Test
     {
         void SetUp();
@@ -98,6 +102,6 @@ namespace test {
 
 }
 
-std::ostream& operator<<(std::ostream& os, test::proto_data const& data);
+std::ostream& operator<<(std::ostream& os, test::ProtoData const& data);
 
 #endif /* __STEKIN_PROTO_TEST_TEST_COMMON_H__ */

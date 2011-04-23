@@ -123,7 +123,7 @@ util::sptr<inst::Expression const> Reference::inst(util::sref<inst::Scope>) cons
     return std::move(nulInstExpr());
 }
 
-util::sptr<inst::Expression const> call::inst(util::sref<inst::Scope>) const
+util::sptr<inst::Expression const> Call::inst(util::sref<inst::Scope>) const
 {
     DataTree::actualOne()(pos, CALL, func->name, args.size(), false);
     std::for_each(args.begin()
@@ -252,7 +252,7 @@ util::sptr<Expression const> GeneralScope::makeCall(misc::position const& pos
                                         , std::vector<std::string>(args.size())
                                         , util::mkref(phony_symbols)
                                         , false))));
-    return std::move(util::mkptr(new call(pos, *func_entities.back(), std::move(args))));
+    return std::move(util::mkptr(new Call(pos, *func_entities.back(), std::move(args))));
 }
 
 util::sptr<Expression const> GeneralScope::makeFuncReference(misc::position const& pos

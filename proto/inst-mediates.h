@@ -13,10 +13,11 @@ namespace proto {
     struct BlockMediate
         : public inst::MediateBase
     {
-        BlockMediate(std::list<util::sptr<Statement const>> const& stmts, util::sref<inst::Scope> sc);
+        BlockMediate(std::list<util::sptr<Statement const>> const& stmts
+                   , util::sref<inst::Scope> sc);
 
         util::sptr<inst::Statement const> inst(util::sref<inst::Scope> sc);
-        void mediate_inst(util::sref<inst::Scope> sc);
+        void mediateInst(util::sref<inst::Scope> sc);
     private:
         std::list<util::sptr<Statement const>> const& _stmts;
         util::sptr<std::list<util::sptr<inst::MediateBase>>> _mediates;
@@ -31,7 +32,7 @@ namespace proto {
         {}
 
         util::sptr<inst::Statement const> inst(util::sref<inst::Scope>);
-        void mediate_inst(util::sref<inst::Scope>);
+        void mediateInst(util::sref<inst::Scope>);
     private:
         util::sptr<inst::Statement const> _stmt;
     };
@@ -40,10 +41,10 @@ namespace proto {
         : public inst::MediateBase
     {
         BranchMediate(misc::position const& ps
-                     , util::sptr<inst::Expression const> predicate
-                     , std::list<util::sptr<Statement const>> const& consequence_stmts
-                     , std::list<util::sptr<Statement const>> const& alternative_stmts
-                     , util::sref<inst::Scope> sc)
+                    , util::sptr<inst::Expression const> predicate
+                    , std::list<util::sptr<Statement const>> const& consequence_stmts
+                    , std::list<util::sptr<Statement const>> const& alternative_stmts
+                    , util::sref<inst::Scope> sc)
             : pos(ps)
             , _predicate(std::move(predicate))
             , _consequence_mediate(consequence_stmts, sc)
@@ -51,7 +52,7 @@ namespace proto {
         {}
 
         util::sptr<inst::Statement const> inst(util::sref<inst::Scope> sc);
-        void mediate_inst(util::sref<inst::Scope> sc);
+        void mediateInst(util::sref<inst::Scope> sc);
     public:
         misc::position const pos;
     private:

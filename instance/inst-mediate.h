@@ -10,7 +10,7 @@ namespace inst {
         virtual ~MediateBase() {}
 
         virtual util::sptr<Statement const> inst(util::sref<Scope> sc) = 0;
-        virtual void mediate_inst(util::sref<Scope> sc) = 0;
+        virtual void mediateInst(util::sref<Scope> sc) = 0;
     protected:
         MediateBase() {}
     };

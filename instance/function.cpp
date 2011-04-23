@@ -11,29 +11,29 @@
 
 using namespace inst;
 
-variable Function::defVar(misc::position const& pos, util::sref<type const> vtype, std::string const& name)
+Variable Function::defVar(misc::position const& pos, util::sref<Type const> type, std::string const& name)
 {
-    return _symbols.defVar(pos, vtype, name);
+    return _symbols.defVar(pos, type, name);
 }
 
-variable Function::query_var(misc::position const& pos, std::string const& name) const
+Variable Function::queryVar(misc::position const& pos, std::string const& name) const
 {
-    return _symbols.query_var(pos, name);
+    return _symbols.queryVar(pos, name);
 }
 
-util::sref<type const> Function::get_return_type() const
+util::sref<Type const> Function::get_return_type() const
 {
-    return type::BIT_VOID;
+    return Type::BIT_VOID;
 }
 
-void Function::set_return_type(misc::position const& pos, util::sref<type const> return_type)
+void Function::setReturnType(misc::position const& pos, util::sref<Type const> return_type)
 {
-    if (type::BIT_VOID != return_type) {
-        error::conflict_return_type(pos, type::BIT_VOID->name(), return_type->name());
+    if (Type::BIT_VOID != return_type) {
+        error::conflictReturnType(pos, Type::BIT_VOID->name(), return_type->name());
     }
 }
 
-bool Function::is_return_type_resolved() const
+bool Function::isReturnTypeResolved() const
 {
     return true;
 }
@@ -44,34 +44,34 @@ namespace {
         : public Function
     {
         Function_unresolved(int ext_level
-                          , std::list<arg_name_type_pair> const& args
-                          , std::map<std::string, variable const> const& extvars)
+                          , std::list<ArgNameTypeRec> const& args
+                          , std::map<std::string, Variable const> const& extvars)
             : Function(ext_level, args, extvars)
-            , _return_type(type::BAD_TYPE)
+            , _return_type(Type::BAD_TYPE)
         {}
 
-        util::sref<type const> get_return_type() const
+        util::sref<Type const> get_return_type() const
         {
             return _return_type;
         }
 
-        void set_return_type(misc::position const& pos, util::sref<type const> return_type)
+        void setReturnType(misc::position const& pos, util::sref<Type const> return_type)
         {
-            if (type::BAD_TYPE == _return_type) {
+            if (Type::BAD_TYPE == _return_type) {
                 _return_type = return_type;
                 return;
             }
             if (_return_type != return_type) {
-                error::conflict_return_type(pos, _return_type->name(), return_type->name());
+                error::conflictReturnType(pos, _return_type->name(), return_type->name());
             }
         }
 
-        bool is_return_type_resolved() const
+        bool isReturnTypeResolved() const
         {
-            return type::BAD_TYPE != _return_type;
+            return Type::BAD_TYPE != _return_type;
         }
 
-        util::sref<type const> _return_type;
+        util::sref<Type const> _return_type;
     };
 
     struct func_inst_recs
@@ -104,9 +104,9 @@ namespace {
 
 }
 
-util::sref<Function> Function::create_instance(int ext_level
-                                             , std::list<arg_name_type_pair> const& arg_types
-                                             , std::map<std::string, variable const> const& extvars
+util::sref<Function> Function::createInstance(int ext_level
+                                             , std::list<ArgNameTypeRec> const& arg_types
+                                             , std::map<std::string, Variable const> const& extvars
                                              , bool has_void_returns)
 {
     util::sptr<Function> func(has_void_returns ? new Function(ext_level, arg_types, extvars)
@@ -116,22 +116,22 @@ util::sref<Function> Function::create_instance(int ext_level
     return fref;
 }
 
-void Function::add_path(util::sref<MediateBase> path)
+void Function::addPath(util::sref<MediateBase> path)
 {
     _candidate_paths.push_back(path);
 }
 
-void Function::inst_next_path()
+void Function::instNextPath()
 {
-    if (!has_more_path()) {
+    if (!hasMorePath()) {
         return;
     }
     util::sref<MediateBase> next_path = _candidate_paths.front();
     _candidate_paths.pop_front();
-    next_path->mediate_inst(util::mkref(*this));
+    next_path->mediateInst(util::mkref(*this));
 }
 
-bool Function::has_more_path() const
+bool Function::hasMorePath() const
 {
     return !_candidate_paths.empty();
 }
@@ -141,14 +141,14 @@ int Function::level() const
     return _symbols.level;
 }
 
-static std::list<output::stack_var_record> args_to_var_recs(std::list<inst::variable> const& args)
+static std::list<output::stack_var_record> args_to_var_recs(std::list<inst::Variable> const& args)
 {
     std::list<output::stack_var_record> recs;
     std::for_each(args.begin()
                 , args.end()
-                , [&](inst::variable const& var)
+                , [&](inst::Variable const& var)
                   {
-                      recs.push_back(output::stack_var_record(var.vtype->exported_name()
+                      recs.push_back(output::stack_var_record(var.type->exportedName()
                                                             , var.stack_offset
                                                             , var.level));
                   });
@@ -161,7 +161,7 @@ void Function::write_decls()
                 , func_inst_recs::instance.end()
                 , [&](util::sptr<Function const> const& func)
                   {
-                      output::write_func_decl(func->get_return_type()->exported_name()
+                      output::write_func_decl(func->get_return_type()->exportedName()
                                             , func.id()
                                             , args_to_var_recs(func->_symbols.get_args())
                                             , func->_symbols.level
@@ -175,7 +175,7 @@ void Function::write_impls()
                 , func_inst_recs::instance.end()
                 , [&](util::sptr<Function const> const& func)
                   {
-                      output::write_func_perform_impl(func->get_return_type()->exported_name(), func.id());
+                      output::write_func_perform_impl(func->get_return_type()->exportedName(), func.id());
                       func->_block.write();
                   });
 }

@@ -9,7 +9,7 @@ namespace inst {
     struct Expression {
         virtual ~Expression() {}
 
-        virtual util::sref<type const> typeof() const = 0;
+        virtual util::sref<Type const> typeof() const = 0;
         virtual void write() const = 0;
     protected:
         Expression() {}

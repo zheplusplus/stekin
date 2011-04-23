@@ -11,11 +11,11 @@
 
 namespace inst {
 
-    struct arg_name_type_pair {
+    struct ArgNameTypeRec {
         std::string const name;
-        util::sref<type const> const atype;
+        util::sref<Type const> const atype;
 
-        arg_name_type_pair(std::string const& n, util::sref<type const> const t)
+        ArgNameTypeRec(std::string const& n, util::sref<Type const> const t)
             : name(n)
             , atype(t)
         {}
@@ -23,8 +23,8 @@ namespace inst {
 
     struct SymbolTable {
         SymbolTable(int ext_lvl
-                   , std::list<arg_name_type_pair> const& args
-                   , std::map<std::string, variable const> const& ext_vars);
+                   , std::list<ArgNameTypeRec> const& args
+                   , std::map<std::string, Variable const> const& ext_vars);
 
         SymbolTable()
             : level(0)
@@ -38,18 +38,18 @@ namespace inst {
             , _external_defs(std::move(rhs._external_defs))
         {}
     public:
-        variable defVar(misc::position const& pos, util::sref<type const> vtype, std::string const& name);
-        variable query_var(misc::position const& pos, std::string const& name) const;
+        Variable defVar(misc::position const& pos, util::sref<Type const> type, std::string const& name);
+        Variable queryVar(misc::position const& pos, std::string const& name) const;
     public:
         int const level;
     public:
         int stack_size() const;
-        std::list<variable> get_args() const;
+        std::list<Variable> get_args() const;
     private:
         int _ss_used;
-        std::list<variable> _args;
-        std::map<std::string, variable const> _local_defs;
-        std::map<std::string, variable const> const _external_defs;
+        std::list<Variable> _args;
+        std::map<std::string, Variable const> _local_defs;
+        std::map<std::string, Variable const> const _external_defs;
 
         SymbolTable(SymbolTable const&) = delete;
     };

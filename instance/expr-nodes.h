@@ -20,7 +20,7 @@ namespace inst {
             : value(v)
         {}
 
-        util::sref<type const> typeof() const;
+        util::sref<Type const> typeof() const;
         void write() const;
 
         platform::i4_type const value;
@@ -33,7 +33,7 @@ namespace inst {
             : value(v)
         {}
 
-        util::sref<type const> typeof() const;
+        util::sref<Type const> typeof() const;
         void write() const;
 
         platform::f8_type const value;
@@ -46,7 +46,7 @@ namespace inst {
             : value(v)
         {}
 
-        util::sref<type const> typeof() const;
+        util::sref<Type const> typeof() const;
         void write() const;
 
         bool const value;
@@ -55,25 +55,25 @@ namespace inst {
     struct Reference
         : public Expression
     {
-        explicit Reference(variable const& v)
+        explicit Reference(Variable const& v)
             : var(v)
         {}
 
-        util::sref<type const> typeof() const;
+        util::sref<Type const> typeof() const;
         void write() const;
 
-        variable const var;
+        Variable const var;
     };
 
-    struct call
+    struct Call
         : public Expression
     {
-        call(util::sref<Function const> f, std::vector<util::sptr<Expression const>> a)
+        Call(util::sref<Function const> f, std::vector<util::sptr<Expression const>> a)
             : func(f)
             , args(std::move(a))
         {}
 
-        util::sref<type const> typeof() const;
+        util::sref<Type const> typeof() const;
         void write() const;
 
         util::sref<Function const> const func;
@@ -86,11 +86,11 @@ namespace inst {
         FuncReference(misc::position const& reference_pos
                      , util::sref<proto::Function> func_proto
                      , int level
-                     , std::map<std::string, variable const> const& cr)
+                     , std::map<std::string, Variable const> const& cr)
             : _type(reference_pos, func_proto, level, cr)
         {}
 
-        util::sref<type const> typeof() const;
+        util::sref<Type const> typeof() const;
         void write() const;
     private:
         FuncReferenceType const _type;
@@ -105,7 +105,7 @@ namespace inst {
             , rhs(std::move(r))
         {}
 
-        util::sref<type const> typeof() const;
+        util::sref<Type const> typeof() const;
         void write() const;
 
         util::sptr<Expression const> const lhs;
@@ -121,7 +121,7 @@ namespace inst {
             , rhs(std::move(r))
         {}
 
-        util::sref<type const> typeof() const;
+        util::sref<Type const> typeof() const;
         void write() const;
 
         operation const* const op;
@@ -133,7 +133,7 @@ namespace inst {
     {
         Conjunction(misc::position const& p, util::sptr<Expression const> l, util::sptr<Expression const> r);
 
-        util::sref<type const> typeof() const;
+        util::sref<Type const> typeof() const;
         void write() const;
 
         util::sptr<Expression const> const lhs;
@@ -145,7 +145,7 @@ namespace inst {
     {
         Disjunction(misc::position const& p, util::sptr<Expression const> l, util::sptr<Expression const> r);
 
-        util::sref<type const> typeof() const;
+        util::sref<Type const> typeof() const;
         void write() const;
 
         util::sptr<Expression const> const lhs;
@@ -155,9 +155,9 @@ namespace inst {
     struct Negation
         : public Expression
     {
-        explicit Negation(misc::position const& p, util::sptr<Expression const> r);
+        Negation(misc::position const& p, util::sptr<Expression const> r);
 
-        util::sref<type const> typeof() const;
+        util::sref<Type const> typeof() const;
         void write() const;
 
         util::sptr<Expression const> const rhs;

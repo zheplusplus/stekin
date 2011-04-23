@@ -9,28 +9,28 @@
 
 namespace inst {
 
-    struct variable {
+    struct Variable {
         misc::position const def_pos;
-        util::sref<type const> const vtype;
+        util::sref<Type const> const type;
         int const stack_offset;
         int const level;
 
-        variable(misc::position const& pos, util::sref<type const> t, int offset, int lvl)
+        Variable(misc::position const& pos, util::sref<Type const> t, int offset, int lvl)
             : def_pos(pos)
-            , vtype(t)
+            , type(t)
             , stack_offset(offset)
             , level(lvl)
         {}
 
-        util::sptr<inst::Expression const> call_func(misc::position const& call_pos
-                                                  , std::vector<util::sref<inst::type const>> const& arg_types
+        util::sptr<inst::Expression const> call(misc::position const& call_pos
+                                                  , std::vector<util::sref<inst::Type const>> const& arg_types
                                                   , std::vector<util::sptr<Expression const>> args) const;
 
-        variable adjust_location(int offset_diff, int lvl) const;
+        Variable adjust_location(int offset_diff, int lvl) const;
 
-        bool operator<(variable const& rhs) const;
-        bool operator==(variable const& rhs) const;
-        bool operator!=(variable const& rhs) const;
+        bool operator<(Variable const& rhs) const;
+        bool operator==(Variable const& rhs) const;
+        bool operator!=(Variable const& rhs) const;
     };
 
 }

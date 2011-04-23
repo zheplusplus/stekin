@@ -16,11 +16,11 @@ static std::list<FlowTerminatedRec> flow_terminated_recs;
 
 static std::list<func_forbidden_rec> forbidden_func_recs;
 static std::list<ForbidDefRec> forbid_var_def_recs;
-static std::list<var_redef_rec> local_redefs;
-static std::list<invalid_ref_rec> invalid_refs;
+static std::list<VarRedefRec> local_redefs;
+static std::list<InvalidRefRec> invalid_refs;
 static std::list<FuncRefAmbiguousRec> ambiguous_refs;
-static std::list<func_redef_rec> func_redefs;
-static std::list<func_nondef_rec> func_nondefs;
+static std::list<FuncRedefRec> func_redefs;
+static std::list<FuncNondefRec> func_nondefs;
 
 static std::list<ret_type_conflict_rec> ret_type_conflict_recs;
 static std::list<RetTypeUnresolvableRec> ret_type_unresolvable_recs;
@@ -29,11 +29,11 @@ static std::list<var_nondef_rec> var_nondefs;
 static std::list<NABinaryOpRec> na_BinaryOps;
 static std::list<NAPreUnaryOpRec> na_PreUnaryOps;
 
-static std::list<variable_not_callable_rec> variable_not_callables;
+static std::list<VariableNotCallableRec> variable_not_callables;
 
 static bool has_err = false;
 
-void test::clear_err()
+void test::clearErr()
 {
     has_err = false;
 
@@ -127,20 +127,20 @@ void error::forbidDefVar(misc::position const& pos, std::string const& name)
     forbid_var_def_recs.push_back(ForbidDefRec(pos, name));
 }
 
-void error::var_already_in_local(misc::position const& prev_def_pos
+void error::varAlreadyInLocal(misc::position const& prev_def_pos
                                , misc::position const& this_def_pos
                                , std::string const& name)
 {
     has_err = true;
-    local_redefs.push_back(var_redef_rec(prev_def_pos, this_def_pos, name));
+    local_redefs.push_back(VarRedefRec(prev_def_pos, this_def_pos, name));
 }
 
-void error::var_ref_before_def(misc::position const& def_pos
+void error::varRefBeforeDef(misc::position const& def_pos
                              , std::list<misc::position> const& ref_positions
                              , std::string const& name)
 {
     has_err = true;
-    invalid_refs.push_back(invalid_ref_rec(ref_positions.begin(), ref_positions.end(), def_pos, name));
+    invalid_refs.push_back(InvalidRefRec(ref_positions.begin(), ref_positions.end(), def_pos, name));
 }
 
 void error::funcReferenceAmbiguous(misc::position const& pos, std::string const& name)
@@ -149,22 +149,22 @@ void error::funcReferenceAmbiguous(misc::position const& pos, std::string const&
     ambiguous_refs.push_back(FuncRefAmbiguousRec(pos, name));
 }
 
-void error::func_already_def(misc::position const& prev_def_pos
+void error::funcAlreadyDef(misc::position const& prev_def_pos
                            , misc::position const& this_def_pos
                            , std::string const& name
                            , int param_count)
 {
     has_err = true;
-    func_redefs.push_back(func_redef_rec(prev_def_pos, this_def_pos, name, param_count));
+    func_redefs.push_back(FuncRedefRec(prev_def_pos, this_def_pos, name, param_count));
 }
 
-void error::func_not_def(misc::position const& call_pos, std::string const& name, int param_count)
+void error::funcNotDef(misc::position const& call_pos, std::string const& name, int param_count)
 {
     has_err = true;
-    func_nondefs.push_back(func_nondef_rec(call_pos, name, param_count));
+    func_nondefs.push_back(FuncNondefRec(call_pos, name, param_count));
 }
 
-void error::var_not_def(misc::position const& ref_pos, std::string const& name)
+void error::varNotDef(misc::position const& ref_pos, std::string const& name)
 {
     has_err = true;
     var_nondefs.push_back(var_nondef_rec(ref_pos, name));
@@ -179,13 +179,13 @@ void error::binaryOpNotAvai(misc::position const& pos
     na_BinaryOps.push_back(NABinaryOpRec(pos, op_img, lhst, rhst));
 }
 
-void error::PreUnaryOp_not_avai(misc::position const& pos, std::string const& op_img, std::string const& rhst)
+void error::preUnaryOpNotAvai(misc::position const& pos, std::string const& op_img, std::string const& rhst)
 {
     has_err = true;
     na_PreUnaryOps.push_back(NAPreUnaryOpRec(pos, op_img, rhst));
 }
 
-void error::conflict_return_type(misc::position const& this_pos
+void error::conflictReturnType(misc::position const& this_pos
                                , std::string const& prev_type_name
                                , std::string const& this_type_name)
 {
@@ -205,10 +205,10 @@ void error::condNotBool(misc::position const& pos, std::string const& actual_typ
     CondNotBoolRecs.push_back(CondNotBoolRec(pos, actual_type));
 }
 
-void error::request_variable_not_callable(misc::position const& call_pos)
+void error::requestVariableNotCallable(misc::position const& call_pos)
 {
     has_err = true;
-    variable_not_callables.push_back(variable_not_callable_rec(call_pos));
+    variable_not_callables.push_back(VariableNotCallableRec(call_pos));
 }
 
 std::vector<TabAsIndRec> test::getTabAsIndents()
@@ -256,14 +256,14 @@ std::vector<ForbidDefRec> test::getForbidVarDefs()
     return std::vector<ForbidDefRec>(forbid_var_def_recs.begin(), forbid_var_def_recs.end());
 }
 
-std::vector<var_redef_rec> test::get_local_redefs()
+std::vector<VarRedefRec> test::getLocalRedefs()
 {
-    return std::vector<var_redef_rec>(local_redefs.begin(), local_redefs.end());
+    return std::vector<VarRedefRec>(local_redefs.begin(), local_redefs.end());
 }
 
-std::vector<invalid_ref_rec> test::get_invalid_refs()
+std::vector<InvalidRefRec> test::getInvalidRefs()
 {
-    return std::vector<invalid_ref_rec>(invalid_refs.begin(), invalid_refs.end());
+    return std::vector<InvalidRefRec>(invalid_refs.begin(), invalid_refs.end());
 }
 
 std::vector<FuncRefAmbiguousRec> test::getAmbiguousRefs()
@@ -271,14 +271,14 @@ std::vector<FuncRefAmbiguousRec> test::getAmbiguousRefs()
     return std::vector<FuncRefAmbiguousRec>(ambiguous_refs.begin(), ambiguous_refs.end());
 }
 
-std::vector<func_redef_rec> test::get_func_redefs()
+std::vector<FuncRedefRec> test::getFuncRedefs()
 {
-    return std::vector<func_redef_rec>(func_redefs.begin(), func_redefs.end());
+    return std::vector<FuncRedefRec>(func_redefs.begin(), func_redefs.end());
 }
 
-std::vector<func_nondef_rec> test::get_func_nondefs()
+std::vector<FuncNondefRec> test::getFuncNondefs()
 {
-    return std::vector<func_nondef_rec>(func_nondefs.begin(), func_nondefs.end());
+    return std::vector<FuncNondefRec>(func_nondefs.begin(), func_nondefs.end());
 }
 
 std::vector<var_nondef_rec> test::get_nondefs()
@@ -312,7 +312,7 @@ std::vector<CondNotBoolRec> test::getCondNotBools()
     return std::vector<CondNotBoolRec>(CondNotBoolRecs.begin(), CondNotBoolRecs.end());
 }
 
-std::vector<variable_not_callable_rec> test::get_variable_not_callables()
+std::vector<VariableNotCallableRec> test::getVariableNotCallables()
 {
-    return std::vector<variable_not_callable_rec>(variable_not_callables.begin(), variable_not_callables.end());
+    return std::vector<VariableNotCallableRec>(variable_not_callables.begin(), variable_not_callables.end());
 }

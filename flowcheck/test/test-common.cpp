@@ -74,8 +74,8 @@ NodeType const test::BRANCH("branch");
 
 void FlowcheckTest::SetUp()
 {
-    clear_err();
-    clear_warn();
+    clearErr();
+    clearWarn();
 }
 
 void FlowcheckTest::TearDown()
