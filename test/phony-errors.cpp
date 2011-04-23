@@ -14,7 +14,7 @@ static std::list<IfMatchedRec> if_matched_recs;
 static std::list<ExcessIndRec> excess_ind_recs;
 static std::list<FlowTerminatedRec> flow_terminated_recs;
 
-static std::list<func_forbidden_rec> forbidden_func_recs;
+static std::list<FuncForbiddenRec> forbidden_func_recs;
 static std::list<ForbidDefRec> forbid_var_def_recs;
 static std::list<VarRedefRec> local_redefs;
 static std::list<InvalidRefRec> invalid_refs;
@@ -22,12 +22,12 @@ static std::list<FuncRefAmbiguousRec> ambiguous_refs;
 static std::list<FuncRedefRec> func_redefs;
 static std::list<FuncNondefRec> func_nondefs;
 
-static std::list<ret_type_conflict_rec> ret_type_conflict_recs;
+static std::list<RetTypeConflictRec> ret_type_conflict_recs;
 static std::list<RetTypeUnresolvableRec> ret_type_unresolvable_recs;
-static std::list<CondNotBoolRec> CondNotBoolRecs;
-static std::list<var_nondef_rec> var_nondefs;
-static std::list<NABinaryOpRec> na_BinaryOps;
-static std::list<NAPreUnaryOpRec> na_PreUnaryOps;
+static std::list<CondNotBoolRec> cond_not_bool_recs;
+static std::list<VarNondefRec> var_nondefs;
+static std::list<NABinaryOpRec> na_binary_ops;
+static std::list<NAPreUnaryOpRec> na_pre_unary_ops;
 
 static std::list<VariableNotCallableRec> variable_not_callables;
 
@@ -54,11 +54,11 @@ void test::clearErr()
     func_nondefs.clear();
 
     var_nondefs.clear();
-    na_BinaryOps.clear();
-    na_PreUnaryOps.clear();
+    na_binary_ops.clear();
+    na_pre_unary_ops.clear();
     ret_type_conflict_recs.clear();
     ret_type_unresolvable_recs.clear();
-    CondNotBoolRecs.clear();
+    cond_not_bool_recs.clear();
 
     variable_not_callables.clear();
 }
@@ -97,7 +97,8 @@ void error::elseNotMatchIf(misc::position const& pos)
     else_not_matches_recs.push_back(ElseNotMatchRec(pos));
 }
 
-void error::ifAlreadyMatchElse(misc::position const& prev_else_pos, misc::position const& this_else_pos)
+void error::ifAlreadyMatchElse(misc::position const& prev_else_pos
+                             , misc::position const& this_else_pos)
 {
     has_err = true;
     if_matched_recs.push_back(IfMatchedRec(prev_else_pos, this_else_pos));
@@ -118,7 +119,7 @@ void error::flowTerminated(misc::position const& this_pos, misc::position const&
 void error::forbidDefFunc(misc::position const& pos, std::string const& name)
 {
     has_err = true;
-    forbidden_func_recs.push_back(func_forbidden_rec(pos, name));
+    forbidden_func_recs.push_back(FuncForbiddenRec(pos, name));
 }
 
 void error::forbidDefVar(misc::position const& pos, std::string const& name)
@@ -128,19 +129,22 @@ void error::forbidDefVar(misc::position const& pos, std::string const& name)
 }
 
 void error::varAlreadyInLocal(misc::position const& prev_def_pos
-                               , misc::position const& this_def_pos
-                               , std::string const& name)
+                            , misc::position const& this_def_pos
+                            , std::string const& name)
 {
     has_err = true;
     local_redefs.push_back(VarRedefRec(prev_def_pos, this_def_pos, name));
 }
 
 void error::varRefBeforeDef(misc::position const& def_pos
-                             , std::list<misc::position> const& ref_positions
-                             , std::string const& name)
+                          , std::list<misc::position> const& ref_positions
+                          , std::string const& name)
 {
     has_err = true;
-    invalid_refs.push_back(InvalidRefRec(ref_positions.begin(), ref_positions.end(), def_pos, name));
+    invalid_refs.push_back(InvalidRefRec(ref_positions.begin()
+                                       , ref_positions.end()
+                                       , def_pos
+                                       , name));
 }
 
 void error::funcReferenceAmbiguous(misc::position const& pos, std::string const& name)
@@ -150,9 +154,9 @@ void error::funcReferenceAmbiguous(misc::position const& pos, std::string const&
 }
 
 void error::funcAlreadyDef(misc::position const& prev_def_pos
-                           , misc::position const& this_def_pos
-                           , std::string const& name
-                           , int param_count)
+                         , misc::position const& this_def_pos
+                         , std::string const& name
+                         , int param_count)
 {
     has_err = true;
     func_redefs.push_back(FuncRedefRec(prev_def_pos, this_def_pos, name, param_count));
@@ -167,30 +171,32 @@ void error::funcNotDef(misc::position const& call_pos, std::string const& name, 
 void error::varNotDef(misc::position const& ref_pos, std::string const& name)
 {
     has_err = true;
-    var_nondefs.push_back(var_nondef_rec(ref_pos, name));
+    var_nondefs.push_back(VarNondefRec(ref_pos, name));
 }
 
 void error::binaryOpNotAvai(misc::position const& pos
-                             , std::string const& op_img
-                             , std::string const& lhst
-                             , std::string const& rhst)
+                          , std::string const& op_img
+                          , std::string const& lhst
+                          , std::string const& rhst)
 {
     has_err = true;
-    na_BinaryOps.push_back(NABinaryOpRec(pos, op_img, lhst, rhst));
+    na_binary_ops.push_back(NABinaryOpRec(pos, op_img, lhst, rhst));
 }
 
-void error::preUnaryOpNotAvai(misc::position const& pos, std::string const& op_img, std::string const& rhst)
+void error::preUnaryOpNotAvai(misc::position const& pos
+                            , std::string const& op_img
+                            , std::string const& rhst)
 {
     has_err = true;
-    na_PreUnaryOps.push_back(NAPreUnaryOpRec(pos, op_img, rhst));
+    na_pre_unary_ops.push_back(NAPreUnaryOpRec(pos, op_img, rhst));
 }
 
 void error::conflictReturnType(misc::position const& this_pos
-                               , std::string const& prev_type_name
-                               , std::string const& this_type_name)
+                             , std::string const& prev_type_name
+                             , std::string const& this_type_name)
 {
     has_err = true;
-    ret_type_conflict_recs.push_back(ret_type_conflict_rec(this_pos, prev_type_name, this_type_name));
+    ret_type_conflict_recs.push_back(RetTypeConflictRec(this_pos, prev_type_name, this_type_name));
 }
 
 void error::returnTypeUnresolvable(std::string const& name, int arg_count)
@@ -202,7 +208,7 @@ void error::returnTypeUnresolvable(std::string const& name, int arg_count)
 void error::condNotBool(misc::position const& pos, std::string const& actual_type)
 {
     has_err = true;
-    CondNotBoolRecs.push_back(CondNotBoolRec(pos, actual_type));
+    cond_not_bool_recs.push_back(CondNotBoolRec(pos, actual_type));
 }
 
 void error::requestVariableNotCallable(misc::position const& call_pos)
@@ -236,7 +242,7 @@ std::vector<IfMatchedRec> test::getIfMatchedRecs()
     return std::vector<IfMatchedRec>(if_matched_recs.begin(), if_matched_recs.end());
 }
 
-std::vector<ExcessIndRec> test::get_excess_inds()
+std::vector<ExcessIndRec> test::getExcessInds()
 {
     return std::vector<ExcessIndRec>(excess_ind_recs.begin(), excess_ind_recs.end());
 }
@@ -246,9 +252,9 @@ std::vector<FlowTerminatedRec> test::getFlowTerminatedRecs()
     return std::vector<FlowTerminatedRec>(flow_terminated_recs.begin(), flow_terminated_recs.end());
 }
 
-std::vector<func_forbidden_rec> test::get_forbidden_funcs()
+std::vector<FuncForbiddenRec> test::getForbiddenFuncs()
 {
-    return std::vector<func_forbidden_rec>(forbidden_func_recs.begin(), forbidden_func_recs.end());
+    return std::vector<FuncForbiddenRec>(forbidden_func_recs.begin(), forbidden_func_recs.end());
 }
 
 std::vector<ForbidDefRec> test::getForbidVarDefs()
@@ -281,38 +287,40 @@ std::vector<FuncNondefRec> test::getFuncNondefs()
     return std::vector<FuncNondefRec>(func_nondefs.begin(), func_nondefs.end());
 }
 
-std::vector<var_nondef_rec> test::get_nondefs()
+std::vector<VarNondefRec> test::get_nondefs()
 {
-    return std::vector<var_nondef_rec>(var_nondefs.begin(), var_nondefs.end());
+    return std::vector<VarNondefRec>(var_nondefs.begin(), var_nondefs.end());
 }
 
 std::vector<NABinaryOpRec> test::getNABinaryOps()
 {
-    return std::vector<NABinaryOpRec>(na_BinaryOps.begin(), na_BinaryOps.end());
+    return std::vector<NABinaryOpRec>(na_binary_ops.begin(), na_binary_ops.end());
 }
 
 std::vector<NAPreUnaryOpRec> test::getNAPreUnaryOps()
 {
-    return std::vector<NAPreUnaryOpRec>(na_PreUnaryOps.begin(), na_PreUnaryOps.end());
+    return std::vector<NAPreUnaryOpRec>(na_pre_unary_ops.begin(), na_pre_unary_ops.end());
 }
 
-std::vector<ret_type_conflict_rec> test::get_ret_type_conflicts()
+std::vector<RetTypeConflictRec> test::getRetTypeConflicts()
 {
-    return std::vector<ret_type_conflict_rec>(ret_type_conflict_recs.begin(), ret_type_conflict_recs.end());
+    return std::vector<RetTypeConflictRec>(ret_type_conflict_recs.begin()
+                                         , ret_type_conflict_recs.end());
 }
 
 std::vector<RetTypeUnresolvableRec> test::getRetTypeUnresolvables()
 {
     return std::vector<RetTypeUnresolvableRec>(ret_type_unresolvable_recs.begin()
-                                                , ret_type_unresolvable_recs.end());
+                                             , ret_type_unresolvable_recs.end());
 }
 
 std::vector<CondNotBoolRec> test::getCondNotBools()
 {
-    return std::vector<CondNotBoolRec>(CondNotBoolRecs.begin(), CondNotBoolRecs.end());
+    return std::vector<CondNotBoolRec>(cond_not_bool_recs.begin(), cond_not_bool_recs.end());
 }
 
 std::vector<VariableNotCallableRec> test::getVariableNotCallables()
 {
-    return std::vector<VariableNotCallableRec>(variable_not_callables.begin(), variable_not_callables.end());
+    return std::vector<VariableNotCallableRec>(variable_not_callables.begin()
+                                             , variable_not_callables.end());
 }

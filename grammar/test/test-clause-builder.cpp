@@ -66,9 +66,9 @@ TEST_F(ClauseBuilderTest, AcceptorStackNext)
                                                       , std::vector<std::string>({ "el", "eth" })
                                                       , std::move(grammar::Block())))));
     ASSERT_TRUE(error::hasError());
-    ASSERT_EQ(2, get_excess_inds().size());
-    ASSERT_EQ(err_pos0, get_excess_inds()[0].pos);
-    ASSERT_EQ(err_pos1, get_excess_inds()[1].pos);
+    ASSERT_EQ(2, getExcessInds().size());
+    ASSERT_EQ(err_pos0, getExcessInds()[0].pos);
+    ASSERT_EQ(err_pos1, getExcessInds()[1].pos);
 }
 
 TEST_F(ClauseBuilderTest, AcceptorStackAdd)
@@ -124,8 +124,8 @@ TEST_F(ClauseBuilderTest, AcceptorStackAdd)
                 util::mkptr(new grammar::Arithmetics(item_pos, std::move(
                             util::mkptr(new grammar::Reference(item_pos, "buriza_do_kyanon"))))))); 
     ASSERT_TRUE(error::hasError());
-    ASSERT_EQ(1, get_excess_inds().size());
-    ASSERT_EQ(item_pos, get_excess_inds()[0].pos);
+    ASSERT_EQ(1, getExcessInds().size());
+    ASSERT_EQ(item_pos, getExcessInds()[0].pos);
 }
 
 TEST_F(ClauseBuilderTest, AcceptorStackMatchElse)

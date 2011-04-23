@@ -30,11 +30,12 @@ namespace inst {
     public:
         virtual bool eqAsBuiltIn(Type const& lhs) const;
         virtual bool eqAsFuncReference(util::sref<proto::Function> lhs_func
-                                        , std::map<std::string, Variable const> const& rhs_cr) const;
+                                     , std::map<std::string, Variable const> const& rhs_cr) const;
 
         virtual bool ltAsBuiltIn(Type const& lhs) const = 0;
         virtual bool ltAsFuncReference(util::sref<proto::Function> lhs_func
-                                        , std::map<std::string, Variable const> const& rhs_cr) const = 0;
+                                     , std::map<std::string, Variable const> const& rhs_cr)
+                                    const = 0;
     public:
         virtual void checkCondType(misc::position const& pos) const;
     protected:
@@ -74,7 +75,7 @@ namespace inst {
         bool eqAsBuiltIn(Type const& lhs) const;
         bool ltAsBuiltIn(Type const& lhs) const;
         bool ltAsFuncReference(util::sref<proto::Function>
-                                , std::map<std::string, Variable const> const&) const;
+                             , std::map<std::string, Variable const> const&) const;
     public:
         void checkCondType(misc::position const& pos) const;
     };

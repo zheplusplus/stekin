@@ -11,8 +11,8 @@ using namespace inst;
 static Variable const BAD_REF(misc::position(0), Type::BIT_VOID, 0, 0);
 
 SymbolTable::SymbolTable(int ext_lvl
-                         , std::list<ArgNameTypeRec> const& args
-                         , std::map<std::string, Variable const> const& ext_vars)
+                       , std::list<ArgNameTypeRec> const& args
+                       , std::map<std::string, Variable const> const& ext_vars)
     : level(ext_lvl + 1)
     , _ss_used(0)
     , _external_defs(ext_vars)
@@ -38,11 +38,12 @@ static int calc_offset_on_align(int base, int new_size)
 }
 
 Variable SymbolTable::defVar(misc::position const& pos
-                             , util::sref<Type const> var_type
-                             , std::string const& name)
+                           , util::sref<Type const> var_type
+                           , std::string const& name)
 {
     int offset = calc_offset_on_align(_ss_used, var_type->size);
-    auto insert_result = _local_defs.insert(std::make_pair(name, Variable(pos, var_type, offset, level)));
+    auto insert_result = _local_defs.insert(std::make_pair(name
+                                                         , Variable(pos, var_type, offset, level)));
     _ss_used = offset + var_type->size;
     return insert_result.first->second;
 }
@@ -63,12 +64,12 @@ Variable SymbolTable::queryVar(misc::position const& pos, std::string const& nam
     return BAD_REF;
 }
 
-int SymbolTable::stack_size() const
+int SymbolTable::stackSize() const
 {
     return _ss_used;
 }
 
-std::list<Variable> SymbolTable::get_args() const
+std::list<Variable> SymbolTable::getArgs() const
 {
     return _args;
 }

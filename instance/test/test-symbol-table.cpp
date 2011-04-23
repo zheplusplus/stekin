@@ -60,9 +60,9 @@ TEST_F(SymbolTableTest, OnCorrect)
     ASSERT_EQ(platform::WORD_LENGTH_INBYTE * word_used, var_another_dw.stack_offset);
     word_used += 2;
 
-    inst::Variable var_boolean_one(st.defVar(misc::position(6), inst::Type::BIT_BOOL, "boolean_one"));
+    inst::Variable var_boolean_one(st.defVar(misc::position(6), inst::Type::BIT_BOOL, "bool_one"));
     ASSERT_FALSE(error::hasError());
-    ASSERT_EQ(st.queryVar(misc::position(100006), "boolean_one"), var_boolean_one);
+    ASSERT_EQ(st.queryVar(misc::position(100006), "bool_one"), var_boolean_one);
     ASSERT_EQ(0, var_boolean_one.level);
     ASSERT_EQ(platform::WORD_LENGTH_INBYTE * word_used, var_boolean_one.stack_offset);
 
@@ -104,15 +104,15 @@ TEST_F(SymbolTableTest, OnCorrect)
           , var_b_half.stack_offset);
     ++word_used;
 
-    inst::Variable var_boolean_a(st.defVar(misc::position(1002), inst::Type::BIT_BOOL, "boolean_a"));
+    inst::Variable var_boolean_a(st.defVar(misc::position(1002), inst::Type::BIT_BOOL, "bool_a"));
     ASSERT_FALSE(error::hasError());
-    ASSERT_EQ(st.queryVar(misc::position(101002), "boolean_a"), var_boolean_a);
+    ASSERT_EQ(st.queryVar(misc::position(101002), "bool_a"), var_boolean_a);
     ASSERT_EQ(0, var_boolean_a.level);
     ASSERT_EQ(platform::WORD_LENGTH_INBYTE * word_used, var_boolean_a.stack_offset);
 
-    inst::Variable var_boolean_b(st.defVar(misc::position(1003), inst::Type::BIT_BOOL, "boolean_b"));
+    inst::Variable var_boolean_b(st.defVar(misc::position(1003), inst::Type::BIT_BOOL, "bool_b"));
     ASSERT_FALSE(error::hasError());
-    ASSERT_EQ(st.queryVar(misc::position(101003), "boolean_b"), var_boolean_b);
+    ASSERT_EQ(st.queryVar(misc::position(101003), "bool_b"), var_boolean_b);
     ASSERT_EQ(0, var_boolean_b.level);
     ASSERT_EQ(platform::WORD_LENGTH_INBYTE * word_used + 1, var_boolean_b.stack_offset);
 
@@ -131,7 +131,9 @@ TEST_F(SymbolTableTest, OnCorrect)
 
     for (int i = 0; i < platform::WORD_LENGTH_INBYTE / 2; ++i) {
         std::string var_name(std::string("bb_") + char('a' + i));
-        inst::Variable var_boolean(st.defVar(misc::position(1005 + i), inst::Type::BIT_BOOL, var_name));
+        inst::Variable var_boolean(st.defVar(misc::position(1005 + i)
+                                           , inst::Type::BIT_BOOL
+                                           , var_name));
         ASSERT_FALSE(error::hasError());
         ASSERT_EQ(st.queryVar(misc::position(101005 + i), var_name), var_boolean);
         ASSERT_EQ(0, var_boolean.level);
@@ -144,7 +146,7 @@ TEST_F(SymbolTableTest, OnCorrect)
 TEST_F(SymbolTableTest, RefNondefVar)
 {
     inst::SymbolTable st;
-    std::vector<var_nondef_rec> nondef_errors;
+    std::vector<VarNondefRec> nondef_errors;
 
     st.defVar(misc::position(1), util::mkref(WORD), "a");
     ASSERT_FALSE(error::hasError());
@@ -262,14 +264,16 @@ TEST_F(SymbolTableTest, NestedOnCorrect)
     func_word_used = 1;
     inst::Variable e(stb.defVar(misc::position(10), util::mkref(HALFWORD), "e"));
     ASSERT_EQ(2, e.level);
-    ASSERT_EQ(platform::WORD_LENGTH_INBYTE * func_word_used + platform::WORD_LENGTH_INBYTE / 2, e.stack_offset);
+    ASSERT_EQ(platform::WORD_LENGTH_INBYTE * func_word_used + platform::WORD_LENGTH_INBYTE / 2
+            , e.stack_offset);
     ++func_word_used;
     inst::Variable f(stb.defVar(misc::position(11), util::mkref(HALFWORD), "f"));
     ASSERT_EQ(2, f.level);
     ASSERT_EQ(platform::WORD_LENGTH_INBYTE * func_word_used, f.stack_offset);
     inst::Variable g(stb.defVar(misc::position(12), util::mkref(HALFWORD), "g"));
     ASSERT_EQ(2, g.level);
-    ASSERT_EQ(platform::WORD_LENGTH_INBYTE * func_word_used + platform::WORD_LENGTH_INBYTE / 2, g.stack_offset);
+    ASSERT_EQ(platform::WORD_LENGTH_INBYTE * func_word_used + platform::WORD_LENGTH_INBYTE / 2
+            , g.stack_offset);
     ++func_word_used;
 
     ASSERT_FALSE(error::hasError());

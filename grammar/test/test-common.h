@@ -41,11 +41,13 @@ namespace test {
     {
         typedef DataTreeTempl<GrammarData, DataTree> BaseType;
 
-        DataTree& operator()(misc::position const& pos, NodeType const& type, std::string const& str);
         DataTree& operator()(misc::position const& pos
-                            , NodeType const& type
-                            , std::string const& str
-                            , int func_arg_size);
+                           , NodeType const& type
+                           , std::string const& str);
+        DataTree& operator()(misc::position const& pos
+                           , NodeType const& type
+                           , std::string const& str
+                           , int func_arg_size);
         DataTree& operator()(NodeType const& type);
         DataTree& operator()(misc::position const& pos, NodeType const& type);
     };

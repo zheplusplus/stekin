@@ -21,7 +21,7 @@ util::sptr<inst::MediateBase> VarDef::inst(util::sref<inst::Scope> scope) const
 {
     util::sptr<inst::Expression const> init_val = init->inst(scope);
     util::sref<inst::Type const> init_type = init_val->typeof();
-    return std::move(mkdirect(new inst::initialization(scope->defVar(pos, init_type, name)
+    return std::move(mkdirect(new inst::Initialization(scope->defVar(pos, init_type, name)
                                                                 .stack_offset
                                                      , std::move(init_val))));
 }

@@ -113,7 +113,7 @@ template <typename _NodeData>
 std::ostream& operator<<(std::ostream& os, test::DataNodeTempl<_NodeData> const& node)
 {
     return node.print(os <<  "node type: " << node.type_img.type_img) << std::endl
-                                                                      << ":: sub data: " << node.sub_data;
+               << ":: sub data: " << node.sub_data;
 }
 
 #endif /* __STEKIN_TEST_DATA_NODE_H__ */

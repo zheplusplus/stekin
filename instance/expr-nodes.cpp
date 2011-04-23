@@ -8,7 +8,9 @@
 
 using namespace inst;
 
-Conjunction::Conjunction(misc::position const& p, util::sptr<Expression const> l, util::sptr<Expression const> r)
+Conjunction::Conjunction(misc::position const& p
+                       , util::sptr<Expression const> l
+                       , util::sptr<Expression const> r)
     : lhs(std::move(l))
     , rhs(std::move(r))
 {
@@ -16,7 +18,9 @@ Conjunction::Conjunction(misc::position const& p, util::sptr<Expression const> l
     rhs->typeof()->checkCondType(p);
 }
 
-Disjunction::Disjunction(misc::position const& p, util::sptr<Expression const> l, util::sptr<Expression const> r)
+Disjunction::Disjunction(misc::position const& p
+                       , util::sptr<Expression const> l
+                       , util::sptr<Expression const> r)
     : lhs(std::move(l))
     , rhs(std::move(r))
 {
@@ -52,7 +56,7 @@ util::sref<Type const> Reference::typeof() const
 
 util::sref<Type const> Call::typeof() const
 {
-    return func->get_return_type();
+    return func->getReturnType();
 }
 
 util::sref<Type const> FuncReference::typeof() const
@@ -87,22 +91,22 @@ util::sref<Type const> Negation::typeof() const
 
 void IntLiteral::write() const
 {
-    output::write_int(value);
+    output::writeInt(value);
 }
 
 void FloatLiteral::write() const
 {
-    output::write_float(value);
+    output::writeFloat(value);
 }
 
 void BoolLiteral::write() const
 {
-    output::write_bool(value);
+    output::writeBool(value);
 }
 
 void Reference::write() const
 {
-    output::ref_level(var.stack_offset, var.level, typeof()->exportedName());
+    output::refLevel(var.stack_offset, var.level, typeof()->exportedName());
 }
 
 void Call::write() const
@@ -112,7 +116,7 @@ void Call::write() const
                 , args.end()
                 , [&](util::sptr<Expression const> const& expr)
                   {
-                       output::write_arg_seperator();
+                       output::writeArgSeparator();
                        expr->write();
                   });
     output::writeCallEnd();
@@ -125,43 +129,43 @@ void FuncReference::write() const
 
 void BinaryOp::write() const
 {
-    output::begin_expr();
+    output::beginExpr();
     lhs->write();
-    output::write_operator(op->op_img);
+    output::writeOperator(op->op_img);
     rhs->write();
-    output::end_expr();
+    output::endExpr();
 }
 
 void PreUnaryOp::write() const
 {
-    output::begin_expr();
-    output::write_operator(op->op_img);
+    output::beginExpr();
+    output::writeOperator(op->op_img);
     rhs->write();
-    output::end_expr();
+    output::endExpr();
 }
 
 void Conjunction::write() const
 {
-    output::begin_expr();
+    output::beginExpr();
     lhs->write();
-    output::write_operator("&&");
+    output::writeOperator("&&");
     rhs->write();
-    output::end_expr();
+    output::endExpr();
 }
 
 void Disjunction::write() const
 {
-    output::begin_expr();
+    output::beginExpr();
     lhs->write();
-    output::write_operator("||");
+    output::writeOperator("||");
     rhs->write();
-    output::end_expr();
+    output::endExpr();
 }
 
 void Negation::write() const
 {
-    output::begin_expr();
-    output::write_operator("!");
+    output::beginExpr();
+    output::writeOperator("!");
     rhs->write();
-    output::end_expr();
+    output::endExpr();
 }

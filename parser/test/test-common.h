@@ -32,11 +32,13 @@ namespace test {
     {
         typedef DataTreeTempl<ParserData, DataTree> BaseType;
 
-        DataTree& operator()(misc::position const& pos, NodeType const& type, std::string const& str);
         DataTree& operator()(misc::position const& pos
-                             , int indent
-                             , NodeType const& type
-                             , std::string const& str);
+                           , NodeType const& type
+                           , std::string const& str);
+        DataTree& operator()(misc::position const& pos
+                           , int indent
+                           , NodeType const& type
+                           , std::string const& str);
         DataTree& operator()(misc::position const& pos, NodeType const& type);
         DataTree& operator()(misc::position const& pos, int indent, NodeType const& type);
     };

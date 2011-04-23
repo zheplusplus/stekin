@@ -27,14 +27,15 @@ bool Variable::operator!=(Variable const& rhs) const
     return !operator==(rhs);
 }
 
-util::sptr<inst::Expression const> Variable::call(misc::position const& call_pos
-                                                    , std::vector<util::sref<inst::Type const>> const& arg_types
-                                                    , std::vector<util::sptr<Expression const>> args) const
+util::sptr<inst::Expression const> Variable::call(
+                                        misc::position const& call_pos
+                                      , std::vector<util::sref<inst::Type const>> const& arg_types
+                                      , std::vector<util::sptr<Expression const>> args) const
 {
     return std::move(type->call(call_pos, level, stack_offset, arg_types, std::move(args)));
 }
 
-Variable Variable::adjust_location(int offset_diff, int lvl) const
+Variable Variable::adjustLocation(int offset_diff, int lvl) const
 {
     return Variable(def_pos, type, stack_offset + offset_diff, lvl);
 }

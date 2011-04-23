@@ -33,22 +33,22 @@ void Branch::write() const
     alternative->write();
 }
 
-void initialization::write() const
+void Initialization::write() const
 {
-    output::ref_this_level(offset, init->typeof()->exportedName());
-    output::assign_sign();
+    output::refThisLevel(offset, init->typeof()->exportedName());
+    output::signAssign();
     init->write();
     output::endOfStatement();
 }
 
 void Return::write() const
 {
-    output::return_kw();
+    output::kwReturn();
     ret_val->write();
     output::endOfStatement();
 }
 
 void ReturnNothing::write() const
 {
-    output::return_nothing();
+    output::returnNothing();
 }

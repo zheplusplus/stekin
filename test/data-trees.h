@@ -14,9 +14,12 @@ namespace test {
 
     template <typename _NodeData, typename _FinalType>
     struct DataTreeTempl {
-        DataTreeTempl& operator()(NodeType const& type, _NodeData const& sub, std::string const& str)
+        DataTreeTempl& operator()(NodeType const& type
+                                , _NodeData const& sub
+                                , std::string const& str)
         {
-            _nodes.push_back(std::move(util::mkptr(new StringNodeTempl<_NodeData>(type, sub, str))));
+            _nodes.push_back(std::move(
+                        util::mkptr(new StringNodeTempl<_NodeData>(type, sub, str))));
             return *this;
         }
 
@@ -54,8 +57,8 @@ namespace test {
             auto actual_iter = actualOne()._nodes.begin();
             for (; expectOne()._nodes.end() != expect_iter; ++expect_iter, ++actual_iter) {
                 EXPECT_EQ(**expect_iter, **actual_iter)
-                        << "------------- [" << std::distance(expectOne()._nodes.begin(), expect_iter) << "]"
-                        << std::endl;
+                    << "------------- [" << std::distance(expectOne()._nodes.begin(), expect_iter)
+                    << "]" << std::endl;
             }
         }
 

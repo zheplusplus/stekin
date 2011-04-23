@@ -6,51 +6,53 @@
 
 using namespace inst;
 
-static operation const BIT_INT_ADD(Type::BIT_INT, "+");
-static operation const BIT_INT_SUB(Type::BIT_INT, "-");
-static operation const BIT_INT_MUL(Type::BIT_INT, "*");
-static operation const BIT_INT_DIV(Type::BIT_INT, "/");
-static operation const BIT_INT_MOD(Type::BIT_INT, "%");
+static Operation const BIT_INT_ADD(Type::BIT_INT, "+");
+static Operation const BIT_INT_SUB(Type::BIT_INT, "-");
+static Operation const BIT_INT_MUL(Type::BIT_INT, "*");
+static Operation const BIT_INT_DIV(Type::BIT_INT, "/");
+static Operation const BIT_INT_MOD(Type::BIT_INT, "%");
 
-static operation const BIT_FLOAT_ADD(Type::BIT_FLOAT, "+");
-static operation const BIT_FLOAT_SUB(Type::BIT_FLOAT, "-");
-static operation const BIT_FLOAT_MUL(Type::BIT_FLOAT, "*");
-static operation const BIT_FLOAT_DIV(Type::BIT_FLOAT, "/");
+static Operation const BIT_FLOAT_ADD(Type::BIT_FLOAT, "+");
+static Operation const BIT_FLOAT_SUB(Type::BIT_FLOAT, "-");
+static Operation const BIT_FLOAT_MUL(Type::BIT_FLOAT, "*");
+static Operation const BIT_FLOAT_DIV(Type::BIT_FLOAT, "/");
 
-static operation const BIT_INT_EQ(Type::BIT_BOOL, "==");
-static operation const BIT_INT_LE(Type::BIT_BOOL, "<=");
-static operation const BIT_INT_LT(Type::BIT_BOOL, "<");
-static operation const BIT_INT_GE(Type::BIT_BOOL, ">=");
-static operation const BIT_INT_GT(Type::BIT_BOOL, ">");
-static operation const BIT_INT_NE(Type::BIT_BOOL, "!=");
+static Operation const BIT_INT_EQ(Type::BIT_BOOL, "==");
+static Operation const BIT_INT_LE(Type::BIT_BOOL, "<=");
+static Operation const BIT_INT_LT(Type::BIT_BOOL, "<");
+static Operation const BIT_INT_GE(Type::BIT_BOOL, ">=");
+static Operation const BIT_INT_GT(Type::BIT_BOOL, ">");
+static Operation const BIT_INT_NE(Type::BIT_BOOL, "!=");
 
-static operation const BIT_FLOAT_EQ(Type::BIT_BOOL, "==");
-static operation const BIT_FLOAT_LE(Type::BIT_BOOL, "<=");
-static operation const BIT_FLOAT_LT(Type::BIT_BOOL, "<");
-static operation const BIT_FLOAT_GE(Type::BIT_BOOL, ">=");
-static operation const BIT_FLOAT_GT(Type::BIT_BOOL, ">");
-static operation const BIT_FLOAT_NE(Type::BIT_BOOL, "!=");
+static Operation const BIT_FLOAT_EQ(Type::BIT_BOOL, "==");
+static Operation const BIT_FLOAT_LE(Type::BIT_BOOL, "<=");
+static Operation const BIT_FLOAT_LT(Type::BIT_BOOL, "<");
+static Operation const BIT_FLOAT_GE(Type::BIT_BOOL, ">=");
+static Operation const BIT_FLOAT_GT(Type::BIT_BOOL, ">");
+static Operation const BIT_FLOAT_NE(Type::BIT_BOOL, "!=");
 
-static operation const BIT_POSI_INT(Type::BIT_INT, "+");
-static operation const BIT_POSI_FLOAT(Type::BIT_FLOAT, "+");
+static Operation const BIT_POSI_INT(Type::BIT_INT, "+");
+static Operation const BIT_POSI_FLOAT(Type::BIT_FLOAT, "+");
 
-static operation const BIT_NEGA_INT(Type::BIT_INT, "-");
-static operation const BIT_NEGA_FLOAT(Type::BIT_FLOAT, "-");
+static Operation const BIT_NEGA_INT(Type::BIT_INT, "-");
+static Operation const BIT_NEGA_FLOAT(Type::BIT_FLOAT, "-");
 
-static operation const BAD_OPERATION(Type::BAD_TYPE, "");
+static Operation const BAD_OPERATION(Type::BAD_TYPE, "");
 
 namespace {
 
-    struct bad_op_exception {};
+    struct BadOpException {};
 
-    struct BinaryOp_map {
-        static BinaryOp_map const& instance()
+    struct BinaryOpMap {
+        static BinaryOpMap const& instance()
         {
-            static BinaryOp_map inst;
+            static BinaryOpMap inst;
             return inst;
         }
 
-        operation const* query(std::string const& op, util::sref<Type const> lhs, util::sref<Type const> rhs) const
+        Operation const* query(std::string const& op
+                             , util::sref<Type const> lhs
+                             , util::sref<Type const> rhs) const
         {
             if (Type::BAD_TYPE == lhs || Type::BAD_TYPE == rhs) {
                 return &BAD_OPERATION;
@@ -58,29 +60,32 @@ namespace {
 
             auto first_stage = _map.find(op);
             if (_map.end() == first_stage) {
-                throw bad_op_exception();
+                throw BadOpException();
             }
 
             auto second_stage = first_stage->second.find(lhs);
             if (first_stage->second.end() == second_stage) {
-                throw bad_op_exception();
+                throw BadOpException();
             }
 
             auto third_stage = second_stage->second.find(rhs);
             if (second_stage->second.end() == third_stage) {
-                throw bad_op_exception();
+                throw BadOpException();
             }
 
             return third_stage->second;
         }
     private:
-        BinaryOp_map& add(std::string const& op_id, util::sref<Type const> lhs, util::sref<Type const> rhs, operation const* oper)
+        BinaryOpMap& add(std::string const& op_id
+                       , util::sref<Type const> lhs
+                       , util::sref<Type const> rhs
+                       , Operation const* oper)
         {
             _map[op_id][lhs][rhs] = oper;
             return *this;
         }
     private:
-        BinaryOp_map()
+        BinaryOpMap()
         {
             (*this)
                 .add("+", Type::BIT_INT, Type::BIT_INT, &BIT_INT_ADD)
@@ -110,17 +115,20 @@ namespace {
             ;
         }
 
-        std::map<std::string, std::map<util::sref<Type const>, std::map<util::sref<Type const>, operation const*>>> _map;
+        std::map<std::string
+               , std::map<util::sref<Type const>
+                        , std::map<util::sref<Type const>
+                                 , Operation const*>>> _map;
     };
 
-    struct PreUnaryOp_map {
-        static PreUnaryOp_map const& instance()
+    struct PreUnaryOpMap {
+        static PreUnaryOpMap const& instance()
         {
-            static PreUnaryOp_map inst;
+            static PreUnaryOpMap inst;
             return inst;
         }
 
-        operation const* query(std::string const& op, util::sref<Type const> rhs) const
+        Operation const* query(std::string const& op, util::sref<Type const> rhs) const
         {
             if (Type::BAD_TYPE == rhs) {
                 return &BAD_OPERATION;
@@ -128,24 +136,26 @@ namespace {
 
             auto first_stage = _map.find(op);
             if (_map.end() == first_stage) {
-                throw bad_op_exception();
+                throw BadOpException();
             }
 
             auto second_stage = first_stage->second.find(rhs);
             if (first_stage->second.end() == second_stage) {
-                throw bad_op_exception();
+                throw BadOpException();
             }
 
             return second_stage->second;
         }
     private:
-        PreUnaryOp_map& add(std::string const& op_id, util::sref<Type const> rhs, operation const* oper)
+        PreUnaryOpMap& add(std::string const& op_id
+                         , util::sref<Type const> rhs
+                         , Operation const* oper)
         {
             _map[op_id][rhs] = oper;
             return *this;
         }
     private:
-        PreUnaryOp_map()
+        PreUnaryOpMap()
         {
             (*this)
                 .add("+", Type::BIT_INT, &BIT_POSI_INT)
@@ -156,31 +166,31 @@ namespace {
             ;
         }
 
-        std::map<std::string, std::map<util::sref<Type const>, operation const*>> _map;
+        std::map<std::string, std::map<util::sref<Type const>, Operation const*>> _map;
     };
 
 }
 
-operation const* operation::queryBinary(misc::position const& pos
-                                       , std::string const& op
-                                       , util::sref<Type const> lhs
-                                       , util::sref<Type const> rhs)
+Operation const* Operation::queryBinary(misc::position const& pos
+                                      , std::string const& op
+                                      , util::sref<Type const> lhs
+                                      , util::sref<Type const> rhs)
 {
     try {
-        return BinaryOp_map::instance().query(op, lhs, rhs);
-    } catch (bad_op_exception) {
+        return BinaryOpMap::instance().query(op, lhs, rhs);
+    } catch (BadOpException) {
         error::binaryOpNotAvai(pos, op, lhs->name(), rhs->name());
         return &BAD_OPERATION;
     }
 }
 
-operation const* operation::queryPreUnary(misc::position const& pos
-                                          , std::string const& op
-                                          , util::sref<Type const> rhs)
+Operation const* Operation::queryPreUnary(misc::position const& pos
+                                        , std::string const& op
+                                        , util::sref<Type const> rhs)
 {
     try {
-        return PreUnaryOp_map::instance().query(op, rhs);
-    } catch (bad_op_exception) {
+        return PreUnaryOpMap::instance().query(op, rhs);
+    } catch (BadOpException) {
         error::preUnaryOpNotAvai(pos, op, rhs->name());
         return &BAD_OPERATION;
     }

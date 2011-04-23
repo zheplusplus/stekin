@@ -12,7 +12,7 @@ namespace test {
     extern inst::BuiltInPrimitive const DWORD;
     extern inst::BuiltInPrimitive const HALFWORD;
 
-    struct cond_type_expr
+    struct CondTypeExpr
         : public inst::Expression
     {
         util::sref<inst::Type const> typeof() const
@@ -23,7 +23,7 @@ namespace test {
         void write() const {}
     };
 
-    struct void_type_expr
+    struct VoidTypeExpr
         : public inst::Expression
     {
         util::sref<inst::Type const> typeof() const
@@ -34,7 +34,7 @@ namespace test {
         void write() const {}
     };
 
-    struct bad_type_expr
+    struct BadTypeExpr
         : public inst::Expression
     {
         util::sref<inst::Type const> typeof() const
@@ -45,7 +45,7 @@ namespace test {
         void write() const {}
     };
 
-    struct instance_test
+    struct InstanceTest
         : public testing::Test
     {
         void SetUp();

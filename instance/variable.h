@@ -22,11 +22,12 @@ namespace inst {
             , level(lvl)
         {}
 
-        util::sptr<inst::Expression const> call(misc::position const& call_pos
-                                                  , std::vector<util::sref<inst::Type const>> const& arg_types
-                                                  , std::vector<util::sptr<Expression const>> args) const;
+        util::sptr<inst::Expression const> call(
+                                        misc::position const& call_pos
+                                      , std::vector<util::sref<inst::Type const>> const& arg_types
+                                      , std::vector<util::sptr<Expression const>> args) const;
 
-        Variable adjust_location(int offset_diff, int lvl) const;
+        Variable adjustLocation(int offset_diff, int lvl) const;
 
         bool operator<(Variable const& rhs) const;
         bool operator==(Variable const& rhs) const;

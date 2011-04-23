@@ -17,11 +17,13 @@ namespace inst {
     struct Function
         : public Scope
     {
-        Variable defVar(misc::position const& pos, util::sref<Type const> type, std::string const& name);
+        Variable defVar(misc::position const& pos
+                      , util::sref<Type const> type
+                      , std::string const& name);
         Variable queryVar(misc::position const& pos, std::string const& name) const;
 
         void setReturnType(misc::position const& pos, util::sref<Type const> return_type);
-        virtual util::sref<Type const> get_return_type() const;
+        virtual util::sref<Type const> getReturnType() const;
         virtual bool isReturnTypeResolved() const;
 
         void addPath(util::sref<MediateBase> path);
@@ -30,13 +32,14 @@ namespace inst {
 
         int level() const;
     public:
-        static util::sref<Function> createInstance(int ext_level
-                                                  , std::list<ArgNameTypeRec> const& args
-                                                  , std::map<std::string, Variable const> const& extvars
-                                                  , bool has_void_returns);
+        static util::sref<Function> createInstance(
+                                           int ext_level
+                                         , std::list<ArgNameTypeRec> const& args
+                                         , std::map<std::string, Variable const> const& extvars
+                                         , bool has_void_returns);
 
-        static void write_decls();
-        static void write_impls();
+        static void writeDecls();
+        static void writeImpls();
     protected:
         Function(int ext_level
                , std::list<ArgNameTypeRec> const& args

@@ -13,7 +13,7 @@ using namespace inst;
 
 std::string FuncReferenceType::exportedName() const
 {
-    return output::form_FuncReferenceType(size);
+    return output::formFuncReferenceType(size);
 }
 
 std::string FuncReferenceType::name() const
@@ -36,13 +36,13 @@ bool FuncReferenceType::operator<(Type const& rhs) const
 }
 
 bool FuncReferenceType::eqAsFuncReference(util::sref<proto::Function> lhs_func
-                                             , std::map<std::string, Variable const> const& rhs_cr) const
+                                        , std::map<std::string, Variable const> const& rhs_cr) const
 {
     return _func_proto.id() == lhs_func.id() && context_references == rhs_cr;
 }
 
 bool FuncReferenceType::ltAsFuncReference(util::sref<proto::Function> lhs_func
-                                             , std::map<std::string, Variable const> const& rhs_cr) const
+                                        , std::map<std::string, Variable const> const& rhs_cr) const
 {
     if (_func_proto.id() == lhs_func.id()) {
         return util::map_less(context_references, rhs_cr);
@@ -55,7 +55,7 @@ bool FuncReferenceType::ltAsBuiltIn(Type const&) const
     return true;
 }
 
-std::map<std::string, Variable const> FuncReferenceType::_enclose_reference(
+std::map<std::string, Variable const> FuncReferenceType::_encloseReference(
                                             misc::position const& pos
                                           , int level
                                           , std::map<std::string, Variable const> const& cr)
@@ -67,13 +67,14 @@ std::map<std::string, Variable const> FuncReferenceType::_enclose_reference(
                 , [&](std::pair<std::string, Variable const> const& reference)
                   {
                       map.insert(std::make_pair(reference.first
-                                              , Variable(pos, reference.second.type, offset, level)));
+                                              , Variable(pos, reference.second.type, offset, level))
+                                );
                       offset += reference.second.type->size;
                   });
     return map;
 }
 
-int FuncReferenceType::_calc_size(std::map<std::string, Variable const> const& cr)
+int FuncReferenceType::_calcSize(std::map<std::string, Variable const> const& cr)
 {
     int size = 0;
     std::for_each(cr.begin()
@@ -92,7 +93,9 @@ util::sptr<inst::Expression const> FuncReferenceType::call(
           , std::vector<util::sref<inst::Type const>> const& arg_types
           , std::vector<util::sptr<Expression const>> args) const
 {
-    return std::move(util::mkptr(new Call(_func_proto->inst(level, _adjust_vars(stack_offset, level), arg_types)
+    return std::move(util::mkptr(new Call(_func_proto->inst(level
+                                                          , _adjustVars(stack_offset, level)
+                                                          , arg_types)
                                         , std::move(args))));
 }
 
@@ -105,15 +108,16 @@ void FuncReferenceType::write() const
                 , [&](std::pair<std::string, Variable const> const& reference)
                   {
                       output::funcReferenceNextVariable(
-                                           offset
-                                         , output::stack_var_record(reference.second.type->exportedName()
-                                                                  , reference.second.stack_offset
-                                                                  , reference.second.level));
+                                     offset
+                                   , output::StackVarRec(reference.second.type->exportedName()
+                                                       , reference.second.stack_offset
+                                                       , reference.second.level));
                       offset += reference.second.type->size;
                   });
 }
 
-std::map<std::string, Variable const> FuncReferenceType::_adjust_vars(int stack_offset, int level) const
+std::map<std::string, Variable const>
+            FuncReferenceType::_adjustVars(int stack_offset, int level) const
 {
     std::map<std::string, Variable const> result;
     std::for_each(closed_references.begin()
@@ -121,7 +125,8 @@ std::map<std::string, Variable const> FuncReferenceType::_adjust_vars(int stack_
                 , [&](std::pair<std::string, Variable const> const& reference)
                   {
                       result.insert(std::make_pair(reference.first
-                                                 , reference.second.adjust_location(stack_offset, level)));
+                                                 , reference.second.adjustLocation(stack_offset
+                                                                                 , level)));
                   });
     return result;
 }

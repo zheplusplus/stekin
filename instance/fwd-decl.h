@@ -4,7 +4,7 @@
 namespace inst {
 
     struct Function;
-    struct operation;
+    struct Operation;
     struct SymbolTable;
     struct Expression;
     struct Statement;

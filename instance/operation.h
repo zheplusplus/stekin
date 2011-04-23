@@ -9,22 +9,22 @@
 
 namespace inst {
 
-    struct operation {
+    struct Operation {
         util::sref<Type const> const ret_type;
         std::string const op_img;
 
-        operation(util::sref<Type const> rt, std::string const& oi)
+        Operation(util::sref<Type const> rt, std::string const& oi)
             : ret_type(rt)
             , op_img(oi)
         {}
 
-        static operation const* queryBinary(misc::position const& pos
-                                           , std::string const& op
-                                           , util::sref<Type const> lhs
-                                           , util::sref<Type const> rhs);
-        static operation const* queryPreUnary(misc::position const& pos
-                                              , std::string const& op
-                                              , util::sref<Type const> rhs);
+        static Operation const* queryBinary(misc::position const& pos
+                                          , std::string const& op
+                                          , util::sref<Type const> lhs
+                                          , util::sref<Type const> rhs);
+        static Operation const* queryPreUnary(misc::position const& pos
+                                            , std::string const& op
+                                            , util::sref<Type const> rhs);
     };
 
 }

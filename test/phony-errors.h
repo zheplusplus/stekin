@@ -69,11 +69,11 @@ namespace test {
         {}
     };
 
-    struct func_forbidden_rec {
+    struct FuncForbiddenRec {
         misc::position const pos;
         std::string const name;
 
-        func_forbidden_rec(misc::position const& ps, std::string const& n)
+        FuncForbiddenRec(misc::position const& ps, std::string const& n)
             : pos(ps)
             , name(n)
         {}
@@ -98,9 +98,9 @@ namespace test {
 
         template <typename _LineNoIterator>
         InvalidRefRec(_LineNoIterator pos_begin
-                      , _LineNoIterator pos_end
-                      , misc::position def_ps
-                      , std::string const& n)
+                    , _LineNoIterator pos_end
+                    , misc::position def_ps
+                    , std::string const& n)
             : ref_positions(pos_begin, pos_end)
             , def_pos(def_ps)
             , name(n)
@@ -124,9 +124,9 @@ namespace test {
         int const param_count;
 
         FuncRedefRec(misc::position prev_def_ps
-                     , misc::position this_def_ps
-                     , std::string const& n
-                     , int pc)
+                   , misc::position this_def_ps
+                   , std::string const& n
+                   , int pc)
             : prev_def_pos(prev_def_ps)
             , this_def_pos(this_def_ps)
             , name(n)
@@ -156,11 +156,11 @@ namespace test {
         {}
     };
 
-    struct var_nondef_rec {
+    struct VarNondefRec {
         misc::position const ref_pos;
         std::string const name;
 
-        var_nondef_rec(misc::position const& rpos, std::string const& n)
+        VarNondefRec(misc::position const& rpos, std::string const& n)
             : ref_pos(rpos)
             , name(n)
         {}
@@ -173,9 +173,9 @@ namespace test {
         std::string const rhst_name;
 
         NABinaryOpRec(misc::position const& ps
-                       , std::string const& op
-                       , std::string const& lhst
-                       , std::string const& rhst)
+                    , std::string const& op
+                    , std::string const& lhst
+                    , std::string const& rhst)
             : pos(ps)
             , op_img(op)
             , lhst_name(lhst)
@@ -195,14 +195,14 @@ namespace test {
         {}
     };
 
-    struct ret_type_conflict_rec {
+    struct RetTypeConflictRec {
         misc::position const this_pos;
         std::string const prev_type_name;
         std::string const this_type_name;
 
-        ret_type_conflict_rec(misc::position const& tpos
-                            , std::string const& prev_ret_type_name
-                            , std::string const& this_ret_type_name)
+        RetTypeConflictRec(misc::position const& tpos
+                         , std::string const& prev_ret_type_name
+                         , std::string const& this_ret_type_name)
             : this_pos(tpos)
             , prev_type_name(prev_ret_type_name)
             , this_type_name(this_ret_type_name)
@@ -244,19 +244,19 @@ namespace test {
     std::vector<InvCharRec> getInvCharRecs();
     std::vector<ElseNotMatchRec> getElseNotMatches();
     std::vector<IfMatchedRec> getIfMatchedRecs();
-    std::vector<ExcessIndRec> get_excess_inds();
+    std::vector<ExcessIndRec> getExcessInds();
     std::vector<FlowTerminatedRec> getFlowTerminatedRecs();
-    std::vector<func_forbidden_rec> get_forbidden_funcs();
+    std::vector<FuncForbiddenRec> getForbiddenFuncs();
     std::vector<ForbidDefRec> getForbidVarDefs();
     std::vector<VarRedefRec> getLocalRedefs();
     std::vector<InvalidRefRec> getInvalidRefs();
     std::vector<FuncRefAmbiguousRec> getAmbiguousRefs();
     std::vector<FuncRedefRec> getFuncRedefs();
     std::vector<FuncNondefRec> getFuncNondefs();
-    std::vector<var_nondef_rec> get_nondefs();
+    std::vector<VarNondefRec> get_nondefs();
     std::vector<NABinaryOpRec> getNABinaryOps();
     std::vector<NAPreUnaryOpRec> getNAPreUnaryOps();
-    std::vector<ret_type_conflict_rec> get_ret_type_conflicts();
+    std::vector<RetTypeConflictRec> getRetTypeConflicts();
     std::vector<RetTypeUnresolvableRec> getRetTypeUnresolvables();
     std::vector<CondNotBoolRec> getCondNotBools();
     std::vector<VariableNotCallableRec> getVariableNotCallables();

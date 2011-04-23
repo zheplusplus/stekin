@@ -27,7 +27,8 @@ bool Type::eqAsBuiltIn(Type const&) const
     return false;
 }
 
-bool Type::eqAsFuncReference(util::sref<proto::Function>, std::map<std::string, Variable const> const&) const
+bool Type::eqAsFuncReference(util::sref<proto::Function>
+                           , std::map<std::string, Variable const> const&) const
 {
     return false;
 }
@@ -37,7 +38,8 @@ bool Type::ltAsBuiltIn(Type const&) const
     return false;
 }
 
-bool Type::ltAsFuncReference(util::sref<proto::Function>, std::map<std::string, Variable const> const&) const
+bool Type::ltAsFuncReference(util::sref<proto::Function>
+                           , std::map<std::string, Variable const> const&) const
 {
     return false;
 }
@@ -49,7 +51,7 @@ void Type::checkCondType(misc::position const& pos) const
 
 std::string BuiltInPrimitive::exportedName() const
 {
-    return output::form_type(tname);
+    return output::formType(tname);
 }
 
 std::string BuiltInPrimitive::name() const
@@ -78,7 +80,7 @@ bool BuiltInPrimitive::ltAsBuiltIn(Type const& lhs) const
 }
 
 bool BuiltInPrimitive::ltAsFuncReference(util::sref<proto::Function>
-                                            , std::map<std::string, Variable const> const&) const
+                                       , std::map<std::string, Variable const> const&) const
 {
     return false;
 }

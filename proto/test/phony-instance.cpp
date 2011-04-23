@@ -125,7 +125,7 @@ util::sptr<inst::Expression const> FuncReferenceType::call(
     return std::move(util::sptr<inst::Expression const>(NULL));
 }
 
-std::map<std::string, Variable const> FuncReferenceType::_enclose_reference(
+std::map<std::string, Variable const> FuncReferenceType::_encloseReference(
                                           misc::position const&
                                         , int
                                         , std::map<std::string, Variable const> const& cr)
@@ -133,7 +133,7 @@ std::map<std::string, Variable const> FuncReferenceType::_enclose_reference(
     return cr;
 }
 
-int FuncReferenceType::_calc_size(std::map<std::string, Variable const> const&)
+int FuncReferenceType::_calcSize(std::map<std::string, Variable const> const&)
 {
     return 0;
 }
@@ -176,7 +176,7 @@ void Function::setReturnType(misc::position const& pos, util::sref<Type const> t
     DataTree::actualOne()(pos, t == Type::BIT_VOID ? SET_RETURN_TYPE_VOID : SET_RETURN_TYPE);
 }
 
-util::sref<Type const> Function::get_return_type() const
+util::sref<Type const> Function::getReturnType() const
 {
     return util::mkref(PROTO_TEST_TYPE);
 }
@@ -215,7 +215,7 @@ Variable Function::queryVar(misc::position const& pos, std::string const& name) 
     return Variable(misc::position(0), util::mkref(test::PROTO_TEST_TYPE), 0, 0);
 }
 
-operation const* Scope::queryBinary(misc::position const& pos
+Operation const* Scope::queryBinary(misc::position const& pos
                                   , std::string const& op
                                   , util::sref<Type const>
                                   , util::sref<Type const>) const
@@ -224,7 +224,7 @@ operation const* Scope::queryBinary(misc::position const& pos
     return NULL;
 }
 
-operation const* Scope::queryPreUnary(misc::position const& pos
+Operation const* Scope::queryPreUnary(misc::position const& pos
                                     , std::string const& op
                                     , util::sref<Type const>) const
 {
@@ -382,7 +382,7 @@ void Disjunction::write() const {}
 void Negation::write() const {}
 void Arithmetics::write() const {}
 void Branch::write() const {}
-void initialization::write() const {}
+void Initialization::write() const {}
 void Return::write() const {}
 void ReturnNothing::write() const {}
 void Block::write() const {}

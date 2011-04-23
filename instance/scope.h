@@ -17,8 +17,8 @@ namespace inst {
         virtual void setReturnType(misc::position const& pos, util::sref<Type const> type) = 0;
 
         virtual Variable defVar(misc::position const& pos
-                               , util::sref<Type const> type
-                               , std::string const& name) = 0;
+                              , util::sref<Type const> type
+                              , std::string const& name) = 0;
         virtual Variable queryVar(misc::position const& pos, std::string const& name) const = 0;
 
         virtual void addPath(util::sref<MediateBase> path) = 0;
@@ -27,13 +27,13 @@ namespace inst {
 
         virtual int level() const = 0;
 
-        operation const* queryBinary(misc::position const& pos
-                                    , std::string const& op
-                                    , util::sref<Type const> lhs
-                                    , util::sref<Type const> rhs) const;
-        operation const* queryPreUnary(misc::position const& pos
-                                       , std::string const& op
-                                       , util::sref<Type const> rhs) const;
+        Operation const* queryBinary(misc::position const& pos
+                                   , std::string const& op
+                                   , util::sref<Type const> lhs
+                                   , util::sref<Type const> rhs) const;
+        Operation const* queryPreUnary(misc::position const& pos
+                                     , std::string const& op
+                                     , util::sref<Type const> rhs) const;
 
         void addStmt(util::sptr<Statement const> stmt);
     protected:

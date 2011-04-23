@@ -36,8 +36,8 @@ util::sptr<Expression const> Expression::operate(misc::position const& op_pos
 }
 
 util::sptr<Expression const> Expression::operate(misc::position const& op_pos
-                                             , std::string const& op_img
-                                             , bool rhs) const
+                                               , std::string const& op_img
+                                               , bool rhs) const
 {
     return std::move(util::mkptr(new BinaryOp(op_pos
                                             , std::move(fold())

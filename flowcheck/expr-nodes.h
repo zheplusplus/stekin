@@ -229,8 +229,8 @@ namespace flchk {
                                            , bool) const;
 
         util::sptr<Expression const> asRHS(misc::position const& op_pos
-                                          , std::string const& op_img
-                                          , util::sptr<Expression const> lhs) const;
+                                         , std::string const& op_img
+                                         , util::sptr<Expression const> lhs) const;
         util::sptr<Expression const> asRHS(misc::position const& op_pos
                                          , std::string const& op_img) const;
 

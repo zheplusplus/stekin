@@ -10,7 +10,7 @@ using namespace grammar;
 void Function::compile(util::sref<flchk::Filter> filter) const
 {
     filter->defFunc(pos
-                   , name
-                   , param_names
-                   , std::move(body.compile(std::move(util::mkmptr(new flchk::Filter)))));
+                  , name
+                  , param_names
+                  , std::move(body.compile(std::move(util::mkmptr(new flchk::Filter)))));
 }

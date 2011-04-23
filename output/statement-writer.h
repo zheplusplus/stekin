@@ -5,25 +5,25 @@
 
 namespace output {
 
-    void return_kw();
-    void return_nothing();
-    void ref_this_level(int offset, std::string const& type_exported_name);
-    void ref_level(int offset, int level, std::string const& type_exported_name);
-    void assign_sign();
+    void kwReturn();
+    void returnNothing();
+    void refThisLevel(int offset, std::string const& type_exported_name);
+    void refLevel(int offset, int level, std::string const& type_exported_name);
+    void signAssign();
 
-    void write_int(int i);
-    void write_float(double d);
-    void write_bool(bool b);
-    void write_operator(std::string const& op_img);
+    void writeInt(int i);
+    void writeFloat(double d);
+    void writeBool(bool b);
+    void writeOperator(std::string const& op_img);
 
-    void begin_expr();
-    void end_expr();
+    void beginExpr();
+    void endExpr();
 
     void branchIf();
     void branchElse();
 
-    void block_begin();
-    void block_end();
+    void blockBegin();
+    void blockEnd();
     void endOfStatement();
 
     void beginWriteStmt();

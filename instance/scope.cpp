@@ -8,19 +8,19 @@
 
 using namespace inst;
 
-operation const* Scope::queryBinary(misc::position const& pos
-                                   , std::string const& op
-                                   , util::sref<Type const> lhs
-                                   , util::sref<Type const> rhs) const
+Operation const* Scope::queryBinary(misc::position const& pos
+                                  , std::string const& op
+                                  , util::sref<Type const> lhs
+                                  , util::sref<Type const> rhs) const
 {
-    return operation::queryBinary(pos, op, lhs, rhs);
+    return Operation::queryBinary(pos, op, lhs, rhs);
 }
 
-operation const* Scope::queryPreUnary(misc::position const& pos
-                                      , std::string const& op
-                                      , util::sref<Type const> rhs) const
+Operation const* Scope::queryPreUnary(misc::position const& pos
+                                    , std::string const& op
+                                    , util::sref<Type const> rhs) const
 {
-    return operation::queryPreUnary(pos, op, rhs);
+    return Operation::queryPreUnary(pos, op, rhs);
 }
 
 void Scope::addStmt(util::sptr<Statement const> stmt)

@@ -8,24 +8,24 @@
 
 using namespace test;
 
-typedef instance_test StmtNodesTest;
+typedef InstanceTest StmtNodesTest;
 
 TEST_F(StmtNodesTest, BranchConditionTypeCheck)
 {
     misc::position pos(1);
     inst::Branch(pos
-               , std::move(util::mkptr(new cond_type_expr))
+               , std::move(util::mkptr(new CondTypeExpr))
                , std::move(util::mkptr(new inst::Block))
                , std::move(util::mkptr(new inst::Block)));
     ASSERT_FALSE(error::hasError());
     inst::Branch(pos
-               , std::move(util::mkptr(new bad_type_expr))
+               , std::move(util::mkptr(new BadTypeExpr))
                , std::move(util::mkptr(new inst::Block))
                , std::move(util::mkptr(new inst::Block)));
     ASSERT_FALSE(error::hasError());
 
     inst::Branch(pos
-               , std::move(util::mkptr(new void_type_expr))
+               , std::move(util::mkptr(new VoidTypeExpr))
                , std::move(util::mkptr(new inst::Block))
                , std::move(util::mkptr(new inst::Block)));
     ASSERT_TRUE(error::hasError());

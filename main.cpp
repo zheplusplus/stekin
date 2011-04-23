@@ -45,10 +45,10 @@ int main()
         return 1;
     }
 
-    inst::Function::write_decls();
-    output::write_main_begin();
-    output::stk_main_func(inst_global_func.id());
-    output::write_main_end();
-    inst::Function::write_impls();
+    inst::Function::writeDecls();
+    output::writeMainBegin();
+    output::stknMainFunc(inst_global_func.id());
+    output::writeMainEnd();
+    inst::Function::writeImpls();
     return 0;
 }

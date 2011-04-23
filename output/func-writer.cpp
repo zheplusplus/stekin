@@ -35,26 +35,26 @@ static std::string const FUNC_PERFORM_IMPL_BEGIN(
     "$FUNC_RET_TYPE $FUNC_NAME::_stk_perform()\n"
 );
 
-static std::string form_args_decl(std::list<stack_var_record> const& params)
+static std::string formArgsDecl(std::list<StackVarRec> const& params)
 {
     int i = 0;
     std::string result;
     std::for_each(params.begin()
                 , params.end()
-                , [&](stack_var_record const& record)
+                , [&](StackVarRec const& record)
                   {
                       result += ", " + record.type + " _stk_arg_" + util::str(i++);
                   });
     return result;
 }
 
-static std::string form_copy_args(std::list<stack_var_record> const& params)
+static std::string formCopyArgs(std::list<StackVarRec> const& params)
 {
     int i = 0;
     std::string result;
     std::for_each(params.begin()
                 , params.end()
-                , [&](stack_var_record const& record)
+                , [&](StackVarRec const& record)
                   {
                       result += "_stk_bases.push("
                               + util::str(record.offset)
@@ -65,16 +65,16 @@ static std::string form_copy_args(std::list<stack_var_record> const& params)
     return result;
 }
 
-void output::write_func_decl(std::string const& ret_type_name
-                           , util::id func_addr
-                           , std::list<stack_var_record> const& params
-                           , int func_level
-                           , int stack_size_used)
+void output::writeFuncDecl(std::string const& ret_type_name
+                         , util::id func_addr
+                         , std::list<StackVarRec> const& params
+                         , int func_level
+                         , int stack_size_used)
 {
     std::vector<std::string> typenames;
     std::for_each(params.begin()
                 , params.end()
-                , [&](stack_var_record const& record)
+                , [&](StackVarRec const& record)
                   {
                       typenames.push_back(record.type);
                   });
@@ -87,31 +87,31 @@ void output::write_func_decl(std::string const& ret_type_name
         util::replace_all(
             FUNC_DECL
                 , "$FUNC_RET_TYPE", ret_type_name)
-                , "$FUNC_NAME", form_func_name(func_addr))
-                , "$ARGS_DECL", form_args_decl(params))
-                , "$COPY_ARGS", form_copy_args(params))
+                , "$FUNC_NAME", formFuncName(func_addr))
+                , "$ARGS_DECL", formArgsDecl(params))
+                , "$COPY_ARGS", formCopyArgs(params))
                 , "$FUNC_LEVEL", util::str(func_level))
                 , "$FUNC_FRAME_SIZE", util::str(stack_size_used))
     ;
 }
 
-void output::write_func_perform_impl(std::string const& ret_type_name, util::id func_addr)
+void output::writeFuncImpl(std::string const& ret_type_name, util::id func_addr)
 {
     std::cout <<
         util::replace_all(
         util::replace_all(
             FUNC_PERFORM_IMPL_BEGIN
                 , "$FUNC_RET_TYPE", ret_type_name)
-                , "$FUNC_NAME", form_func_name(func_addr))
+                , "$FUNC_NAME", formFuncName(func_addr))
     ;
 }
 
 void output::writeCallBegin(util::id func_addr)
 {
-    std::cout << "(" << form_func_name(func_addr) << "(_stk_bases";
+    std::cout << "(" << formFuncName(func_addr) << "(_stk_bases";
 }
 
-void output::write_arg_seperator()
+void output::writeArgSeparator()
 {
     std::cout << ", ";
 }
@@ -131,19 +131,19 @@ static std::string const MAIN_END(
     "}\n"
 );
 
-void output::write_main_begin()
+void output::writeMainBegin()
 {
     std::cout << MAIN_BEGIN;
 }
 
-void output::write_main_end()
+void output::writeMainEnd()
 {
     std::cout << MAIN_END << std::endl;
 }
 
-void output::stk_main_func(util::id func_addr)
+void output::stknMainFunc(util::id func_addr)
 {
-    std::cout << "    " << form_func_name(func_addr) << "()._stk_perform();" << std::endl;
+    std::cout << "    " << formFuncName(func_addr) << "()._stk_perform();" << std::endl;
 }
 
 void output::constructFuncReference(std::string const& type_exported_name)
@@ -151,9 +151,9 @@ void output::constructFuncReference(std::string const& type_exported_name)
     std::cout << type_exported_name << "()";
 }
 
-void output::funcReferenceNextVariable(int offset, stack_var_record const& init)
+void output::funcReferenceNextVariable(int offset, StackVarRec const& init)
 {
     std::cout << (".push(" + util::str(offset) + ", ");
-    ref_level(init.offset, init.level, init.type);
+    refLevel(init.offset, init.level, init.type);
     std::cout << ')';
 }

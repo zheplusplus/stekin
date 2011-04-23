@@ -34,10 +34,10 @@ namespace inst {
         util::sptr<Statement const> const alternative;
     };
 
-    struct initialization
+    struct Initialization
         : public Statement
     {
-        initialization(int o, util::sptr<Expression const> i)
+        Initialization(int o, util::sptr<Expression const> i)
             : offset(o)
             , init(std::move(i))
         {}

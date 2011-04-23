@@ -13,12 +13,12 @@ void Block::addStmt(util::sptr<Statement const> stmt)
 
 void Block::write() const
 {
-    output::block_begin();
+    output::blockBegin();
     std::for_each(_stmts.begin()
                 , _stmts.end()
                 , [&](util::sptr<Statement const> const& stmt)
                   {
                       stmt->write();
                   });
-    output::block_end();
+    output::blockEnd();
 }

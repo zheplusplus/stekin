@@ -11,7 +11,9 @@
 
 using namespace inst;
 
-Variable Function::defVar(misc::position const& pos, util::sref<Type const> type, std::string const& name)
+Variable Function::defVar(misc::position const& pos
+                        , util::sref<Type const> type
+                        , std::string const& name)
 {
     return _symbols.defVar(pos, type, name);
 }
@@ -21,7 +23,7 @@ Variable Function::queryVar(misc::position const& pos, std::string const& name) 
     return _symbols.queryVar(pos, name);
 }
 
-util::sref<Type const> Function::get_return_type() const
+util::sref<Type const> Function::getReturnType() const
 {
     return Type::BIT_VOID;
 }
@@ -40,17 +42,17 @@ bool Function::isReturnTypeResolved() const
 
 namespace {
 
-    struct Function_unresolved
+    struct FunctionUnresolved
         : public Function
     {
-        Function_unresolved(int ext_level
-                          , std::list<ArgNameTypeRec> const& args
-                          , std::map<std::string, Variable const> const& extvars)
+        FunctionUnresolved(int ext_level
+                         , std::list<ArgNameTypeRec> const& args
+                         , std::map<std::string, Variable const> const& extvars)
             : Function(ext_level, args, extvars)
             , _return_type(Type::BAD_TYPE)
         {}
 
-        util::sref<Type const> get_return_type() const
+        util::sref<Type const> getReturnType() const
         {
             return _return_type;
         }
@@ -74,45 +76,46 @@ namespace {
         util::sref<Type const> _return_type;
     };
 
-    struct func_inst_recs
+    struct FuncInstRecs
         : protected std::list<util::sptr<Function const>>
     {
         typedef std::list<util::sptr<Function const>> BaseType;
-        typedef BaseType::const_iterator iterator;
+        typedef BaseType::const_iterator Iterator;
 
         void add(util::sptr<Function const> func)
         {
             push_back(std::move(func));
         }
 
-        iterator begin() const
+        Iterator begin() const
         {
             return BaseType::begin();
         }
 
-        iterator end() const
+        Iterator end() const
         {
             return BaseType::end();
         }
     private:
-        func_inst_recs() {}
+        FuncInstRecs() {}
     public:
-        static func_inst_recs instance;
+        static FuncInstRecs instance;
     };
 
-    func_inst_recs func_inst_recs::instance;
+    FuncInstRecs FuncInstRecs::instance;
 
 }
 
 util::sref<Function> Function::createInstance(int ext_level
-                                             , std::list<ArgNameTypeRec> const& arg_types
-                                             , std::map<std::string, Variable const> const& extvars
-                                             , bool has_void_returns)
+                                            , std::list<ArgNameTypeRec> const& arg_types
+                                            , std::map<std::string, Variable const> const& extvars
+                                            , bool has_void_returns)
 {
-    util::sptr<Function> func(has_void_returns ? new Function(ext_level, arg_types, extvars)
-                                               : new Function_unresolved(ext_level, arg_types, extvars));
+    util::sptr<Function> func(has_void_returns
+                                        ? new Function(ext_level, arg_types, extvars)
+                                        : new FunctionUnresolved(ext_level, arg_types, extvars));
     util::sref<Function> fref = *func;
-    func_inst_recs::instance.add(std::move(func));
+    FuncInstRecs::instance.add(std::move(func));
     return fref;
 }
 
@@ -141,41 +144,41 @@ int Function::level() const
     return _symbols.level;
 }
 
-static std::list<output::stack_var_record> args_to_var_recs(std::list<inst::Variable> const& args)
+static std::list<output::StackVarRec> argsToVarRecs(std::list<inst::Variable> const& args)
 {
-    std::list<output::stack_var_record> recs;
+    std::list<output::StackVarRec> recs;
     std::for_each(args.begin()
                 , args.end()
                 , [&](inst::Variable const& var)
                   {
-                      recs.push_back(output::stack_var_record(var.type->exportedName()
-                                                            , var.stack_offset
-                                                            , var.level));
+                      recs.push_back(output::StackVarRec(var.type->exportedName()
+                                                       , var.stack_offset
+                                                       , var.level));
                   });
     return recs;
 }
 
-void Function::write_decls()
+void Function::writeDecls()
 {
-    std::for_each(func_inst_recs::instance.begin()
-                , func_inst_recs::instance.end()
+    std::for_each(FuncInstRecs::instance.begin()
+                , FuncInstRecs::instance.end()
                 , [&](util::sptr<Function const> const& func)
                   {
-                      output::write_func_decl(func->get_return_type()->exportedName()
-                                            , func.id()
-                                            , args_to_var_recs(func->_symbols.get_args())
-                                            , func->_symbols.level
-                                            , func->_symbols.stack_size());
+                      output::writeFuncDecl(func->getReturnType()->exportedName()
+                                          , func.id()
+                                          , argsToVarRecs(func->_symbols.getArgs())
+                                          , func->_symbols.level
+                                          , func->_symbols.stackSize());
                   });
 }
 
-void Function::write_impls()
+void Function::writeImpls()
 {
-    std::for_each(func_inst_recs::instance.begin()
-                , func_inst_recs::instance.end()
+    std::for_each(FuncInstRecs::instance.begin()
+                , FuncInstRecs::instance.end()
                 , [&](util::sptr<Function const> const& func)
                   {
-                      output::write_func_perform_impl(func->get_return_type()->exportedName(), func.id());
+                      output::writeFuncImpl(func->getReturnType()->exportedName(), func.id());
                       func->_block.write();
                   });
 }

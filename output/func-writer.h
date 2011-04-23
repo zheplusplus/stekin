@@ -8,36 +8,36 @@
 
 namespace output {
 
-    struct stack_var_record {
+    struct StackVarRec {
         std::string const type;
         int const offset;
         int const level;
 
-        stack_var_record(std::string const& t, int o, int l)
+        StackVarRec(std::string const& t, int o, int l)
             : type(t)
             , offset(o)
             , level(l)
         {}
     };
 
-    void write_func_decl(std::string const& ret_type_name
-                       , util::id func_addr
-                       , std::list<stack_var_record> const& params
-                       , int func_level
-                       , int stack_size_used);
+    void writeFuncDecl(std::string const& ret_type_name
+                     , util::id func_addr
+                     , std::list<StackVarRec> const& params
+                     , int func_level
+                     , int stack_size_used);
 
-    void write_func_perform_impl(std::string const& ret_type_name, util::id func_addr);
+    void writeFuncImpl(std::string const& ret_type_name, util::id func_addr);
 
     void writeCallBegin(util::id func_addr);
-    void write_arg_seperator();
+    void writeArgSeparator();
     void writeCallEnd();
 
-    void write_main_begin();
-    void write_main_end();
-    void stk_main_func(util::id func_addr);
+    void writeMainBegin();
+    void writeMainEnd();
+    void stknMainFunc(util::id func_addr);
 
     void constructFuncReference(std::string const& type_exported_name);
-    void funcReferenceNextVariable(int offset, stack_var_record const& init);
+    void funcReferenceNextVariable(int offset, StackVarRec const& init);
 
 }
 

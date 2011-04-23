@@ -23,8 +23,8 @@ namespace inst {
 
     struct SymbolTable {
         SymbolTable(int ext_lvl
-                   , std::list<ArgNameTypeRec> const& args
-                   , std::map<std::string, Variable const> const& ext_vars);
+                  , std::list<ArgNameTypeRec> const& args
+                  , std::map<std::string, Variable const> const& ext_vars);
 
         SymbolTable()
             : level(0)
@@ -38,13 +38,15 @@ namespace inst {
             , _external_defs(std::move(rhs._external_defs))
         {}
     public:
-        Variable defVar(misc::position const& pos, util::sref<Type const> type, std::string const& name);
+        Variable defVar(misc::position const& pos
+                      , util::sref<Type const> type
+                      , std::string const& name);
         Variable queryVar(misc::position const& pos, std::string const& name) const;
     public:
         int const level;
     public:
-        int stack_size() const;
-        std::list<Variable> get_args() const;
+        int stackSize() const;
+        std::list<Variable> getArgs() const;
     private:
         int _ss_used;
         std::list<Variable> _args;

@@ -3,40 +3,40 @@
 #include "statement-writer.h"
 #include "name-mangler.h"
 
-void output::return_kw()
+void output::kwReturn()
 {
     std::cout << "return ";
 }
 
-void output::return_nothing()
+void output::returnNothing()
 {
-    return_kw();
-    std::cout << form_type("void") << "()";
+    kwReturn();
+    std::cout << formType("void") << "()";
     endOfStatement();
 }
 
-void output::ref_this_level(int offset, std::string const& type_exported_name)
+void output::refThisLevel(int offset, std::string const& type_exported_name)
 {
     std::cout << "(*(" << type_exported_name << "*)(" << offset << " + (char*)(_stk_bases.this_base())))";
 }
 
-void output::ref_level(int offset, int level, std::string const& type_exported_name)
+void output::refLevel(int offset, int level, std::string const& type_exported_name)
 {
     std::cout << "(*(" << type_exported_name << "*)"
                  "(" << offset << " + (char*)(_stk_bases._stk_ext_bases[" << level << "])))";
 }
 
-void output::assign_sign()
+void output::signAssign()
 {
     std::cout << " = ";
 }
 
-void output::begin_expr()
+void output::beginExpr()
 {
     std::cout << "(";
 }
 
-void output::end_expr()
+void output::endExpr()
 {
     std::cout << ")";
 }
@@ -51,12 +51,12 @@ void output::branchElse()
     std::cout << " else ";
 }
 
-void output::block_begin()
+void output::blockBegin()
 {
     std::cout << "{" << std::endl;
 }
 
-void output::block_end()
+void output::blockEnd()
 {
     std::cout << "}" << std::endl;
 }
@@ -66,22 +66,22 @@ void output::endOfStatement()
     std::cout << ";" << std::endl;
 }
 
-void output::write_int(int i)
+void output::writeInt(int i)
 {
     std::cout << "(" << i << ")";
 }
 
-void output::write_float(double d)
+void output::writeFloat(double d)
 {
     std::cout << "(" << d << ")";
 }
 
-void output::write_bool(bool b)
+void output::writeBool(bool b)
 {
     std::cout << "(" << b << ")";
 }
 
-void output::write_operator(std::string const& op_img)
+void output::writeOperator(std::string const& op_img)
 {
     std::cout << " " << op_img << " ";
 }

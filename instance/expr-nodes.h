@@ -84,9 +84,9 @@ namespace inst {
         : public Expression
     {
         FuncReference(misc::position const& reference_pos
-                     , util::sref<proto::Function> func_proto
-                     , int level
-                     , std::map<std::string, Variable const> const& cr)
+                    , util::sref<proto::Function> func_proto
+                    , int level
+                    , std::map<std::string, Variable const> const& cr)
             : _type(reference_pos, func_proto, level, cr)
         {}
 
@@ -99,7 +99,7 @@ namespace inst {
     struct BinaryOp
         : public Expression
     {
-        BinaryOp(util::sptr<Expression const> l, operation const* o, util::sptr<Expression const> r)
+        BinaryOp(util::sptr<Expression const> l, Operation const* o, util::sptr<Expression const> r)
             : lhs(std::move(l))
             , op(o)
             , rhs(std::move(r))
@@ -109,14 +109,14 @@ namespace inst {
         void write() const;
 
         util::sptr<Expression const> const lhs;
-        operation const* const op;
+        Operation const* const op;
         util::sptr<Expression const> const rhs;
     };
 
     struct PreUnaryOp
         : public Expression
     {
-        PreUnaryOp(operation const* o, util::sptr<Expression const> r)
+        PreUnaryOp(Operation const* o, util::sptr<Expression const> r)
             : op(o)
             , rhs(std::move(r))
         {}
@@ -124,14 +124,16 @@ namespace inst {
         util::sref<Type const> typeof() const;
         void write() const;
 
-        operation const* const op;
+        Operation const* const op;
         util::sptr<Expression const> const rhs;
     };
 
     struct Conjunction
         : public Expression
     {
-        Conjunction(misc::position const& p, util::sptr<Expression const> l, util::sptr<Expression const> r);
+        Conjunction(misc::position const& p
+                  , util::sptr<Expression const> l
+                  , util::sptr<Expression const> r);
 
         util::sref<Type const> typeof() const;
         void write() const;
@@ -143,7 +145,9 @@ namespace inst {
     struct Disjunction
         : public Expression
     {
-        Disjunction(misc::position const& p, util::sptr<Expression const> l, util::sptr<Expression const> r);
+        Disjunction(misc::position const& p
+                  , util::sptr<Expression const> l
+                  , util::sptr<Expression const> r);
 
         util::sref<Type const> typeof() const;
         void write() const;
