@@ -17,6 +17,9 @@ static Operation const BIT_FLOAT_SUB(Type::BIT_FLOAT, "-");
 static Operation const BIT_FLOAT_MUL(Type::BIT_FLOAT, "*");
 static Operation const BIT_FLOAT_DIV(Type::BIT_FLOAT, "/");
 
+static Operation const BIT_BOOL_EQ(Type::BIT_BOOL, "==");
+static Operation const BIT_BOOL_NE(Type::BIT_BOOL, "!=");
+
 static Operation const BIT_INT_EQ(Type::BIT_BOOL, "==");
 static Operation const BIT_INT_LE(Type::BIT_BOOL, "<=");
 static Operation const BIT_INT_LT(Type::BIT_BOOL, "<");
@@ -99,6 +102,19 @@ namespace {
                 .add("*", Type::BIT_FLOAT, Type::BIT_FLOAT, &BIT_FLOAT_MUL)
                 .add("/", Type::BIT_FLOAT, Type::BIT_FLOAT, &BIT_FLOAT_DIV)
 
+                .add("=", Type::BIT_BOOL, Type::BIT_BOOL, &BIT_BOOL_EQ)
+                .add("!=", Type::BIT_BOOL, Type::BIT_BOOL, &BIT_BOOL_NE)
+
+                .add("+", Type::BIT_INT, Type::BIT_FLOAT, &BIT_FLOAT_ADD)
+                .add("-", Type::BIT_INT, Type::BIT_FLOAT, &BIT_FLOAT_SUB)
+                .add("*", Type::BIT_INT, Type::BIT_FLOAT, &BIT_FLOAT_MUL)
+                .add("/", Type::BIT_INT, Type::BIT_FLOAT, &BIT_FLOAT_DIV)
+
+                .add("+", Type::BIT_FLOAT, Type::BIT_INT, &BIT_FLOAT_ADD)
+                .add("-", Type::BIT_FLOAT, Type::BIT_INT, &BIT_FLOAT_SUB)
+                .add("*", Type::BIT_FLOAT, Type::BIT_INT, &BIT_FLOAT_MUL)
+                .add("/", Type::BIT_FLOAT, Type::BIT_INT, &BIT_FLOAT_DIV)
+
                 .add("=", Type::BIT_INT, Type::BIT_INT, &BIT_INT_EQ)
                 .add("<=", Type::BIT_INT, Type::BIT_INT, &BIT_INT_LE)
                 .add("<", Type::BIT_INT, Type::BIT_INT, &BIT_INT_LT)
@@ -112,6 +128,20 @@ namespace {
                 .add(">=", Type::BIT_FLOAT, Type::BIT_FLOAT, &BIT_FLOAT_GE)
                 .add(">", Type::BIT_FLOAT, Type::BIT_FLOAT, &BIT_FLOAT_GT)
                 .add("!=", Type::BIT_FLOAT, Type::BIT_FLOAT, &BIT_FLOAT_NE)
+
+                .add("=", Type::BIT_INT, Type::BIT_FLOAT, &BIT_FLOAT_EQ)
+                .add("<=", Type::BIT_INT, Type::BIT_FLOAT, &BIT_FLOAT_LE)
+                .add("<", Type::BIT_INT, Type::BIT_FLOAT, &BIT_FLOAT_LT)
+                .add(">=", Type::BIT_INT, Type::BIT_FLOAT, &BIT_FLOAT_GE)
+                .add(">", Type::BIT_INT, Type::BIT_FLOAT, &BIT_FLOAT_GT)
+                .add("!=", Type::BIT_INT, Type::BIT_FLOAT, &BIT_FLOAT_NE)
+
+                .add("=", Type::BIT_FLOAT, Type::BIT_INT, &BIT_FLOAT_EQ)
+                .add("<=", Type::BIT_FLOAT, Type::BIT_INT, &BIT_FLOAT_LE)
+                .add("<", Type::BIT_FLOAT, Type::BIT_INT, &BIT_FLOAT_LT)
+                .add(">=", Type::BIT_FLOAT, Type::BIT_INT, &BIT_FLOAT_GE)
+                .add(">", Type::BIT_FLOAT, Type::BIT_INT, &BIT_FLOAT_GT)
+                .add("!=", Type::BIT_FLOAT, Type::BIT_INT, &BIT_FLOAT_NE)
             ;
         }
 

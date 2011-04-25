@@ -1,5 +1,5 @@
 func abs(x)
-    if x < 0.0
+    if x < 0
         return -x
     return x
 
@@ -7,7 +7,7 @@ func square(x)
     return x * x
 
 func average(x, y)
-    return (x + y) / 2.0
+    return (x + y) / 2
 
 func sqrt(x)
     PRECISION: 0.001
