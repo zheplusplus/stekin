@@ -16,10 +16,10 @@ namespace proto {
         util::sptr<Expression const> makeRef(misc::position const& pos, std::string const& name);
         util::sptr<Expression const> makeCall(misc::position const& pos
                                             , std::string const& name
-                                            , std::vector<util::sptr<Expression const>> args) const;
+                                            , std::vector<util::sptr<Expression const>> args);
         util::sptr<Expression const> makeFuncReference(misc::position const& pos
                                                      , std::string const& name
-                                                     , int param_count) const;
+                                                     , int param_count);
 
         void defVar(misc::position const&, std::string const&);
 

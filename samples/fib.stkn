@@ -1,7 +1,9 @@
 func fib_0(x)
+    func fib_add()
+        return fib_0(x - 1) + fib_0(x - 2)
     if x < 2
         return 1
-    return fib_0(x - 1) + fib_0(x - 2)
+    return fib_add()
 
 write(fib_0(0))
 write(fib_0(1))
@@ -10,8 +12,10 @@ write(fib_0(3))
 write(fib_0(4))
 
 func fib_1(x)
-    ifnot x < 2
+    func fib_add()
         return fib_1(x - 1) + fib_1(x - 2)
+    ifnot x < 2
+        return fib_add()
     return 1
 
 write(fib_1(5))

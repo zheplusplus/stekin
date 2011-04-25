@@ -84,6 +84,11 @@ std::map<std::string, inst::Variable const> Function::bindExternalVars(
     return _symbols.bindExternalVars(pos, ext_scope);
 }
 
+std::vector<std::string> Function::freeVariables() const
+{
+    return _symbols.freeVariables();
+}
+
 bool Function::InstanceInfo::operator<(Function::InstanceInfo const& rhs) const
 {
     if (arg_types != rhs.arg_types) {

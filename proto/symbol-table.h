@@ -59,7 +59,7 @@ namespace proto {
         SymbolTable(SymbolTable&& rhs)
             : level(rhs.level)
             , _external_var_refs(rhs._external_var_refs)
-            , _VarDefs(rhs._VarDefs)
+            , _var_defs(rhs._var_defs)
             , _overloads(rhs._overloads)
             , _func_entities(std::move(rhs._func_entities))
         {}
@@ -72,17 +72,20 @@ namespace proto {
                                    , bool hint_void_return);
         util::sptr<Expression const> queryCall(misc::position const& pos
                                              , std::string const& name
-                                             , std::vector<util::sptr<Expression const>> args)
-                                            const;
+                                             , std::vector<util::sptr<Expression const>> args);
         util::sref<Function> queryFunc(misc::position const& pos
                                      , std::string const& name
-                                     , int param_count) const;
+                                     , int param_count);
         std::map<std::string, inst::Variable const> bindExternalVars(
                                               misc::position const& pos
                                             , util::sref<inst::Scope const> ext_scope) const;
+        std::vector<std::string> freeVariables() const;
+    private:
+        void _cascadeRefFreeVars(std::vector<std::string> const& vars
+                               , misc::position const& call_pos);
     private:
         std::map<std::string, std::list<misc::position>> _external_var_refs;
-        std::map<std::string, misc::position> _VarDefs;
+        std::map<std::string, misc::position> _var_defs;
 
         Overloads _overloads;
         std::list<Function> _func_entities;

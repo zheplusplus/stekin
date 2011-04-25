@@ -25,10 +25,10 @@ namespace proto {
         virtual util::sptr<Expression const> makeCall(
                                           misc::position const& pos
                                         , std::string const& name
-                                        , std::vector<util::sptr<Expression const>> args) const = 0;
+                                        , std::vector<util::sptr<Expression const>> args) = 0;
         virtual util::sptr<Expression const> makeFuncReference(misc::position const& pos
                                                              , std::string const& name
-                                                             , int param_count) const = 0;
+                                                             , int param_count) = 0;
         util::sptr<Expression const> makeBinary(misc::position const& pos
                                               , util::sptr<Expression const> lhs
                                               , std::string const& op

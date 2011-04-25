@@ -14,14 +14,13 @@ util::sptr<Expression const> GeneralScope::makeRef(misc::position const& pos, st
 util::sptr<Expression const> GeneralScope::makeCall(misc::position const& pos
                                                   , std::string const& name
                                                   , std::vector<util::sptr<Expression const>> args)
-                                                const
 {
     return std::move(_symbols.queryCall(pos, name, std::move(args)));
 }
 
 util::sptr<Expression const> GeneralScope::makeFuncReference(misc::position const& pos
                                                            , std::string const& name
-                                                           , int param_count) const
+                                                           , int param_count)
 {
     return std::move(util::mkptr(new FuncReference(pos
                                                  , _symbols.queryFunc(pos, name, param_count))));

@@ -62,6 +62,7 @@ namespace proto {
         std::map<std::string, inst::Variable const> bindExternalVars(
                                                 misc::position const& pos
                                               , util::sref<inst::Scope const> ext_scope) const;
+        std::vector<std::string> freeVariables() const;
     };
 
 }

@@ -122,7 +122,7 @@ util::sptr<Expression const> SymbolTable::refVar(misc::position const& pos, std:
         return std::move(util::mkptr(new FuncReference(pos, all_funcs[0])));
     }
 
-    if (_VarDefs.end() == _VarDefs.find(name)) {
+    if (_var_defs.end() == _var_defs.find(name)) {
         _external_var_refs[name].push_back(pos);
     }
     return std::move(util::mkptr(new Reference(pos, name)));
@@ -134,7 +134,7 @@ void SymbolTable::defVar(misc::position const& pos, std::string const& name)
     if (_external_var_refs.end() != local_refs) {
         error::varRefBeforeDef(pos, local_refs->second, name);
     }
-    auto insert_result = _VarDefs.insert(std::make_pair(name, pos));
+    auto insert_result = _var_defs.insert(std::make_pair(name, pos));
     if (!insert_result.second) {
         error::varAlreadyInLocal(insert_result.first->second, pos, name);
     }
@@ -163,14 +163,14 @@ util::sref<Function> SymbolTable::defFunc(misc::position const& pos
 util::sptr<Expression const> SymbolTable::queryCall(misc::position const& pos
                                                   , std::string const& name
                                                   , std::vector<util::sptr<Expression const>> args)
-                                                const
 {
     util::sref<Function> func = _overloads.queryOrNulIfNonexist(name, args.size());
     if (bool(func)) {
+        _cascadeRefFreeVars(func->freeVariables(), pos);
         return std::move(util::mkptr(new Call(pos, func, std::move(args))));
     }
-    auto local_ref = _VarDefs.find(name);
-    if (_VarDefs.end() != local_ref) {
+    auto local_ref = _var_defs.find(name);
+    if (_var_defs.end() != local_ref) {
         return std::move(util::mkptr(new Functor(pos, name, std::move(args))));
     }
     error::funcNotDef(pos, name, args.size());
@@ -179,10 +179,11 @@ util::sptr<Expression const> SymbolTable::queryCall(misc::position const& pos
 
 util::sref<Function> SymbolTable::queryFunc(misc::position const& pos
                                           , std::string const& name
-                                          , int param_count) const
+                                          , int param_count)
 {
     util::sref<Function> func = _overloads.queryOrNulIfNonexist(name, param_count);
     if (bool(func)) {
+        _cascadeRefFreeVars(func->freeVariables(), pos);
         return func;
     }
     error::funcNotDef(pos, name, param_count);
@@ -201,6 +202,31 @@ std::map<std::string, inst::Variable const> SymbolTable::bindExternalVars(
                       result.insert(std::make_pair(ref.first, ext_scope->queryVar(pos, ref.first)));
                   });
     return result;
+}
+
+std::vector<std::string> SymbolTable::freeVariables() const
+{
+    std::vector<std::string> result;
+    std::for_each(_external_var_refs.begin()
+                , _external_var_refs.end()
+                , [&](std::pair<std::string, std::list<misc::position>> const& ref)
+                  {
+                      result.push_back(ref.first);
+                  });
+    return result;
+}
+
+void SymbolTable::_cascadeRefFreeVars(std::vector<std::string> const& vars
+                                    , misc::position const& call_pos)
+{
+    std::for_each(vars.begin()
+                , vars.end()
+                , [&](std::string const& name)
+                  {
+                      if (_var_defs.end() == _var_defs.find(name)) {
+                          _external_var_refs[name].push_back(call_pos);
+                      }
+                  });
 }
 
 static SymbolTable fake_symbols;

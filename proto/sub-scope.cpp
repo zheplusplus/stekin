@@ -15,14 +15,13 @@ util::sptr<Expression const> SubScope::makeRef(misc::position const& pos, std::s
 util::sptr<Expression const> SubScope::makeCall(misc::position const& pos
                                               , std::string const& name
                                               , std::vector<util::sptr<Expression const>> args)
-                                            const
 {
     return std::move(_symbols->queryCall(pos, name, std::move(args)));
 }
 
 util::sptr<Expression const> SubScope::makeFuncReference(misc::position const& pos
                                                        , std::string const& name
-                                                       , int param_count) const
+                                                       , int param_count)
 {
     return std::move(util::mkptr(new FuncReference(pos
                                                  , _symbols->queryFunc(pos, name, param_count))));

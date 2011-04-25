@@ -7,7 +7,7 @@ verify() {
     then
         echo $1 "pass."
     else
-        echo $1 "failed."
+        echo $1 "FAILED!"
     fi
 }
 
@@ -17,5 +17,6 @@ verify fib
 verify nest-func
 verify return-void
 verify pair
+verify sqrt
 verify vector-multi
 verify big-literals

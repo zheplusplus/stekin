@@ -244,7 +244,6 @@ util::sptr<Expression const> GeneralScope::makeRef(misc::position const& pos
 util::sptr<Expression const> GeneralScope::makeCall(misc::position const& pos
                                                   , std::string const& name
                                                   , std::vector<util::sptr<Expression const>> args)
-                                                  const
 {
     func_entities.push_back(std::move(
                 util::mkmptr(new Function(pos
@@ -257,7 +256,7 @@ util::sptr<Expression const> GeneralScope::makeCall(misc::position const& pos
 
 util::sptr<Expression const> GeneralScope::makeFuncReference(misc::position const& pos
                                                            , std::string const& name
-                                                           , int param_count) const
+                                                           , int param_count)
 {
     func_entities.push_back(std::move(
                 util::mkmptr(new Function(pos

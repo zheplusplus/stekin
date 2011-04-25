@@ -21,3 +21,13 @@ func xor(a, b)
     if a
         return !b
     return b
+
+func deepNest(x)
+    z: 5
+    func inner2Level()
+        return x * y
+    func inner1Level(y)
+        return inner2Level()
+    return inner1Level(z)
+
+write(deepNest(2))
