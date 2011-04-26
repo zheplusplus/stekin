@@ -1,5 +1,5 @@
-#ifndef __STEKIN_FLOW_CHECK_ACCUMULATOR_H__
-#define __STEKIN_FLOW_CHECK_ACCUMULATOR_H__
+#ifndef __STEKIN_FLOWCHECK_ACCUMULATOR_H__
+#define __STEKIN_FLOWCHECK_ACCUMULATOR_H__
 
 #include <string>
 #include <vector>
@@ -77,4 +77,4 @@ namespace flchk {
 
 }
 
-#endif /* __STEKIN_FLOW_CHECK_ACCUMULATOR_H__ */
+#endif /* __STEKIN_FLOWCHECK_ACCUMULATOR_H__ */

@@ -41,9 +41,7 @@ namespace proto {
         std::string const name;
         std::vector<std::string> const param_names;
         bool hint_void_return;
-    private:
-        void _fillParamNames();
-    private:
+    public:
         struct InstanceInfo {
             std::map<std::string, inst::Variable const> const ext_vars;
             std::vector<util::sref<inst::Type const>> const arg_types;
@@ -56,7 +54,9 @@ namespace proto {
 
             bool operator<(InstanceInfo const& rhs) const;
         };
-
+    private:
+        void _fillParamNames();
+    private:
         std::map<InstanceInfo, util::sref<inst::Function>> _instance_cache;
     public:
         std::map<std::string, inst::Variable const> bindExternalVars(

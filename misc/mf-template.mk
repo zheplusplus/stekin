@@ -3,7 +3,7 @@ RESOLVE_DEP=g++ -MM
 LINK=g++
 AR=ar rcs
 
-CFLAGS=-Wall -Wextra -Werror
+CFLAGS=-Wall -Wextra -Wold-style-cast -Werror
 MKTMP=tmp.mk
 
 LIB_DIR=libs

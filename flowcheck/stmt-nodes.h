@@ -1,5 +1,5 @@
-#ifndef __STEKIN_FLOW_CHECK_STATEMENT_NODES_H__
-#define __STEKIN_FLOW_CHECK_STATEMENT_NODES_H__
+#ifndef __STEKIN_FLOWCHECK_STATEMENT_NODES_H__
+#define __STEKIN_FLOWCHECK_STATEMENT_NODES_H__
 
 #include <string>
 #include <list>
@@ -80,4 +80,4 @@ namespace flchk {
 
 }
 
-#endif /* __STEKIN_FLOW_CHECK_STATEMENT_NODES_H__ */
+#endif /* __STEKIN_FLOWCHECK_STATEMENT_NODES_H__ */
