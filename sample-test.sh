@@ -18,5 +18,7 @@ verify nest-func
 verify return-void
 verify pair
 verify sqrt
+verify find-root
+verify fixed-point
 verify vector-multi
 verify big-literals
