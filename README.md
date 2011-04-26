@@ -35,7 +35,7 @@ What is needed and how to build it?
 
 ### 编译源代码需要
 
-* GCC 4.5.x (C++ 2011 标准中的 Lambda, `std::unique_ptr`, Move Semantic 支持) (注: 使用 GCC 4.7.0 experimental 可能导致 g++ 崩溃)
+* GCC 4.5.x (C++ 2011 标准中的 Lambda, `std::unique_ptr`, Move Semantic 支持)
 * gawk 3.1.x (AWK)
 * flex 2.5.x (词法分析)
 * bison 2.4.x (语法分析)
@@ -97,23 +97,34 @@ samples 目录下有很多样例可以参考. 其中 samples/errors 目录下的
 
 New Features
 ------------
-简单的**闭包**函数被引入了. 由于 Stekin 支持多个函数重载同名但参数个数不相同, 如果闭包引用的函数有重载, 那么引用函数必须在函数名之后加上 `@参数个数`. (闭包的实现非常暴力) 你可以在 samples/pair.stkn, samples/vector-multi.stkn 中看到简单的闭包使用样例.
+简单的**闭包**函数被引入了. 由于 Stekin 支持多个函数重载同名但参数个数不相同, 如果闭包引用的函数有重载, 那么引用函数必须在函数名之后加上 `@参数个数`.
+
+从 SICP 上将一些 Lisp 示例代码翻译为 Stekin 代码, 详见示例目录下的
+
+* samples/pair.stkn
+* samples/sqrt.stkn
+* samples/find-root.stkn
+* samples/fixed-point.stkn
 
 What will be added / changed next?
-----------------------------------------------------------------------------
-主要
+----------------------------------
+功能
 
-设计: 修正现在 `instance` 和 `proto` 就 `proto::Function` 而互相依赖的问题;
+* 允许引用外部函数中的局部变量作为闭包使用
 
-测试: 完善测试案例;
+设计
 
-可选
+* 将符号表由 `proto` 移入 `flowcheck`
+* 修正现在 `instance` 和 `proto` 就 `proto::Function` 而互相依赖的问题
 
-设计: 符号表作为单独的库模块实现;
+测试
+
+* 完善测试案例
 
 Contributing
 ------------
 
+0. Take a glimpse at coding style conventions: https://github.com/neuront/stekin/wiki/StekinCppCodingStyle
 1. Fork it.
 2. Create a branch (`git checkout -b stekin_my_own`)
 3. Commit your changes (`git commit -a -m "I have add some kick-ass features, or I have fixed some ball-ache bugs."`)
