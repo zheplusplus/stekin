@@ -4,10 +4,10 @@ func vector(x, y, z)
     return multi@3
 
 func calc(a, b, vec, c)
-    return calc2(a, b, vec, c)
+    return vec(a, b, c)
 
-func calc2(a, b, vect, c)
-    return vect(a, b, c)
+func calc2(a, b, vec, c)
+    return calc(a, b, vec, c)
 
 write(calc(6, 4, vector(1, -2, 3), 5))
 write(calc2(6, 4, vector(1, -2, 3), 5))

@@ -24,7 +24,6 @@ namespace flchk {
         {}
 
         void compile(util::sref<proto::Scope> scope) const;
-        util::sref<proto::Function> declare(util::sref<proto::Scope> scope) const;
 
         misc::position const pos;
         std::string const name;

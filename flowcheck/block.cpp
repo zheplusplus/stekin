@@ -29,21 +29,11 @@ void Block::defFunc(misc::position const& pos
 
 void Block::compile(util::sref<proto::Scope> scope) const 
 {
-    std::vector<util::sref<proto::Function>> decls;
-    decls.reserve(_funcs.size());
     std::for_each(_funcs.begin()
                 , _funcs.end()
                 , [&](util::sptr<Function const> const& func)
                   {
-                      decls.push_back(func->declare(scope));
-                  });
-
-    std::vector<util::sref<proto::Function>>::iterator func_decl_iter = decls.begin();
-    std::for_each(_funcs.begin()
-                , _funcs.end()
-                , [&](util::sptr<Function const> const& func)
-                  {
-                      func->body.compile(*func_decl_iter++);
+                      func->compile(scope);
                   });
 
     std::for_each(_stmts.begin()
