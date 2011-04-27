@@ -38,29 +38,30 @@ namespace flchk {
     public:
         virtual void defVar(misc::position const& pos
                           , std::string const& name
-                          , util::sptr<Expression const> init);
-
-        virtual void defFunc(misc::position const& pos
-                           , std::string const& name
-                           , std::vector<std::string> const& param_names
-                           , util::sptr<Filter> body);
+                          , util::sptr<Expression const> init) = 0;
+        void defFunc(misc::position const& pos
+                   , std::string const& name
+                   , std::vector<std::string> const& param_names
+                   , util::sptr<Filter> body);
+    protected:
+        virtual void _defFunc(misc::position const& pos
+                            , std::string const& name
+                            , std::vector<std::string> const& param_names
+                            , Accumulator body) = 0;
+    public:
+        virtual util::sptr<Expression const> makeRef(misc::position const& pos
+                                                   , std::string const& name) = 0;
+        virtual util::sptr<Expression const> makeCall(
+                                          misc::position const& pos
+                                        , std::string const& name
+                                        , std::vector<util::sptr<Expression const>> args) = 0;
+        virtual util::sptr<Expression const> makeFuncReference(misc::position const& pos
+                                                             , std::string const& name
+                                                             , int param_count) = 0;
     public:
         Block deliver();
     protected:
         Accumulator _accumulator;
-    };
-
-    struct SymbolDefFilter
-        : public Filter
-    {
-        void defVar(misc::position const& pos
-                  , std::string const& name
-                  , util::sptr<Expression const>);
-
-        void defFunc(misc::position const& pos
-                   , std::string const& name
-                   , std::vector<std::string> const&
-                   , util::sptr<Filter>);
     };
 
 }

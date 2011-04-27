@@ -1,6 +1,6 @@
 #include "clause-builder.h"
 #include "stmt-nodes.h"
-#include "../flowcheck/filter.h"
+#include "../flowcheck/func-body-filter.h"
 #include "../flowcheck/node-base.h"
 #include "../flowcheck/function.h"
 #include "../proto/node-base.h"
@@ -158,6 +158,6 @@ void ClauseBuilder::addElse(int indent_len, misc::position const& pos)
 
 flchk::Block ClauseBuilder::buildAndClear()
 {
-    return std::move(_stack.packAll().compile(std::move(util::mkmptr(new flchk::Filter)))
+    return std::move(_stack.packAll().compile(std::move(util::mkmptr(new flchk::FuncBodyFilter)))
                     ->deliver());
 }
