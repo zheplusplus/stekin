@@ -19,7 +19,7 @@ struct TestAcceptor
 {
     TestAcceptor()
         : grammar::Acceptor(misc::position(0))
-        , filter(new flchk::Filter)
+        , filter(std::move(mkfilter()))
     {}
 
     void acceptStmt(util::sptr<grammar::Statement const> s)

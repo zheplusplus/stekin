@@ -1,7 +1,8 @@
 #include <algorithm>
 
 #include "test-common.h"
-#include "../../flowcheck/filter.h"
+#include "../../flowcheck/func-body-filter.h"
+#include "../../flowcheck/symbol-def-filter.h"
 #include "../../flowcheck/accumulator.h"
 #include "../../flowcheck/block.h"
 #include "../../flowcheck/expr-nodes.h"
@@ -231,19 +232,12 @@ void Filter::addBranchAlterOnly(misc::position const& pos
                                   , std::move(alternative->_accumulator));
 }
 
-void Filter::defVar(misc::position const& pos
-                  , std::string const& name
-                  , util::sptr<Expression const> init)
-{
-    _accumulator.defVar(pos, name, std::move(init));
-}
-
 void Filter::defFunc(misc::position const& pos
                    , std::string const& name
                    , std::vector<std::string> const& param_names
                    , util::sptr<Filter> body)
 {
-    _accumulator.defFunc(pos, name, param_names, std::move(body->_accumulator));
+    _defFunc(pos, name, param_names, std::move(body->_accumulator));
 }
 
 Block Filter::deliver()
@@ -251,19 +245,76 @@ Block Filter::deliver()
     return std::move(_accumulator.deliver());
 }
 
+void FuncBodyFilter::defVar(misc::position const& pos
+                          , std::string const& name
+                          , util::sptr<Expression const> init)
+{
+    _accumulator.defVar(pos, name, std::move(init));
+}
+
+void FuncBodyFilter::_defFunc(misc::position const& pos
+                            , std::string const& name
+                            , std::vector<std::string> const& param_names
+                            , Accumulator body)
+{
+    _accumulator.defFunc(pos, name, param_names, std::move(body));
+}
+
+util::sptr<Expression const> FuncBodyFilter::makeRef(misc::position const& pos
+                                                   , std::string const& name)
+{
+    return std::move(util::mkptr(new Reference(pos, name)));
+}
+
+util::sptr<Expression const> FuncBodyFilter::makeCall(
+                    misc::position const& pos
+                  , std::string const& name
+                  , std::vector<util::sptr<Expression const>> args)
+{
+    return std::move(util::mkptr(new Call(pos, name, std::move(args))));
+}
+
+util::sptr<Expression const> FuncBodyFilter::makeFuncReference(misc::position const& pos
+                                                             , std::string const& name
+                                                             , int param_count)
+{
+    return std::move(util::mkptr(new FuncReference(pos, name, param_count)));
+}
+
 void SymbolDefFilter::defVar(misc::position const& pos
                            , std::string const& name
                            , util::sptr<Expression const> init)
 {
-    Filter::defVar(pos, name + VAR_DEF_FILTERED, std::move(init));
+    _accumulator.defVar(pos, name + VAR_DEF_FILTERED, std::move(init));
 }
 
-void SymbolDefFilter::defFunc(misc::position const& pos
-                            , std::string const& name
-                            , std::vector<std::string> const& param_names
-                            , util::sptr<Filter> body)
+void SymbolDefFilter::_defFunc(misc::position const& pos
+                             , std::string const& name
+                             , std::vector<std::string> const& param_names
+                             , Accumulator body)
 {
-    Filter::defFunc(pos, name + FUNC_DEF_FILTERED, param_names, std::move(body));
+    _accumulator.defFunc(pos, name + FUNC_DEF_FILTERED, param_names, std::move(body));
+}
+
+util::sptr<Expression const> SymbolDefFilter::makeRef(misc::position const& pos
+                                                    , std::string const& name)
+{
+    return std::move(util::mkptr(new Reference(pos, name)));
+}
+
+util::sptr<Expression const> SymbolDefFilter::makeCall(
+                    misc::position const& pos
+                  , std::string const& name
+                  , std::vector<util::sptr<Expression const>> args)
+{
+    return std::move(util::mkptr(new Call(pos, name, std::move(args))));
+}
+
+util::sptr<Expression const> SymbolDefFilter::makeFuncReference(misc::position const& pos
+                                                              , std::string const& name
+                                                              , int param_count)
+{
+    return std::move(util::mkptr(new FuncReference(pos, name, param_count)));
 }
 
 util::sptr<proto::Statement const> Arithmetics::compile(util::sref<proto::Scope>) const 
