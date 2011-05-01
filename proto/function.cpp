@@ -12,30 +12,6 @@
 
 using namespace proto;
 
-Function::Function(misc::position const& ps
-                 , std::string const& name
-                 , std::vector<std::string> const& params
-                 , util::sref<SymbolTable const> ext_symbols
-                 , bool func_hint_void_return)
-    : GeneralScope(ext_symbols)
-    , pos(ps)
-    , name(name)
-    , param_names(params)
-    , hint_void_return(func_hint_void_return)
-{
-    _fillParamNames();
-}
-
-void Function::_fillParamNames()
-{
-    std::for_each(param_names.begin()
-                , param_names.end()
-                , [&](std::string const& param_name)
-                  {
-                      _symbols.defVar(pos, param_name);
-                  });
-}
-
 util::sref<inst::Function> Function::inst(
                                         misc::position const& pos
                                       , util::sref<inst::Scope> ext_scope
@@ -110,12 +86,19 @@ std::map<std::string, inst::Variable const> Function::bindExternalVars(
                                                   misc::position const& pos
                                                 , util::sref<inst::Scope const> ext_scope) const
 {
-    return _symbols.bindExternalVars(pos, ext_scope);
+    std::map<std::string, inst::Variable const> result;
+    std::for_each(_free_variables.begin()
+                , _free_variables.end()
+                , [&](std::string const& var_name)
+                  {
+                      result.insert(std::make_pair(var_name, ext_scope->queryVar(pos, var_name)));
+                  });
+    return result;
 }
 
-std::vector<std::string> Function::freeVariables() const
+void Function::setFreeVariables(std::vector<std::string> const& free_vars)
 {
-    return _symbols.freeVariables();
+    _free_variables = free_vars;
 }
 
 bool Function::InstanceInfo::operator<(Function::InstanceInfo const& rhs) const

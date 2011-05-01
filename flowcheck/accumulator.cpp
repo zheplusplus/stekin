@@ -1,6 +1,7 @@
 #include "accumulator.h"
 #include "stmt-nodes.h"
 #include "function.h"
+#include "filter.h"
 #include "../proto/node-base.h"
 #include "../report/errors.h"
 #include "../report/warnings.h"
@@ -73,23 +74,29 @@ void Accumulator::addBlock(Accumulator b)
 }
 
 void Accumulator::defVar(misc::position const& pos
+                       , util::sref<SymbolTable> symbols
                        , std::string const& name
                        , util::sptr<Expression const> init)
 {
     _checkNotTerminated(pos);
-    _block.addStmt(std::move(util::mkptr(new VarDef(pos, name, std::move(init)))));
+    _block.addStmt(std::move(util::mkptr(new VarDef(pos, symbols, name, std::move(init)))));
 }
 
-void Accumulator::defFunc(misc::position const& pos
-                        , std::string const& name
-                        , std::vector<std::string> const& param_names
-                        , Accumulator body)
+util::sref<Function> Accumulator::defFunc(misc::position const& pos
+                                        , std::string const& name
+                                        , std::vector<std::string> const& param_names
+                                        , util::sptr<Filter> body)
 {
-    _block.defFunc(pos
-                 , name
-                 , param_names
-                 , std::move(body._block)
-                 , body._contains_void_return || !body._terminated());
+    return _block.defFunc(pos
+                        , name
+                        , param_names
+                        , std::move(body)
+                        , body->bodyContainsVoidReturn());
+}
+
+bool Accumulator::containsVoidReturn() const
+{
+    return _contains_void_return || !_terminated();
 }
 
 Block Accumulator::deliver()
@@ -118,7 +125,7 @@ void Accumulator::_checkBranchesTermination(Accumulator const& consequence
 {
     if (consequence._terminated() || alternative._terminated()) {
         warning::oneOrTwoBranchesTerminated(*consequence._termination_pos
-                                              , *alternative._termination_pos);
+                                          , *alternative._termination_pos);
     }
 }
 

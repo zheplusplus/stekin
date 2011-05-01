@@ -8,23 +8,21 @@ namespace flchk {
     struct SymbolDefFilter
         : public Filter
     {
-        SymbolDefFilter() = default;
+        explicit SymbolDefFilter(util::sref<SymbolTable> symbols)
+            : _symbols(symbols)
+        {}
     public:
         void defVar(misc::position const& pos
                   , std::string const& name
                   , util::sptr<Expression const>);
-        util::sptr<Expression const> makeRef(misc::position const& pos, std::string const& name);
-        util::sptr<Expression const> makeCall(misc::position const& pos
-                                            , std::string const& name
-                                            , std::vector<util::sptr<Expression const>> args);
-        util::sptr<Expression const> makeFuncReference(misc::position const& pos
-                                                     , std::string const& name
-                                                     , int param_count);
+        util::sref<SymbolTable> getSymbols();
     protected:
         void _defFunc(misc::position const& pos
                     , std::string const& name
                     , std::vector<std::string> const&
-                    , Accumulator);
+                    , util::sptr<Filter>);
+    private:
+        util::sref<SymbolTable> const _symbols;
     };
 
 }

@@ -9,8 +9,6 @@ using namespace grammar;
 
 void Function::compile(util::sref<flchk::Filter> filter) const
 {
-    filter->defFunc(pos
-                  , name
-                  , param_names
-                  , std::move(body.compile(std::move(util::mkmptr(new flchk::FuncBodyFilter)))));
+    util::sptr<flchk::Filter> func_body_filter(new flchk::FuncBodyFilter(filter->getSymbols()));
+    filter->defFunc(pos, name, param_names, std::move(body.compile(std::move(func_body_filter))));
 }

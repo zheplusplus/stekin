@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+#include "fwd-decl.h"
 #include "accumulator.h"
 #include "../misc/pos-type.h"
 
@@ -43,21 +44,15 @@ namespace flchk {
                    , std::string const& name
                    , std::vector<std::string> const& param_names
                    , util::sptr<Filter> body);
+    public:
+        virtual util::sref<SymbolTable> getSymbols() = 0;
     protected:
         virtual void _defFunc(misc::position const& pos
                             , std::string const& name
                             , std::vector<std::string> const& param_names
-                            , Accumulator body) = 0;
+                            , util::sptr<Filter> body) = 0;
     public:
-        virtual util::sptr<Expression const> makeRef(misc::position const& pos
-                                                   , std::string const& name) = 0;
-        virtual util::sptr<Expression const> makeCall(
-                                          misc::position const& pos
-                                        , std::string const& name
-                                        , std::vector<util::sptr<Expression const>> args) = 0;
-        virtual util::sptr<Expression const> makeFuncReference(misc::position const& pos
-                                                             , std::string const& name
-                                                             , int param_count) = 0;
+        bool bodyContainsVoidReturn() const;
     public:
         Block deliver();
     protected:

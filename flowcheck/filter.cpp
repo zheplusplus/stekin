@@ -70,7 +70,12 @@ void Filter::defFunc(misc::position const& pos
                    , std::vector<std::string> const& param_names
                    , util::sptr<Filter> body)
 {
-    _defFunc(pos, name, param_names, std::move(body->_accumulator));
+    _defFunc(pos, name, param_names, std::move(body));
+}
+
+bool Filter::bodyContainsVoidReturn() const
+{
+    return _accumulator.containsVoidReturn();
 }
 
 Block Filter::deliver()

@@ -44,7 +44,7 @@ util::sptr<flchk::Expression const> Negation::compile(util::sref<flchk::Filter> 
 
 util::sptr<flchk::Expression const> Reference::compile(util::sref<flchk::Filter> filter) const
 {
-    return std::move(filter->makeRef(pos, name));
+    return std::move(util::mkptr(new flchk::Reference(pos, filter->getSymbols(), name)));
 }
 
 util::sptr<flchk::Expression const> BoolLiteral::compile(util::sref<flchk::Filter>) const
@@ -72,10 +72,13 @@ util::sptr<flchk::Expression const> Call::compile(util::sref<flchk::Filter> filt
                   {
                       arguments.push_back(expr->compile(filter));
                   });
-    return std::move(filter->makeCall(pos, name, std::move(arguments)));
+    return std::move(util::mkptr(new flchk::Call(pos
+                                               , filter->getSymbols()
+                                               , name
+                                               , std::move(arguments))));
 }
 
 util::sptr<flchk::Expression const> FuncReference::compile(util::sref<flchk::Filter> filter) const
 {
-    return std::move(filter->makeFuncReference(pos, name, param_count));
+    return util::mkptr(new flchk::FuncReference(pos, filter->getSymbols(), name, param_count));
 }

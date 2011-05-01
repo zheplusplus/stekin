@@ -3,6 +3,7 @@
 #include "block.h"
 #include "function.h"
 #include "node-base.h"
+#include "filter.h"
 #include "../proto/node-base.h"
 #include "../proto/scope.h"
 #include "../proto/function.h"
@@ -14,28 +15,22 @@ void Block::addStmt(util::sptr<Statement const> stmt)
     _stmts.push_back(std::move(stmt));
 }
 
-void Block::defFunc(misc::position const& pos
-                  , std::string const& name
-                  , std::vector<std::string> const& param_names
-                  , Block body
-                  , bool contains_void_return)
+util::sref<Function> Block::defFunc(misc::position const& pos
+                                  , std::string const& name
+                                  , std::vector<std::string> const& param_names
+                                  , util::sptr<Filter> body
+                                  , bool contains_void_return)
 {
-    _funcs.push_back(std::move(util::mkptr(new Function(pos
-                                                      , name
-                                                      , param_names
-                                                      , std::move(body)
-                                                      , contains_void_return))));
+    _funcs.push_back(std::move(util::mkmptr(new Function(pos
+                                                       , name
+                                                       , param_names
+                                                       , std::move(body)
+                                                       , contains_void_return))));
+    return *_funcs.back();
 }
 
 void Block::compile(util::sref<proto::Scope> scope) const 
 {
-    std::for_each(_funcs.begin()
-                , _funcs.end()
-                , [&](util::sptr<Function const> const& func)
-                  {
-                      func->compile(scope);
-                  });
-
     std::for_each(_stmts.begin()
                 , _stmts.end()
                 , [&](util::sptr<Statement const> const& stmt)
@@ -48,7 +43,7 @@ void Block::append(Block following)
 {
     std::for_each(following._funcs.begin()
                 , following._funcs.end()
-                , [&](util::sptr<Function const>& func)
+                , [&](util::sptr<Function>& func)
                   {
                       _funcs.push_back(std::move(func));
                   });

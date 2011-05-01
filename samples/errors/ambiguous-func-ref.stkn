@@ -5,3 +5,5 @@ func fn0()
 
 func ambiguous(a, b, c)
     return a * b * c
+
+fn0()

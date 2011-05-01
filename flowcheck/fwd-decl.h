@@ -8,6 +8,7 @@ namespace flchk {
     struct Filter;
     struct Block;
     struct Function;
+    struct SymbolTable;
 
 }
 

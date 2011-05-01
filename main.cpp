@@ -6,7 +6,7 @@
 #include "flowcheck/filter.h"
 #include "flowcheck/node-base.h"
 #include "flowcheck/function.h"
-#include "proto/global-scope.h"
+#include "proto/scope.h"
 #include "proto/inst-mediates.h"
 #include "proto/function.h"
 #include "instance/node-base.h"
@@ -16,29 +16,29 @@
 #include "report/errors.h"
 
 namespace {
-    struct CompileFail {};
+    struct CompileFailure {};
 }
 
-static flchk::Block frontEnd()
+static util::sptr<flchk::Filter> frontEnd()
 {
     yyparse();
     if (error::hasError()) {
-        throw CompileFail();
+        throw CompileFailure();
     }
 
-    flchk::Block global_flow(std::move(parser::builder.buildAndClear()));
+    util::sptr<flchk::Filter> global_flow(std::move(parser::builder.buildAndClear()));
     if (error::hasError()) {
-        throw CompileFail();
+        throw CompileFailure();
     }
     return std::move(global_flow);
 }
 
-static util::id semantic(flchk::Block global_flow)
+static util::id semantic(util::sptr<flchk::Filter> global_flow)
 {
-    util::sptr<proto::Scope> proto_global_scope(new proto::GlobalScope);
-    global_flow.compile(*proto_global_scope);
+    util::sptr<proto::Scope> proto_global_scope(new proto::Scope);
+    global_flow->deliver().compile(*proto_global_scope);
     if (error::hasError()) {
-        throw CompileFail();
+        throw CompileFailure();
     }
 
     util::sref<inst::Function> inst_global_func(
@@ -50,7 +50,7 @@ static util::id semantic(flchk::Block global_flow)
     inst_global_func->instNextPath();
     inst_global_func->addStmt(std::move(mediate.inst(inst_global_func)));
     if (error::hasError()) {
-        throw CompileFail();
+        throw CompileFailure();
     }
     return inst_global_func.id();
 }
@@ -67,9 +67,9 @@ static void outputAll(util::id global_func_id)
 int main()
 {
     try {
-        outputAll(semantic(std::move(frontEnd())));
+        outputAll(semantic(frontEnd()));
         return 0;
-    } catch (CompileFail) {
+    } catch (CompileFailure) {
         return 1;
     }
 }
