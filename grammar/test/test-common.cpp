@@ -1,5 +1,5 @@
 #include "test-common.h"
-#include "../../flowcheck/func-body-filter.h"
+#include "../../flowcheck/global-filter.h"
 #include "../../flowcheck/node-base.h"
 #include "../../flowcheck/function.h"
 #include "../../proto/node-base.h"
@@ -12,7 +12,7 @@ util::sref<proto::Scope> const test::nulscope(NULL);
 
 util::sptr<flchk::Filter> test::mkfilter()
 {
-    return std::move(util::mkmptr(new flchk::FuncBodyFilter));
+    return std::move(util::mkmptr(new flchk::GlobalFilter));
 }
 
 DataTree& DataTree::operator()(misc::position const& pos

@@ -5,8 +5,8 @@
 #include "../../grammar/expr-nodes.h"
 #include "../../grammar/clause-builder.h"
 #include "../../flowcheck/node-base.h"
-#include "../../flowcheck/block.h"
 #include "../../flowcheck/function.h"
+#include "../../flowcheck/filter.h"
 #include "../../proto/node-base.h"
 #include "../../util/string.h"
 
@@ -167,9 +167,9 @@ void ClauseBuilder::addElse(int indent_level, misc::position const& pos)
     DataTree::actualOne()(pos, indent_level, BRANCH_ELSE);
 }
 
-flchk::Block ClauseBuilder::buildAndClear()
+util::sptr<flchk::Filter> ClauseBuilder::buildAndClear()
 {
-    return std::move(flchk::Block());
+    return util::sptr<flchk::Filter>(NULL);
 }
 
 AcceptorStack::AcceptorStack()

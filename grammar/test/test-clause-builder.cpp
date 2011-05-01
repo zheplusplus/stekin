@@ -217,7 +217,7 @@ TEST_F(ClauseBuilderTest, ClauseBuilder)
         builder0.addArith(1, std::move(
                                     util::mkptr(new grammar::Reference(item_pos1, "widowmaker"))));
 
-    builder0.buildAndClear().compile(nulscope);
+    builder0.buildAndClear()->deliver().compile(nulscope);
     ASSERT_FALSE(error::hasError());
 
     DataTree::expectOne()
