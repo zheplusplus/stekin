@@ -2,11 +2,8 @@ WORKDIR=proto
 
 include misc/mf-template.mk
 
-proto:symbol-table.d \
-      scope.d \
-      global-scope.d \
-      sub-scope.d \
-      general-scope.d \
+proto:scope.d \
+      built-in.d \
       block.d \
       stmt-nodes.d \
       expr-nodes.d \

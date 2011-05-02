@@ -2,6 +2,7 @@
 #include "../../test/common.h"
 #include "../../test/phony-errors.h"
 #include "../../test/phony-warnings.h"
+#include "../../proto/function.h"
 #include "../../instance/node-base.h"
 #include "../../util/string.h"
 
@@ -54,10 +55,10 @@ NodeType const test::BINARY_OP("binary operation");
 NodeType const test::PRE_UNARY_OP("prefix unary operation");
 NodeType const test::CALL("call");
 NodeType const test::FUNC_REFERENCE("func reference");
+NodeType const test::FUNCTOR("functor");
 NodeType const test::REFERENCE("var reference");
 
 NodeType const test::VAR_DEF("var definition");
-NodeType const test::SCOPE_VAR_DEF("scope var definition");
 
 NodeType const test::STATEMENT("statement");
 NodeType const test::ARITHMETICS("arithmetics");

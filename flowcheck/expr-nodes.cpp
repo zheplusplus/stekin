@@ -2,10 +2,12 @@
 #include <map>
 
 #include "expr-nodes.h"
+#include "function.h"
+#include "symbol-table.h"
+#include "filter.h"
+#include "../proto/expr-nodes.h"
 #include "../util/string.h"
 #include "../report/errors.h"
-#include "../proto/scope.h"
-#include "../proto/expr-nodes.h"
 
 using namespace flchk;
 
@@ -278,7 +280,7 @@ namespace {
 
 util::sptr<proto::Expression const> PreUnaryOp::compile(util::sref<proto::Scope> scope) const
 {
-    return std::move(scope->makePreUnary(pos, op_img, rhs->compile(scope)));
+    return std::move(util::mkptr(new proto::PreUnaryOp(pos, op_img, rhs->compile(scope))));
 }
 
 bool PreUnaryOp::isLiteral() const
@@ -304,7 +306,10 @@ util::sptr<Expression const> PreUnaryOp::fold() const
 
 util::sptr<proto::Expression const> BinaryOp::compile(util::sref<proto::Scope> scope) const
 {
-    return std::move(scope->makeBinary(pos, lhs->compile(scope), op_img, rhs->compile(scope)));
+    return std::move(util::mkptr(new proto::BinaryOp(pos
+                                                   , lhs->compile(scope)
+                                                   , op_img
+                                                   , rhs->compile(scope))));
 }
 
 bool BinaryOp::isLiteral() const
@@ -333,7 +338,9 @@ util::sptr<Expression const> BinaryOp::fold() const
 
 util::sptr<proto::Expression const> Conjunction::compile(util::sref<proto::Scope> scope) const
 {
-    return std::move(scope->makeConj(pos, lhs->compile(scope), rhs->compile(scope)));
+    return std::move(util::mkptr(new proto::Conjunction(pos
+                                                      , lhs->compile(scope)
+                                                      , rhs->compile(scope))));
 }
 
 bool Conjunction::isLiteral() const
@@ -363,7 +370,9 @@ util::sptr<Expression const> Conjunction::fold() const
 
 util::sptr<proto::Expression const> Disjunction::compile(util::sref<proto::Scope> scope) const
 {
-    return std::move(scope->makeDisj(pos, lhs->compile(scope), rhs->compile(scope)));
+    return std::move(util::mkptr(new proto::Disjunction(pos
+                                                      , lhs->compile(scope)
+                                                      , rhs->compile(scope))));
 }
 
 bool Disjunction::isLiteral() const
@@ -393,7 +402,7 @@ util::sptr<Expression const> Disjunction::fold() const
 
 util::sptr<proto::Expression const> Negation::compile(util::sref<proto::Scope> scope) const
 {
-    return std::move(scope->makeNega(pos, rhs->compile(scope)));
+    return std::move(util::mkptr(new proto::Negation(pos, rhs->compile(scope))));
 }
 
 bool Negation::isLiteral() const
@@ -421,7 +430,7 @@ util::sptr<Expression const> Negation::fold() const
 
 util::sptr<proto::Expression const> Reference::compile(util::sref<proto::Scope> scope) const
 {
-    return std::move(scope->makeRef(pos, name));
+    return _symbols->compileRef(pos, name, scope);
 }
 
 std::string Reference::typeName() const
@@ -431,12 +440,12 @@ std::string Reference::typeName() const
 
 util::sptr<Expression const> Reference::fold() const
 {
-    return std::move(util::mkptr(new Reference(pos, name)));
+    return std::move(util::mkptr(new Reference(pos, _symbols, name)));
 }
 
-util::sptr<proto::Expression const> BoolLiteral::compile(util::sref<proto::Scope> scope) const
+util::sptr<proto::Expression const> BoolLiteral::compile(util::sref<proto::Scope>) const
 {
-    return std::move(scope->makeBool(pos, value));
+    return std::move(util::mkptr(new proto::BoolLiteral(pos, value)));
 }
 
 bool BoolLiteral::isLiteral() const
@@ -499,9 +508,9 @@ util::sptr<Expression const> BoolLiteral::asRHS(misc::position const& op_pos
     return std::move(makeFakeExpr(op_pos));
 }
 
-util::sptr<proto::Expression const> IntLiteral::compile(util::sref<proto::Scope> scope) const
+util::sptr<proto::Expression const> IntLiteral::compile(util::sref<proto::Scope>) const
 {
-    return std::move(scope->makeInt(pos, value));
+    return std::move(util::mkptr(new proto::IntLiteral(pos, value)));
 }
 
 bool IntLiteral::isLiteral() const
@@ -563,9 +572,9 @@ util::sptr<Expression const> IntLiteral::asRHS(misc::position const& op_pos
     return std::move(util::mkptr(new IntLiteral(op_pos, value)));
 }
 
-util::sptr<proto::Expression const> FloatLiteral::compile(util::sref<proto::Scope> scope) const
+util::sptr<proto::Expression const> FloatLiteral::compile(util::sref<proto::Scope>) const
 {
-    return std::move(scope->makeFloat(pos, value));
+    return std::move(util::mkptr(new proto::FloatLiteral(pos, value)));
 }
 
 bool FloatLiteral::isLiteral() const
@@ -629,15 +638,7 @@ util::sptr<Expression const> FloatLiteral::asRHS(misc::position const& op_pos
 
 util::sptr<proto::Expression const> Call::compile(util::sref<proto::Scope> scope) const
 {
-    std::vector<util::sptr<proto::Expression const>> arguments;
-    arguments.reserve(args.size());
-    std::for_each(args.begin()
-                , args.end()
-                , [&](util::sptr<Expression const> const& expr)
-                  {
-                      arguments.push_back(expr->compile(scope));
-                  });
-    return std::move(scope->makeCall(pos, name, std::move(arguments)));
+    return _symbols->compileCall(pos, scope, name, args);
 }
 
 std::string Call::typeName() const
@@ -665,20 +666,21 @@ util::sptr<Expression const> Call::fold() const
                   {
                       args_fold.push_back(std::move(expr->fold()));
                   });
-    return std::move(util::mkptr(new Call(pos, name, std::move(args_fold))));
+    return std::move(util::mkptr(new Call(pos, _symbols, name, std::move(args_fold))));
 }
 
 util::sptr<proto::Expression const> FuncReference::compile(util::sref<proto::Scope> scope) const
 {
-    return std::move(scope->makeFuncReference(pos, name, param_count));
+    return util::mkptr(new proto::FuncReference(pos, _symbols->queryFunc(pos, name, param_count)
+                                                             ->compile(scope)));
 }
 
 std::string FuncReference::typeName() const
 {
-    return "(func reference(" + name + ")@" + util::str(param_count) + ')';
+    return "(func reference(" + name + '@' + util::str(param_count) + "))";
 }
 
 util::sptr<Expression const> FuncReference::fold() const
 {
-    return std::move(util::mkptr(new FuncReference(pos, name, param_count)));
+    return std::move(util::mkptr(new FuncReference(pos, _symbols, name, param_count)));
 }

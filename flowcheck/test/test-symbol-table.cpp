@@ -3,29 +3,37 @@
 #include "test-common.h"
 #include "../symbol-table.h"
 #include "../function.h"
+#include "../func-body-filter.h"
 #include "../node-base.h"
+#include "../../proto/function.h"
+#include "../../instance/node-base.h"
 #include "../../test/common.h"
 #include "../../test/phony-errors.h"
 
 using namespace test;
 
 struct SymbolTableTest
-    : public ProtoTest
+    : public FlowcheckTest
 {
     void SetUp()
     {
-        ProtoTest::SetUp();
-        symbols.reset(new proto::SymbolTable);
-        inst_scope.reset(new PhonyFunc);
+        FlowcheckTest::SetUp();
+        symbols.reset(new flchk::SymbolTable);
+        scope.reset(new proto::Scope);
     }
 
-    util::sref<proto::SymbolTable const> refSym()
+    util::sref<flchk::SymbolTable const> refSym()
     {
         return *symbols;
     }
 
-    util::sptr<proto::SymbolTable> symbols;
-    util::sptr<inst::Scope> inst_scope;
+    util::sptr<flchk::Filter> mkBody()
+    {
+        return util::mkmptr(new flchk::FuncBodyFilter(refSym()));
+    }
+
+    util::sptr<proto::Scope> scope;
+    util::sptr<flchk::SymbolTable> symbols;
 };
 
 TEST_F(SymbolTableTest, DefVar)
@@ -35,7 +43,7 @@ TEST_F(SymbolTableTest, DefVar)
     symbols->defVar(pos, "seele");
     symbols->defVar(pos, "lilith");
     ASSERT_FALSE(error::hasError());
-    proto::SymbolTable inner_symbols(refSym());
+    flchk::SymbolTable inner_symbols(refSym());
     inner_symbols.defVar(pos, "nerv");
     inner_symbols.defVar(pos, "seele");
     inner_symbols.defVar(pos, "adam");
@@ -50,64 +58,73 @@ TEST_F(SymbolTableTest, RefLocalVar)
     symbols->defVar(pos, "seele");
     symbols->defVar(pos, "lilith");
 
-    symbols->refVar(pos, "nerv");
-    symbols->refVar(pos, "seele");
-    symbols->refVar(pos, "lilith");
+    symbols->compileRef(pos, "nerv", *scope)->inst(nul_inst_scope);
+    symbols->compileRef(pos, "seele", *scope)->inst(nul_inst_scope);
+    symbols->compileRef(pos, "lilith", *scope)->inst(nul_inst_scope);
     ASSERT_FALSE(error::hasError());
 
-    proto::SymbolTable inner_symbols(refSym());
+    flchk::SymbolTable inner_symbols(refSym());
     inner_symbols.defVar(pos, "nerv");
     inner_symbols.defVar(pos, "seele");
     inner_symbols.defVar(pos, "adam");
     inner_symbols.defVar(pos, "eve");
 
-    inner_symbols.refVar(pos, "nerv");
-    inner_symbols.refVar(pos, "seele");
-    inner_symbols.refVar(pos, "adam");
-    inner_symbols.refVar(pos, "eve");
+    inner_symbols.compileRef(pos, "nerv", *scope)->inst(nul_inst_scope);
+    inner_symbols.compileRef(pos, "seele", *scope)->inst(nul_inst_scope);
+    inner_symbols.compileRef(pos, "adam", *scope)->inst(nul_inst_scope);
+    inner_symbols.compileRef(pos, "eve", *scope)->inst(nul_inst_scope);
     ASSERT_FALSE(error::hasError());
+
+    EXPECT_TRUE(symbols->freeVariables().empty());
+
+    DataTree::expectOne()
+        (pos, REFERENCE, "nerv")
+        (pos, REFERENCE, "seele")
+        (pos, REFERENCE, "lilith")
+
+        (pos, REFERENCE, "nerv")
+        (pos, REFERENCE, "seele")
+        (pos, REFERENCE, "adam")
+        (pos, REFERENCE, "eve")
+    ;
 }
 
 TEST_F(SymbolTableTest, RefExternal)
 {
     misc::position pos(3);
-    symbols->refVar(pos, "soryu");
-    symbols->refVar(pos, "ikari");
-    symbols->refVar(pos, "horaki");
+    symbols->compileRef(pos, "soryu", *scope)->inst(nul_inst_scope);
+    symbols->compileRef(pos, "ikari", *scope)->inst(nul_inst_scope);
+    symbols->compileRef(pos, "horaki", *scope)->inst(nul_inst_scope);
     ASSERT_FALSE(error::hasError());
-    proto::SymbolTable inner_symbols(refSym());
-    inner_symbols.refVar(pos, "soryu");
-    inner_symbols.refVar(pos, "ikari");
-    inner_symbols.refVar(pos, "horaki");
+    flchk::SymbolTable inner_symbols(refSym());
+    inner_symbols.compileRef(pos, "soryu", *scope)->inst(nul_inst_scope);
+    inner_symbols.compileRef(pos, "ikari", *scope)->inst(nul_inst_scope);
+    inner_symbols.compileRef(pos, "horaki", *scope)->inst(nul_inst_scope);
     ASSERT_FALSE(error::hasError());
-    util::sref<proto::SymbolTable const> inner_sym_ref(util::mkref(inner_symbols));
-    proto::SymbolTable innest_symbols(inner_sym_ref);
-    innest_symbols.refVar(pos, "soryu");
-    innest_symbols.refVar(pos, "ikari");
-    innest_symbols.refVar(pos, "horaki");
-    ASSERT_FALSE(error::hasError());
-}
-
-TEST_F(SymbolTableTest, BindExternalVar)
-{
-    misc::position pos(4);
-    misc::position bind_pos(100);
-    std::map<std::string, inst::Variable const> ext_refs;
-
-    ext_refs = symbols->bindExternalVars(pos, *inst_scope);
-    ASSERT_TRUE(ext_refs.empty());
+    util::sref<flchk::SymbolTable const> inner_sym_ref(util::mkref(inner_symbols));
+    flchk::SymbolTable innest_symbols(inner_sym_ref);
+    innest_symbols.compileRef(pos, "soryu", *scope)->inst(nul_inst_scope);
+    innest_symbols.compileRef(pos, "ikari", *scope)->inst(nul_inst_scope);
+    innest_symbols.compileRef(pos, "horaki", *scope)->inst(nul_inst_scope);
     ASSERT_FALSE(error::hasError());
 
-    symbols->refVar(pos, "eva_00");
-    symbols->refVar(pos, "eva_01");
-    symbols->refVar(pos, "eva_02");
-    ext_refs = symbols->bindExternalVars(bind_pos, *inst_scope);
-    ASSERT_FALSE(error::hasError());
+    ASSERT_EQ(3, symbols->freeVariables().size());
+    EXPECT_EQ("horaki", symbols->freeVariables()[0]);
+    EXPECT_EQ("ikari", symbols->freeVariables()[1]);
+    EXPECT_EQ("soryu", symbols->freeVariables()[2]);
 
     DataTree::expectOne()
-        (bind_pos, QUERY_VAR, "eva_00")
-        (bind_pos, QUERY_VAR, "eva_01")
-        (bind_pos, QUERY_VAR, "eva_02")
+        (pos, REFERENCE, "soryu")
+        (pos, REFERENCE, "ikari")
+        (pos, REFERENCE, "horaki")
+
+        (pos, REFERENCE, "soryu")
+        (pos, REFERENCE, "ikari")
+        (pos, REFERENCE, "horaki")
+
+        (pos, REFERENCE, "soryu")
+        (pos, REFERENCE, "ikari")
+        (pos, REFERENCE, "horaki")
     ;
 }
 
@@ -133,7 +150,7 @@ TEST_F(SymbolTableTest, RedefVar)
     ASSERT_EQ("aida", redefs[1].name);
 
     clearErr();
-    proto::SymbolTable inner_symbols(refSym());
+    flchk::SymbolTable inner_symbols(refSym());
     inner_symbols.defVar(pos, "aida");
     inner_symbols.defVar(pos, "suzuhara");
     ASSERT_FALSE(error::hasError());
@@ -145,8 +162,8 @@ TEST_F(SymbolTableTest, VarRefBeforeDef)
     misc::position ref_pos0(300);
     misc::position ref_pos1(301);
 
-    symbols->refVar(ref_pos0, "katsuragi");
-    symbols->refVar(ref_pos1, "katsuragi");
+    symbols->compileRef(ref_pos0, "katsuragi", *scope);
+    symbols->compileRef(ref_pos1, "katsuragi", *scope);
     symbols->defVar(pos, "katsuragi");
     ASSERT_TRUE(error::hasError());
     std::vector<InvalidRefRec> invalid_refs = getInvalidRefs();
@@ -158,54 +175,29 @@ TEST_F(SymbolTableTest, VarRefBeforeDef)
     ASSERT_EQ("katsuragi", invalid_refs[0].name);
 
     clearErr();
-    symbols->refVar(pos, "penpen");
+    symbols->compileRef(pos, "penpen", *scope);
 
-    proto::SymbolTable inner_symbols(refSym());
-    inner_symbols.refVar(pos, "katsuragi");
+    flchk::SymbolTable inner_symbols(refSym());
+    inner_symbols.compileRef(pos, "katsuragi", *scope);
     inner_symbols.defVar(pos, "penpen");
     ASSERT_FALSE(error::hasError());
 }
 
-TEST_F(SymbolTableTest, DefFunc)
-{
-    misc::position pos(7);
-    util::sref<proto::Function const> func(NULL);
-    std::vector<std::string> param_names;
-    func = symbols->defFunc(pos, "f0", param_names, true);
-    ASSERT_EQ(pos, func->pos);
-    ASSERT_EQ("f0", func->name);
-    ASSERT_TRUE(param_names == func->param_names);
-    ASSERT_FALSE(error::hasError());
-    func = symbols->defFunc(pos, "f1", param_names, true);
-    ASSERT_EQ(pos, func->pos);
-    ASSERT_EQ("f1", func->name);
-    ASSERT_TRUE(param_names == func->param_names);
-    ASSERT_FALSE(error::hasError());
-    param_names = { "x", "y", "z" };
-    func = symbols->defFunc(pos, "f0", param_names, true);
-    ASSERT_EQ(pos, func->pos);
-    ASSERT_EQ("f0", func->name);
-    ASSERT_TRUE(param_names == func->param_names);
-    ASSERT_FALSE(error::hasError());
-    param_names.push_back("a");
-    func = symbols->defFunc(pos, "f1", param_names, true);
-    ASSERT_EQ(pos, func->pos);
-    ASSERT_EQ("f1", func->name);
-    ASSERT_TRUE(param_names == func->param_names);
-    ASSERT_FALSE(error::hasError());
-}
-
-TEST_F(SymbolTableTest, RefFunc)
+TEST_F(SymbolTableTest, FuncDefRef)
 {
     misc::position pos(8);
     misc::position ref_pos(400);
-    util::sref<proto::Function const> func(NULL);
-    std::vector<std::string> param_names;
-    param_names = { "m", "n" };
-    symbols->defFunc(pos, "fa", param_names, true);
-    param_names = { "x", "y", "z" };
-    symbols->defFunc(pos, "fa", param_names, true);
-    symbols->defFunc(pos, "fb", param_names, true);
+    std::vector<std::string> params;
+    util::sref<flchk::Function> func(NULL);
+
+    params = { "m", "n" };
+    flchk::Function fa2(pos, "fa", params, mkBody());
+    symbols->defFunc(util::mkref(fa2));
+    params = { "x", "y", "z" };
+    flchk::Function fa3(pos, "fa", params, mkBody());
+    symbols->defFunc(util::mkref(fa3));
+    flchk::Function fb(pos, "fb", params, mkBody());
+    symbols->defFunc(util::mkref(fb));
 
     func = symbols->queryFunc(ref_pos, "fa", 2);
     ASSERT_FALSE(error::hasError());
@@ -225,9 +217,10 @@ TEST_F(SymbolTableTest, RefFunc)
     ASSERT_EQ("fb", func->name);
     ASSERT_TRUE(std::vector<std::string>({ "x", "y", "z" }) == func->param_names);
 
-    proto::SymbolTable inner_symbols(refSym());
-    param_names = { "a", "b" };
-    inner_symbols.defFunc(pos, "fb", param_names, true);
+    flchk::SymbolTable inner_symbols(refSym());
+    params = { "a", "b" };
+    flchk::Function fbi(pos, "fb", params, mkBody());
+    inner_symbols.defFunc(util::mkref(fbi));
     ASSERT_FALSE(error::hasError());
 
     func = inner_symbols.queryFunc(ref_pos, "fa", 2);
@@ -260,26 +253,31 @@ TEST_F(SymbolTableTest, RedefFunc)
     misc::position pos(9);
     misc::position err_pos0(500);
     misc::position err_pos1(501);
-    std::vector<std::string> param_names;
+    std::vector<std::string> params;
 
-    param_names = { "m", "n" };
-    symbols->defFunc(pos, "f0", param_names, true);
-    param_names = { "x", "y", "z" };
-    symbols->defFunc(pos, "f1", param_names, true);
+    params = { "m", "n" };
+    flchk::Function f0a(pos, "f0", params, mkBody());
+    symbols->defFunc(util::mkref(f0a));
+    params = { "x", "y", "z" };
+    flchk::Function f1a(pos, "f1", params, mkBody());
+    symbols->defFunc(util::mkref(f1a));
     ASSERT_FALSE(error::hasError());
 
-    param_names = { "a", "b" };
-    symbols->defFunc(err_pos0, "f0", param_names, true);
+    params = { "a", "b" };
+    flchk::Function f0b(err_pos0, "f0", params, mkBody());
+    symbols->defFunc(util::mkref(f0b));
     ASSERT_TRUE(error::hasError());
     std::vector<FuncRedefRec> redefs = getFuncRedefs();
     ASSERT_EQ(1, redefs.size());
 
-    proto::SymbolTable inner_symbols(refSym());
-    param_names = { "a", "b" };
-    inner_symbols.defFunc(pos, "f1", param_names, true);
+    flchk::SymbolTable inner_symbols(refSym());
+    params = { "a", "b" };
+    flchk::Function f1b(pos, "f1", params, mkBody());
+    inner_symbols.defFunc(util::mkref(f1b));
 
-    param_names = { "a", "b", "c" };
-    inner_symbols.defFunc(err_pos1, "f1", param_names, true);
+    params = { "a", "b", "c" };
+    flchk::Function f1c(err_pos1, "f1", params, mkBody());
+    inner_symbols.defFunc(util::mkref(f1c));
 
     redefs = getFuncRedefs();
     ASSERT_EQ(2, redefs.size());
@@ -299,12 +297,14 @@ TEST_F(SymbolTableTest, NondefFunc)
     misc::position err_pos0(600);
     misc::position err_pos1(601);
     std::vector<FuncNondefRec> func_nondefs;
-    std::vector<std::string> param_names;
+    std::vector<std::string> params;
 
-    param_names = { "m", "n" };
-    symbols->defFunc(pos, "f0", param_names, true);
-    param_names = { "x", "y", "z" };
-    symbols->defFunc(pos, "f1", param_names, true);
+    params = { "m", "n" };
+    flchk::Function f0(pos, "f0", params, mkBody());
+    symbols->defFunc(util::mkref(f0));
+    params = { "x", "y", "z" };
+    flchk::Function f1(pos, "f1", params, mkBody());
+    symbols->defFunc(util::mkref(f1));
     ASSERT_FALSE(error::hasError());
 
     symbols->queryFunc(err_pos0, "f2", 3);
@@ -327,53 +327,37 @@ TEST_F(SymbolTableTest, NondefFunc)
     ASSERT_EQ(2, func_nondefs[1].param_count);
 }
 
-TEST_F(SymbolTableTest, References)
-{
-    misc::position pos(11);
-    util::sptr<inst::Scope> inst_scope(new PhonyFunc);
-
-    symbols->defVar(pos, "otonashi");
-    symbols->defVar(pos, "tachibana");
-    ASSERT_FALSE(error::hasError());
-    std::vector<std::string> param_names;
-    param_names = { "yuzuru", "kanade" };
-    symbols->defFunc(pos, "sss", param_names, true);
-
-    symbols->refVar(pos, "otonashi")->inst(*inst_scope)->typeof();
-    symbols->refVar(pos, "sss")->inst(*inst_scope)->typeof();
-    symbols->refVar(pos, "tachibana")->inst(*inst_scope)->typeof();
-    ASSERT_FALSE(error::hasError());
-
-    DataTree::expectOne()
-        (pos, QUERY_VAR, "otonashi")
-        (REFERENCE)
-        (FUNC_REFERENCE)
-        (pos, QUERY_VAR, "tachibana")
-        (REFERENCE)
-    ;
-}
-
 TEST_F(SymbolTableTest, FuncRefAmbiguous)
 {
     misc::position pos(12);
     misc::position err_pos0(1200);
     misc::position err_pos1(1201);
-    std::vector<std::string> param_names;
-    param_names = { "nakamura" };
-    symbols->defFunc(pos, "guild", param_names, true);
-    symbols->defFunc(pos, "guild", std::vector<std::string>(), true);
-    symbols->defFunc(pos, "girl_dead_monster", std::vector<std::string>(), true);
-    proto::SymbolTable inner_symbols(refSym());
-    param_names = { "yui", "iwasawa", "sekine" };
-    symbols->defFunc(pos, "girl_dead_monster", param_names, true);
+    std::vector<std::string> params;
+    params = { "nakamura" };
+    flchk::Function ga(pos, "guild", params, mkBody());
+    symbols->defFunc(util::mkref(ga));
+    flchk::Function gb(pos, "guild", std::vector<std::string>(), mkBody());
+    symbols->defFunc(util::mkref(gb));
 
-    symbols->refVar(err_pos0, "guild");
+    flchk::Function gdma(pos, "girl_dead_monster", std::vector<std::string>(), mkBody());
+    symbols->defFunc(util::mkref(gdma));
+    flchk::SymbolTable inner_symbols(refSym());
+    params = { "yui", "iwasawa", "sekine" };
+    flchk::Function gdmb(pos, "girl_dead_monster", params, mkBody());
+    symbols->defFunc(util::mkref(gdmb));
+
+    symbols->compileRef(err_pos0, "guild", *scope);
     ASSERT_TRUE(error::hasError());
-    symbols->refVar(err_pos1, "girl_dead_monster");
+    symbols->compileRef(err_pos1, "girl_dead_monster", *scope);
     ASSERT_TRUE(error::hasError());
     ASSERT_EQ(2, getAmbiguousRefs().size());
     ASSERT_EQ("guild", getAmbiguousRefs()[0].name);
     ASSERT_EQ(err_pos0, getAmbiguousRefs()[0].ref_pos);
     ASSERT_EQ("girl_dead_monster", getAmbiguousRefs()[1].name);
     ASSERT_EQ(err_pos1, getAmbiguousRefs()[1].ref_pos);
+
+    DataTree::expectOne()
+        (pos, FUNC_DECL, "guild", 0, true)
+        (pos, FUNC_DECL, "girl_dead_monster", 0, true)
+    ;
 }

@@ -1,5 +1,5 @@
-#ifndef __STEKIN_FLOW_CHECK_ACCUMULATOR_H__
-#define __STEKIN_FLOW_CHECK_ACCUMULATOR_H__
+#ifndef __STEKIN_FLOWCHECK_ACCUMULATOR_H__
+#define __STEKIN_FLOWCHECK_ACCUMULATOR_H__
 
 #include <string>
 #include <vector>
@@ -46,15 +46,17 @@ namespace flchk {
         void addBlock(Accumulator b);
     public:
         void defVar(misc::position const& pos
+                  , util::sref<SymbolTable> symbols
                   , std::string const& name
                   , util::sptr<Expression const> init);
 
-        void defFunc(misc::position const& pos
-                   , std::string const& name
-                   , std::vector<std::string> const& param_names
-                   , Accumulator body);
+        util::sref<Function> defFunc(misc::position const& pos
+                                   , std::string const& name
+                                   , std::vector<std::string> const& param_names
+                                   , util::sptr<Filter> body);
     public:
-        Block deliver();
+        void compileBlock(util::sref<proto::Scope> scope) const;
+        bool containsVoidReturn() const;
     private:
         void _setTerminatedByVoidReturn(misc::position const& pos);
         void _setTerminatedNotByVoidReturn(misc::position const& pos);
@@ -77,4 +79,4 @@ namespace flchk {
 
 }
 
-#endif /* __STEKIN_FLOW_CHECK_ACCUMULATOR_H__ */
+#endif /* __STEKIN_FLOWCHECK_ACCUMULATOR_H__ */

@@ -1,9 +1,10 @@
-#ifndef __STEKIN_FLOW_CHECK_FILTER_H__
-#define __STEKIN_FLOW_CHECK_FILTER_H__
+#ifndef __STEKIN_FLOWCHECK_FILTER_H__
+#define __STEKIN_FLOWCHECK_FILTER_H__
 
 #include <string>
 #include <vector>
 
+#include "fwd-decl.h"
 #include "accumulator.h"
 #include "../misc/pos-type.h"
 
@@ -38,31 +39,25 @@ namespace flchk {
     public:
         virtual void defVar(misc::position const& pos
                           , std::string const& name
-                          , util::sptr<Expression const> init);
-
-        virtual void defFunc(misc::position const& pos
-                           , std::string const& name
-                           , std::vector<std::string> const& param_names
-                           , util::sptr<Filter> body);
+                          , util::sptr<Expression const> init) = 0;
+        void defFunc(misc::position const& pos
+                   , std::string const& name
+                   , std::vector<std::string> const& param_names
+                   , util::sptr<Filter> body);
     public:
-        Block deliver();
+        virtual util::sref<SymbolTable> getSymbols() = 0;
+    protected:
+        virtual void _defFunc(misc::position const& pos
+                            , std::string const& name
+                            , std::vector<std::string> const& param_names
+                            , util::sptr<Filter> body) = 0;
+    public:
+        void compile(util::sref<proto::Scope> scope) const;
+        bool bodyContainsVoidReturn() const;
     protected:
         Accumulator _accumulator;
     };
 
-    struct SymbolDefFilter
-        : public Filter
-    {
-        void defVar(misc::position const& pos
-                  , std::string const& name
-                  , util::sptr<Expression const>);
-
-        void defFunc(misc::position const& pos
-                   , std::string const& name
-                   , std::vector<std::string> const&
-                   , util::sptr<Filter>);
-    };
-
 }
 
-#endif /* __STEKIN_FLOW_CHECK_FILTER_H__ */
+#endif /* __STEKIN_FLOWCHECK_FILTER_H__ */

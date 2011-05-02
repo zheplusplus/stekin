@@ -1,7 +1,9 @@
 #include <algorithm>
 
 #include "test-common.h"
-#include "../../flowcheck/filter.h"
+#include "../../flowcheck/func-body-filter.h"
+#include "../../flowcheck/global-filter.h"
+#include "../../flowcheck/symbol-def-filter.h"
 #include "../../flowcheck/accumulator.h"
 #include "../../flowcheck/block.h"
 #include "../../flowcheck/expr-nodes.h"
@@ -28,6 +30,11 @@ namespace {
     util::sptr<flchk::Expression const> nulFlchkExpr()
     {
         return std::move(util::sptr<flchk::Expression const>(NULL));
+    }
+
+    util::sref<SymbolTable> nulSymbols()
+    {
+        return util::sref<SymbolTable>(NULL);
     }
 
     struct BranchConsequence
@@ -76,7 +83,7 @@ namespace {
 
 }
 
-void Function::compile(util::sref<proto::Scope>) const
+util::sref<proto::Function> Function::compile(util::sref<proto::Scope>)
 {
     DataTree::actualOne()(pos, FUNC_DEF, name);
     std::for_each(param_names.begin()
@@ -85,7 +92,8 @@ void Function::compile(util::sref<proto::Scope>) const
                   {
                       DataTree::actualOne()(pos, PARAMETER, param);
                   });
-    body.compile(nulscope);
+    _body->compile(nulscope);
+    return util::sref<proto::Function>(NULL);
 }
 
 void Block::addStmt(util::sptr<Statement const> stmt)
@@ -93,17 +101,13 @@ void Block::addStmt(util::sptr<Statement const> stmt)
     _stmts.push_back(std::move(stmt));
 }
 
-void Block::defFunc(misc::position const& pos
-                  , std::string const& name
-                  , std::vector<std::string> const& param_names
-                  , Block body
-                  , bool)
+util::sref<Function> Block::defFunc(misc::position const& pos
+                                  , std::string const& name
+                                  , std::vector<std::string> const& param_names
+                                  , util::sptr<Filter> body)
 {
-    _funcs.push_back(std::move(util::mkptr(new Function(pos
-                                                      , name
-                                                      , param_names
-                                                      , std::move(body)
-                                                      , false))));
+    _funcs.push_back(util::mkmptr(new Function(pos, name, param_names, std::move(body))));
+    return *_funcs.back();
 }
 
 void Block::compile(util::sref<proto::Scope>) const 
@@ -111,7 +115,7 @@ void Block::compile(util::sref<proto::Scope>) const
     DataTree::actualOne()(BLOCK_BEGIN);
     std::for_each(_funcs.begin()
                 , _funcs.end()
-                , [&](util::sptr<Function const> const& func)
+                , [&](util::sptr<Function> const& func)
                   {
                       func->compile(nulscope);
                   });
@@ -127,17 +131,17 @@ void Block::compile(util::sref<proto::Scope>) const
 
 void Accumulator::addReturn(misc::position const& pos, util::sptr<Expression const> ret_val)
 {
-    _block.addStmt(std::move(util::mkptr(new Return(pos, std::move(ret_val)))));
+    _block.addStmt(util::mkptr(new Return(pos, std::move(ret_val))));
 }
 
 void Accumulator::addReturnNothing(misc::position const& pos)
 {
-    _block.addStmt(std::move(util::mkptr(new ReturnNothing(pos))));
+    _block.addStmt(util::mkptr(new ReturnNothing(pos)));
 }
 
 void Accumulator::addArith(misc::position const& pos, util::sptr<Expression const> expr)
 {
-    _block.addStmt(std::move(util::mkptr(new Arithmetics(pos, std::move(expr)))));
+    _block.addStmt(util::mkptr(new Arithmetics(pos, std::move(expr))));
 }
 
 void Accumulator::addBranch(misc::position const& pos
@@ -145,48 +149,49 @@ void Accumulator::addBranch(misc::position const& pos
                           , Accumulator consequence
                           , Accumulator alternative)
 {
-    _block.addStmt(std::move(util::mkptr(new Branch(pos
-                                                  , std::move(predicate)
-                                                  , std::move(consequence.deliver())
-                                                  , std::move(alternative.deliver())))));
+    _block.addStmt(util::mkptr(new Branch(pos
+                                        , std::move(predicate)
+                                        , std::move(consequence._block)
+                                        , std::move(alternative._block))));
 }
 
 void Accumulator::addBranch(misc::position const& pos
                           , util::sptr<Expression const> predicate
                           , Accumulator consequence)
 {
-    _block.addStmt(std::move(util::mkptr(new BranchConsequence(pos
-                                                             , std::move(predicate)
-                                                             , std::move(consequence._block)))));
+    _block.addStmt(util::mkptr(new BranchConsequence(pos
+                                                   , std::move(predicate)
+                                                   , std::move(consequence._block))));
 }
 
 void Accumulator::addBranchAlterOnly(misc::position const& pos
                                    , util::sptr<Expression const> predicate
                                    , Accumulator alternative)
 {
-    _block.addStmt(std::move(util::mkptr(new BranchAlternative(pos
-                                                             , std::move(predicate)
-                                                             , std::move(alternative._block)))));
+    _block.addStmt(util::mkptr(new BranchAlternative(pos
+                                                   , std::move(predicate)
+                                                   , std::move(alternative._block))));
 }
 
 void Accumulator::defVar(misc::position const& pos
+                       , util::sref<SymbolTable>
                        , std::string const& name
                        , util::sptr<Expression const> init)
 {
-    _block.addStmt(std::move(util::mkptr(new VarDef(pos, name, std::move(init)))));
+    _block.addStmt(util::mkptr(new VarDef(pos, nulSymbols(), name, std::move(init))));
 }
 
-void Accumulator::defFunc(misc::position const& pos
-                        , std::string const& name
-                        , std::vector<std::string> const& param_names
-                        , Accumulator body)
+util::sref<Function> Accumulator::defFunc(misc::position const& pos
+                                        , std::string const& name
+                                        , std::vector<std::string> const& param_names
+                                        , util::sptr<Filter> body)
 {
-    _block.defFunc(pos, name, param_names, std::move(body._block), false);
+    return _block.defFunc(pos, name, param_names, std::move(body));
 }
 
-Block Accumulator::deliver()
+void Accumulator::compileBlock(util::sref<proto::Scope> scope) const
 {
-    return std::move(_block);
+    _block.compile(scope);
 }
 
 void Filter::addReturn(misc::position const& pos, util::sptr<Expression const> ret_val)
@@ -231,40 +236,60 @@ void Filter::addBranchAlterOnly(misc::position const& pos
                                   , std::move(alternative->_accumulator));
 }
 
-void Filter::defVar(misc::position const& pos
-                  , std::string const& name
-                  , util::sptr<Expression const> init)
-{
-    _accumulator.defVar(pos, name, std::move(init));
-}
-
 void Filter::defFunc(misc::position const& pos
                    , std::string const& name
                    , std::vector<std::string> const& param_names
                    , util::sptr<Filter> body)
 {
-    _accumulator.defFunc(pos, name, param_names, std::move(body->_accumulator));
+    _defFunc(pos, name, param_names, std::move(body));
 }
 
-Block Filter::deliver()
+void Filter::compile(util::sref<proto::Scope> scope) const
 {
-    return std::move(_accumulator.deliver());
+    _accumulator.compileBlock(scope);
+}
+
+void FuncBodyFilter::defVar(misc::position const& pos
+                          , std::string const& name
+                          , util::sptr<Expression const> init)
+{
+    _accumulator.defVar(pos, nulSymbols(), name, std::move(init));
+}
+
+void FuncBodyFilter::_defFunc(misc::position const& pos
+                            , std::string const& name
+                            , std::vector<std::string> const& param_names
+                            , util::sptr<Filter> body)
+{
+    _accumulator.defFunc(pos, name, param_names, std::move(body));
+}
+
+util::sref<SymbolTable> FuncBodyFilter::getSymbols()
+{
+    return nulSymbols();
 }
 
 void SymbolDefFilter::defVar(misc::position const& pos
                            , std::string const& name
                            , util::sptr<Expression const> init)
 {
-    Filter::defVar(pos, name + VAR_DEF_FILTERED, std::move(init));
+    _accumulator.defVar(pos, nulSymbols(), name + VAR_DEF_FILTERED, std::move(init));
 }
 
-void SymbolDefFilter::defFunc(misc::position const& pos
-                            , std::string const& name
-                            , std::vector<std::string> const& param_names
-                            , util::sptr<Filter> body)
+void SymbolDefFilter::_defFunc(misc::position const& pos
+                             , std::string const& name
+                             , std::vector<std::string> const& param_names
+                             , util::sptr<Filter> body)
 {
-    Filter::defFunc(pos, name + FUNC_DEF_FILTERED, param_names, std::move(body));
+    _accumulator.defFunc(pos, name + FUNC_DEF_FILTERED, param_names, std::move(body));
 }
+
+util::sref<SymbolTable> SymbolDefFilter::getSymbols()
+{
+    return nulSymbols();
+}
+
+GlobalFilter::GlobalFilter() = default;
 
 util::sptr<proto::Statement const> Arithmetics::compile(util::sref<proto::Scope>) const 
 {

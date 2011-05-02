@@ -1,3 +1,8 @@
+func xor(a, b)
+    if a
+        return !b
+    return b
+
 func leap(y)
     func mod4()
         return y % 4 = 0
@@ -16,11 +21,6 @@ write(leap(20))
 write(leap(100))
 write(leap(200))
 write(leap(400))
-
-func xor(a, b)
-    if a
-        return !b
-    return b
 
 func deepNest(x)
     z: 5

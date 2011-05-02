@@ -2,7 +2,9 @@
 
 #include "stmt-nodes.h"
 #include "function.h"
-#include "../proto/scope.h"
+#include "filter.h"
+#include "symbol-table.h"
+#include "../proto/function.h"
 #include "../proto/stmt-nodes.h"
 
 using namespace flchk;
@@ -14,8 +16,8 @@ util::sptr<proto::Statement const> Arithmetics::compile(util::sref<proto::Scope>
 
 util::sptr<proto::Statement const> Branch::compile(util::sref<proto::Scope> scope) const 
 {
-    util::sptr<proto::Scope> consq_scope(std::move(scope->createBranchScope()));
-    util::sptr<proto::Scope> alter_scope(std::move(scope->createBranchScope()));
+    util::sptr<proto::Scope> consq_scope(new proto::Scope);
+    util::sptr<proto::Scope> alter_scope(new proto::Scope);
     consequence.compile(*consq_scope);
     alternative.compile(*alter_scope);
     return std::move(util::mkptr(new proto::Branch(pos
@@ -26,8 +28,9 @@ util::sptr<proto::Statement const> Branch::compile(util::sref<proto::Scope> scop
 
 util::sptr<proto::Statement const> VarDef::compile(util::sref<proto::Scope> scope) const 
 {
-    scope->defVar(pos, name);
-    return std::move(util::mkptr(new proto::VarDef(pos, name, init->compile(scope))));
+    util::sptr<proto::Expression const> init_value(init->compile(scope));
+    _symbols->defVar(pos, name);
+    return std::move(util::mkptr(new proto::VarDef(pos, name, std::move(init_value))));
 }
 
 util::sptr<proto::Statement const> Return::compile(util::sref<proto::Scope> scope) const 

@@ -1,5 +1,5 @@
-#ifndef __STEKIN_FLOW_CHECK_FORWARD_DECLARATIONS_H__
-#define __STEKIN_FLOW_CHECK_FORWARD_DECLARATIONS_H__
+#ifndef __STEKIN_FLOWCHECK_FORWARD_DECLARATIONS_H__
+#define __STEKIN_FLOWCHECK_FORWARD_DECLARATIONS_H__
 
 namespace flchk {
 
@@ -8,7 +8,8 @@ namespace flchk {
     struct Filter;
     struct Block;
     struct Function;
+    struct SymbolTable;
 
 }
 
-#endif /* __STEKIN_FLOW_CHECK_FORWARD_DECLARATIONS_H__ */
+#endif /* __STEKIN_FLOWCHECK_FORWARD_DECLARATIONS_H__ */

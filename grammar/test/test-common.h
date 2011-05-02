@@ -10,6 +10,7 @@
 namespace test {
 
     extern util::sref<proto::Scope> const nulscope;
+    util::sptr<flchk::Filter> mkfilter();
 
     struct GrammarData {
         misc::position const pos;

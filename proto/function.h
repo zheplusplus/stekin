@@ -4,7 +4,7 @@
 #include <list>
 #include <map>
 
-#include "general-scope.h"
+#include "scope.h"
 #include "../instance/fwd-decl.h"
 #include "../instance/variable.h"
 #include "../misc/pos-type.h"
@@ -12,7 +12,7 @@
 namespace proto {
 
     struct Function
-        : public GeneralScope
+        : public Scope
     {
         util::sref<inst::Function> inst(misc::position const& pos
                                       , util::sref<inst::Scope> ext_scope
@@ -24,15 +24,11 @@ namespace proto {
         Function(misc::position const& ps
                , std::string const& func_name
                , std::vector<std::string> const& params
-               , util::sref<SymbolTable const> ext_symbols
-               , bool func_hint_void_return);
-
-        Function(Function&& rhs)
-            : GeneralScope(std::move(rhs))
-            , pos(rhs.pos)
-            , name(rhs.name)
-            , param_names(rhs.param_names)
-            , hint_void_return(rhs.hint_void_return)
+               , bool func_hint_void_return)
+            : pos(ps)
+            , name(func_name)
+            , param_names(params)
+            , hint_void_return(func_hint_void_return)
         {}
 
         Function(Function const&) = delete;
@@ -41,9 +37,9 @@ namespace proto {
         std::string const name;
         std::vector<std::string> const param_names;
         bool hint_void_return;
-    private:
-        void _fillParamNames();
-    private:
+
+        void setFreeVariables(std::vector<std::string> const& free_vars);
+    public:
         struct InstanceInfo {
             std::map<std::string, inst::Variable const> const ext_vars;
             std::vector<util::sref<inst::Type const>> const arg_types;
@@ -56,13 +52,13 @@ namespace proto {
 
             bool operator<(InstanceInfo const& rhs) const;
         };
-
+    private:
         std::map<InstanceInfo, util::sref<inst::Function>> _instance_cache;
+        std::vector<std::string> _free_variables;
     public:
         std::map<std::string, inst::Variable const> bindExternalVars(
                                                 misc::position const& pos
                                               , util::sref<inst::Scope const> ext_scope) const;
-        std::vector<std::string> freeVariables() const;
     };
 
 }

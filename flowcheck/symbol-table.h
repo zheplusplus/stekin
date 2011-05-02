@@ -1,5 +1,5 @@
-#ifndef __STEKIN_PROTO_SYMBOL_TABLE_H__
-#define __STEKIN_PROTO_SYMBOL_TABLE_H__
+#ifndef __STEKIN_FLOWCHECK_SYMBOL_TABLE_H__
+#define __STEKIN_FLOWCHECK_SYMBOL_TABLE_H__
 
 #include <string>
 #include <map>
@@ -7,11 +7,11 @@
 #include <vector>
 
 #include "fwd-decl.h"
-#include "../instance/fwd-decl.h"
+#include "../proto/fwd-decl.h"
 #include "../util/pointer.h"
 #include "../misc/pos-type.h"
 
-namespace proto {
+namespace flchk {
 
     struct Overloads {
         explicit Overloads(util::sref<Overloads const> external_overloads)
@@ -44,55 +44,47 @@ namespace proto {
     };
 
     struct SymbolTable {
-        int const level;
-
         explicit SymbolTable(util::sref<SymbolTable const> ext_symbols)
-            : level(ext_symbols->level + 1)
-            , _overloads(util::mkref(ext_symbols->_overloads))
+            : _overloads(util::mkref(ext_symbols->_overloads))
         {}
 
         SymbolTable()
-            : level(0)
-            , _overloads(util::sref<Overloads const>(NULL))
+            : _overloads(util::sref<Overloads const>(NULL))
         {}
 
         SymbolTable(SymbolTable&& rhs)
-            : level(rhs.level)
-            , _external_var_refs(rhs._external_var_refs)
+            : _external_var_refs(rhs._external_var_refs)
             , _var_defs(rhs._var_defs)
             , _overloads(rhs._overloads)
-            , _func_entities(std::move(rhs._func_entities))
         {}
 
-        util::sptr<Expression const> refVar(misc::position const& pos, std::string const& name);
+        void refVars(misc::position const& pos, std::vector<std::string> const& vars);
         void defVar(misc::position const& pos, std::string const& name);
-        util::sref<Function> defFunc(misc::position const& pos
-                                   , std::string const& name
-                                   , std::vector<std::string> const& param_names
-                                   , bool hint_void_return);
-        util::sptr<Expression const> queryCall(misc::position const& pos
-                                             , std::string const& name
-                                             , std::vector<util::sptr<Expression const>> args);
+        void defFunc(util::sref<Function> func);
+
+        util::sptr<proto::Expression const> compileRef(misc::position const& pos
+                                                     , std::string const& name
+                                                     , util::sref<proto::Scope> scope);
+        util::sptr<proto::Expression const> compileCall(
+                        misc::position const& pos
+                      , util::sref<proto::Scope> scope
+                      , std::string const& name
+                      , std::vector<util::sptr<Expression const>> const& args);
         util::sref<Function> queryFunc(misc::position const& pos
                                      , std::string const& name
                                      , int param_count);
-        std::map<std::string, inst::Variable const> bindExternalVars(
-                                              misc::position const& pos
-                                            , util::sref<inst::Scope const> ext_scope) const;
         std::vector<std::string> freeVariables() const;
     private:
-        void _cascadeRefFreeVars(std::vector<std::string> const& vars
-                               , misc::position const& call_pos);
+        void _markReference(misc::position const& pos, std::string const& name);
     private:
         std::map<std::string, std::list<misc::position>> _external_var_refs;
         std::map<std::string, misc::position> _var_defs;
 
         Overloads _overloads;
-        std::list<Function> _func_entities;
     private:
-        static Function _fake_prototype;
+        static Function _fake_function;
     };
 
 }
 
-#endif /* __STEKIN_PROTO_SYMBOL_TABLE_H__ */
+#endif /* __STEKIN_FLOWCHECK_SYMBOL_TABLE_H__ */

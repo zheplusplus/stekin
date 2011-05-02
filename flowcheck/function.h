@@ -1,5 +1,5 @@
-#ifndef __STEKIN_FLOW_CHECK_FUNCTION_H__
-#define __STEKIN_FLOW_CHECK_FUNCTION_H__
+#ifndef __STEKIN_FLOWCHECK_FUNCTION_H__
+#define __STEKIN_FLOWCHECK_FUNCTION_H__
 
 #include <string>
 #include <vector>
@@ -14,25 +14,33 @@ namespace flchk {
         Function(misc::position const& ps
                , std::string const& func_name
                , std::vector<std::string> const& params
-               , Block func_body
-               , bool func_contains_void_return)
+               , util::sptr<Filter> func_body)
             : pos(ps)
             , name(func_name)
             , param_names(params)
-            , body(std::move(func_body))
-            , contains_void_return(func_contains_void_return)
+            , _body(std::move(func_body))
+            , _func_proto(NULL)
         {}
 
-        void compile(util::sref<proto::Scope> scope) const;
-        util::sref<proto::Function> declare(util::sref<proto::Scope> scope) const;
+        Function(Function&& rhs)
+            : pos(rhs.pos)
+            , name(rhs.name)
+            , param_names(rhs.param_names)
+            , _body(std::move(rhs._body))
+            , _func_proto(rhs._func_proto)
+        {}
+
+        util::sref<proto::Function> compile(util::sref<proto::Scope> scope);
+        std::vector<std::string> freeVariables() const;
 
         misc::position const pos;
         std::string const name;
         std::vector<std::string> const param_names;
-        Block const body;
-        bool const contains_void_return;
+    private:
+        util::sptr<Filter> _body;
+        util::sref<proto::Function> _func_proto;
     };
 
 }
 
-#endif /* __STEKIN_FLOW_CHECK_FUNCTION_H__ */
+#endif /* __STEKIN_FLOWCHECK_FUNCTION_H__ */

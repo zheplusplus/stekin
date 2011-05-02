@@ -1,11 +1,12 @@
-#ifndef __STEKIN_FLOW_CHECK_BLOCK_H__
-#define __STEKIN_FLOW_CHECK_BLOCK_H__
+#ifndef __STEKIN_FLOWCHECK_BLOCK_H__
+#define __STEKIN_FLOWCHECK_BLOCK_H__
 
 #include <string>
 #include <vector>
+#include <list>
 
 #include "fwd-decl.h"
-#include "../proto/block.h"
+#include "../proto/fwd-decl.h"
 #include "../util/pointer.h"
 #include "../misc/pos-type.h"
 
@@ -23,17 +24,16 @@ namespace flchk {
         void compile(util::sref<proto::Scope> scope) const;
 
         void addStmt(util::sptr<Statement const> stmt);
-        void defFunc(misc::position const& pos
-                   , std::string const& name
-                   , std::vector<std::string> const& param_names
-                   , Block body
-                   , bool contains_void_return);
+        util::sref<Function> defFunc(misc::position const& pos
+                                   , std::string const& name
+                                   , std::vector<std::string> const& param_names
+                                   , util::sptr<Filter> body);
         void append(Block following);
     private:
         std::list<util::sptr<Statement const>> _stmts;
-        std::list<util::sptr<Function const>> _funcs;
+        std::list<util::sptr<Function>> _funcs;
     };
 
 }
 
-#endif /* __STEKIN_FLOW_CHECK_BLOCK_H__ */
+#endif /* __STEKIN_FLOWCHECK_BLOCK_H__ */

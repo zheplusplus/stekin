@@ -5,8 +5,8 @@
 #include "../../grammar/expr-nodes.h"
 #include "../../grammar/clause-builder.h"
 #include "../../flowcheck/node-base.h"
-#include "../../flowcheck/block.h"
 #include "../../flowcheck/function.h"
+#include "../../flowcheck/filter.h"
 #include "../../proto/node-base.h"
 #include "../../util/string.h"
 
@@ -14,78 +14,79 @@ using namespace grammar;
 using namespace test;
 
 static util::sptr<flchk::Expression const> nulptr(NULL);
+static util::sref<flchk::Filter> nulfilter(NULL);
 
-util::sptr<flchk::Expression const> PreUnaryOp::compile() const
+util::sptr<flchk::Expression const> PreUnaryOp::compile(util::sref<flchk::Filter>) const
 {
     DataTree::actualOne()(pos, PRE_UNARY_OP_BEGIN, op_img)(pos, OPERAND);
-    rhs->compile();
+    rhs->compile(nulfilter);
     DataTree::actualOne()(pos, PRE_UNARY_OP_END);
     return std::move(nulptr);
 }
 
-util::sptr<flchk::Expression const> BinaryOp::compile() const
+util::sptr<flchk::Expression const> BinaryOp::compile(util::sref<flchk::Filter>) const
 {
     DataTree::actualOne()(pos, BINARY_OP_BEGIN, op_img)(pos, OPERAND);
-    lhs->compile();
+    lhs->compile(nulfilter);
     DataTree::actualOne()(pos, OPERAND);
-    rhs->compile();
+    rhs->compile(nulfilter);
     DataTree::actualOne()(pos, BINARY_OP_END);
     return std::move(nulptr);
 }
 
-util::sptr<flchk::Expression const> Conjunction::compile() const
+util::sptr<flchk::Expression const> Conjunction::compile(util::sref<flchk::Filter>) const
 {
     DataTree::actualOne()(pos, BINARY_OP_BEGIN, "&&")(pos, OPERAND);
-    lhs->compile();
+    lhs->compile(nulfilter);
     DataTree::actualOne()(pos, OPERAND);
-    rhs->compile();
+    rhs->compile(nulfilter);
     DataTree::actualOne()(pos, BINARY_OP_END);
     return std::move(nulptr);
 }
 
-util::sptr<flchk::Expression const> Disjunction::compile() const
+util::sptr<flchk::Expression const> Disjunction::compile(util::sref<flchk::Filter>) const
 {
     DataTree::actualOne()(pos, BINARY_OP_BEGIN, "||")(pos, OPERAND);
-    lhs->compile();
+    lhs->compile(nulfilter);
     DataTree::actualOne()(pos, OPERAND);
-    rhs->compile();
+    rhs->compile(nulfilter);
     DataTree::actualOne()(pos, BINARY_OP_END);
     return std::move(nulptr);
 }
 
-util::sptr<flchk::Expression const> Negation::compile() const
+util::sptr<flchk::Expression const> Negation::compile(util::sref<flchk::Filter>) const
 {
     DataTree::actualOne()(pos, PRE_UNARY_OP_BEGIN, "!")(pos, OPERAND);
-    rhs->compile();
+    rhs->compile(nulfilter);
     DataTree::actualOne()(pos, PRE_UNARY_OP_END);
     return std::move(nulptr);
 }
 
-util::sptr<flchk::Expression const> Reference::compile() const
+util::sptr<flchk::Expression const> Reference::compile(util::sref<flchk::Filter>) const
 {
     DataTree::actualOne()(pos, IDENTIFIER, name);
     return std::move(nulptr);
 }
 
-util::sptr<flchk::Expression const> BoolLiteral::compile() const
+util::sptr<flchk::Expression const> BoolLiteral::compile(util::sref<flchk::Filter>) const
 {
     DataTree::actualOne()(pos, BOOLEAN, util::str(value));
     return std::move(nulptr);
 }
 
-util::sptr<flchk::Expression const> IntLiteral::compile() const
+util::sptr<flchk::Expression const> IntLiteral::compile(util::sref<flchk::Filter>) const
 {
     DataTree::actualOne()(pos, INTEGER, value);
     return std::move(nulptr);
 }
 
-util::sptr<flchk::Expression const> FloatLiteral::compile() const
+util::sptr<flchk::Expression const> FloatLiteral::compile(util::sref<flchk::Filter>) const
 {
     DataTree::actualOne()(pos, FLOATING, value);
     return std::move(nulptr);
 }
 
-util::sptr<flchk::Expression const> Call::compile() const
+util::sptr<flchk::Expression const> Call::compile(util::sref<flchk::Filter>) const
 {
     DataTree::actualOne()(pos, FUNC_CALL_BEGIN, name);
     std::for_each(args.begin()
@@ -93,13 +94,13 @@ util::sptr<flchk::Expression const> Call::compile() const
                 , [&](util::sptr<Expression const> const& expr)
                   {
                       DataTree::actualOne()(pos, ARGUMENT);
-                      expr->compile();
+                      expr->compile(nulfilter);
                   });
     DataTree::actualOne()(pos, FUNC_CALL_END);
     return std::move(nulptr);
 }
 
-util::sptr<flchk::Expression const> FuncReference::compile() const
+util::sptr<flchk::Expression const> FuncReference::compile(util::sref<flchk::Filter>) const
 {
     DataTree::actualOne()(pos, IDENTIFIER, name + '@' + util::str(param_count));
     return std::move(nulptr);
@@ -108,7 +109,7 @@ util::sptr<flchk::Expression const> FuncReference::compile() const
 void ClauseBuilder::addArith(int indent_level, util::sptr<Expression const> arith)
 {
     DataTree::actualOne()(arith->pos, indent_level, ARITHMETICS);
-    arith->compile();
+    arith->compile(nulfilter);
 }
 
 void ClauseBuilder::addVarDef(int indent_level
@@ -116,13 +117,13 @@ void ClauseBuilder::addVarDef(int indent_level
                             , util::sptr<Expression const> init)
 {
     DataTree::actualOne()(init->pos, indent_level, VAR_DEF, name);
-    init->compile();
+    init->compile(nulfilter);
 }
 
 void ClauseBuilder::addReturn(int indent_level, util::sptr<Expression const> ret_val)
 {
     DataTree::actualOne()(ret_val->pos, indent_level, RETURN);
-    ret_val->compile();
+    ret_val->compile(nulfilter);
 }
 
 void ClauseBuilder::addReturnNothing(int indent_level, misc::position const& pos)
@@ -149,7 +150,7 @@ void ClauseBuilder::addIf(int indent_level, util::sptr<Expression const> conditi
 {
     misc::position pos(condition->pos);
     DataTree::actualOne()(pos, indent_level, BRANCH_IF)(pos, indent_level, CONDITION_BEGIN);
-    condition->compile();
+    condition->compile(nulfilter);
     DataTree::actualOne()(pos, indent_level, CONDITION_END);
 }
 
@@ -157,7 +158,7 @@ void ClauseBuilder::addIfnot(int indent_level, util::sptr<Expression const> cond
 {
     misc::position pos(condition->pos);
     DataTree::actualOne()(pos, indent_level, BRANCH_IFNOT)(pos, indent_level, CONDITION_BEGIN);
-    condition->compile();
+    condition->compile(nulfilter);
     DataTree::actualOne()(pos, indent_level, CONDITION_END);
 }
 
@@ -166,9 +167,9 @@ void ClauseBuilder::addElse(int indent_level, misc::position const& pos)
     DataTree::actualOne()(pos, indent_level, BRANCH_ELSE);
 }
 
-flchk::Block ClauseBuilder::buildAndClear()
+util::sptr<flchk::Filter> ClauseBuilder::buildAndClear()
 {
-    return std::move(flchk::Block());
+    return util::sptr<flchk::Filter>(NULL);
 }
 
 AcceptorStack::AcceptorStack()

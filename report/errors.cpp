@@ -198,5 +198,5 @@ void error::requestVariableNotCallable(misc::position const& call_pos)
 {
     has_error = true;
     std::cerr << call_pos.str() << std::endl;
-    std::cerr << "    variable not Callable" << std::endl;
+    std::cerr << "    variable not callable" << std::endl;
 }

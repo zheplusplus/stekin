@@ -1,6 +1,7 @@
 #include <algorithm>
 
 #include "inst-mediates.h"
+#include "function.h"
 #include "../instance/stmt-nodes.h"
 #include "../instance/scope.h"
 

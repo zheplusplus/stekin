@@ -1,5 +1,5 @@
-#ifndef __STEKIN_FLOW_CHECK_STATEMENT_NODES_H__
-#define __STEKIN_FLOW_CHECK_STATEMENT_NODES_H__
+#ifndef __STEKIN_FLOWCHECK_STATEMENT_NODES_H__
+#define __STEKIN_FLOWCHECK_STATEMENT_NODES_H__
 
 #include <string>
 #include <list>
@@ -66,18 +66,24 @@ namespace flchk {
     struct VarDef
         : public Statement
     {
-        VarDef(misc::position const& pos, std::string const& n, util::sptr<Expression const> i)
-            : Statement(pos)
-            , name(n)
-            , init(std::move(i))
+        VarDef(misc::position const& pos
+             , util::sref<SymbolTable> st
+             , std::string const& n
+             , util::sptr<Expression const> i)
+                : Statement(pos)
+                , name(n)
+                , init(std::move(i))
+                , _symbols(st)
         {}
 
         util::sptr<proto::Statement const> compile(util::sref<proto::Scope> scope) const;
 
         std::string const name;
         util::sptr<Expression const> const init;
+    private:
+        util::sref<SymbolTable> const _symbols;
     };
 
 }
 
-#endif /* __STEKIN_FLOW_CHECK_STATEMENT_NODES_H__ */
+#endif /* __STEKIN_FLOWCHECK_STATEMENT_NODES_H__ */

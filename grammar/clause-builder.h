@@ -65,7 +65,7 @@ namespace grammar {
         void addIfnot(int indent_len, util::sptr<Expression const> condition);
         void addElse(int indent_len, misc::position const& pos);
 
-        flchk::Block buildAndClear();
+        util::sptr<flchk::Filter> buildAndClear();
     private:
         AcceptorStack _stack;
     };

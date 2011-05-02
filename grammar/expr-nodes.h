@@ -16,7 +16,7 @@ namespace grammar {
             , rhs(std::move(r))
         {}
 
-        util::sptr<flchk::Expression const> compile() const;
+        util::sptr<flchk::Expression const> compile(util::sref<flchk::Filter> filter) const;
 
         std::string const op_img;
         util::sptr<Expression const> const rhs;
@@ -35,7 +35,7 @@ namespace grammar {
             , rhs(std::move(r))
         {}
 
-        util::sptr<flchk::Expression const> compile() const;
+        util::sptr<flchk::Expression const> compile(util::sref<flchk::Filter> filter) const;
 
         util::sptr<Expression const> const lhs;
         std::string const op_img;
@@ -53,7 +53,7 @@ namespace grammar {
             , rhs(std::move(r))
         {}
 
-        util::sptr<flchk::Expression const> compile() const;
+        util::sptr<flchk::Expression const> compile(util::sref<flchk::Filter> filter) const;
 
         util::sptr<Expression const> const lhs;
         util::sptr<Expression const> const rhs;
@@ -70,7 +70,7 @@ namespace grammar {
             , rhs(std::move(r))
         {}
 
-        util::sptr<flchk::Expression const> compile() const;
+        util::sptr<flchk::Expression const> compile(util::sref<flchk::Filter> filter) const;
 
         util::sptr<Expression const> const lhs;
         util::sptr<Expression const> const rhs;
@@ -84,7 +84,7 @@ namespace grammar {
             , rhs(std::move(r))
         {}
 
-        util::sptr<flchk::Expression const> compile() const;
+        util::sptr<flchk::Expression const> compile(util::sref<flchk::Filter> filter) const;
 
         util::sptr<Expression const> const rhs;
     };
@@ -97,7 +97,7 @@ namespace grammar {
             , name(n)
         {}
 
-        util::sptr<flchk::Expression const> compile() const;
+        util::sptr<flchk::Expression const> compile(util::sref<flchk::Filter> filter) const;
 
         std::string const name;
     };
@@ -110,7 +110,7 @@ namespace grammar {
             , value(v)
         {}
 
-        util::sptr<flchk::Expression const> compile() const;
+        util::sptr<flchk::Expression const> compile(util::sref<flchk::Filter>) const;
 
         bool const value;
     };
@@ -123,7 +123,7 @@ namespace grammar {
             , value(v)
         {}
 
-        util::sptr<flchk::Expression const> compile() const;
+        util::sptr<flchk::Expression const> compile(util::sref<flchk::Filter>) const;
 
         std::string const value;
     };
@@ -136,7 +136,7 @@ namespace grammar {
             , value(v)
         {}
 
-        util::sptr<flchk::Expression const> compile() const;
+        util::sptr<flchk::Expression const> compile(util::sref<flchk::Filter>) const;
 
         std::string const value;
     };
@@ -152,7 +152,7 @@ namespace grammar {
                 , args(std::move(a))
         {}
 
-        util::sptr<flchk::Expression const> compile() const;
+        util::sptr<flchk::Expression const> compile(util::sref<flchk::Filter> filter) const;
 
         std::string const name;
         std::vector<util::sptr<Expression const>> const args;
@@ -167,7 +167,7 @@ namespace grammar {
             , param_count(pc)
         {}
 
-        util::sptr<flchk::Expression const> compile() const;
+        util::sptr<flchk::Expression const> compile(util::sref<flchk::Filter> filter) const;
 
         std::string const name;
         int const param_count;

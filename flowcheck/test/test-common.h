@@ -1,5 +1,5 @@
-#ifndef __STEKIN_FLOW_CHECK_TEST_TEST_COMMON_H__
-#define __STEKIN_FLOW_CHECK_TEST_TEST_COMMON_H__
+#ifndef __STEKIN_FLOWCHECK_TEST_TEST_COMMON_H__
+#define __STEKIN_FLOWCHECK_TEST_TEST_COMMON_H__
 
 #include "../../proto/node-base.h"
 #include "../../proto/scope.h"
@@ -66,10 +66,10 @@ namespace test {
     extern NodeType const PRE_UNARY_OP;
     extern NodeType const CALL;
     extern NodeType const FUNC_REFERENCE;
+    extern NodeType const FUNCTOR;
     extern NodeType const REFERENCE;
 
     extern NodeType const VAR_DEF;
-    extern NodeType const SCOPE_VAR_DEF;
 
     extern NodeType const STATEMENT;
     extern NodeType const ARITHMETICS;
@@ -95,4 +95,4 @@ namespace test {
 
 std::ostream& operator<<(std::ostream& os, test::FlowcheckData const& data);
 
-#endif /* __STEKIN_FLOW_CHECK_TEST_TEST_COMMON_H__ */
+#endif /* __STEKIN_FLOWCHECK_TEST_TEST_COMMON_H__ */

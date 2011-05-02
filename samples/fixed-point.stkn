@@ -11,12 +11,12 @@ func average(x, y)
 func fixed_point(f, first_guess)
     func is_close_enough(a, b)
         return abs(a - b) < PRECISION
-    func try_guessing(fx, guess)
-        next: fx(guess)
+    func try_guessing(guess)
+        next: f(guess)
         if is_close_enough(guess, next)
             return next
-        return try_guessing(fx, next)
-    return try_guessing(f, first_guess)
+        return try_guessing(next)
+    return try_guessing(first_guess)
 
 func sqrt(x)
     func f(y)

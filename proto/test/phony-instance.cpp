@@ -386,3 +386,7 @@ void Initialization::write() const {}
 void Return::write() const {}
 void ReturnNothing::write() const {}
 void Block::write() const {}
+
+#include "../../output/statement-writer.h"
+void output::beginWriteStmt() {}
+void output::endWriteStmt() {}

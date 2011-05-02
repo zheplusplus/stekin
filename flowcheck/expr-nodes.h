@@ -1,10 +1,11 @@
-#ifndef __STEKIN_FLOW_CHECK_EXPRESSION_NODES_H__
-#define __STEKIN_FLOW_CHECK_EXPRESSION_NODES_H__
+#ifndef __STEKIN_FLOWCHECK_EXPRESSION_NODES_H__
+#define __STEKIN_FLOWCHECK_EXPRESSION_NODES_H__
 
 #include <string>
 #include <vector>
 
 #include "node-base.h"
+#include "fwd-decl.h"
 #include "../util/pointer.h"
 
 namespace flchk {
@@ -114,9 +115,10 @@ namespace flchk {
     struct Reference
         : public Expression
     {
-        Reference(misc::position const& pos, std::string const& n)
+        Reference(misc::position const& pos, util::sref<SymbolTable> st, std::string const& n)
             : Expression(pos)
             , name(n)
+            , _symbols(st)
         {}
 
         util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope) const;
@@ -124,6 +126,8 @@ namespace flchk {
         util::sptr<Expression const> fold() const;
 
         std::string const name;
+    private:
+        util::sref<SymbolTable> const _symbols;
     };
 
     struct BoolLiteral
@@ -241,11 +245,13 @@ namespace flchk {
         : public Expression
     {
         Call(misc::position const& pos
+           , util::sref<SymbolTable> st
            , std::string const& n
            , std::vector<util::sptr<Expression const>> a)
                 : Expression(pos)
                 , name(n)
                 , args(std::move(a))
+                , _symbols(st)
         {}
 
         util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope) const;
@@ -254,15 +260,21 @@ namespace flchk {
 
         std::string const name;
         std::vector<util::sptr<Expression const>> const args;
+    private:
+        util::sref<SymbolTable> const _symbols;
     };
 
     struct FuncReference
         : public Expression
     {
-        FuncReference(misc::position const& pos, std::string const& n, int pc)
+        FuncReference(misc::position const& pos
+                    , util::sref<SymbolTable> st
+                    , std::string const& n
+                    , int pc)
             : Expression(pos)
             , name(n)
             , param_count(pc)
+            , _symbols(st)
         {}
 
         util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope) const;
@@ -271,8 +283,10 @@ namespace flchk {
 
         std::string const name;
         int const param_count;
+    private:
+        util::sref<SymbolTable> const _symbols;
     };
 
 }
 
-#endif /* __STEKIN_FLOW_CHECK_EXPRESSION_NODES_H__ */
+#endif /* __STEKIN_FLOWCHECK_EXPRESSION_NODES_H__ */

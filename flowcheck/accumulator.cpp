@@ -1,6 +1,7 @@
 #include "accumulator.h"
 #include "stmt-nodes.h"
 #include "function.h"
+#include "filter.h"
 #include "../proto/node-base.h"
 #include "../report/errors.h"
 #include "../report/warnings.h"
@@ -11,20 +12,20 @@ void Accumulator::addReturn(misc::position const& pos, util::sptr<Expression con
 {
     _checkNotTerminated(pos);
     _setTerminatedNotByVoidReturn(pos);
-    _block.addStmt(std::move(util::mkptr(new Return(pos, std::move(ret_val)))));
+    _block.addStmt(util::mkptr(new Return(pos, std::move(ret_val))));
 }
 
 void Accumulator::addReturnNothing(misc::position const& pos)
 {
     _checkNotTerminated(pos);
     _setTerminatedByVoidReturn(pos);
-    _block.addStmt(std::move(util::mkptr(new ReturnNothing(pos))));
+    _block.addStmt(util::mkptr(new ReturnNothing(pos)));
 }
 
 void Accumulator::addArith(misc::position const& pos, util::sptr<Expression const> expr)
 {
     _checkNotTerminated(pos);
-    _block.addStmt(std::move(util::mkptr(new Arithmetics(pos, std::move(expr)))));
+    _block.addStmt(util::mkptr(new Arithmetics(pos, std::move(expr))));
 }
 
 void Accumulator::addBranch(misc::position const& pos
@@ -36,10 +37,10 @@ void Accumulator::addBranch(misc::position const& pos
     _checkBranchesTermination(consequence, alternative);
     _setTerminationBySubAccumulator(consequence);
     _setTerminationBySubAccumulator(alternative);
-    _block.addStmt(std::move(util::mkptr(new Branch(pos
-                                                  , std::move(predicate)
-                                                  , std::move(consequence._block)
-                                                  , std::move(alternative._block)))));
+    _block.addStmt(util::mkptr(new Branch(pos
+                                        , std::move(predicate)
+                                        , std::move(consequence._block)
+                                        , std::move(alternative._block))));
 }
 
 void Accumulator::addBranch(misc::position const& pos
@@ -48,10 +49,10 @@ void Accumulator::addBranch(misc::position const& pos
 {
     _checkNotTerminated(pos);
     _setTerminationBySubAccumulator(consequence);
-    _block.addStmt(std::move(util::mkptr(new Branch(pos
-                                                  , std::move(predicate)
-                                                  , std::move(consequence._block)
-                                                  , std::move(Block())))));
+    _block.addStmt(util::mkptr(new Branch(pos
+                                        , std::move(predicate)
+                                        , std::move(consequence._block)
+                                        , std::move(Block()))));
 }
 
 void Accumulator::addBranchAlterOnly(misc::position const& pos
@@ -60,10 +61,10 @@ void Accumulator::addBranchAlterOnly(misc::position const& pos
 {
     _checkNotTerminated(pos);
     _setTerminationBySubAccumulator(alternative);
-    _block.addStmt(std::move(util::mkptr(new Branch(pos
-                                                  , std::move(predicate)
-                                                  , std::move(Block())
-                                                  , std::move(alternative._block)))));
+    _block.addStmt(util::mkptr(new Branch(pos
+                                        , std::move(predicate)
+                                        , std::move(Block())
+                                        , std::move(alternative._block))));
 }
 
 void Accumulator::addBlock(Accumulator b)
@@ -73,28 +74,30 @@ void Accumulator::addBlock(Accumulator b)
 }
 
 void Accumulator::defVar(misc::position const& pos
+                       , util::sref<SymbolTable> symbols
                        , std::string const& name
                        , util::sptr<Expression const> init)
 {
     _checkNotTerminated(pos);
-    _block.addStmt(std::move(util::mkptr(new VarDef(pos, name, std::move(init)))));
+    _block.addStmt(util::mkptr(new VarDef(pos, symbols, name, std::move(init))));
 }
 
-void Accumulator::defFunc(misc::position const& pos
-                        , std::string const& name
-                        , std::vector<std::string> const& param_names
-                        , Accumulator body)
+util::sref<Function> Accumulator::defFunc(misc::position const& pos
+                                        , std::string const& name
+                                        , std::vector<std::string> const& param_names
+                                        , util::sptr<Filter> body)
 {
-    _block.defFunc(pos
-                 , name
-                 , param_names
-                 , std::move(body._block)
-                 , body._contains_void_return || !body._terminated());
+    return _block.defFunc(pos, name, param_names, std::move(body));
 }
 
-Block Accumulator::deliver()
+void Accumulator::compileBlock(util::sref<proto::Scope> scope) const
 {
-    return std::move(_block);
+    _block.compile(scope);
+}
+
+bool Accumulator::containsVoidReturn() const
+{
+    return _contains_void_return || !_terminated();
 }
 
 void Accumulator::_setTerminatedByVoidReturn(misc::position const& pos)
@@ -118,7 +121,7 @@ void Accumulator::_checkBranchesTermination(Accumulator const& consequence
 {
     if (consequence._terminated() || alternative._terminated()) {
         warning::oneOrTwoBranchesTerminated(*consequence._termination_pos
-                                              , *alternative._termination_pos);
+                                          , *alternative._termination_pos);
     }
 }
 

@@ -1,16 +1,31 @@
+#include <algorithm>
+
 #include "function.h"
 #include "node-base.h"
+#include "filter.h"
+#include "symbol-table.h"
 #include "../proto/node-base.h"
-#include "../proto/scope.h"
+#include "../proto/function.h"
 
 using namespace flchk;
 
-void Function::compile(util::sref<proto::Scope> scope) const
+util::sref<proto::Function> Function::compile(util::sref<proto::Scope> scope)
 {
-    body.compile(scope);
+    if (!bool(_func_proto)) {
+        _func_proto = scope->declare(pos, name, param_names, _body->bodyContainsVoidReturn());
+        std::for_each(param_names.begin()
+                    , param_names.end()
+                    , [&](std::string const& param)
+                      {
+                          _body->getSymbols()->defVar(pos, param);
+                      });
+        _body->compile(_func_proto);
+        _func_proto->setFreeVariables(_body->getSymbols()->freeVariables());
+    }
+    return _func_proto;
 }
 
-util::sref<proto::Function> Function::declare(util::sref<proto::Scope> scope) const
+std::vector<std::string> Function::freeVariables() const
 {
-    return scope->declare(pos, name, param_names, contains_void_return);
+    return _body->getSymbols()->freeVariables();
 }
