@@ -52,7 +52,7 @@ namespace flchk {
                             , std::vector<std::string> const& param_names
                             , util::sptr<Filter> body) = 0;
     public:
-        void compile(util::sref<proto::Scope> scope) const;
+        void compile(util::sref<proto::Scope> scope);
         bool bodyContainsVoidReturn() const;
     protected:
         Accumulator _accumulator;

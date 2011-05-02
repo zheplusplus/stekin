@@ -19,7 +19,8 @@ namespace flchk {
             , rhs(std::move(r))
         {}
 
-        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope
+                                                  , util::sref<SymbolTable> st) const;
         bool isLiteral() const;
         bool boolValue() const;
         util::sptr<Expression const> fold() const;
@@ -42,7 +43,8 @@ namespace flchk {
             , rhs(std::move(r))
         {}
 
-        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope
+                                                  , util::sref<SymbolTable> st) const;
         bool isLiteral() const;
         bool boolValue() const;
         std::string typeName() const;
@@ -64,7 +66,8 @@ namespace flchk {
             , rhs(std::move(r))
         {}
 
-        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope
+                                                  , util::sref<SymbolTable> st) const;
         bool isLiteral() const;
         bool boolValue() const;
         std::string typeName() const;
@@ -85,7 +88,8 @@ namespace flchk {
             , rhs(std::move(r))
         {}
 
-        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope
+                                                  , util::sref<SymbolTable> st) const;
         bool isLiteral() const;
         bool boolValue() const;
         std::string typeName() const;
@@ -103,7 +107,8 @@ namespace flchk {
             , rhs(std::move(r))
         {}
 
-        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope
+                                                  , util::sref<SymbolTable> st) const;
         bool isLiteral() const;
         bool boolValue() const;
         std::string typeName() const;
@@ -115,19 +120,17 @@ namespace flchk {
     struct Reference
         : public Expression
     {
-        Reference(misc::position const& pos, util::sref<SymbolTable> st, std::string const& n)
+        Reference(misc::position const& pos, std::string const& n)
             : Expression(pos)
             , name(n)
-            , _symbols(st)
         {}
 
-        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope
+                                                  , util::sref<SymbolTable> st) const;
         std::string typeName() const;
         util::sptr<Expression const> fold() const;
 
         std::string const name;
-    private:
-        util::sref<SymbolTable> const _symbols;
     };
 
     struct BoolLiteral
@@ -138,7 +141,8 @@ namespace flchk {
             , value(v)
         {}
 
-        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::Scope>
+                                                  , util::sref<SymbolTable>) const;
         bool isLiteral() const;
         bool boolValue() const;
         std::string typeName() const;
@@ -178,7 +182,8 @@ namespace flchk {
             , value(v)
         {}
 
-        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::Scope>
+                                                  , util::sref<SymbolTable>) const;
         bool isLiteral() const;
         bool boolValue() const;
         std::string typeName() const;
@@ -216,7 +221,8 @@ namespace flchk {
             , value(v)
         {}
 
-        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::Scope>
+                                                  , util::sref<SymbolTable>) const;
         bool isLiteral() const;
         bool boolValue() const;
         std::string typeName() const;
@@ -245,46 +251,38 @@ namespace flchk {
         : public Expression
     {
         Call(misc::position const& pos
-           , util::sref<SymbolTable> st
            , std::string const& n
            , std::vector<util::sptr<Expression const>> a)
                 : Expression(pos)
                 , name(n)
                 , args(std::move(a))
-                , _symbols(st)
         {}
 
-        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope
+                                                  , util::sref<SymbolTable> st) const;
         std::string typeName() const;
         util::sptr<Expression const> fold() const;
 
         std::string const name;
         std::vector<util::sptr<Expression const>> const args;
-    private:
-        util::sref<SymbolTable> const _symbols;
     };
 
     struct FuncReference
         : public Expression
     {
-        FuncReference(misc::position const& pos
-                    , util::sref<SymbolTable> st
-                    , std::string const& n
-                    , int pc)
+        FuncReference(misc::position const& pos, std::string const& n, int pc)
             : Expression(pos)
             , name(n)
             , param_count(pc)
-            , _symbols(st)
         {}
 
-        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope
+                                                  , util::sref<SymbolTable> st) const;
         std::string typeName() const;
         util::sptr<Expression const> fold() const;
 
         std::string const name;
         int const param_count;
-    private:
-        util::sref<SymbolTable> const _symbols;
     };
 
 }

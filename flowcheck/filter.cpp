@@ -73,9 +73,9 @@ void Filter::defFunc(misc::position const& pos
     _defFunc(pos, name, param_names, std::move(body));
 }
 
-void Filter::compile(util::sref<proto::Scope> scope) const
+void Filter::compile(util::sref<proto::Scope> scope)
 {
-    _accumulator.compileBlock(scope);
+    _accumulator.compileBlock(scope, getSymbols());
 }
 
 bool Filter::bodyContainsVoidReturn() const

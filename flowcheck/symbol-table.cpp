@@ -144,7 +144,9 @@ void SymbolTable::defFunc(util::sref<Function> func)
 }
 
 static std::vector<util::sptr<proto::Expression const>>
-      mkArgs(std::vector<util::sptr<Expression const>> const& args, util::sref<proto::Scope> scope)
+      mkArgs(std::vector<util::sptr<Expression const>> const& args
+           , util::sref<proto::Scope> scope
+           , util::sref<SymbolTable> call_symbols)
 {
     std::vector<util::sptr<proto::Expression const>> arguments;
     arguments.reserve(args.size());
@@ -152,7 +154,7 @@ static std::vector<util::sptr<proto::Expression const>>
                 , args.end()
                 , [&](util::sptr<Expression const> const& expr)
                   {
-                      arguments.push_back(expr->compile(scope));
+                      arguments.push_back(expr->compile(scope, call_symbols));
                   });
     return std::move(arguments);
 }
@@ -172,9 +174,10 @@ static util::sptr<proto::Expression const> compileAsFunctor(
                 misc::position const& pos
               , std::string const& name
               , util::sref<proto::Scope> scope
+              , util::sref<SymbolTable> call_symbols
               , std::vector<util::sptr<Expression const>> const& args)
 {
-    return util::mkptr(new proto::Functor(pos, name, mkArgs(args, scope)));
+    return util::mkptr(new proto::Functor(pos, name, mkArgs(args, scope, call_symbols)));
 }
 
 util::sptr<proto::Expression const> SymbolTable::compileRef(misc::position const& pos
@@ -205,10 +208,10 @@ util::sptr<proto::Expression const> SymbolTable::compileCall(
     if (bool(func)) {
         return util::mkptr(new proto::Call(pos
                                          , compileFunction(pos, func, scope, util::mkref(*this))
-                                         , mkArgs(args, scope)));
+                                         , mkArgs(args, scope, util::mkref(*this))));
     }
     _markReference(pos, name);
-    return compileAsFunctor(pos, name, scope, args);
+    return compileAsFunctor(pos, name, scope, util::mkref(*this), args);
 }
 
 util::sref<Function> SymbolTable::queryFunc(misc::position const& pos
