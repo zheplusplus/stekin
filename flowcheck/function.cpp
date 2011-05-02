@@ -19,7 +19,7 @@ util::sref<proto::Function> Function::compile(util::sref<proto::Scope> scope)
                       {
                           _body->getSymbols()->defVar(pos, param);
                       });
-        _body->deliver().compile(_func_proto);
+        _body->compile(_func_proto);
         _func_proto->setFreeVariables(_body->getSymbols()->freeVariables());
     }
     return _func_proto;

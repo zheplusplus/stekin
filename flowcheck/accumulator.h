@@ -55,8 +55,8 @@ namespace flchk {
                                    , std::vector<std::string> const& param_names
                                    , util::sptr<Filter> body);
     public:
+        void compileBlock(util::sref<proto::Scope> scope) const;
         bool containsVoidReturn() const;
-        Block deliver();
     private:
         void _setTerminatedByVoidReturn(misc::position const& pos);
         void _setTerminatedNotByVoidReturn(misc::position const& pos);

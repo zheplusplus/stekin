@@ -36,7 +36,7 @@ static util::sptr<flchk::Filter> frontEnd()
 static util::id semantic(util::sptr<flchk::Filter> global_flow)
 {
     util::sptr<proto::Scope> proto_global_scope(new proto::Scope);
-    global_flow->deliver().compile(*proto_global_scope);
+    global_flow->compile(*proto_global_scope);
     if (error::hasError()) {
         throw CompileFailure();
     }

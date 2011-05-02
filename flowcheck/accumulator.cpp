@@ -90,14 +90,14 @@ util::sref<Function> Accumulator::defFunc(misc::position const& pos
     return _block.defFunc(pos, name, param_names, std::move(body));
 }
 
+void Accumulator::compileBlock(util::sref<proto::Scope> scope) const
+{
+    _block.compile(scope);
+}
+
 bool Accumulator::containsVoidReturn() const
 {
     return _contains_void_return || !_terminated();
-}
-
-Block Accumulator::deliver()
-{
-    return std::move(_block);
 }
 
 void Accumulator::_setTerminatedByVoidReturn(misc::position const& pos)

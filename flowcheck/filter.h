@@ -52,9 +52,8 @@ namespace flchk {
                             , std::vector<std::string> const& param_names
                             , util::sptr<Filter> body) = 0;
     public:
+        void compile(util::sref<proto::Scope> scope) const;
         bool bodyContainsVoidReturn() const;
-    public:
-        Block deliver();
     protected:
         Accumulator _accumulator;
     };

@@ -73,12 +73,12 @@ void Filter::defFunc(misc::position const& pos
     _defFunc(pos, name, param_names, std::move(body));
 }
 
+void Filter::compile(util::sref<proto::Scope> scope) const
+{
+    _accumulator.compileBlock(scope);
+}
+
 bool Filter::bodyContainsVoidReturn() const
 {
     return _accumulator.containsVoidReturn();
-}
-
-Block Filter::deliver()
-{
-    return std::move(_accumulator.deliver());
 }
