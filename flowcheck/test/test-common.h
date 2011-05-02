@@ -66,10 +66,10 @@ namespace test {
     extern NodeType const PRE_UNARY_OP;
     extern NodeType const CALL;
     extern NodeType const FUNC_REFERENCE;
+    extern NodeType const FUNCTOR;
     extern NodeType const REFERENCE;
 
     extern NodeType const VAR_DEF;
-    extern NodeType const SCOPE_VAR_DEF;
 
     extern NodeType const STATEMENT;
     extern NodeType const ARITHMETICS;

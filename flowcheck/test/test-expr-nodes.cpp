@@ -3,9 +3,12 @@
 
 #include "test-common.h"
 #include "../expr-nodes.h"
+#include "../global-filter.h"
+#include "../func-body-filter.h"
+#include "../function.h"
 #include "../../proto/node-base.h"
 #include "../../proto/function.h"
-#include "../../proto/global-scope.h"
+#include "../../proto/scope.h"
 #include "../../instance/node-base.h"
 #include "../../test/phony-errors.h"
 #include "../../test/common.h"
@@ -17,7 +20,7 @@ typedef FlowcheckTest ExprNodesTest;
 TEST_F(ExprNodesTest, Literals)
 {
     misc::position pos(1);
-    util::sptr<proto::Scope> scope(std::move(new proto::GlobalScope));
+    util::sptr<proto::Scope> scope(new proto::Scope);
     flchk::IntLiteral int0(pos, "20110116");
     int0.compile(*scope)->inst(nul_inst_scope);
     EXPECT_TRUE(int0.isLiteral());
@@ -59,12 +62,13 @@ TEST_F(ExprNodesTest, Literals)
 TEST_F(ExprNodesTest, Reference)
 {
     misc::position pos(1);
-    util::sptr<proto::Scope> scope(std::move(new proto::GlobalScope));
-    flchk::Reference ref0(pos, "a20110116");
+    util::sptr<proto::Scope> scope(new proto::Scope);
+    flchk::GlobalFilter filter;
+    flchk::Reference ref0(pos, filter.getSymbols(), "a20110116");
     EXPECT_FALSE(ref0.isLiteral());
     ref0.compile(*scope)->inst(nul_inst_scope);
 
-    flchk::Reference ref1(pos, "b1950");
+    flchk::Reference ref1(pos, filter.getSymbols(), "b1950");
     EXPECT_FALSE(ref0.isLiteral());
     ref1.compile(*scope)->inst(nul_inst_scope);
 
@@ -79,7 +83,8 @@ TEST_F(ExprNodesTest, Reference)
 TEST_F(ExprNodesTest, Operations)
 {
     misc::position pos(2);
-    util::sptr<proto::Scope> scope(std::move(new proto::GlobalScope));
+    util::sptr<proto::Scope> scope(new proto::Scope);
+    flchk::GlobalFilter filter;
     flchk::BinaryOp binary0(pos
                           , std::move(util::mkptr(new flchk::IntLiteral(pos, "1")))
                           , "+"
@@ -89,23 +94,24 @@ TEST_F(ExprNodesTest, Operations)
                           , "<="
                           , std::move(util::mkptr(new flchk::IntLiteral(pos, "2357111317"))));
 
-    flchk::PreUnaryOp pre_unary0(pos, "+", std::move(util::mkptr(new flchk::FloatLiteral(pos, ".13"))));
+    flchk::PreUnaryOp pre_unary0(pos, "+", util::mkptr(new flchk::FloatLiteral(pos, ".13")));
     flchk::PreUnaryOp pre_unary1(
             pos
           , "-"
-          , std::move(util::mkptr(
-                  new flchk::BinaryOp(pos
-                                    , std::move(util::mkptr(new flchk::Reference(pos, "wasureru")))
-                                    , "%"
-                                    , std::move(util::mkptr(new flchk::IntLiteral(pos, "1")))))));
+          , util::mkptr(new flchk::BinaryOp(pos
+                                          , util::mkptr(new flchk::Reference(pos
+                                                                           , filter.getSymbols()
+                                                                           , "wasureru"))
+                                          , "%"
+                                          , util::mkptr(new flchk::IntLiteral(pos, "1")))));
 
     flchk::Conjunction conj(pos
-                          , std::move(util::mkptr(new flchk::BoolLiteral(pos, true)))
-                          , std::move(util::mkptr(new flchk::Reference(pos, "koto"))));
+                          , util::mkptr(new flchk::BoolLiteral(pos, true))
+                          , util::mkptr(new flchk::Reference(pos, filter.getSymbols(), "koto")));
     flchk::Disjunction disj(pos
-                          , std::move(util::mkptr(new flchk::BoolLiteral(pos, false)))
-                          , std::move(util::mkptr(new flchk::IntLiteral(pos, "2"))));
-    flchk::Negation nega(pos, std::move(util::mkptr(new flchk::FloatLiteral(pos, "1954.01"))));
+                          , util::mkptr(new flchk::BoolLiteral(pos, false))
+                          , util::mkptr(new flchk::IntLiteral(pos, "2")));
+    flchk::Negation nega(pos, util::mkptr(new flchk::FloatLiteral(pos, "1954.01")));
 
     binary0.compile(*scope)->inst(nul_inst_scope);
     EXPECT_TRUE(binary0.isLiteral());
@@ -158,20 +164,22 @@ TEST_F(ExprNodesTest, Operations)
 TEST_F(ExprNodesTest, Calls)
 {
     misc::position pos(3);
-    util::sptr<proto::Scope> scope(std::move(new proto::GlobalScope));
+    misc::position pos_d(300);
+    util::sptr<proto::Scope> scope(new proto::Scope);
+    flchk::GlobalFilter filter;
+    filter.defFunc(pos_d, "fib", std::vector<std::string>(), util::mkmptr(
+                                                new flchk::FuncBodyFilter(filter.getSymbols())));
 
     std::vector<util::sptr<flchk::Expression const>> params;
-    flchk::Call Call0(pos, "fib", std::move(params));
+    flchk::Call Call0(pos, filter.getSymbols(), "fib", std::move(params));
 
-    params.push_back(std::move(util::mkptr(new flchk::BoolLiteral(pos, false))));
-    params.push_back(std::move(util::mkptr(
-                    new flchk::PreUnaryOp(pos, "-", std::move(util::mkptr(
-                                new flchk::FloatLiteral(pos, "11.11")))))));
-    params.push_back(std::move(util::mkptr(
-                    new flchk::Negation(pos, std::move(util::mkptr(
-                                new flchk::IntLiteral(pos, "21")))))));
-    params.push_back(std::move(util::mkptr(new flchk::Reference(pos, "dareka_tasukete_kudasai"))));
-    flchk::Call Call1(pos, "leap", std::move(params));
+    params.push_back(util::mkptr(new flchk::BoolLiteral(pos, false)));
+    params.push_back(util::mkptr(new flchk::PreUnaryOp(pos, "-", util::mkptr(
+                                            new flchk::FloatLiteral(pos, "11.11")))));
+    params.push_back(util::mkptr(new flchk::Negation(pos, util::mkptr(
+                                            new flchk::IntLiteral(pos, "21")))));
+    params.push_back(util::mkptr(new flchk::Reference(pos, filter.getSymbols(), "darekatasukete")));
+    flchk::Call Call1(pos, filter.getSymbols(), "leap", std::move(params));
 
     Call0.compile(*scope)->inst(nul_inst_scope);
     EXPECT_FALSE(Call0.isLiteral());
@@ -182,25 +190,32 @@ TEST_F(ExprNodesTest, Calls)
     EXPECT_FALSE(error::hasError());
 
     DataTree::expectOne()
+        (pos_d, FUNC_DECL, "fib", 0, true)
         (pos, CALL, "fib", 0, false)
-        (pos, CALL, "leap", 4, false)
+        (pos, FUNCTOR, "leap", 4, false)
             (pos, BOOLEAN, "false")
             (pos, PRE_UNARY_OP, "-")
                 (pos, FLOATING, "11.11")
             (pos, PRE_UNARY_OP, "!")
                 (pos, INTEGER, "21")
-            (pos, REFERENCE, "dareka_tasukete_kudasai")
+            (pos, REFERENCE, "darekatasukete")
     ;
 }
 
 TEST_F(ExprNodesTest, FuncReference)
 {
     misc::position pos(4);
-    util::sptr<proto::Scope> scope(std::move(new proto::GlobalScope));
+    util::sptr<proto::Scope> scope(new proto::Scope);
+    flchk::GlobalFilter filter;
+    misc::position pos_d(400);
+    filter.defFunc(pos_d, "fib", std::vector<std::string>(), util::mkmptr(
+                                                new flchk::FuncBodyFilter(filter.getSymbols())));
+    filter.defFunc(pos_d, "fib", std::vector<std::string>({ "x" }), util::mkmptr(
+                                                new flchk::FuncBodyFilter(filter.getSymbols())));
 
-    flchk::FuncReference func_ref0(pos, "fib", 2);
-    flchk::FuncReference func_ref1(pos, "fib", 1);
-    flchk::FuncReference func_ref2(pos, "fib", 2);
+    flchk::FuncReference func_ref0(pos, filter.getSymbols(), "fib", 0);
+    flchk::FuncReference func_ref1(pos, filter.getSymbols(), "fib", 1);
+    flchk::FuncReference func_ref2(pos, filter.getSymbols(), "fib", 0);
 
     func_ref0.compile(*scope)->inst(nul_inst_scope);
     EXPECT_FALSE(func_ref0.isLiteral());
@@ -214,9 +229,12 @@ TEST_F(ExprNodesTest, FuncReference)
     EXPECT_FALSE(error::hasError());
 
     DataTree::expectOne()
-        (pos, FUNC_REFERENCE, "fib", 2, false)
+        (pos_d, FUNC_DECL, "fib", 0, true)
+        (pos, FUNC_REFERENCE, "fib", 0, false)
+        (pos_d, FUNC_DECL, "fib", 1, true)
+            (pos_d, PARAMETER, "x")
         (pos, FUNC_REFERENCE, "fib", 1, false)
-        (pos, FUNC_REFERENCE, "fib", 2, false)
+        (pos, FUNC_REFERENCE, "fib", 0, false)
     ;
 }
 

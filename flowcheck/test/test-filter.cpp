@@ -3,12 +3,12 @@
 
 #include "test-common.h"
 #include "../expr-nodes.h"
-#include "../func-body-filter.h"
+#include "../global-filter.h"
 #include "../symbol-def-filter.h"
 #include "../function.h"
 #include "../../proto/node-base.h"
 #include "../../proto/function.h"
-#include "../../proto/global-scope.h"
+#include "../../proto/scope.h"
 #include "../../instance/node-base.h"
 #include "../../instance/inst-mediate.h"
 #include "../../test/phony-errors.h"
@@ -19,10 +19,10 @@ using namespace test;
 
 typedef FlowcheckTest FilterTest;
 
-TEST_F(FilterTest, FuncBodyFilter)
+TEST_F(FilterTest, GlobalFilter)
 {
     misc::position pos(1);
-    util::sptr<proto::Scope> scope(std::move(new proto::GlobalScope));
+    util::sptr<proto::Scope> scope(new proto::Scope);
 
     util::sptr<flchk::BinaryOp> binary(
             new flchk::BinaryOp(pos
@@ -30,25 +30,26 @@ TEST_F(FilterTest, FuncBodyFilter)
                               , "+"
                               , std::move(util::mkptr(new flchk::FloatLiteral(pos, "235.7")))));
 
-    flchk::FuncBodyFilter filter0;
+    flchk::GlobalFilter filter0;
     filter0.addArith(pos, std::move(util::mkptr(new flchk::BoolLiteral(pos, true))));
     filter0.defVar(pos, "soujirou", std::move(binary));
-    filter0.defVar(pos, "iwasaki", std::move(util::mkptr(new flchk::Reference(pos, "minami"))));
+    filter0.defVar(pos, "iwasaki", util::mkptr(
+                                    new flchk::Reference(pos, filter0.getSymbols(), "minami")));
 
-    util::sptr<flchk::Filter> filter_consq(new flchk::FuncBodyFilter);
+    util::sptr<flchk::Filter> filter_consq(new flchk::SymbolDefFilter(filter0.getSymbols()));
     misc::position pos_consq(100);
-    filter_consq->addArith(pos_consq
-                         , std::move(util::mkptr(new flchk::Reference(pos_consq, "kobayakawa"))));
+    filter_consq->addArith(pos_consq, std::move(util::mkptr(
+                      new flchk::Reference(pos_consq, filter_consq->getSymbols(), "kobayakawa"))));
 
-    util::sptr<flchk::Filter> filter_alter(new flchk::FuncBodyFilter);
+    util::sptr<flchk::Filter> filter_alter(new flchk::SymbolDefFilter(filter0.getSymbols()));
     misc::position pos_alter(101);
-    filter_alter->addArith(pos_alter
-                         , std::move(util::mkptr(new flchk::Reference(pos_alter, "yutaka"))));
-    filter_alter->addArith(pos_alter
-                         , std::move(util::mkptr(new flchk::Reference(pos_alter, "hiyori"))));
+    filter_alter->addArith(pos_alter , util::mkptr(
+                            new flchk::Reference(pos_alter, filter_alter->getSymbols(), "yutaka")));
+    filter_alter->addArith(pos_alter , util::mkptr(
+                            new flchk::Reference(pos_alter, filter_alter->getSymbols(), "hiyori")));
 
     filter0.addBranch(pos
-                    , std::move(util::mkptr(new flchk::Reference(pos, "tamura")))
+                    , util::mkptr(new flchk::Reference(pos, filter0.getSymbols(), "tamura"))
                     , std::move(filter_consq)
                     , std::move(filter_alter));
     filter0.addReturnNothing(pos);
@@ -59,8 +60,6 @@ TEST_F(FilterTest, FuncBodyFilter)
     EXPECT_FALSE(error::hasError());
 
     DataTree::expectOne()
-        (pos, SCOPE_VAR_DEF, "soujirou")
-        (pos, SCOPE_VAR_DEF, "iwasaki")
         (SCOPE_BEGIN)
             (pos, ARITHMETICS)
                 (pos, BOOLEAN, "true")
@@ -90,12 +89,14 @@ TEST_F(FilterTest, TerminatedError)
     misc::position pos(2);
     misc::position pos_error(200);
     misc::position pos_ignored(201);
-    util::sptr<proto::Scope> scope(std::move(new proto::GlobalScope));
+    util::sptr<proto::Scope> scope(new proto::Scope);
 
-    flchk::FuncBodyFilter filter0;
-    filter0.defVar(pos, "patricia", std::move(util::mkptr(new flchk::Reference(pos, "martin"))));
+    flchk::GlobalFilter filter0;
+    filter0.defVar(pos, "patricia", util::mkptr(
+                                        new flchk::Reference(pos, filter0.getSymbols(), "martin")));
     filter0.addReturnNothing(pos);
-    filter0.addReturn(pos_error, std::move(util::mkptr(new flchk::Reference(pos, "patty"))));
+    filter0.addReturn(pos_error, util::mkptr(
+                                        new flchk::Reference(pos, filter0.getSymbols(), "patty")));
     filter0.addReturnNothing(pos_ignored);
 
     ASSERT_TRUE(error::hasError());
@@ -108,19 +109,20 @@ TEST_F(FilterTest, TerminatedWarningIfConsequence)
 {
     misc::position pos(3);
     misc::position pos_warning(300);
-    util::sptr<proto::Scope> scope(std::move(new proto::GlobalScope));
+    util::sptr<proto::Scope> scope(new proto::Scope);
 
-    flchk::FuncBodyFilter filter0;
+    flchk::GlobalFilter filter0;
 
-    util::sptr<flchk::Filter> filter_consq(new flchk::FuncBodyFilter);
-    filter_consq->addArith(pos, std::move(util::mkptr(new flchk::Reference(pos, "ayano"))));
+    util::sptr<flchk::Filter> filter_consq(new flchk::SymbolDefFilter(filter0.getSymbols()));
+    filter_consq->addArith(pos, util::mkptr(
+                                  new flchk::Reference(pos, filter_consq->getSymbols(), "ayano")));
     filter_consq->addReturnNothing(pos_warning);
 
-    util::sptr<flchk::Filter> filter_alter(new flchk::FuncBodyFilter);
+    util::sptr<flchk::Filter> filter_alter(new flchk::SymbolDefFilter(filter0.getSymbols()));
     filter_alter->addArith(pos, std::move(util::mkptr(new flchk::BoolLiteral(pos, true))));
 
     filter0.addBranch(pos
-                    , std::move(util::mkptr(new flchk::Reference(pos, "minegishi")))
+                    , util::mkptr(new flchk::Reference(pos, filter0.getSymbols(), "minegishi"))
                     , std::move(filter_consq)
                     , std::move(filter_alter));
 
@@ -133,19 +135,19 @@ TEST_F(FilterTest, TerminatedWarningIfAlternative)
 {
     misc::position pos(4);
     misc::position pos_warning(400);
-    util::sptr<proto::Scope> scope(std::move(new proto::GlobalScope));
+    util::sptr<proto::Scope> scope(new proto::Scope);
 
-    flchk::FuncBodyFilter filter0;
+    flchk::GlobalFilter filter0;
 
-    util::sptr<flchk::Filter> filter_consq(new flchk::FuncBodyFilter);
-    filter_consq->addArith(pos, std::move(util::mkptr(new flchk::IntLiteral(pos, "20110411"))));
+    util::sptr<flchk::Filter> filter_consq(new flchk::SymbolDefFilter(filter0.getSymbols()));
+    filter_consq->addArith(pos, util::mkptr(new flchk::IntLiteral(pos, "20110411")));
 
-    util::sptr<flchk::Filter> filter_alter(new flchk::FuncBodyFilter);
-    filter_alter->addReturn(pos_warning
-                          , std::move(util::mkptr(new flchk::Reference(pos, "kogami"))));
+    util::sptr<flchk::Filter> filter_alter(new flchk::SymbolDefFilter(filter0.getSymbols()));
+    filter_alter->addReturn(pos_warning, util::mkptr(
+                                new flchk::Reference(pos, filter_alter->getSymbols(), "kogami")));
 
     filter0.addBranch(pos
-                    , std::move(util::mkptr(new flchk::Reference(pos, "akira")))
+                    , util::mkptr(new flchk::Reference(pos, filter0.getSymbols(), "akira"))
                     , std::move(filter_consq)
                     , std::move(filter_alter));
 
@@ -159,20 +161,19 @@ TEST_F(FilterTest, TerminatedWarningBothBranches)
     misc::position pos(5);
     misc::position pos_warning_consq(500);
     misc::position pos_warning_alter(501);
-    util::sptr<proto::Scope> scope(std::move(new proto::GlobalScope));
+    util::sptr<proto::Scope> scope(new proto::Scope);
 
-    flchk::FuncBodyFilter filter0;
+    flchk::GlobalFilter filter0;
 
-    util::sptr<flchk::Filter> filter_consq(new flchk::FuncBodyFilter);
-    filter_consq->addReturn(pos_warning_consq
-                          , std::move(util::mkptr(new flchk::FloatLiteral(pos, ".1"))));
+    util::sptr<flchk::Filter> filter_consq(new flchk::SymbolDefFilter(filter0.getSymbols()));
+    filter_consq->addReturn(pos_warning_consq, util::mkptr(new flchk::FloatLiteral(pos, ".1")));
 
-    util::sptr<flchk::Filter> filter_alter(new flchk::FuncBodyFilter);
-    filter_alter->addReturn(pos_warning_alter
-                          , std::move(util::mkptr(new flchk::Reference(pos, "minoru"))));
+    util::sptr<flchk::Filter> filter_alter(new flchk::SymbolDefFilter(filter0.getSymbols()));
+    filter_alter->addReturn(pos_warning_alter, util::mkptr(
+                            new flchk::Reference(pos, filter_alter->getSymbols(), "minoru")));
 
     filter0.addBranch(pos
-                    , std::move(util::mkptr(new flchk::Reference(pos, "shiraishi")))
+                    , util::mkptr(new flchk::Reference(pos, filter0.getSymbols(), "shiraishi"))
                     , std::move(filter_consq)
                     , std::move(filter_alter));
 
@@ -185,7 +186,7 @@ TEST_F(FilterTest, TerminatedWarningBothBranches)
 TEST_F(FilterTest, TwoPathBranchFoldedOnFalse)
 {
     misc::position pos(6);
-    util::sptr<proto::Scope> scope(std::move(new proto::GlobalScope));
+    util::sptr<proto::Scope> scope(new proto::Scope);
 
     util::sptr<flchk::BinaryOp> binary(
             new flchk::BinaryOp(pos
@@ -193,17 +194,17 @@ TEST_F(FilterTest, TwoPathBranchFoldedOnFalse)
                               , ">"
                               , std::move(util::mkptr(new flchk::FloatLiteral(pos, "11235.8")))));
 
-    flchk::FuncBodyFilter filter0;
+    flchk::GlobalFilter filter0;
 
-    util::sptr<flchk::Filter> filter_consq(new flchk::FuncBodyFilter);
+    util::sptr<flchk::Filter> filter_consq(new flchk::SymbolDefFilter(filter0.getSymbols()));
     misc::position pos_consq(600);
-    filter_consq->addArith(pos_consq
-                         , std::move(util::mkptr(new flchk::Reference(pos_consq, "yui"))));
+    filter_consq->addArith(pos_consq, std::move(util::mkptr(
+                              new flchk::Reference(pos_consq, filter_consq->getSymbols(), "yui"))));
 
-    util::sptr<flchk::Filter> filter_alter(new flchk::FuncBodyFilter);
+    util::sptr<flchk::Filter> filter_alter(new flchk::SymbolDefFilter(filter0.getSymbols()));
     misc::position pos_alter(601);
-    filter_alter->addArith(pos_alter
-                         , std::move(util::mkptr(new flchk::Reference(pos_alter, "narumi"))));
+    filter_alter->addArith(pos_alter, std::move(util::mkptr(
+                          new flchk::Reference(pos_alter, filter_alter->getSymbols(), "narumi"))));
 
     filter0.addBranch(pos, std::move(binary), std::move(filter_consq), std::move(filter_alter));
     filter0.addReturnNothing(pos);
@@ -225,7 +226,7 @@ TEST_F(FilterTest, TwoPathBranchFoldedOnFalse)
 TEST_F(FilterTest, TwoPathBranchFoldedOnTrue)
 {
     misc::position pos(7);
-    util::sptr<proto::Scope> scope(std::move(new proto::GlobalScope));
+    util::sptr<proto::Scope> scope(new proto::Scope);
 
     util::sptr<flchk::BinaryOp> binary(
             new flchk::BinaryOp(pos
@@ -233,17 +234,17 @@ TEST_F(FilterTest, TwoPathBranchFoldedOnTrue)
                               , "<"
                               , std::move(util::mkptr(new flchk::FloatLiteral(pos, "11235.8")))));
 
-    flchk::FuncBodyFilter filter0;
+    flchk::GlobalFilter filter0;
 
-    util::sptr<flchk::Filter> filter_consq(new flchk::FuncBodyFilter);
+    util::sptr<flchk::Filter> filter_consq(new flchk::SymbolDefFilter(filter0.getSymbols()));
     misc::position pos_consq(700);
-    filter_consq->addArith(pos_consq
-                         , std::move(util::mkptr(new flchk::Reference(pos_consq, "yui"))));
+    filter_consq->addArith(pos_consq, std::move(util::mkptr(
+                            new flchk::Reference(pos_consq, filter_consq->getSymbols(), "yui"))));
 
-    util::sptr<flchk::Filter> filter_alter(new flchk::FuncBodyFilter);
+    util::sptr<flchk::Filter> filter_alter(new flchk::SymbolDefFilter(filter0.getSymbols()));
     misc::position pos_alter(701);
-    filter_alter->addArith(pos_alter
-                         , std::move(util::mkptr(new flchk::Reference(pos_alter, "narumi"))));
+    filter_alter->addArith(pos_alter, std::move(util::mkptr(
+                          new flchk::Reference(pos_alter, filter_alter->getSymbols(), "narumi"))));
 
     filter0.addBranch(pos, std::move(binary), std::move(filter_consq), std::move(filter_alter));
     filter0.addReturnNothing(pos);
@@ -265,7 +266,7 @@ TEST_F(FilterTest, TwoPathBranchFoldedOnTrue)
 TEST_F(FilterTest, IfNotFoldedOnFalse)
 {
     misc::position pos(8);
-    util::sptr<proto::Scope> scope(std::move(new proto::GlobalScope));
+    util::sptr<proto::Scope> scope(new proto::Scope);
 
     util::sptr<flchk::BinaryOp> binary(
             new flchk::BinaryOp(pos
@@ -273,12 +274,12 @@ TEST_F(FilterTest, IfNotFoldedOnFalse)
                               , ">"
                               , std::move(util::mkptr(new flchk::FloatLiteral(pos, "11235.8")))));
 
-    flchk::FuncBodyFilter filter0;
+    flchk::GlobalFilter filter0;
 
-    util::sptr<flchk::Filter> filter_alter(new flchk::FuncBodyFilter);
+    util::sptr<flchk::Filter> filter_alter(new flchk::SymbolDefFilter(filter0.getSymbols()));
     misc::position pos_alter(801);
-    filter_alter->addArith(pos_alter
-                         , std::move(util::mkptr(new flchk::Reference(pos_alter, "narumi"))));
+    filter_alter->addArith(pos_alter, util::mkptr(
+                            new flchk::Reference(pos_alter, filter_alter->getSymbols(), "narumi")));
 
     filter0.addBranchAlterOnly(pos, std::move(binary), std::move(filter_alter));
     filter0.addReturnNothing(pos);
@@ -300,7 +301,7 @@ TEST_F(FilterTest, IfNotFoldedOnFalse)
 TEST_F(FilterTest, IfNotFoldedOnTrue)
 {
     misc::position pos(8);
-    util::sptr<proto::Scope> scope(std::move(new proto::GlobalScope));
+    util::sptr<proto::Scope> scope(new proto::Scope);
 
     util::sptr<flchk::BinaryOp> binary(
             new flchk::BinaryOp(pos
@@ -308,12 +309,12 @@ TEST_F(FilterTest, IfNotFoldedOnTrue)
                               , "<"
                               , std::move(util::mkptr(new flchk::FloatLiteral(pos, "11235.8")))));
 
-    flchk::FuncBodyFilter filter0;
+    flchk::GlobalFilter filter0;
 
-    util::sptr<flchk::Filter> filter_alter(new flchk::FuncBodyFilter);
+    util::sptr<flchk::Filter> filter_alter(new flchk::SymbolDefFilter(filter0.getSymbols()));
     misc::position pos_alter(801);
-    filter_alter->addArith(pos_alter
-                         , std::move(util::mkptr(new flchk::Reference(pos_alter, "narumi"))));
+    filter_alter->addArith(pos_alter, util::mkptr(
+                            new flchk::Reference(pos_alter, filter_alter->getSymbols(), "narumi")));
 
     filter0.addBranchAlterOnly(pos, std::move(binary), std::move(filter_alter));
     filter0.addReturnNothing(pos);

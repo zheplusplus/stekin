@@ -11,9 +11,11 @@ TEST_OBJ=$(WORKDIR)/*.o $(TESTDIR)/phony-proto.o $(TESTDIR)/test-common.o
 
 $(TESTDIR)/test-flowcheck.out:$(TEST_DEP) \
                               test-expr-nodes.dt \
+                              test-symbol-table.dt \
                               test-filter.dt
 	$(LINK) $(TEST_OBJ) \
 	        $(TESTDIR)/test-expr-nodes.o \
+	        $(TESTDIR)/test-symbol-table.o \
 	        $(TESTDIR)/test-filter.o \
 	        $(TEST_LIBS) \
 	     -o $(TESTDIR)/test-flowcheck.out
