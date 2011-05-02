@@ -54,7 +54,7 @@ TEST_F(FilterTest, GlobalFilter)
                     , std::move(filter_alter));
     filter0.addReturnNothing(pos);
 
-    filter0.deliver().compile(*scope);
+    filter0.compile(*scope);
     scope->deliver().inst(nul_inst_scope);
 
     EXPECT_FALSE(error::hasError());
@@ -209,7 +209,7 @@ TEST_F(FilterTest, TwoPathBranchFoldedOnFalse)
     filter0.addBranch(pos, std::move(binary), std::move(filter_consq), std::move(filter_alter));
     filter0.addReturnNothing(pos);
 
-    filter0.deliver().compile(*scope);
+    filter0.compile(*scope);
     scope->deliver().inst(nul_inst_scope);
 
     EXPECT_FALSE(error::hasError());
@@ -249,7 +249,7 @@ TEST_F(FilterTest, TwoPathBranchFoldedOnTrue)
     filter0.addBranch(pos, std::move(binary), std::move(filter_consq), std::move(filter_alter));
     filter0.addReturnNothing(pos);
 
-    filter0.deliver().compile(*scope);
+    filter0.compile(*scope);
     scope->deliver().inst(nul_inst_scope);
 
     EXPECT_FALSE(error::hasError());
@@ -284,7 +284,7 @@ TEST_F(FilterTest, IfNotFoldedOnFalse)
     filter0.addBranchAlterOnly(pos, std::move(binary), std::move(filter_alter));
     filter0.addReturnNothing(pos);
 
-    filter0.deliver().compile(*scope);
+    filter0.compile(*scope);
     scope->deliver().inst(nul_inst_scope);
 
     EXPECT_FALSE(error::hasError());
@@ -319,7 +319,7 @@ TEST_F(FilterTest, IfNotFoldedOnTrue)
     filter0.addBranchAlterOnly(pos, std::move(binary), std::move(filter_alter));
     filter0.addReturnNothing(pos);
 
-    filter0.deliver().compile(*scope);
+    filter0.compile(*scope);
     scope->deliver().inst(nul_inst_scope);
 
     EXPECT_FALSE(error::hasError());

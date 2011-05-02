@@ -92,7 +92,7 @@ util::sref<proto::Function> Function::compile(util::sref<proto::Scope>)
                   {
                       DataTree::actualOne()(pos, PARAMETER, param);
                   });
-    _body->deliver().compile(nulscope);
+    _body->compile(nulscope);
     return util::sref<proto::Function>(NULL);
 }
 
@@ -104,14 +104,9 @@ void Block::addStmt(util::sptr<Statement const> stmt)
 util::sref<Function> Block::defFunc(misc::position const& pos
                                   , std::string const& name
                                   , std::vector<std::string> const& param_names
-                                  , util::sptr<Filter> body
-                                  , bool)
+                                  , util::sptr<Filter> body)
 {
-    _funcs.push_back(std::move(util::mkmptr(new Function(pos
-                                                       , name
-                                                       , param_names
-                                                       , std::move(body)
-                                                       , false))));
+    _funcs.push_back(util::mkmptr(new Function(pos, name, param_names, std::move(body))));
     return *_funcs.back();
 }
 
@@ -136,17 +131,17 @@ void Block::compile(util::sref<proto::Scope>) const
 
 void Accumulator::addReturn(misc::position const& pos, util::sptr<Expression const> ret_val)
 {
-    _block.addStmt(std::move(util::mkptr(new Return(pos, std::move(ret_val)))));
+    _block.addStmt(util::mkptr(new Return(pos, std::move(ret_val))));
 }
 
 void Accumulator::addReturnNothing(misc::position const& pos)
 {
-    _block.addStmt(std::move(util::mkptr(new ReturnNothing(pos))));
+    _block.addStmt(util::mkptr(new ReturnNothing(pos)));
 }
 
 void Accumulator::addArith(misc::position const& pos, util::sptr<Expression const> expr)
 {
-    _block.addStmt(std::move(util::mkptr(new Arithmetics(pos, std::move(expr)))));
+    _block.addStmt(util::mkptr(new Arithmetics(pos, std::move(expr))));
 }
 
 void Accumulator::addBranch(misc::position const& pos
@@ -154,28 +149,28 @@ void Accumulator::addBranch(misc::position const& pos
                           , Accumulator consequence
                           , Accumulator alternative)
 {
-    _block.addStmt(std::move(util::mkptr(new Branch(pos
-                                                  , std::move(predicate)
-                                                  , std::move(consequence.deliver())
-                                                  , std::move(alternative.deliver())))));
+    _block.addStmt(util::mkptr(new Branch(pos
+                                        , std::move(predicate)
+                                        , std::move(consequence._block)
+                                        , std::move(alternative._block))));
 }
 
 void Accumulator::addBranch(misc::position const& pos
                           , util::sptr<Expression const> predicate
                           , Accumulator consequence)
 {
-    _block.addStmt(std::move(util::mkptr(new BranchConsequence(pos
-                                                             , std::move(predicate)
-                                                             , std::move(consequence._block)))));
+    _block.addStmt(util::mkptr(new BranchConsequence(pos
+                                                   , std::move(predicate)
+                                                   , std::move(consequence._block))));
 }
 
 void Accumulator::addBranchAlterOnly(misc::position const& pos
                                    , util::sptr<Expression const> predicate
                                    , Accumulator alternative)
 {
-    _block.addStmt(std::move(util::mkptr(new BranchAlternative(pos
-                                                             , std::move(predicate)
-                                                             , std::move(alternative._block)))));
+    _block.addStmt(util::mkptr(new BranchAlternative(pos
+                                                   , std::move(predicate)
+                                                   , std::move(alternative._block))));
 }
 
 void Accumulator::defVar(misc::position const& pos
@@ -183,7 +178,7 @@ void Accumulator::defVar(misc::position const& pos
                        , std::string const& name
                        , util::sptr<Expression const> init)
 {
-    _block.addStmt(std::move(util::mkptr(new VarDef(pos, nulSymbols(), name, std::move(init)))));
+    _block.addStmt(util::mkptr(new VarDef(pos, nulSymbols(), name, std::move(init))));
 }
 
 util::sref<Function> Accumulator::defFunc(misc::position const& pos
@@ -191,12 +186,12 @@ util::sref<Function> Accumulator::defFunc(misc::position const& pos
                                         , std::vector<std::string> const& param_names
                                         , util::sptr<Filter> body)
 {
-    return _block.defFunc(pos, name, param_names, std::move(body), false);
+    return _block.defFunc(pos, name, param_names, std::move(body));
 }
 
-Block Accumulator::deliver()
+void Accumulator::compileBlock(util::sref<proto::Scope> scope) const
 {
-    return std::move(_block);
+    _block.compile(scope);
 }
 
 void Filter::addReturn(misc::position const& pos, util::sptr<Expression const> ret_val)
@@ -249,9 +244,9 @@ void Filter::defFunc(misc::position const& pos
     _defFunc(pos, name, param_names, std::move(body));
 }
 
-Block Filter::deliver()
+void Filter::compile(util::sref<proto::Scope> scope) const
 {
-    return std::move(_accumulator.deliver());
+    _accumulator.compileBlock(scope);
 }
 
 void FuncBodyFilter::defVar(misc::position const& pos

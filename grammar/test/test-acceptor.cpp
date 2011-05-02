@@ -111,7 +111,7 @@ TEST_F(AcceptorTest, IfAcceptor)
     ASSERT_TRUE(bool(receiver.stmt));
     ASSERT_FALSE(bool(receiver.func));
     receiver.compile();
-    receiver.filter->deliver().compile(nulscope);
+    receiver.filter->compile(nulscope);
 
     DataTree::expectOne()
         (BLOCK_BEGIN)
@@ -195,7 +195,7 @@ TEST_F(AcceptorTest, IfNotAcceptor)
     ASSERT_TRUE(bool(receiver.stmt));
     ASSERT_FALSE(bool(receiver.func));
     receiver.compile();
-    receiver.filter->deliver().compile(nulscope);
+    receiver.filter->compile(nulscope);
 
     DataTree::expectOne()
         (BLOCK_BEGIN)
@@ -239,7 +239,7 @@ TEST_F(AcceptorTest, FuncAcceptor)
     ASSERT_FALSE(bool(receiver.stmt));
     ASSERT_TRUE(bool(receiver.func));
     receiver.compile();
-    receiver.filter->deliver().compile(nulscope);
+    receiver.filter->compile(nulscope);
 
     DataTree::expectOne()
         (BLOCK_BEGIN)
@@ -288,7 +288,7 @@ TEST_F(AcceptorTest, FuncAccNested)
     ASSERT_FALSE(bool(receiver.stmt));
     ASSERT_TRUE(bool(receiver.func));
     receiver.compile();
-    receiver.filter->deliver().compile(nulscope);
+    receiver.filter->compile(nulscope);
 
     DataTree::expectOne()
         (BLOCK_BEGIN)

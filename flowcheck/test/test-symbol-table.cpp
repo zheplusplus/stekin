@@ -27,6 +27,11 @@ struct SymbolTableTest
         return *symbols;
     }
 
+    util::sptr<flchk::Filter> mkBody()
+    {
+        return util::mkmptr(new flchk::FuncBodyFilter(refSym()));
+    }
+
     util::sptr<proto::Scope> scope;
     util::sptr<flchk::SymbolTable> symbols;
 };
@@ -186,12 +191,12 @@ TEST_F(SymbolTableTest, FuncDefRef)
     util::sref<flchk::Function> func(NULL);
 
     params = { "m", "n" };
-    flchk::Function fa2(pos, "fa", params, util::mkmptr(new flchk::FuncBodyFilter(refSym())), true);
+    flchk::Function fa2(pos, "fa", params, mkBody());
     symbols->defFunc(util::mkref(fa2));
     params = { "x", "y", "z" };
-    flchk::Function fa3(pos, "fa", params, util::mkmptr(new flchk::FuncBodyFilter(refSym())), true);
+    flchk::Function fa3(pos, "fa", params, mkBody());
     symbols->defFunc(util::mkref(fa3));
-    flchk::Function fb(pos, "fb", params, util::mkmptr(new flchk::FuncBodyFilter(refSym())), true);
+    flchk::Function fb(pos, "fb", params, mkBody());
     symbols->defFunc(util::mkref(fb));
 
     func = symbols->queryFunc(ref_pos, "fa", 2);
@@ -214,7 +219,7 @@ TEST_F(SymbolTableTest, FuncDefRef)
 
     flchk::SymbolTable inner_symbols(refSym());
     params = { "a", "b" };
-    flchk::Function fbi(pos, "fb", params, util::mkmptr(new flchk::FuncBodyFilter(refSym())), true);
+    flchk::Function fbi(pos, "fb", params, mkBody());
     inner_symbols.defFunc(util::mkref(fbi));
     ASSERT_FALSE(error::hasError());
 
@@ -251,19 +256,15 @@ TEST_F(SymbolTableTest, RedefFunc)
     std::vector<std::string> params;
 
     params = { "m", "n" };
-    flchk::Function f0a(pos, "f0", params, util::mkmptr(new flchk::FuncBodyFilter(refSym())), true);
+    flchk::Function f0a(pos, "f0", params, mkBody());
     symbols->defFunc(util::mkref(f0a));
     params = { "x", "y", "z" };
-    flchk::Function f1a(pos, "f1", params, util::mkmptr(new flchk::FuncBodyFilter(refSym())), true);
+    flchk::Function f1a(pos, "f1", params, mkBody());
     symbols->defFunc(util::mkref(f1a));
     ASSERT_FALSE(error::hasError());
 
     params = { "a", "b" };
-    flchk::Function f0b(err_pos0
-                      , "f0"
-                      , params
-                      , util::mkmptr(new flchk::FuncBodyFilter(refSym()))
-                      , true);
+    flchk::Function f0b(err_pos0, "f0", params, mkBody());
     symbols->defFunc(util::mkref(f0b));
     ASSERT_TRUE(error::hasError());
     std::vector<FuncRedefRec> redefs = getFuncRedefs();
@@ -271,15 +272,11 @@ TEST_F(SymbolTableTest, RedefFunc)
 
     flchk::SymbolTable inner_symbols(refSym());
     params = { "a", "b" };
-    flchk::Function f1b(pos, "f1", params, util::mkmptr(new flchk::FuncBodyFilter(refSym())), true);
+    flchk::Function f1b(pos, "f1", params, mkBody());
     inner_symbols.defFunc(util::mkref(f1b));
 
     params = { "a", "b", "c" };
-    flchk::Function f1c(err_pos1
-                      , "f1"
-                      , params
-                      , util::mkmptr(new flchk::FuncBodyFilter(refSym()))
-                      , true);
+    flchk::Function f1c(err_pos1, "f1", params, mkBody());
     inner_symbols.defFunc(util::mkref(f1c));
 
     redefs = getFuncRedefs();
@@ -303,10 +300,10 @@ TEST_F(SymbolTableTest, NondefFunc)
     std::vector<std::string> params;
 
     params = { "m", "n" };
-    flchk::Function f0(pos, "f0", params, util::mkmptr(new flchk::FuncBodyFilter(refSym())), true);
+    flchk::Function f0(pos, "f0", params, mkBody());
     symbols->defFunc(util::mkref(f0));
     params = { "x", "y", "z" };
-    flchk::Function f1(pos, "f1", params, util::mkmptr(new flchk::FuncBodyFilter(refSym())), true);
+    flchk::Function f1(pos, "f1", params, mkBody());
     symbols->defFunc(util::mkref(f1));
     ASSERT_FALSE(error::hasError());
 
@@ -337,32 +334,16 @@ TEST_F(SymbolTableTest, FuncRefAmbiguous)
     misc::position err_pos1(1201);
     std::vector<std::string> params;
     params = { "nakamura" };
-    flchk::Function ga(pos
-                     , "guild"
-                     , params
-                     , util::mkmptr(new flchk::FuncBodyFilter(refSym()))
-                     , true);
+    flchk::Function ga(pos, "guild", params, mkBody());
     symbols->defFunc(util::mkref(ga));
-    flchk::Function gb(pos
-                     , "guild"
-                     , std::vector<std::string>()
-                     , util::mkmptr(new flchk::FuncBodyFilter(refSym()))
-                     , true);
+    flchk::Function gb(pos, "guild", std::vector<std::string>(), mkBody());
     symbols->defFunc(util::mkref(gb));
 
-    flchk::Function gdma(pos
-                       , "girl_dead_monster"
-                       , std::vector<std::string>()
-                       , util::mkmptr(new flchk::FuncBodyFilter(refSym()))
-                       , true);
+    flchk::Function gdma(pos, "girl_dead_monster", std::vector<std::string>(), mkBody());
     symbols->defFunc(util::mkref(gdma));
     flchk::SymbolTable inner_symbols(refSym());
     params = { "yui", "iwasawa", "sekine" };
-    flchk::Function gdmb(pos
-                       , "girl_dead_monster"
-                       , params
-                       , util::mkmptr(new flchk::FuncBodyFilter(refSym()))
-                       , true);
+    flchk::Function gdmb(pos, "girl_dead_monster", params, mkBody());
     symbols->defFunc(util::mkref(gdmb));
 
     symbols->compileRef(err_pos0, "guild", *scope);
