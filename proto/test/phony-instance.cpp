@@ -1,6 +1,7 @@
 #include "test-common.h"
 #include "../../instance/expr-nodes.h"
 #include "../../instance/function.h"
+#include "../../instance/built-in.h"
 #include "../../util/string.h"
 
 using namespace test;
@@ -342,6 +343,11 @@ util::sref<Type const> Negation::typeof() const
     return util::mkref(PROTO_TEST_TYPE);
 }
 
+util::sref<Type const> WriteExpr::typeof() const
+{
+    return Type::BIT_VOID;
+}
+
 Conjunction::Conjunction(misc::position const&
                        , util::sptr<Expression const> l
                        , util::sptr<Expression const> r)
@@ -386,7 +392,4 @@ void Initialization::write() const {}
 void Return::write() const {}
 void ReturnNothing::write() const {}
 void Block::write() const {}
-
-#include "../../output/statement-writer.h"
-void output::beginWriteStmt() {}
-void output::endWriteStmt() {}
+void WriteExpr::write() const {}

@@ -29,6 +29,8 @@ void output::blockEnd() {}
 void output::endOfStatement() {}
 void output::constructFuncReference(std::string const&) {}
 void output::funcReferenceNextVariable(int, StackVarRec const&) {}
+void output::beginWriteStmt() {}
+void output::endWriteStmt() {}
 
 std::string output::formFuncReferenceType(int)
 {
