@@ -27,8 +27,7 @@ namespace flchk {
         util::sref<Function> defFunc(misc::position const& pos
                                    , std::string const& name
                                    , std::vector<std::string> const& param_names
-                                   , util::sptr<Filter> body
-                                   , bool contains_void_return);
+                                   , util::sptr<Filter> body);
         void append(Block following);
     private:
         std::list<util::sptr<Statement const>> _stmts;

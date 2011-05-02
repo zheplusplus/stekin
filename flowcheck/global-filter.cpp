@@ -54,8 +54,7 @@ namespace {
             : Function(misc::position(0)
                      , "write"
                      , std::vector<std::string>({ "value to write" })
-                     , std::move(mkBody(global_symbols))
-                     , true)
+                     , mkBody(global_symbols))
         {}
 
         static util::sptr<Filter> mkBody(util::sref<SymbolTable> global_symbols)

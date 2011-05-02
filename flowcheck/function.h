@@ -14,12 +14,10 @@ namespace flchk {
         Function(misc::position const& ps
                , std::string const& func_name
                , std::vector<std::string> const& params
-               , util::sptr<Filter> func_body
-               , bool func_contains_void_return)
+               , util::sptr<Filter> func_body)
             : pos(ps)
             , name(func_name)
             , param_names(params)
-            , contains_void_return(func_contains_void_return)
             , _body(std::move(func_body))
             , _func_proto(NULL)
         {}
@@ -28,7 +26,6 @@ namespace flchk {
             : pos(rhs.pos)
             , name(rhs.name)
             , param_names(rhs.param_names)
-            , contains_void_return(rhs.contains_void_return)
             , _body(std::move(rhs._body))
             , _func_proto(rhs._func_proto)
         {}
@@ -39,7 +36,6 @@ namespace flchk {
         misc::position const pos;
         std::string const name;
         std::vector<std::string> const param_names;
-        bool const contains_void_return;
     private:
         util::sptr<Filter> _body;
         util::sref<proto::Function> _func_proto;

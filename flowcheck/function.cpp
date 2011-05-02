@@ -12,7 +12,7 @@ using namespace flchk;
 util::sref<proto::Function> Function::compile(util::sref<proto::Scope> scope)
 {
     if (!bool(_func_proto)) {
-        _func_proto = scope->declare(pos, name, param_names, contains_void_return);
+        _func_proto = scope->declare(pos, name, param_names, _body->bodyContainsVoidReturn());
         std::for_each(param_names.begin()
                     , param_names.end()
                     , [&](std::string const& param)

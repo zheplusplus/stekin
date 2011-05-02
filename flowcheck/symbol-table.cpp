@@ -192,7 +192,7 @@ util::sptr<proto::Expression const> SymbolTable::compileRef(misc::position const
                                                                        , util::mkref(*this))));
     }
     _markReference(pos, name);
-    return std::move(util::mkptr(new proto::Reference(pos, name)));
+    return util::mkptr(new proto::Reference(pos, name));
 }
 
 util::sptr<proto::Expression const> SymbolTable::compileCall(
@@ -245,5 +245,4 @@ void SymbolTable::_markReference(misc::position const& pos, std::string const& n
 Function SymbolTable::_fake_function(misc::position(0)
                                    , ""
                                    , std::vector<std::string>()
-                                   , util::mkmptr(new GlobalFilter)
-                                   , true);
+                                   , util::mkmptr(new GlobalFilter));
