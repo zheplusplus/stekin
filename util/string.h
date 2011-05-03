@@ -6,7 +6,9 @@
 
 namespace util {
 
-    std::string replace_all(std::string src, std::string const& origin_text, std::string const& replacement);
+    std::string replace_all(std::string src
+                          , std::string const& origin_text
+                          , std::string const& replacement);
 
     std::string str(int i);
     std::string str(double d);

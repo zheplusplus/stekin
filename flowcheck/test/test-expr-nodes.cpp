@@ -167,7 +167,7 @@ TEST_F(ExprNodesTest, Calls)
     misc::position pos_d(300);
     util::sptr<proto::Scope> scope(new proto::Scope);
     flchk::GlobalFilter filter;
-    filter.defFunc(pos_d, "fib", std::vector<std::string>(), util::mkmptr(
+    filter.defFunc(pos_d, "fib", std::vector<std::string>(), util::mkptr(
                                                 new flchk::FuncBodyFilter(filter.getSymbols())));
 
     std::vector<util::sptr<flchk::Expression const>> params;
@@ -208,9 +208,9 @@ TEST_F(ExprNodesTest, FuncReference)
     util::sptr<proto::Scope> scope(new proto::Scope);
     flchk::GlobalFilter filter;
     misc::position pos_d(400);
-    filter.defFunc(pos_d, "fib", std::vector<std::string>(), util::mkmptr(
+    filter.defFunc(pos_d, "fib", std::vector<std::string>(), util::mkptr(
                                                 new flchk::FuncBodyFilter(filter.getSymbols())));
-    filter.defFunc(pos_d, "fib", std::vector<std::string>({ "x" }), util::mkmptr(
+    filter.defFunc(pos_d, "fib", std::vector<std::string>({ "x" }), util::mkptr(
                                                 new flchk::FuncBodyFilter(filter.getSymbols())));
 
     flchk::FuncReference func_ref0(pos, "fib", 0);

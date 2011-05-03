@@ -240,4 +240,4 @@ void SymbolTable::_markReference(misc::position const& pos, std::string const& n
 Function SymbolTable::_fake_function(misc::position(0)
                                    , ""
                                    , std::vector<std::string>()
-                                   , util::mkmptr(new GlobalFilter));
+                                   , util::mkptr(new GlobalFilter));

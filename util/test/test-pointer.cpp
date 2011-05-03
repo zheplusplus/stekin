@@ -47,9 +47,6 @@ TEST(Pointer, SRef)
     ASSERT_EQ(3, int(util::mkref(x)));
     ASSERT_EQ(2, int(util::mkref(y)));
 
-    std::stringstream os3;
-    ASSERT_EQ("3", util::mkref(x).print(os3).str());
-
     std::stringstream os4;
     util::sref<int const> ref(&x);
     os4 << &x;

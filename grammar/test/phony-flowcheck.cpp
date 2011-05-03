@@ -108,7 +108,7 @@ util::sref<Function> Block::defFunc(misc::position const& pos
                                   , std::vector<std::string> const& param_names
                                   , util::sptr<Filter> body)
 {
-    _funcs.push_back(util::mkmptr(new Function(pos, name, param_names, std::move(body))));
+    _funcs.push_back(util::mkptr(new Function(pos, name, param_names, std::move(body))));
     return *_funcs.back();
 }
 

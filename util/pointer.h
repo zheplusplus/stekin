@@ -85,13 +85,6 @@ namespace util {
         {
             return *_ptr;
         }
-
-        template <typename _OS>
-        _OS& print(_OS& os) const
-        {
-            os << *_ptr;
-            return os;
-        }
     private:
         pointer _ptr;
     };
@@ -146,15 +139,9 @@ namespace util {
     };
 
     template <typename _RawType>
-    sptr<_RawType> mkmptr(_RawType* ptr)
+    sptr<_RawType> mkptr(_RawType* ptr)
     {
         return sptr<_RawType>(ptr);
-    }
-
-    template <typename _RawType>
-    sptr<_RawType const> mkptr(_RawType* ptr)
-    {
-        return sptr<_RawType const>(ptr);
     }
 
     template <typename _RawType>
@@ -163,12 +150,6 @@ namespace util {
         return sref<_RawType>(&obj);
     }
 
-}
-
-template <typename _OS, typename _RawType>
-_OS& operator<<(_OS& os, util::sref<_RawType> ref)
-{
-    return ref.print(os);
 }
 
 #endif /* __STEKIN_UTILITY_POINTER_H__ */

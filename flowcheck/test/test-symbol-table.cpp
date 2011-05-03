@@ -29,7 +29,7 @@ struct SymbolTableTest
 
     util::sptr<flchk::Filter> mkBody()
     {
-        return util::mkmptr(new flchk::FuncBodyFilter(refSym()));
+        return util::mkptr(new flchk::FuncBodyFilter(refSym()));
     }
 
     util::sptr<proto::Scope> scope;

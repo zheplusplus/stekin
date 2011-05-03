@@ -10,7 +10,7 @@ using namespace proto;
 
 static util::sptr<inst::MediateBase> mkdirect(inst::Statement* stmt)
 {
-    return std::move(util::mkmptr(new DirectInst(std::move(util::mkptr(stmt)))));
+    return std::move(util::mkptr(new DirectInst(std::move(util::mkptr(stmt)))));
 }
 
 util::sptr<inst::MediateBase> Arithmetics::inst(util::sref<inst::Scope> scope) const
@@ -29,11 +29,11 @@ util::sptr<inst::MediateBase> VarDef::inst(util::sref<inst::Scope> scope) const
 
 util::sptr<inst::MediateBase> Branch::inst(util::sref<inst::Scope> scope) const
 {
-    return std::move(util::mkmptr(new BranchMediate(pos
-                                                  , std::move(_predicate->inst(scope))
-                                                  , _consequence.getStmts()
-                                                  , _alternative.getStmts()
-                                                  , scope)));
+    return std::move(util::mkptr(new BranchMediate(pos
+                                                 , std::move(_predicate->inst(scope))
+                                                 , _consequence.getStmts()
+                                                 , _alternative.getStmts()
+                                                 , scope)));
 }
 
 util::sptr<inst::MediateBase> Return::inst(util::sref<inst::Scope> scope) const
