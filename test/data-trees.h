@@ -18,14 +18,13 @@ namespace test {
                                 , _NodeData const& sub
                                 , std::string const& str)
         {
-            _nodes.push_back(std::move(
-                        util::mkptr(new StringNodeTempl<_NodeData>(type, sub, str))));
+            _nodes.push_back(util::mkptr(new StringNodeTempl<_NodeData>(type, sub, str)));
             return *this;
         }
 
         DataTreeTempl& operator()(NodeType const& type, _NodeData const& sub)
         {
-            _nodes.push_back(std::move(util::mkptr(new NothingNodeTempl<_NodeData>(type, sub))));
+            _nodes.push_back(util::mkptr(new NothingNodeTempl<_NodeData>(type, sub)));
             return *this;
         }
     protected:

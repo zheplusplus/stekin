@@ -31,7 +31,7 @@ namespace {
 
     util::sptr<Scope> mkscope()
     {
-        return std::move(util::mkmptr(new Scope));
+        return std::move(util::mkptr(new Scope));
     }
 
     std::vector<util::sptr<Scope>> func_scope_entities;
@@ -211,7 +211,7 @@ util::sref<Function> Scope::declare(misc::position const& pos
                   {
                       DataTree::actualOne()(pos, PARAMETER, param);
                   });
-    func_entities.push_back(util::mkmptr(new Function(pos, name, param_names, hint_return_void)));
+    func_entities.push_back(util::mkptr(new Function(pos, name, param_names, hint_return_void)));
     return *func_entities.back();
 }
 

@@ -12,7 +12,7 @@ util::sref<proto::Scope> const test::nulscope(NULL);
 
 util::sptr<flchk::Filter> test::mkfilter()
 {
-    return std::move(util::mkmptr(new flchk::GlobalFilter));
+    return std::move(util::mkptr(new flchk::GlobalFilter));
 }
 
 DataTree& DataTree::operator()(misc::position const& pos

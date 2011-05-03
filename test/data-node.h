@@ -5,6 +5,7 @@
 #include <ostream>
 
 #include "../misc/pos-type.h"
+#include "../util/pointer.h"
 
 namespace test {
 
@@ -110,10 +111,16 @@ namespace test {
 }
 
 template <typename _NodeData>
+std::ostream& operator<<(std::ostream& os, util::sref<test::DataNodeTempl<_NodeData> const> node)
+{
+    return node->print(os <<  "node type: " << node->type_img.type_img) << std::endl
+               << ":: sub data: " << node->sub_data;
+}
+
+template <typename _NodeData>
 std::ostream& operator<<(std::ostream& os, test::DataNodeTempl<_NodeData> const& node)
 {
-    return node.print(os <<  "node type: " << node.type_img.type_img) << std::endl
-               << ":: sub data: " << node.sub_data;
+    return operator<<(os, util::mkref(node));
 }
 
 #endif /* __STEKIN_TEST_DATA_NODE_H__ */

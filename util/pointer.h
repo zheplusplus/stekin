@@ -80,6 +80,11 @@ namespace util {
         {
             return util::id(_ptr);
         }
+
+        _RawType cp() const
+        {
+            return *_ptr;
+        }
     private:
         pointer _ptr;
     };

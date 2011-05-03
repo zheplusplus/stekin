@@ -77,8 +77,8 @@ TEST_F(FuncNCallTest, FuncWithBranchRecursion)
     util::sref<proto::Function> test_func(NULL);
 
     test_func = func->declare(pos, "test_func", std::vector<std::string>(), false);
-    sub_scope0 = util::mkmptr(new proto::Scope);
-    sub_scope1 = util::mkmptr(new proto::Scope);
+    sub_scope0 = util::mkptr(new proto::Scope);
+    sub_scope1 = util::mkptr(new proto::Scope);
 
     util::sptr<proto::Expression const> recursive_call(util::mkptr(new proto::Call(
                                    pos
@@ -123,8 +123,8 @@ TEST_F(FuncNCallTest, CouldNotResolve)
     util::sref<proto::Function> test_func(NULL);
 
     test_func = func->declare(pos, "test_func", std::vector<std::string>(), false);
-    sub_scope0 = util::mkmptr(new proto::Scope);
-    sub_scope1 = util::mkmptr(new proto::Scope);
+    sub_scope0 = util::mkptr(new proto::Scope);
+    sub_scope1 = util::mkptr(new proto::Scope);
 
     test_func->addStmt(util::mkptr(new proto::Branch(pos
                                                    , util::mkptr(new proto::IntLiteral(pos, 1))
