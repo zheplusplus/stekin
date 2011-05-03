@@ -46,12 +46,13 @@ namespace {
             , consequence(std::move(c))
         {}
 
-        util::sptr<proto::Statement const> compile(util::sref<proto::Scope>) const
+        util::sptr<proto::Statement const> compile(util::sref<proto::Scope>
+                                                 , util::sref<SymbolTable>) const
         {
             DataTree::actualOne()(pos, BRANCH_CONSQ_ONLY);
-            predicate->compile(nulscope);
+            predicate->compile(nulscope, nulSymbols());
             DataTree::actualOne()(CONSEQUENCE);
-            consequence.compile(nulscope);
+            consequence.compile(nulscope, nulSymbols());
             return std::move(nulProtoStmt());
         }
 
@@ -68,12 +69,13 @@ namespace {
             , alternative(std::move(a))
         {}
 
-        util::sptr<proto::Statement const> compile(util::sref<proto::Scope>) const
+        util::sptr<proto::Statement const> compile(util::sref<proto::Scope>
+                                                 , util::sref<SymbolTable>) const
         {
             DataTree::actualOne()(pos, BRANCH_ALTER_ONLY);
-            predicate->compile(nulscope);
+            predicate->compile(nulscope, nulSymbols());
             DataTree::actualOne()(ALTERNATIVE);
-            alternative.compile(nulscope);
+            alternative.compile(nulscope, nulSymbols());
             return std::move(nulProtoStmt());
         }
 
@@ -110,7 +112,7 @@ util::sref<Function> Block::defFunc(misc::position const& pos
     return *_funcs.back();
 }
 
-void Block::compile(util::sref<proto::Scope>) const 
+void Block::compile(util::sref<proto::Scope>, util::sref<SymbolTable>) const 
 {
     DataTree::actualOne()(BLOCK_BEGIN);
     std::for_each(_funcs.begin()
@@ -124,7 +126,7 @@ void Block::compile(util::sref<proto::Scope>) const
                 , _stmts.end()
                 , [&](util::sptr<Statement const> const& stmt)
                   {
-                      stmt->compile(nulscope);
+                      stmt->compile(nulscope, nulSymbols());
                   });
     DataTree::actualOne()(BLOCK_END);
 }
@@ -174,11 +176,10 @@ void Accumulator::addBranchAlterOnly(misc::position const& pos
 }
 
 void Accumulator::defVar(misc::position const& pos
-                       , util::sref<SymbolTable>
                        , std::string const& name
                        , util::sptr<Expression const> init)
 {
-    _block.addStmt(util::mkptr(new VarDef(pos, nulSymbols(), name, std::move(init))));
+    _block.addStmt(util::mkptr(new VarDef(pos, name, std::move(init))));
 }
 
 util::sref<Function> Accumulator::defFunc(misc::position const& pos
@@ -189,9 +190,9 @@ util::sref<Function> Accumulator::defFunc(misc::position const& pos
     return _block.defFunc(pos, name, param_names, std::move(body));
 }
 
-void Accumulator::compileBlock(util::sref<proto::Scope> scope) const
+void Accumulator::compileBlock(util::sref<proto::Scope> scope, util::sref<SymbolTable>) const
 {
-    _block.compile(scope);
+    _block.compile(scope, nulSymbols());
 }
 
 void Filter::addReturn(misc::position const& pos, util::sptr<Expression const> ret_val)
@@ -236,30 +237,22 @@ void Filter::addBranchAlterOnly(misc::position const& pos
                                   , std::move(alternative->_accumulator));
 }
 
-void Filter::defFunc(misc::position const& pos
-                   , std::string const& name
-                   , std::vector<std::string> const& param_names
-                   , util::sptr<Filter> body)
+void Filter::compile(util::sref<proto::Scope> scope)
 {
-    _defFunc(pos, name, param_names, std::move(body));
-}
-
-void Filter::compile(util::sref<proto::Scope> scope) const
-{
-    _accumulator.compileBlock(scope);
+    _accumulator.compileBlock(scope, nulSymbols());
 }
 
 void FuncBodyFilter::defVar(misc::position const& pos
                           , std::string const& name
                           , util::sptr<Expression const> init)
 {
-    _accumulator.defVar(pos, nulSymbols(), name, std::move(init));
+    _accumulator.defVar(pos, name, std::move(init));
 }
 
-void FuncBodyFilter::_defFunc(misc::position const& pos
-                            , std::string const& name
-                            , std::vector<std::string> const& param_names
-                            , util::sptr<Filter> body)
+void FuncBodyFilter::defFunc(misc::position const& pos
+                           , std::string const& name
+                           , std::vector<std::string> const& param_names
+                           , util::sptr<Filter> body)
 {
     _accumulator.defFunc(pos, name, param_names, std::move(body));
 }
@@ -273,13 +266,13 @@ void SymbolDefFilter::defVar(misc::position const& pos
                            , std::string const& name
                            , util::sptr<Expression const> init)
 {
-    _accumulator.defVar(pos, nulSymbols(), name + VAR_DEF_FILTERED, std::move(init));
+    _accumulator.defVar(pos, name + VAR_DEF_FILTERED, std::move(init));
 }
 
-void SymbolDefFilter::_defFunc(misc::position const& pos
-                             , std::string const& name
-                             , std::vector<std::string> const& param_names
-                             , util::sptr<Filter> body)
+void SymbolDefFilter::defFunc(misc::position const& pos
+                            , std::string const& name
+                            , std::vector<std::string> const& param_names
+                            , util::sptr<Filter> body)
 {
     _accumulator.defFunc(pos, name + FUNC_DEF_FILTERED, param_names, std::move(body));
 }
@@ -291,111 +284,127 @@ util::sref<SymbolTable> SymbolDefFilter::getSymbols()
 
 GlobalFilter::GlobalFilter() = default;
 
-util::sptr<proto::Statement const> Arithmetics::compile(util::sref<proto::Scope>) const 
+util::sptr<proto::Statement const> Arithmetics::compile(util::sref<proto::Scope>
+                                                      , util::sref<SymbolTable>) const 
 {
     DataTree::actualOne()(pos, ARITHMETICS);
-    expr->compile(nulscope);
+    expr->compile(nulscope, nulSymbols());
     return std::move(nulProtoStmt());
 }
 
-util::sptr<proto::Statement const> Branch::compile(util::sref<proto::Scope>) const 
+util::sptr<proto::Statement const> Branch::compile(util::sref<proto::Scope>
+                                                 , util::sref<SymbolTable>) const 
 {
     DataTree::actualOne()(pos, BRANCH);
-    predicate->compile(nulscope);
+    predicate->compile(nulscope, nulSymbols());
     DataTree::actualOne()(CONSEQUENCE);
-    consequence.compile(nulscope);
+    consequence.compile(nulscope, nulSymbols());
     DataTree::actualOne()(ALTERNATIVE);
-    alternative.compile(nulscope);
+    alternative.compile(nulscope, nulSymbols());
     return std::move(nulProtoStmt());
 }
 
-util::sptr<proto::Statement const> VarDef::compile(util::sref<proto::Scope>) const 
+util::sptr<proto::Statement const> VarDef::compile(util::sref<proto::Scope>
+                                                 , util::sref<SymbolTable>) const 
 {
     DataTree::actualOne()(pos, VAR_DEF, name);
-    init->compile(nulscope);
+    init->compile(nulscope, nulSymbols());
     return std::move(nulProtoStmt());
 }
 
-util::sptr<proto::Statement const> Return::compile(util::sref<proto::Scope>) const 
+util::sptr<proto::Statement const> Return::compile(util::sref<proto::Scope>
+                                                 , util::sref<SymbolTable>) const 
 {
     DataTree::actualOne()(pos, RETURN);
-    ret_val->compile(nulscope);
+    ret_val->compile(nulscope, nulSymbols());
     return std::move(nulProtoStmt());
 }
 
-util::sptr<proto::Statement const> ReturnNothing::compile(util::sref<proto::Scope>) const
+util::sptr<proto::Statement const> ReturnNothing::compile(util::sref<proto::Scope>
+                                                        , util::sref<SymbolTable>) const 
 {
     DataTree::actualOne()(pos, RETURN_NOTHING);
     return std::move(nulProtoStmt());
 }
 
-util::sptr<proto::Expression const> PreUnaryOp::compile(util::sref<proto::Scope>) const
+util::sptr<proto::Expression const> PreUnaryOp::compile(util::sref<proto::Scope>
+                                                      , util::sref<SymbolTable>) const
 {
     DataTree::actualOne()(pos, PRE_UNARY_OP, op_img);
     return std::move(nulProtoExpr());
 }
 
-util::sptr<proto::Expression const> BinaryOp::compile(util::sref<proto::Scope>) const
+util::sptr<proto::Expression const> BinaryOp::compile(util::sref<proto::Scope>
+                                                    , util::sref<SymbolTable>) const
 {
     DataTree::actualOne()(pos, BINARY_OP, op_img);
     return std::move(nulProtoExpr());
 }
 
-util::sptr<proto::Expression const> Conjunction::compile(util::sref<proto::Scope>) const
+util::sptr<proto::Expression const> Conjunction::compile(util::sref<proto::Scope>
+                                                       , util::sref<SymbolTable>) const
 {
     DataTree::actualOne()(pos, BINARY_OP, "&&");
     return std::move(nulProtoExpr());
 }
 
-util::sptr<proto::Expression const> Disjunction::compile(util::sref<proto::Scope>) const
+util::sptr<proto::Expression const> Disjunction::compile(util::sref<proto::Scope>
+                                                       , util::sref<SymbolTable>) const
 {
     DataTree::actualOne()(pos, BINARY_OP, "||");
     return std::move(nulProtoExpr());
 }
 
-util::sptr<proto::Expression const> Negation::compile(util::sref<proto::Scope>) const
+util::sptr<proto::Expression const> Negation::compile(util::sref<proto::Scope>
+                                                    , util::sref<SymbolTable>) const
 {
     DataTree::actualOne()(pos, PRE_UNARY_OP, "!");
     return std::move(nulProtoExpr());
 }
 
-util::sptr<proto::Expression const> Reference::compile(util::sref<proto::Scope>) const
+util::sptr<proto::Expression const> Reference::compile(util::sref<proto::Scope>
+                                                     , util::sref<SymbolTable>) const
 {
     DataTree::actualOne()(pos, REFERENCE, name);
     return std::move(nulProtoExpr());
 }
 
-util::sptr<proto::Expression const> BoolLiteral::compile(util::sref<proto::Scope>) const
+util::sptr<proto::Expression const> BoolLiteral::compile(util::sref<proto::Scope>
+                                                       , util::sref<SymbolTable>) const
 {
     DataTree::actualOne()(pos, BOOLEAN, util::str(value));
     return std::move(nulProtoExpr());
 }
 
-util::sptr<proto::Expression const> IntLiteral::compile(util::sref<proto::Scope>) const
+util::sptr<proto::Expression const> IntLiteral::compile(util::sref<proto::Scope>
+                                                      , util::sref<SymbolTable>) const
 {
     DataTree::actualOne()(pos, INTEGER, util::str(value));
     return std::move(nulProtoExpr());
 }
 
-util::sptr<proto::Expression const> FloatLiteral::compile(util::sref<proto::Scope>) const
+util::sptr<proto::Expression const> FloatLiteral::compile(util::sref<proto::Scope>
+                                                        , util::sref<SymbolTable>) const
 {
     DataTree::actualOne()(pos, FLOATING, util::str(value));
     return std::move(nulProtoExpr());
 }
 
-util::sptr<proto::Expression const> Call::compile(util::sref<proto::Scope> s) const
+util::sptr<proto::Expression const> Call::compile(util::sref<proto::Scope>
+                                                , util::sref<SymbolTable>) const
 {
     DataTree::actualOne()(pos, CALL, name, args.size());
     std::for_each(args.begin()
                 , args.end()
                 , [&](util::sptr<Expression const> const& arg)
                   {
-                      arg->compile(s);
+                      arg->compile(nulscope, nulSymbols());
                   });
     return std::move(nulProtoExpr());
 }
 
-util::sptr<proto::Expression const> FuncReference::compile(util::sref<proto::Scope>) const
+util::sptr<proto::Expression const> FuncReference::compile(util::sref<proto::Scope>
+                                                         , util::sref<SymbolTable>) const
 {
     DataTree::actualOne()(pos, FUNC_REFERENCE, name, param_count);
     return std::move(nulProtoExpr());
