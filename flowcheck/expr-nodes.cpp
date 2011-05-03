@@ -15,7 +15,7 @@ namespace {
 
     static util::sptr<Expression const> makeFakeExpr(misc::position const& pos)
     {
-        return std::move(util::mkptr(new BoolLiteral(pos, false)));
+        return util::mkptr(new BoolLiteral(pos, false));
     }
 
     struct LiteralBinaryOp {
@@ -42,35 +42,35 @@ namespace {
                                                , _LHS const& lhs
                                                , _RHS const& rhs) const
         {
-            return std::move(_OpFunc()(pos, lhs, rhs));
+            return _OpFunc()(pos, lhs, rhs);
         }
 
         util::sptr<Expression const> operate(misc::position const& pos
                                            , mpz_class const& lhs
                                            , mpz_class const& rhs) const
         {
-            return std::move(operateImpl(pos, lhs, rhs));
+            return operateImpl(pos, lhs, rhs);
         }
 
         util::sptr<Expression const> operate(misc::position const& pos
                                            , mpz_class const& lhs
                                            , mpf_class const& rhs) const
         {
-            return std::move(operateImpl(pos, lhs, rhs));
+            return operateImpl(pos, lhs, rhs);
         }
 
         util::sptr<Expression const> operate(misc::position const& pos
                                            , mpf_class const& lhs
                                            , mpz_class const& rhs) const
         {
-            return std::move(operateImpl(pos, lhs, rhs));
+            return operateImpl(pos, lhs, rhs);
         }
 
         util::sptr<Expression const> operate(misc::position const& pos
                                            , mpf_class const& lhs
                                            , mpf_class const& rhs) const
         {
-            return std::move(operateImpl(pos, lhs, rhs));
+            return operateImpl(pos, lhs, rhs);
         }
     };
 
@@ -80,7 +80,7 @@ namespace {
                                               , _LHS const& lhs
                                               , _RHS const& rhs) const
         {
-            return std::move(util::mkptr(new BoolLiteral(pos, lhs < rhs)));
+            return util::mkptr(new BoolLiteral(pos, lhs < rhs));
         }
     };
     BinaryOpImplement<LTBinary> lt_binary_obj;
@@ -91,7 +91,7 @@ namespace {
                                               , _LHS const& lhs
                                               , _RHS const& rhs) const
         {
-            return std::move(util::mkptr(new BoolLiteral(pos, lhs <= rhs)));
+            return util::mkptr(new BoolLiteral(pos, lhs <= rhs));
         }
     };
     BinaryOpImplement<LEBinary> le_binary_obj;
@@ -102,7 +102,7 @@ namespace {
                                               , _LHS const& lhs
                                               , _RHS const& rhs) const
         {
-            return std::move(util::mkptr(new BoolLiteral(pos, lhs >= rhs)));
+            return util::mkptr(new BoolLiteral(pos, lhs >= rhs));
         }
     };
     BinaryOpImplement<GEBinary> ge_binary_obj;
@@ -113,7 +113,7 @@ namespace {
                                               , _LHS const& lhs
                                               , _RHS const& rhs) const
         {
-            return std::move(util::mkptr(new BoolLiteral(pos, lhs > rhs)));
+            return util::mkptr(new BoolLiteral(pos, lhs > rhs));
         }
     };
     BinaryOpImplement<GTBinary> gt_binary_obj;
@@ -124,7 +124,7 @@ namespace {
                                               , _LHS const& lhs
                                               , _RHS const& rhs) const
         {
-            return std::move(util::mkptr(new BoolLiteral(pos, lhs == rhs)));
+            return util::mkptr(new BoolLiteral(pos, lhs == rhs));
         }
     };
     BinaryOpImplement<EQBinary> eq_binary_obj;
@@ -135,7 +135,7 @@ namespace {
                                               , _LHS const& lhs
                                               , _RHS const& rhs) const
         {
-            return std::move(util::mkptr(new BoolLiteral(pos, lhs != rhs)));
+            return util::mkptr(new BoolLiteral(pos, lhs != rhs));
         }
     };
     BinaryOpImplement<NEBinary> ne_binary_obj;
@@ -145,7 +145,7 @@ namespace {
                                               , mpz_class const& lhs
                                               , mpz_class const& rhs) const
         {
-            return std::move(util::mkptr(new IntLiteral(pos, lhs + rhs)));
+            return util::mkptr(new IntLiteral(pos, lhs + rhs));
         }
 
         template <typename _LHS, typename _RHS>
@@ -153,7 +153,7 @@ namespace {
                                               , _LHS const& lhs
                                               , _RHS const& rhs) const
         {
-            return std::move(util::mkptr(new FloatLiteral(pos, lhs + rhs)));
+            return util::mkptr(new FloatLiteral(pos, lhs + rhs));
         }
     };
     BinaryOpImplement<AddBinary> add_binary_obj;
@@ -163,7 +163,7 @@ namespace {
                                               , mpz_class const& lhs
                                               , mpz_class const& rhs) const
         {
-            return std::move(util::mkptr(new IntLiteral(pos, lhs - rhs)));
+            return util::mkptr(new IntLiteral(pos, lhs - rhs));
         }
 
         template <typename _LHS, typename _RHS>
@@ -171,7 +171,7 @@ namespace {
                                               , _LHS const& lhs
                                               , _RHS const& rhs) const
         {
-            return std::move(util::mkptr(new FloatLiteral(pos, lhs - rhs)));
+            return util::mkptr(new FloatLiteral(pos, lhs - rhs));
         }
     };
     BinaryOpImplement<SubBinary> sub_binary_obj;
@@ -181,7 +181,7 @@ namespace {
                                               , mpz_class const& lhs
                                               , mpz_class const& rhs) const
         {
-            return std::move(util::mkptr(new IntLiteral(pos, lhs * rhs)));
+            return util::mkptr(new IntLiteral(pos, lhs * rhs));
         }
 
         template <typename _LHS, typename _RHS>
@@ -189,7 +189,7 @@ namespace {
                                               , _LHS const& lhs
                                               , _RHS const& rhs) const
         {
-            return std::move(util::mkptr(new FloatLiteral(pos, lhs * rhs)));
+            return util::mkptr(new FloatLiteral(pos, lhs * rhs));
         }
     };
     BinaryOpImplement<MulBinary> mul_binary_obj;
@@ -201,9 +201,9 @@ namespace {
         {
             if (0 == rhs) {
                 error::binaryOpNotAvai(pos, "/", "int", "integer literal(0)");
-                return std::move(makeFakeExpr(pos));
+                return makeFakeExpr(pos);
             }
-            return std::move(util::mkptr(new IntLiteral(pos, lhs / rhs)));
+            return util::mkptr(new IntLiteral(pos, lhs / rhs));
         }
 
         util::sptr<Expression const> operator()(misc::position const& pos
@@ -212,9 +212,9 @@ namespace {
         {
             if (0 == rhs) {
                 error::binaryOpNotAvai(pos, "/", "int", "integer literal(0)");
-                return std::move(makeFakeExpr(pos));
+                return makeFakeExpr(pos);
             }
-            return std::move(util::mkptr(new FloatLiteral(pos, lhs / rhs)));
+            return util::mkptr(new FloatLiteral(pos, lhs / rhs));
         }
 
         template <typename _LHS, typename _RHS>
@@ -222,7 +222,7 @@ namespace {
                                               , _LHS const& lhs
                                               , _RHS const& rhs) const
         {
-            return std::move(util::mkptr(new FloatLiteral(pos, lhs / rhs)));
+            return util::mkptr(new FloatLiteral(pos, lhs / rhs));
         }
     };
     BinaryOpImplement<DivBinary> div_binary_obj;
@@ -234,9 +234,9 @@ namespace {
         {
             if (0 == rhs) {
                 error::binaryOpNotAvai(pos, "%", "int", "integer literal(0)");
-                return std::move(makeFakeExpr(pos));
+                return makeFakeExpr(pos);
             }
-            return std::move(util::mkptr(new IntLiteral(pos, lhs % rhs)));
+            return util::mkptr(new IntLiteral(pos, lhs % rhs));
         }
 
         template <typename _LHS, typename _RHS>
@@ -245,7 +245,7 @@ namespace {
                                               , _RHS const&) const
         {
             error::binaryOpNotAvai(pos, "%", "int or float", "int or float");
-            return std::move(makeFakeExpr(pos));
+            return makeFakeExpr(pos);
         }
     };
     BinaryOpImplement<ModBinary> mod_binary_obj;
@@ -278,9 +278,10 @@ namespace {
 
 }
 
-util::sptr<proto::Expression const> PreUnaryOp::compile(util::sref<proto::Scope> scope) const
+util::sptr<proto::Expression const> PreUnaryOp::compile(util::sref<proto::Scope> scope
+                                                      , util::sref<SymbolTable> st) const
 {
-    return std::move(util::mkptr(new proto::PreUnaryOp(pos, op_img, rhs->compile(scope))));
+    return util::mkptr(new proto::PreUnaryOp(pos, op_img, rhs->compile(scope, st)));
 }
 
 bool PreUnaryOp::isLiteral() const
@@ -301,15 +302,16 @@ std::string PreUnaryOp::typeName() const
 
 util::sptr<Expression const> PreUnaryOp::fold() const
 {
-    return std::move(rhs->fold()->asRHS(pos, op_img));
+    return rhs->fold()->asRHS(pos, op_img);
 }
 
-util::sptr<proto::Expression const> BinaryOp::compile(util::sref<proto::Scope> scope) const
+util::sptr<proto::Expression const> BinaryOp::compile(util::sref<proto::Scope> scope
+                                                    , util::sref<SymbolTable> st) const
 {
-    return std::move(util::mkptr(new proto::BinaryOp(pos
-                                                   , lhs->compile(scope)
-                                                   , op_img
-                                                   , rhs->compile(scope))));
+    return util::mkptr(new proto::BinaryOp(pos
+                                         , lhs->compile(scope, st)
+                                         , op_img
+                                         , rhs->compile(scope, st)));
 }
 
 bool BinaryOp::isLiteral() const
@@ -333,14 +335,15 @@ std::string BinaryOp::typeName() const
 
 util::sptr<Expression const> BinaryOp::fold() const
 {
-    return std::move(rhs->fold()->asRHS(pos, op_img, std::move(lhs->fold())));
+    return rhs->fold()->asRHS(pos, op_img, lhs->fold());
 }
 
-util::sptr<proto::Expression const> Conjunction::compile(util::sref<proto::Scope> scope) const
+util::sptr<proto::Expression const> Conjunction::compile(util::sref<proto::Scope> scope
+                                                       , util::sref<SymbolTable> st) const
 {
-    return std::move(util::mkptr(new proto::Conjunction(pos
-                                                      , lhs->compile(scope)
-                                                      , rhs->compile(scope))));
+    return util::mkptr(new proto::Conjunction(pos
+                                            , lhs->compile(scope, st)
+                                            , rhs->compile(scope, st)));
 }
 
 bool Conjunction::isLiteral() const
@@ -361,18 +364,17 @@ std::string Conjunction::typeName() const
 util::sptr<Expression const> Conjunction::fold() const
 {
     if (isLiteral()) {
-        return std::move(util::mkptr(new BoolLiteral(pos, lhs->boolValue() && rhs->boolValue())));
+        return util::mkptr(new BoolLiteral(pos, lhs->boolValue() && rhs->boolValue()));
     }
-    return std::move(util::mkptr(new Conjunction(pos
-                                               , std::move(lhs->fold())
-                                               , std::move(rhs->fold()))));
+    return util::mkptr(new Conjunction(pos, lhs->fold(), rhs->fold()));
 }
 
-util::sptr<proto::Expression const> Disjunction::compile(util::sref<proto::Scope> scope) const
+util::sptr<proto::Expression const> Disjunction::compile(util::sref<proto::Scope> scope
+                                                       , util::sref<SymbolTable> st) const
 {
-    return std::move(util::mkptr(new proto::Disjunction(pos
-                                                      , lhs->compile(scope)
-                                                      , rhs->compile(scope))));
+    return util::mkptr(new proto::Disjunction(pos
+                                            , lhs->compile(scope, st)
+                                            , rhs->compile(scope, st)));
 }
 
 bool Disjunction::isLiteral() const
@@ -393,16 +395,15 @@ std::string Disjunction::typeName() const
 util::sptr<Expression const> Disjunction::fold() const
 {
     if (isLiteral()) {
-        return std::move(util::mkptr(new BoolLiteral(pos, lhs->boolValue() || rhs->boolValue())));
+        return util::mkptr(new BoolLiteral(pos, lhs->boolValue() || rhs->boolValue()));
     }
-    return std::move(util::mkptr(new Disjunction(pos
-                                               , std::move(lhs->fold())
-                                               , std::move(rhs->fold()))));
+    return util::mkptr(new Disjunction(pos, lhs->fold(), rhs->fold()));
 }
 
-util::sptr<proto::Expression const> Negation::compile(util::sref<proto::Scope> scope) const
+util::sptr<proto::Expression const> Negation::compile(util::sref<proto::Scope> scope
+                                                    , util::sref<SymbolTable> st) const
 {
-    return std::move(util::mkptr(new proto::Negation(pos, rhs->compile(scope))));
+    return util::mkptr(new proto::Negation(pos, rhs->compile(scope, st)));
 }
 
 bool Negation::isLiteral() const
@@ -423,14 +424,15 @@ std::string Negation::typeName() const
 util::sptr<Expression const> Negation::fold() const
 {
     if (isLiteral()) {
-        return std::move(util::mkptr(new BoolLiteral(pos, !rhs->boolValue())));
+        return util::mkptr(new BoolLiteral(pos, !rhs->boolValue()));
     }
-    return std::move(util::mkptr(new Negation(pos, std::move(rhs->fold()))));
+    return util::mkptr(new Negation(pos, rhs->fold()));
 }
 
-util::sptr<proto::Expression const> Reference::compile(util::sref<proto::Scope> scope) const
+util::sptr<proto::Expression const> Reference::compile(util::sref<proto::Scope> scope
+                                                     , util::sref<SymbolTable> st) const
 {
-    return _symbols->compileRef(pos, name, scope);
+    return st->compileRef(pos, name, scope);
 }
 
 std::string Reference::typeName() const
@@ -440,12 +442,13 @@ std::string Reference::typeName() const
 
 util::sptr<Expression const> Reference::fold() const
 {
-    return std::move(util::mkptr(new Reference(pos, _symbols, name)));
+    return util::mkptr(new Reference(pos, name));
 }
 
-util::sptr<proto::Expression const> BoolLiteral::compile(util::sref<proto::Scope>) const
+util::sptr<proto::Expression const> BoolLiteral::compile(util::sref<proto::Scope>
+                                                       , util::sref<SymbolTable>) const
 {
-    return std::move(util::mkptr(new proto::BoolLiteral(pos, value)));
+    return util::mkptr(new proto::BoolLiteral(pos, value));
 }
 
 bool BoolLiteral::isLiteral() const
@@ -465,7 +468,7 @@ std::string BoolLiteral::typeName() const
 
 util::sptr<Expression const> BoolLiteral::fold() const
 {
-    return std::move(util::mkptr(new BoolLiteral(pos, value)));
+    return util::mkptr(new BoolLiteral(pos, value));
 }
 
 util::sptr<Expression const> BoolLiteral::operate(misc::position const& op_pos
@@ -473,7 +476,7 @@ util::sptr<Expression const> BoolLiteral::operate(misc::position const& op_pos
                                                 , mpz_class const&) const
 {
     error::binaryOpNotAvai(op_pos, op_img, "bool", "int");
-    return std::move(makeFakeExpr(op_pos));
+    return makeFakeExpr(op_pos);
 }
 
 util::sptr<Expression const> BoolLiteral::operate(misc::position const& op_pos
@@ -481,7 +484,7 @@ util::sptr<Expression const> BoolLiteral::operate(misc::position const& op_pos
                                                 , mpf_class const&) const
 {
     error::binaryOpNotAvai(op_pos, op_img, "bool", "float");
-    return std::move(makeFakeExpr(op_pos));
+    return makeFakeExpr(op_pos);
 }
 
 util::sptr<Expression const> BoolLiteral::operate(misc::position const& op_pos
@@ -489,28 +492,29 @@ util::sptr<Expression const> BoolLiteral::operate(misc::position const& op_pos
                                                 , bool rhs) const
 {
     if ("=" == op_img) {
-        return std::move(util::mkptr(new BoolLiteral(op_pos, value == rhs)));
+        return util::mkptr(new BoolLiteral(op_pos, value == rhs));
     }
-    return std::move(util::mkptr(new BoolLiteral(op_pos, value != rhs)));
+    return util::mkptr(new BoolLiteral(op_pos, value != rhs));
 }
 
 util::sptr<Expression const> BoolLiteral::asRHS(misc::position const& op_pos
                                               , std::string const& op_img
                                               , util::sptr<Expression const> lhs) const
 {
-    return std::move(lhs->operate(op_pos, op_img, value));
+    return lhs->operate(op_pos, op_img, value);
 }
 
 util::sptr<Expression const> BoolLiteral::asRHS(misc::position const& op_pos
                                               , std::string const& op_img) const
 {
     error::preUnaryOpNotAvai(op_pos, op_img, "bool");
-    return std::move(makeFakeExpr(op_pos));
+    return makeFakeExpr(op_pos);
 }
 
-util::sptr<proto::Expression const> IntLiteral::compile(util::sref<proto::Scope>) const
+util::sptr<proto::Expression const> IntLiteral::compile(util::sref<proto::Scope>
+                                                      , util::sref<SymbolTable>) const
 {
-    return std::move(util::mkptr(new proto::IntLiteral(pos, value)));
+    return util::mkptr(new proto::IntLiteral(pos, value));
 }
 
 bool IntLiteral::isLiteral() const
@@ -531,21 +535,21 @@ std::string IntLiteral::typeName() const
 
 util::sptr<Expression const> IntLiteral::fold() const
 {
-    return std::move(util::mkptr(new IntLiteral(pos, value)));
+    return util::mkptr(new IntLiteral(pos, value));
 }
 
 util::sptr<Expression const> IntLiteral::operate(misc::position const& op_pos
                                                , std::string const& op_img
                                                , mpz_class const& rhs) const
 {
-    return std::move(ALL_OPS.find(op_img)->second->operate(op_pos, value, rhs));
+    return ALL_OPS.find(op_img)->second->operate(op_pos, value, rhs);
 }
 
 util::sptr<Expression const> IntLiteral::operate(misc::position const& op_pos
                                                , std::string const& op_img
                                                , mpf_class const& rhs) const
 {
-    return std::move(ALL_OPS.find(op_img)->second->operate(op_pos, value, rhs));
+    return ALL_OPS.find(op_img)->second->operate(op_pos, value, rhs);
 }
 
 util::sptr<Expression const> IntLiteral::operate(misc::position const& op_pos
@@ -553,28 +557,29 @@ util::sptr<Expression const> IntLiteral::operate(misc::position const& op_pos
                                                , bool) const
 {
     error::binaryOpNotAvai(op_pos, op_img, "int", "bool");
-    return std::move(makeFakeExpr(op_pos));
+    return makeFakeExpr(op_pos);
 }
 
 util::sptr<Expression const> IntLiteral::asRHS(misc::position const& op_pos
                                              , std::string const& op_img
                                              , util::sptr<Expression const> lhs) const
 {
-    return std::move(lhs->operate(op_pos, op_img, value));
+    return lhs->operate(op_pos, op_img, value);
 }
 
 util::sptr<Expression const> IntLiteral::asRHS(misc::position const& op_pos
                                              , std::string const& op_img) const
 {
     if ("-" == op_img) {
-        return std::move(util::mkptr(new IntLiteral(op_pos, -value)));
+        return util::mkptr(new IntLiteral(op_pos, -value));
     }
-    return std::move(util::mkptr(new IntLiteral(op_pos, value)));
+    return util::mkptr(new IntLiteral(op_pos, value));
 }
 
-util::sptr<proto::Expression const> FloatLiteral::compile(util::sref<proto::Scope>) const
+util::sptr<proto::Expression const> FloatLiteral::compile(util::sref<proto::Scope>
+                                                        , util::sref<SymbolTable>) const
 {
-    return std::move(util::mkptr(new proto::FloatLiteral(pos, value)));
+    return util::mkptr(new proto::FloatLiteral(pos, value));
 }
 
 bool FloatLiteral::isLiteral() const
@@ -595,21 +600,21 @@ std::string FloatLiteral::typeName() const
 
 util::sptr<Expression const> FloatLiteral::fold() const
 {
-    return std::move(util::mkptr(new FloatLiteral(pos, value)));
+    return util::mkptr(new FloatLiteral(pos, value));
 }
 
 util::sptr<Expression const> FloatLiteral::operate(misc::position const& op_pos
                                                  , std::string const& op_img
                                                  , mpz_class const& rhs) const
 {
-    return std::move(ALL_OPS.find(op_img)->second->operate(op_pos, value, rhs));
+    return ALL_OPS.find(op_img)->second->operate(op_pos, value, rhs);
 }
 
 util::sptr<Expression const> FloatLiteral::operate(misc::position const& op_pos
                                                  , std::string const& op_img
                                                  , mpf_class const& rhs) const
 {
-    return std::move(ALL_OPS.find(op_img)->second->operate(op_pos, value, rhs));
+    return ALL_OPS.find(op_img)->second->operate(op_pos, value, rhs);
 }
 
 util::sptr<Expression const> FloatLiteral::operate(misc::position const& op_pos
@@ -617,28 +622,29 @@ util::sptr<Expression const> FloatLiteral::operate(misc::position const& op_pos
                                                  , bool) const
 {
     error::binaryOpNotAvai(op_pos, op_img, "float", "bool");
-    return std::move(makeFakeExpr(op_pos));
+    return makeFakeExpr(op_pos);
 }
 
 util::sptr<Expression const> FloatLiteral::asRHS(misc::position const& op_pos
                                                , std::string const& op_img
                                                , util::sptr<Expression const> lhs) const
 {
-    return std::move(lhs->operate(op_pos, op_img, value));
+    return lhs->operate(op_pos, op_img, value);
 }
 
 util::sptr<Expression const> FloatLiteral::asRHS(misc::position const& op_pos
                                                , std::string const& op_img) const
 {
     if ("-" == op_img) {
-        return std::move(util::mkptr(new FloatLiteral(op_pos, -value)));
+        return util::mkptr(new FloatLiteral(op_pos, -value));
     }
-    return std::move(util::mkptr(new FloatLiteral(op_pos, value)));
+    return util::mkptr(new FloatLiteral(op_pos, value));
 }
 
-util::sptr<proto::Expression const> Call::compile(util::sref<proto::Scope> scope) const
+util::sptr<proto::Expression const> Call::compile(util::sref<proto::Scope> scope
+                                                , util::sref<SymbolTable> st) const
 {
-    return _symbols->compileCall(pos, scope, name, args);
+    return st->compileCall(pos, scope, name, args);
 }
 
 std::string Call::typeName() const
@@ -664,15 +670,16 @@ util::sptr<Expression const> Call::fold() const
                 , args.end()
                 , [&](util::sptr<Expression const> const& expr)
                   {
-                      args_fold.push_back(std::move(expr->fold()));
+                      args_fold.push_back(expr->fold());
                   });
-    return std::move(util::mkptr(new Call(pos, _symbols, name, std::move(args_fold))));
+    return util::mkptr(new Call(pos, name, std::move(args_fold)));
 }
 
-util::sptr<proto::Expression const> FuncReference::compile(util::sref<proto::Scope> scope) const
+util::sptr<proto::Expression const> FuncReference::compile(util::sref<proto::Scope> scope
+                                                         , util::sref<SymbolTable> st) const
 {
-    return util::mkptr(new proto::FuncReference(pos, _symbols->queryFunc(pos, name, param_count)
-                                                             ->compile(scope)));
+    return util::mkptr(new proto::FuncReference(pos, st->queryFunc(pos, name, param_count)
+                                                       ->compile(scope)));
 }
 
 std::string FuncReference::typeName() const
@@ -682,5 +689,5 @@ std::string FuncReference::typeName() const
 
 util::sptr<Expression const> FuncReference::fold() const
 {
-    return std::move(util::mkptr(new FuncReference(pos, _symbols, name, param_count)));
+    return util::mkptr(new FuncReference(pos, name, param_count));
 }

@@ -46,7 +46,6 @@ namespace flchk {
         void addBlock(Accumulator b);
     public:
         void defVar(misc::position const& pos
-                  , util::sref<SymbolTable> symbols
                   , std::string const& name
                   , util::sptr<Expression const> init);
 
@@ -55,7 +54,7 @@ namespace flchk {
                                    , std::vector<std::string> const& param_names
                                    , util::sptr<Filter> body);
     public:
-        void compileBlock(util::sref<proto::Scope> scope) const;
+        void compileBlock(util::sref<proto::Scope> scope, util::sref<SymbolTable> st) const;
         bool containsVoidReturn() const;
     private:
         void _setTerminatedByVoidReturn(misc::position const& pos);

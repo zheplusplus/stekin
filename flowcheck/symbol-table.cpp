@@ -143,8 +143,9 @@ void SymbolTable::defFunc(util::sref<Function> func)
     _overloads.declare(func);
 }
 
-static std::vector<util::sptr<proto::Expression const>>
-      mkArgs(std::vector<util::sptr<Expression const>> const& args, util::sref<proto::Scope> scope)
+std::vector<util::sptr<proto::Expression const>> SymbolTable::_mkArgs(
+              std::vector<util::sptr<Expression const>> const& args
+            , util::sref<proto::Scope> scope)
 {
     std::vector<util::sptr<proto::Expression const>> arguments;
     arguments.reserve(args.size());
@@ -152,44 +153,39 @@ static std::vector<util::sptr<proto::Expression const>>
                 , args.end()
                 , [&](util::sptr<Expression const> const& expr)
                   {
-                      arguments.push_back(expr->compile(scope));
+                      arguments.push_back(expr->compile(scope, util::mkref(*this)));
                   });
     return std::move(arguments);
 }
 
-static util::sref<proto::Function> compileFunction(
-                misc::position const& pos
-              , util::sref<Function> func
-              , util::sref<proto::Scope> scope
-              , util::sref<SymbolTable> call_symbols)
+util::sref<proto::Function> SymbolTable::_compileFunction(misc::position const& pos
+                                                        , util::sref<Function> func
+                                                        , util::sref<proto::Scope> scope)
 {
     util::sref<proto::Function> compile_func = func->compile(scope);
-    call_symbols->refVars(pos, func->freeVariables());
+    refVars(pos, func->freeVariables());
     return compile_func;
 }
 
-static util::sptr<proto::Expression const> compileAsFunctor(
+util::sptr<proto::Expression const> SymbolTable::_compileAsFunctor(
                 misc::position const& pos
               , std::string const& name
               , util::sref<proto::Scope> scope
               , std::vector<util::sptr<Expression const>> const& args)
 {
-    return util::mkptr(new proto::Functor(pos, name, mkArgs(args, scope)));
+    return util::mkptr(new proto::Functor(pos, name, _mkArgs(args, scope)));
 }
 
 util::sptr<proto::Expression const> SymbolTable::compileRef(misc::position const& pos
                                                           , std::string const& name
                                                           , util::sref<proto::Scope> scope)
 {
-    std::vector<util::sref<Function>> all_funcs = _overloads.allFuncsOfName(name);
-    if (!all_funcs.empty()) {
-        if (all_funcs.size() > 1) {
+    std::vector<util::sref<Function>> funcs = _overloads.allFuncsOfName(name);
+    if (!funcs.empty()) {
+        if (funcs.size() > 1) {
             error::funcReferenceAmbiguous(pos, name);
         }
-        return util::mkptr(new proto::FuncReference(pos, compileFunction(pos
-                                                                       , all_funcs[0]
-                                                                       , scope
-                                                                       , util::mkref(*this))));
+        return util::mkptr(new proto::FuncReference(pos, _compileFunction(pos, funcs[0], scope)));
     }
     _markReference(pos, name);
     return util::mkptr(new proto::Reference(pos, name));
@@ -203,12 +199,11 @@ util::sptr<proto::Expression const> SymbolTable::compileCall(
 {
     util::sref<Function> func = _overloads.queryOrNulIfNonexist(name, args.size());
     if (bool(func)) {
-        return util::mkptr(new proto::Call(pos
-                                         , compileFunction(pos, func, scope, util::mkref(*this))
-                                         , mkArgs(args, scope)));
+        return util::mkptr(
+                new proto::Call(pos, _compileFunction(pos, func, scope), _mkArgs(args, scope)));
     }
     _markReference(pos, name);
-    return compileAsFunctor(pos, name, scope, args);
+    return _compileAsFunctor(pos, name, scope, args);
 }
 
 util::sref<Function> SymbolTable::queryFunc(misc::position const& pos

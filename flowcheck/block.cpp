@@ -24,13 +24,13 @@ util::sref<Function> Block::defFunc(misc::position const& pos
     return *_funcs.back();
 }
 
-void Block::compile(util::sref<proto::Scope> scope) const 
+void Block::compile(util::sref<proto::Scope> scope, util::sref<SymbolTable> st) const 
 {
     std::for_each(_stmts.begin()
                 , _stmts.end()
                 , [&](util::sptr<Statement const> const& stmt)
                   {
-                      scope->addStmt(stmt->compile(scope));
+                      scope->addStmt(stmt->compile(scope, st));
                   });
 }
 

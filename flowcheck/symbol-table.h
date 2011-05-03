@@ -76,6 +76,17 @@ namespace flchk {
         std::vector<std::string> freeVariables() const;
     private:
         void _markReference(misc::position const& pos, std::string const& name);
+        std::vector<util::sptr<proto::Expression const>> _mkArgs(
+                        std::vector<util::sptr<Expression const>> const& args
+                      , util::sref<proto::Scope> scope);
+        util::sref<proto::Function> _compileFunction(misc::position const& pos
+                                                   , util::sref<Function> func
+                                                   , util::sref<proto::Scope> scope);
+        util::sptr<proto::Expression const> _compileAsFunctor(
+                        misc::position const& pos
+                      , std::string const& name
+                      , util::sref<proto::Scope> scope
+                      , std::vector<util::sptr<Expression const>> const& args);
     private:
         std::map<std::string, std::list<misc::position>> _external_var_refs;
         std::map<std::string, misc::position> _var_defs;

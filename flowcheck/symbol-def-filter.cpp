@@ -14,10 +14,10 @@ void SymbolDefFilter::defVar(misc::position const& pos
     error::forbidDefVar(pos, name);
 }
 
-void SymbolDefFilter::_defFunc(misc::position const& pos
-                             , std::string const& name
-                             , std::vector<std::string> const&
-                             , util::sptr<Filter>)
+void SymbolDefFilter::defFunc(misc::position const& pos
+                            , std::string const& name
+                            , std::vector<std::string> const&
+                            , util::sptr<Filter>)
 {
     error::forbidDefFunc(pos, name);
 }
