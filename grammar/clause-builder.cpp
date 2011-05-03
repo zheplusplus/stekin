@@ -53,7 +53,7 @@ void AcceptorStack::_fillTo(int level, misc::position const& pos)
     if (int(_acceptors.size()) <= level) {
         error::excessiveIndent(pos);
         while (int(_acceptors.size()) <= level) {
-            _acceptors.push_back(std::move(util::mkmptr(new DummyAcceptor)));
+            _acceptors.push_back(std::move(util::mkptr(new DummyAcceptor)));
         }
     }
 }
@@ -136,19 +136,19 @@ void ClauseBuilder::addFunction(int indent_len
                               , std::string const& name
                               , std::vector<std::string> const& params)
 {
-    _stack.add(indent_len, std::move(util::mkmptr(new FunctionAcceptor(pos, name, params))));
+    _stack.add(indent_len, std::move(util::mkptr(new FunctionAcceptor(pos, name, params))));
 }
 
 void ClauseBuilder::addIf(int indent_len, util::sptr<Expression const> condition)
 {
     misc::position pos(condition->pos);
-    _stack.add(indent_len, std::move(util::mkmptr(new IfAcceptor(pos, std::move(condition)))));
+    _stack.add(indent_len, std::move(util::mkptr(new IfAcceptor(pos, std::move(condition)))));
 }
 
 void ClauseBuilder::addIfnot(int indent_len, util::sptr<Expression const> condition)
 {
     misc::position pos(condition->pos);
-    _stack.add(indent_len, std::move(util::mkmptr(new IfnotAcceptor(pos, std::move(condition)))));
+    _stack.add(indent_len, std::move(util::mkptr(new IfnotAcceptor(pos, std::move(condition)))));
 }
 
 void ClauseBuilder::addElse(int indent_len, misc::position const& pos)
@@ -158,5 +158,5 @@ void ClauseBuilder::addElse(int indent_len, misc::position const& pos)
 
 util::sptr<flchk::Filter> ClauseBuilder::buildAndClear()
 {
-    return _stack.packAll().compile(util::mkmptr(new flchk::GlobalFilter));
+    return _stack.packAll().compile(util::mkptr(new flchk::GlobalFilter));
 }
