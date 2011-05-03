@@ -9,39 +9,37 @@ using namespace grammar;
 
 static util::sptr<flchk::Filter> mkSymDefFilter(util::sref<flchk::Filter> ext_filter)
 {
-    return std::move(util::mkmptr(new flchk::SymbolDefFilter(ext_filter->getSymbols())));
+    return util::mkmptr(new flchk::SymbolDefFilter(ext_filter->getSymbols()));
 }
 
 void Arithmetics::compile(util::sref<flchk::Filter> filter) const
 {
-    filter->addArith(pos, std::move(expr->compile(filter)));
+    filter->addArith(pos, std::move(expr->compile()));
 }
 
 void Branch::compile(util::sref<flchk::Filter> filter) const
 {
     filter->addBranch(pos
-                    , std::move(predicate->compile(filter))
-                    , std::move(consequence.compile(std::move(mkSymDefFilter(filter))))
-                    , std::move(alternative.compile(std::move(mkSymDefFilter(filter)))));
+                    , predicate->compile()
+                    , consequence.compile(mkSymDefFilter(filter))
+                    , alternative.compile(mkSymDefFilter(filter)));
 }
 
 void BranchConsqOnly::compile(util::sref<flchk::Filter> filter) const
 {
-    filter->addBranch(pos
-                    , std::move(predicate->compile(filter))
-                    , std::move(consequence.compile(std::move(mkSymDefFilter(filter)))));
+    filter->addBranch(pos, predicate->compile(), consequence.compile(mkSymDefFilter(filter)));
 }
 
 void BranchAlterOnly::compile(util::sref<flchk::Filter> filter) const
 {
     filter->addBranchAlterOnly(pos
-                             , std::move(predicate->compile(filter))
-                             , std::move(alternative.compile(std::move(mkSymDefFilter(filter)))));
+                             , predicate->compile()
+                             , alternative.compile(mkSymDefFilter(filter)));
 }
 
 void Return::compile(util::sref<flchk::Filter> filter) const
 {
-    filter->addReturn(pos, std::move(ret_val->compile(filter)));
+    filter->addReturn(pos, ret_val->compile());
 }
 
 void ReturnNothing::compile(util::sref<flchk::Filter> filter) const
@@ -51,5 +49,5 @@ void ReturnNothing::compile(util::sref<flchk::Filter> filter) const
 
 void VarDef::compile(util::sref<flchk::Filter> filter) const
 {
-    filter->defVar(pos, name, std::move(init->compile(filter)));
+    filter->defVar(pos, name, init->compile());
 }

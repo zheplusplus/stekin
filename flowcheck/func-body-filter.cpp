@@ -10,13 +10,13 @@ void FuncBodyFilter::defVar(misc::position const& pos
                           , std::string const& name
                           , util::sptr<Expression const> init)
 {
-    _accumulator.defVar(pos, util::mkref(_symbols), name, std::move(init->fold()));
+    _accumulator.defVar(pos, name, init->fold());
 }
 
-void FuncBodyFilter::_defFunc(misc::position const& pos
-                            , std::string const& name
-                            , std::vector<std::string> const& param_names
-                            , util::sptr<Filter> body)
+void FuncBodyFilter::defFunc(misc::position const& pos
+                           , std::string const& name
+                           , std::vector<std::string> const& param_names
+                           , util::sptr<Filter> body)
 {
     _symbols.defFunc(_accumulator.defFunc(pos
                                         , name

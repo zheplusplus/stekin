@@ -13,6 +13,7 @@ verify() {
 
 verify empty
 verify write
+verify latency-ref
 verify fib
 verify nest-func
 verify return-void

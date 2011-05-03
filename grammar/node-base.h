@@ -24,8 +24,7 @@ namespace grammar {
     struct Expression {
         misc::position const pos;
 
-        virtual util::sptr<flchk::Expression const>
-                            compile(util::sref<flchk::Filter> filter) const = 0;
+        virtual util::sptr<flchk::Expression const> compile() const = 0;
 
         virtual ~Expression() {}
     protected:

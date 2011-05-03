@@ -40,19 +40,14 @@ namespace flchk {
         virtual void defVar(misc::position const& pos
                           , std::string const& name
                           , util::sptr<Expression const> init) = 0;
-        void defFunc(misc::position const& pos
-                   , std::string const& name
-                   , std::vector<std::string> const& param_names
-                   , util::sptr<Filter> body);
+        virtual void defFunc(misc::position const& pos
+                           , std::string const& name
+                           , std::vector<std::string> const& param_names
+                           , util::sptr<Filter> body) = 0;
     public:
         virtual util::sref<SymbolTable> getSymbols() = 0;
-    protected:
-        virtual void _defFunc(misc::position const& pos
-                            , std::string const& name
-                            , std::vector<std::string> const& param_names
-                            , util::sptr<Filter> body) = 0;
     public:
-        void compile(util::sref<proto::Scope> scope) const;
+        void compile(util::sref<proto::Scope> scope);
         bool bodyContainsVoidReturn() const;
     protected:
         Accumulator _accumulator;

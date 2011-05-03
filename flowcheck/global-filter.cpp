@@ -15,7 +15,8 @@ namespace {
             : Expression(misc::position(0))
         {}
 
-        util::sptr<proto::Expression const> compile(util::sref<proto::Scope>) const
+        util::sptr<proto::Expression const> compile(util::sref<proto::Scope>
+                                                  , util::sref<SymbolTable>) const
         {
             return util::mkptr(new proto::WriteExpr);
         }

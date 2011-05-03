@@ -74,12 +74,11 @@ void Accumulator::addBlock(Accumulator b)
 }
 
 void Accumulator::defVar(misc::position const& pos
-                       , util::sref<SymbolTable> symbols
                        , std::string const& name
                        , util::sptr<Expression const> init)
 {
     _checkNotTerminated(pos);
-    _block.addStmt(util::mkptr(new VarDef(pos, symbols, name, std::move(init))));
+    _block.addStmt(util::mkptr(new VarDef(pos, name, std::move(init))));
 }
 
 util::sref<Function> Accumulator::defFunc(misc::position const& pos
@@ -90,9 +89,9 @@ util::sref<Function> Accumulator::defFunc(misc::position const& pos
     return _block.defFunc(pos, name, param_names, std::move(body));
 }
 
-void Accumulator::compileBlock(util::sref<proto::Scope> scope) const
+void Accumulator::compileBlock(util::sref<proto::Scope> scope, util::sref<SymbolTable> st) const
 {
-    _block.compile(scope);
+    _block.compile(scope, st);
 }
 
 bool Accumulator::containsVoidReturn() const
