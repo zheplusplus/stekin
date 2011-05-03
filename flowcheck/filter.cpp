@@ -65,14 +65,6 @@ void Filter::addBranchAlterOnly(misc::position const& pos
     _accumulator.addBranchAlterOnly(pos, std::move(pred), std::move(alternative->_accumulator));
 }
 
-void Filter::defFunc(misc::position const& pos
-                   , std::string const& name
-                   , std::vector<std::string> const& param_names
-                   , util::sptr<Filter> body)
-{
-    _defFunc(pos, name, param_names, std::move(body));
-}
-
 void Filter::compile(util::sref<proto::Scope> scope)
 {
     _accumulator.compileBlock(scope, getSymbols());

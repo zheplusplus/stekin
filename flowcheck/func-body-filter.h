@@ -17,11 +17,11 @@ namespace flchk {
                   , std::string const& name
                   , util::sptr<Expression const>);
         util::sref<SymbolTable> getSymbols();
+        void defFunc(misc::position const& pos
+                   , std::string const& name
+                   , std::vector<std::string> const&
+                   , util::sptr<Filter> body);
     protected:
-        void _defFunc(misc::position const& pos
-                    , std::string const& name
-                    , std::vector<std::string> const&
-                    , util::sptr<Filter> body);
         FuncBodyFilter() {}
     protected:
         SymbolTable _symbols;
