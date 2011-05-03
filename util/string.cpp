@@ -1,7 +1,9 @@
 #include <sstream>
 #include "string.h"
 
-std::string util::replace_all(std::string src, std::string const& origin_text, std::string const& replacement)
+std::string util::replace_all(std::string src
+                            , std::string const& origin_text
+                            , std::string const& replacement)
 {
     std::string::size_type origin_length = origin_text.size();
     std::string::size_type replace_length = replacement.size();

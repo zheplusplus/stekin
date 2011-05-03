@@ -9,7 +9,7 @@ using namespace grammar;
 
 static util::sptr<flchk::Filter> mkSymDefFilter(util::sref<flchk::Filter> ext_filter)
 {
-    return util::mkmptr(new flchk::SymbolDefFilter(ext_filter->getSymbols()));
+    return util::mkptr(new flchk::SymbolDefFilter(ext_filter->getSymbols()));
 }
 
 void Arithmetics::compile(util::sref<flchk::Filter> filter) const
