@@ -25,8 +25,7 @@ namespace proto {
     public:
         void addStmt(util::sptr<Statement const> stmt);
     public:
-        Block deliver();
-        std::list<util::sptr<Statement const>> const& getStmts() const;
+        util::sptr<inst::MediateBase> inst() const;
     protected:
         Block _block;
     };

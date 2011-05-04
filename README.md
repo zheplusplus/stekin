@@ -45,9 +45,10 @@ What is needed and how to build it?
 
 在 Stekin 源代码目录下执行 `make` 来编译.
 
-### 编译单元测试需要
+### 编译和运行单元测试需要
 * GoogleTest 1.5.x
 * POSIX Thread 支持 (GoogleTest 依赖)
+* valgrind (内存错误检测)
 
 不进行单元测试没关系, 并且当下单元测试覆盖率并不高
 

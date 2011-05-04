@@ -1,4 +1,13 @@
-./head-writer.out > ./tmp.cpp && \
+if [ "-cm" == $1 ];
+then
+    CHECK_MEMORY="valgrind -q --leak-check=full"
+    INPUT=$2
+    OUTPUT=$3
+else
+    INPUT=$1
+    OUTPUT=$2
+fi
+$CHECK_MEMORY ./head-writer.out > ./tmp.cpp && \
 cat output/src-cp.cpp >> ./tmp.cpp && \
-./stkn-core.out < $1 >> ./tmp.cpp && \
-g++ tmp.cpp -o $2
+$CHECK_MEMORY ./stkn-core.out < $INPUT >> ./tmp.cpp && \
+g++ tmp.cpp -o $OUTPUT

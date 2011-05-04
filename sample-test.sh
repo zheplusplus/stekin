@@ -3,7 +3,7 @@
 echo "sample-test:"
 
 verify() {
-    if ./stkn.sh samples/$1.stkn tmp.out && ./tmp.out | diff samples/$1.expected - ;
+    if ./stkn.sh -cm samples/$1.stkn tmp.out && ./tmp.out | diff samples/$1.expected - ;
     then
         echo $1 "pass."
     else

@@ -27,17 +27,17 @@ static util::sref<inst::Function> instanceAlreadyDoneOrNulIfNonexist(
               , std::string const& name)
 {
     auto find_result = instance_cache.find(Function::InstanceInfo(ext_vars, arg_types));
-    if (instance_cache.end() != find_result) {
-        util::sref<inst::Function> instance = find_result->second;
-        while (!instance->isReturnTypeResolved() && instance->hasMorePath()) {
-            instance->instNextPath();
-        }
-        if (!instance->isReturnTypeResolved()) {
-            error::returnTypeUnresolvable(name, arg_types.size());
-        }
-        return instance;
+    if (instance_cache.end() == find_result) {
+        return util::sref<inst::Function>(NULL);
     }
-    return util::sref<inst::Function>(NULL);
+    util::sref<inst::Function> instance = find_result->second;
+    while (!instance->isReturnTypeResolved() && instance->hasMorePath()) {
+        instance->instNextPath();
+    }
+    if (!instance->isReturnTypeResolved()) {
+        error::returnTypeUnresolvable(name, arg_types.size());
+    }
+    return instance;
 }
 
 std::list<inst::ArgNameTypeRec> makeArgInfo(
@@ -52,11 +52,11 @@ std::list<inst::ArgNameTypeRec> makeArgInfo(
 }
 
 static util::sref<inst::Function> tryInst(util::sref<inst::Function> instance
-                                        , std::list<util::sptr<Statement const>> const& stmts)
+                                        , util::sptr<inst::MediateBase> body_mediate)
 {
-    BlockMediate body_mediate(stmts, instance);
+    instance->addPath(*body_mediate);
     instance->instNextPath();
-    instance->addStmt(std::move(body_mediate.inst(instance)));
+    instance->addStmt(body_mediate->inst(instance));
     return instance;
 }
 
@@ -79,7 +79,7 @@ util::sref<inst::Function> Function::inst(
                                                , ext_vars
                                                , hint_void_return);
     _instance_cache.insert(std::make_pair(InstanceInfo(ext_vars, arg_types), new_inst));
-    return tryInst(new_inst, _block.getStmts());
+    return tryInst(new_inst, _block.inst());
 }
 
 std::map<std::string, inst::Variable const> Function::bindExternalVars(

@@ -7,6 +7,8 @@
 
 using namespace proto;
 
+void DirectInst::addTo(util::sref<inst::Scope>) {}
+
 util::sptr<inst::Statement const> DirectInst::inst(util::sref<inst::Scope>)
 {
     return std::move(_stmt);
@@ -14,31 +16,25 @@ util::sptr<inst::Statement const> DirectInst::inst(util::sref<inst::Scope>)
 
 void DirectInst::mediateInst(util::sref<inst::Scope>) {}
 
-BlockMediate::BlockMediate(std::list<util::sptr<Statement const>> const& stmts
-                         , util::sref<inst::Scope> sc)
-    : _stmts(stmts)
-    , _mediates(NULL)
-    , _inst_block(NULL)
+void BlockMediate::addTo(util::sref<inst::Scope> scope)
 {
-    sc->addPath(util::mkref(*this));
+    scope->addPath(util::mkref(*this));
 }
 
-util::sptr<inst::Statement const> BlockMediate::inst(util::sref<inst::Scope> sc)
+util::sptr<inst::Statement const> BlockMediate::inst(util::sref<inst::Scope> scope)
 {
-    mediateInst(sc);
-    if (!bool(_inst_block)) {
-        _inst_block.reset(new inst::Block);
-        std::for_each(_mediates->begin()
-                    , _mediates->end()
-                    , [&](util::sptr<inst::MediateBase> const& mediate)
-                      {
-                          _inst_block->addStmt(std::move(mediate->inst(sc)));
-                      });
-    }
-    return std::move(_inst_block);
+    mediateInst(scope);
+    util::sptr<inst::Block> block(new inst::Block);
+    std::for_each(_mediates->begin()
+                , _mediates->end()
+                , [&](util::sptr<inst::MediateBase> const& mediate)
+                  {
+                      block->addStmt(mediate->inst(scope));
+                  });
+    return std::move(block);
 }
 
-void BlockMediate::mediateInst(util::sref<inst::Scope> sc)
+void BlockMediate::mediateInst(util::sref<inst::Scope> scope)
 {
     if (bool(_mediates)) {
         return;
@@ -48,20 +44,27 @@ void BlockMediate::mediateInst(util::sref<inst::Scope> sc)
                 , _stmts.end()
                 , [&](util::sptr<Statement const> const& stmt)
                   {
-                      _mediates->push_back(std::move(stmt->inst(sc)));
+                      _mediates->push_back(stmt->inst(scope));
+                      _mediates->back()->addTo(scope);
                   });
 }
 
-util::sptr<inst::Statement const> BranchMediate::inst(util::sref<inst::Scope> sc)
+void BranchMediate::addTo(util::sref<inst::Scope> scope)
 {
-    return std::move(util::mkptr(new inst::Branch(pos
-                                                , std::move(_predicate)
-                                                , std::move(_consequence_mediate.inst(sc))
-                                                , std::move(_alternative_mediate.inst(sc)))));
+    _consequence_mediate->addTo(scope);
+    _alternative_mediate->addTo(scope);
 }
 
-void BranchMediate::mediateInst(util::sref<inst::Scope> sc)
+util::sptr<inst::Statement const> BranchMediate::inst(util::sref<inst::Scope> scope)
 {
-    _consequence_mediate.mediateInst(sc);
-    _alternative_mediate.mediateInst(sc);
+    return util::mkptr(new inst::Branch(pos
+                                      , std::move(_predicate)
+                                      , _consequence_mediate->inst(scope)
+                                      , _alternative_mediate->inst(scope)));
+}
+
+void BranchMediate::mediateInst(util::sref<inst::Scope> scope)
+{
+    _consequence_mediate->mediateInst(scope);
+    _alternative_mediate->mediateInst(scope);
 }

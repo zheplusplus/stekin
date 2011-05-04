@@ -18,12 +18,7 @@ void Block::addFunc(util::sptr<Function> func)
     _funcs.push_back(std::move(func));
 }
 
-util::sptr<inst::MediateBase> Block::inst(util::sref<inst::Scope> scope) const
+util::sptr<inst::MediateBase> Block::inst() const
 {
-    return std::move(util::mkptr(new BlockMediate(_stmts, scope)));
-}
-
-std::list<util::sptr<Statement const>> const& Block::getStmts() const
-{
-    return _stmts;
+    return util::mkptr(new BlockMediate(_stmts));
 }

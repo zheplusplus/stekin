@@ -23,18 +23,21 @@ namespace proto {
     struct Branch
         : public Statement
     {
-        Branch(misc::position const& ps, util::sptr<Expression const> p, Block c, Block a)
-            : Statement(ps)
-            , _predicate(std::move(p))
-            , _consequence(std::move(c))
-            , _alternative(std::move(a))
+        Branch(misc::position const& ps
+             , util::sptr<Expression const> p
+             , util::sptr<Scope> c
+             , util::sptr<Scope> a)
+                : Statement(ps)
+                , _predicate(std::move(p))
+                , _consequence(std::move(c))
+                , _alternative(std::move(a))
         {}
 
         util::sptr<inst::MediateBase> inst(util::sref<inst::Scope> scope) const;
     private:
         util::sptr<Expression const> const _predicate;
-        Block _consequence;
-        Block _alternative;
+        util::sptr<Scope> const _consequence;
+        util::sptr<Scope> const _alternative;
     };
 
     struct VarDef

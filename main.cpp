@@ -7,9 +7,10 @@
 #include "flowcheck/node-base.h"
 #include "flowcheck/function.h"
 #include "proto/scope.h"
-#include "proto/inst-mediates.h"
+#include "proto/node-base.h"
 #include "proto/function.h"
 #include "instance/node-base.h"
+#include "instance/inst-mediate.h"
 #include "instance/function.h"
 #include "output/func-writer.h"
 #include "util/pointer.h"
@@ -46,9 +47,10 @@ static util::id semantic(util::sptr<flchk::Filter> global_flow)
                                                  , std::list<inst::ArgNameTypeRec>()
                                                  , std::map<std::string, inst::Variable const>()
                                                  , true));
-    proto::BlockMediate mediate(proto_global_scope->getStmts(), inst_global_func);
+    util::sptr<inst::MediateBase> mediate(proto_global_scope->inst());
+    inst_global_func->addPath(*mediate);
     inst_global_func->instNextPath();
-    inst_global_func->addStmt(std::move(mediate.inst(inst_global_func)));
+    inst_global_func->addStmt(mediate->inst(inst_global_func));
     if (error::hasError()) {
         throw CompileFailure();
     }

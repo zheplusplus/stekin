@@ -29,11 +29,10 @@ util::sptr<inst::MediateBase> VarDef::inst(util::sref<inst::Scope> scope) const
 
 util::sptr<inst::MediateBase> Branch::inst(util::sref<inst::Scope> scope) const
 {
-    return std::move(util::mkptr(new BranchMediate(pos
-                                                 , std::move(_predicate->inst(scope))
-                                                 , _consequence.getStmts()
-                                                 , _alternative.getStmts()
-                                                 , scope)));
+    return util::mkptr(new BranchMediate(pos
+                                       , _predicate->inst(scope)
+                                       , _consequence->inst()
+                                       , _alternative->inst()));
 }
 
 util::sptr<inst::MediateBase> Return::inst(util::sref<inst::Scope> scope) const
