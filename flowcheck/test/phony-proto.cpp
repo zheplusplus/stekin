@@ -43,7 +43,7 @@ void Block::addStmt(util::sptr<Statement const> stmt)
     _stmts.push_back(std::move(stmt));
 }
 
-util::sptr<inst::MediateBase> Block::inst(util::sref<inst::Scope>) const
+util::sptr<inst::MediateBase> Block::inst() const
 {
     DataTree::actualOne()(SCOPE_BEGIN);
     std::for_each(_stmts.begin()
@@ -53,48 +53,48 @@ util::sptr<inst::MediateBase> Block::inst(util::sref<inst::Scope>) const
                       stmt->inst(nul_inst_scope);
                   });
     DataTree::actualOne()(SCOPE_END);
-    return std::move(nulMediate());
+    return nulMediate();
 }
 
-Block Scope::deliver()
+util::sptr<inst::MediateBase> Scope::inst() const
 {
-    return std::move(_block);
+    return _block.inst();
 }
 
 util::sptr<inst::MediateBase> Return::inst(util::sref<inst::Scope>) const
 {
     DataTree::actualOne()(pos, RETURN);
     ret_val->inst(nul_inst_scope);
-    return std::move(nulMediate());
+    return nulMediate();
 }
 
 util::sptr<inst::MediateBase> ReturnNothing::inst(util::sref<inst::Scope>) const
 {
     DataTree::actualOne()(pos, RETURN_NOTHING);
-    return std::move(nulMediate());
+    return nulMediate();
 }
 
 util::sptr<inst::MediateBase> VarDef::inst(util::sref<inst::Scope>) const
 {
     DataTree::actualOne()(pos, VAR_DEF, name);
     init->inst(nul_inst_scope);
-    return std::move(nulMediate());
+    return nulMediate();
 }
 
 util::sptr<inst::MediateBase> Branch::inst(util::sref<inst::Scope>) const
 {
     DataTree::actualOne()(pos, BRANCH);
     _predicate->inst(nul_inst_scope);
-    _consequence.inst(nul_inst_scope);
-    _alternative.inst(nul_inst_scope);
-    return std::move(nulMediate());
+    _consequence->inst();
+    _alternative->inst();
+    return nulMediate();
 }
 
 util::sptr<inst::MediateBase> Arithmetics::inst(util::sref<inst::Scope>) const
 {
     DataTree::actualOne()(pos, ARITHMETICS);
     expr->inst(nul_inst_scope);
-    return std::move(nulMediate());
+    return nulMediate();
 }
 
 util::sptr<inst::Expression const> BoolLiteral::inst(util::sref<inst::Scope>) const

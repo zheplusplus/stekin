@@ -2,7 +2,7 @@ WORKDIR=grammar
 TESTDIR=$(WORKDIR)/test
 
 test:$(TESTDIR)/test-grammar.out
-	$(TESTDIR)/test-grammar.out
+	$(CHEKC_MEMONRY) $(TESTDIR)/test-grammar.out
 
 include $(WORKDIR)/Makefile
 

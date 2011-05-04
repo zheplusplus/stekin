@@ -2,7 +2,7 @@ WORKDIR=instance
 TESTDIR=$(WORKDIR)/test
 
 test:$(TESTDIR)/test-instance.out
-	$(TESTDIR)/test-instance.out
+	$(CHEKC_MEMONRY) $(TESTDIR)/test-instance.out
 
 include $(WORKDIR)/Makefile
 
