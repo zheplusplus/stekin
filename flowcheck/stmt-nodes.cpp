@@ -24,8 +24,8 @@ util::sptr<proto::Statement const> Branch::compile(util::sref<proto::Scope> scop
     alternative.compile(*alter_scope, st);
     return util::mkptr(new proto::Branch(pos
                                        , predicate->compile(scope, st)
-                                       , consq_scope->deliver()
-                                       , alter_scope->deliver()));
+                                       , std::move(consq_scope)
+                                       , std::move(alter_scope)));
 }
 
 util::sptr<proto::Statement const> VarDef::compile(util::sref<proto::Scope> scope

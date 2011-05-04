@@ -1,6 +1,7 @@
 #include "scope.h"
 #include "function.h"
 #include "node-base.h"
+#include "../instance/inst-mediate.h"
 
 using namespace proto;
 
@@ -20,12 +21,7 @@ void Scope::addStmt(util::sptr<Statement const> stmt)
     _block.addStmt(std::move(stmt));
 }
 
-std::list<util::sptr<Statement const>> const& Scope::getStmts() const
+util::sptr<inst::MediateBase> Scope::inst() const
 {
-    return _block.getStmts();
-}
-
-Block Scope::deliver()
-{
-    return std::move(_block);
+    return _block.inst();
 }

@@ -18,11 +18,10 @@ namespace proto {
             , _funcs(std::move(rhs._funcs))
         {}
 
-        util::sptr<inst::MediateBase> inst(util::sref<inst::Scope> scope) const;
+        util::sptr<inst::MediateBase> inst() const;
 
         void addStmt(util::sptr<Statement const> stmt);
         void addFunc(util::sptr<Function> func);
-        std::list<util::sptr<Statement const>> const& getStmts() const;
     private:
         std::list<util::sptr<Statement const>> _stmts;
         std::list<util::sptr<Function>> _funcs;

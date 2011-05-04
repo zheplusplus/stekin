@@ -51,7 +51,7 @@ TEST_F(FilterTest, GlobalFilter)
     filter0.addReturnNothing(pos);
 
     filter0.compile(*scope);
-    scope->deliver().inst(nul_inst_scope);
+    scope->inst();
 
     EXPECT_FALSE(error::hasError());
 
@@ -199,7 +199,7 @@ TEST_F(FilterTest, TwoPathBranchFoldedOnFalse)
     filter0.addReturnNothing(pos);
 
     filter0.compile(*scope);
-    scope->deliver().inst(nul_inst_scope);
+    scope->inst();
 
     EXPECT_FALSE(error::hasError());
 
@@ -237,7 +237,7 @@ TEST_F(FilterTest, TwoPathBranchFoldedOnTrue)
     filter0.addReturnNothing(pos);
 
     filter0.compile(*scope);
-    scope->deliver().inst(nul_inst_scope);
+    scope->inst();
 
     EXPECT_FALSE(error::hasError());
 
@@ -271,7 +271,7 @@ TEST_F(FilterTest, IfNotFoldedOnFalse)
     filter0.addReturnNothing(pos);
 
     filter0.compile(*scope);
-    scope->deliver().inst(nul_inst_scope);
+    scope->inst();
 
     EXPECT_FALSE(error::hasError());
 
@@ -305,7 +305,7 @@ TEST_F(FilterTest, IfNotFoldedOnTrue)
     filter0.addReturnNothing(pos);
 
     filter0.compile(*scope);
-    scope->deliver().inst(nul_inst_scope);
+    scope->inst();
 
     EXPECT_FALSE(error::hasError());
 

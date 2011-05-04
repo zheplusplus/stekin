@@ -88,8 +88,8 @@ TEST_F(FuncNCallTest, FuncWithBranchRecursion)
     ASSERT_FALSE(error::hasError());
     test_func->addStmt(util::mkptr(new proto::Branch(pos
                                                    , util::mkptr(new proto::IntLiteral(pos, 1))
-                                                   , sub_scope0->deliver()
-                                                   , sub_scope1->deliver())));
+                                                   , std::move(sub_scope0)
+                                                   , std::move(sub_scope1))));
     test_func->addStmt(util::mkptr(new proto::Return(pos, util::mkptr(
                                                             new proto::IntLiteral(pos, 1)))));
 
@@ -128,8 +128,8 @@ TEST_F(FuncNCallTest, CouldNotResolve)
 
     test_func->addStmt(util::mkptr(new proto::Branch(pos
                                                    , util::mkptr(new proto::IntLiteral(pos, 1))
-                                                   , sub_scope0->deliver()
-                                                   , sub_scope1->deliver())));
+                                                   , std::move(sub_scope0)
+                                                   , std::move(sub_scope1))));
 
     util::sptr<proto::Expression const> recursive_call(new proto::Call(
                                    pos

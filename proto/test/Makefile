@@ -2,7 +2,7 @@ WORKDIR=proto
 TESTDIR=$(WORKDIR)/test
 
 test:$(TESTDIR)/test-proto.out
-	$(TESTDIR)/test-proto.out
+	$(CHEKC_MEMONRY) $(TESTDIR)/test-proto.out
 
 include $(WORKDIR)/Makefile
 

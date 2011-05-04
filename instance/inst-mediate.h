@@ -9,8 +9,9 @@ namespace inst {
     struct MediateBase {
         virtual ~MediateBase() {}
 
-        virtual util::sptr<Statement const> inst(util::sref<Scope> sc) = 0;
-        virtual void mediateInst(util::sref<Scope> sc) = 0;
+        virtual void addTo(util::sref<Scope> scope) = 0;
+        virtual util::sptr<Statement const> inst(util::sref<Scope> scope) = 0;
+        virtual void mediateInst(util::sref<Scope> scope) = 0;
     protected:
         MediateBase() {}
     };
