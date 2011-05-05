@@ -26,7 +26,7 @@ TEST_F(FunctionTest, Resolved)
     std::list<inst::ArgNameTypeRec> args;
     std::map<std::string, inst::Variable const> extvars;
     util::sref<inst::Function> func = inst::Function::createInstance(0, args, extvars, true);
-    ASSERT_TRUE(bool(func));
+    ASSERT_TRUE(func.not_nul());
     ASSERT_FALSE(error::hasError());
 
     ASSERT_TRUE(func->isReturnTypeResolved());
@@ -53,7 +53,7 @@ TEST_F(FunctionTest, Unresolved)
     std::list<inst::ArgNameTypeRec> args;
     std::map<std::string, inst::Variable const> extvars;
     util::sref<inst::Function> func = inst::Function::createInstance(0, args, extvars, false);
-    ASSERT_TRUE(bool(func));
+    ASSERT_TRUE(func.not_nul());
     ASSERT_FALSE(error::hasError());
     ASSERT_FALSE(func->isReturnTypeResolved());
 

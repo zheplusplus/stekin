@@ -1,4 +1,5 @@
 #include <list>
+#include <gtest/gtest.h>
 
 #include "phony-warnings.h"
 
@@ -19,17 +20,19 @@ void warning::oneOrTwoBranchesTerminated(
         util::sref<misc::position const> consq_term_pos_or_nul_if_not_term
       , util::sref<misc::position const> alter_term_pos_or_nul_if_not_term)
 {
-    if (bool(consq_term_pos_or_nul_if_not_term) && bool(alter_term_pos_or_nul_if_not_term)) {
-        return both_branches_terminated_recs.push_back(
-                   BothBranchesTerminatedRec(consq_term_pos_or_nul_if_not_term.cp()
-                                           , alter_term_pos_or_nul_if_not_term.cp()));
+    if (consq_term_pos_or_nul_if_not_term.nul()) {
+        ASSERT_TRUE(alter_term_pos_or_nul_if_not_term.not_nul());
+        return alter_branch_terminated_recs.push_back(
+                    AlterBranchTerminatedRec(alter_term_pos_or_nul_if_not_term.cp()));
     }
-    if (bool(consq_term_pos_or_nul_if_not_term)) {
+    if (alter_term_pos_or_nul_if_not_term.nul()) {
+        ASSERT_TRUE(consq_term_pos_or_nul_if_not_term.not_nul());
         return consq_branch_terminated_rec.push_back(
                 ConsqBranchTerminatedRec(consq_term_pos_or_nul_if_not_term.cp()));
     }
-    alter_branch_terminated_recs.push_back(
-                AlterBranchTerminatedRec(alter_term_pos_or_nul_if_not_term.cp()));
+    both_branches_terminated_recs.push_back(
+               BothBranchesTerminatedRec(consq_term_pos_or_nul_if_not_term.cp()
+                                       , alter_term_pos_or_nul_if_not_term.cp()));
 }
 
 std::vector<ConsqBranchTerminatedRec> test::getConsqBranchTerminated()

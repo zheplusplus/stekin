@@ -1,6 +1,6 @@
 if [ "-cm" == $1 ];
 then
-    CHECK_MEMORY="valgrind -q --leak-check=full"
+    CHECK_MEMORY="valgrind --log-file=tmp.log.memcheck --leak-check=full"
     INPUT=$2
     OUTPUT=$3
 else

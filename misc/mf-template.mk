@@ -12,7 +12,7 @@ TEST_LIBS=-L$(LIB_DIR) -lstkntest -lstkn -lgtest -lgtest_main -lpthread -lgmp -l
 
 SAMPLEDIR=samples
 ERRSAMPLEDIR=$(SAMPLEDIR)/errors
-CHEKC_MEMONRY=valgrind -q --leak-check=full
+CHEKC_MEMONRY=valgrind --log-file=tmp.log.memcheck --leak-check=full
 
 %.d:$(WORKDIR)/%.cpp
 	echo -n "$(WORKDIR)/" > $(MKTMP)

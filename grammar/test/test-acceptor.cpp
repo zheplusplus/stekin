@@ -35,10 +35,10 @@ struct TestAcceptor
     void compile()
     {
         grammar::Block Block;
-        if (bool(stmt)) {
+        if (stmt.not_nul()) {
             Block.addStmt(std::move(stmt));
         }
-        if (bool(func)) {
+        if (func.not_nul()) {
             Block.addFunc(std::move(func));
         }
         filter = std::move(Block.compile(std::move(filter)));
@@ -71,8 +71,8 @@ TEST_F(AcceptorTest, IfAcceptor)
                             util::mkptr(new grammar::Reference(pos, "Raynor")))))));
 
     acceptor_a.deliverTo(util::mkref(receiver));
-    ASSERT_TRUE(bool(receiver.stmt));
-    ASSERT_FALSE(bool(receiver.func));
+    ASSERT_TRUE(receiver.stmt.not_nul());
+    ASSERT_TRUE(receiver.func.nul());
     receiver.compile();
 
     grammar::IfAcceptor acceptor_b(pos_head
@@ -82,8 +82,8 @@ TEST_F(AcceptorTest, IfAcceptor)
                             util::mkptr(new grammar::Reference(pos, "Karrigan")))))));
 
     acceptor_b.deliverTo(util::mkref(receiver));
-    ASSERT_TRUE(bool(receiver.stmt));
-    ASSERT_FALSE(bool(receiver.func));
+    ASSERT_TRUE(receiver.stmt.not_nul());
+    ASSERT_TRUE(receiver.func.nul());
     receiver.compile();
 
     grammar::IfAcceptor acceptor_c(pos_head
@@ -95,8 +95,8 @@ TEST_F(AcceptorTest, IfAcceptor)
     ASSERT_FALSE(error::hasError());
 
     acceptor_c.deliverTo(util::mkref(receiver));
-    ASSERT_TRUE(bool(receiver.stmt));
-    ASSERT_FALSE(bool(receiver.func));
+    ASSERT_TRUE(receiver.stmt.not_nul());
+    ASSERT_TRUE(receiver.func.nul());
     receiver.compile();
 
     grammar::IfAcceptor acceptor_d(pos_head
@@ -108,8 +108,8 @@ TEST_F(AcceptorTest, IfAcceptor)
                             util::mkptr(new grammar::FloatLiteral(pos, "20.54")))))));
 
     acceptor_d.deliverTo(util::mkref(receiver));
-    ASSERT_TRUE(bool(receiver.stmt));
-    ASSERT_FALSE(bool(receiver.func));
+    ASSERT_TRUE(receiver.stmt.not_nul());
+    ASSERT_TRUE(receiver.func.nul());
     receiver.compile();
     receiver.filter->compile(nulscope);
 
@@ -192,8 +192,8 @@ TEST_F(AcceptorTest, IfNotAcceptor)
                             util::mkptr(new grammar::Reference(pos, "Marine")))))));
 
     ifnot_acc0.deliverTo(util::mkref(receiver));
-    ASSERT_TRUE(bool(receiver.stmt));
-    ASSERT_FALSE(bool(receiver.func));
+    ASSERT_TRUE(receiver.stmt.not_nul());
+    ASSERT_TRUE(receiver.func.nul());
     receiver.compile();
     receiver.filter->compile(nulscope);
 
@@ -236,8 +236,8 @@ TEST_F(AcceptorTest, FuncAcceptor)
                             util::mkptr(new grammar::IntLiteral(pos, "20110116")))))));
 
     func_acc0.deliverTo(util::mkref(receiver));
-    ASSERT_FALSE(bool(receiver.stmt));
-    ASSERT_TRUE(bool(receiver.func));
+    ASSERT_TRUE(receiver.stmt.nul());
+    ASSERT_TRUE(receiver.func.not_nul());
     receiver.compile();
     receiver.filter->compile(nulscope);
 
@@ -285,8 +285,8 @@ TEST_F(AcceptorTest, FuncAccNested)
 
     func_acc1.deliverTo(util::mkref(func_acc0));
     func_acc0.deliverTo(util::mkref(receiver));
-    ASSERT_FALSE(bool(receiver.stmt));
-    ASSERT_TRUE(bool(receiver.func));
+    ASSERT_TRUE(receiver.stmt.nul());
+    ASSERT_TRUE(receiver.func.not_nul());
     receiver.compile();
     receiver.filter->compile(nulscope);
 
