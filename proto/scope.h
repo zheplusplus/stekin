@@ -6,8 +6,8 @@
 #include <list>
 #include <gmpxx.h>
 
-#include "block.h"
 #include "fwd-decl.h"
+#include "block.h"
 #include "../misc/pos-type.h"
 
 namespace proto {
@@ -15,7 +15,9 @@ namespace proto {
     struct Scope {
         Scope(Scope const&) = delete;
 
-        Scope() {}
+        Scope()
+            : _block(new Block)
+        {}
         virtual ~Scope() {}
     public:
         util::sref<Function> declare(misc::position const& pos
@@ -23,11 +25,11 @@ namespace proto {
                                    , std::vector<std::string> const& param_names
                                    , bool contains_void_return);
     public:
-        void addStmt(util::sptr<Statement const> stmt);
+        void addMediate(util::sptr<inst::MediateBase> mediate);
     public:
-        util::sptr<inst::MediateBase> inst() const;
+        util::sptr<inst::MediateBase> inst();
     protected:
-        Block _block;
+        util::sptr<Block> _block;
     };
 
 }

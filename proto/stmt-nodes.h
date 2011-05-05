@@ -2,80 +2,99 @@
 #define __STEKIN_PROTO_STATEMENT_NODES_H__
 
 #include "node-base.h"
-#include "block.h"
 #include "../instance/fwd-decl.h"
 
 namespace proto {
 
-    struct Arithmetics
+    struct BranchMediate
         : public Statement
     {
-        Arithmetics(misc::position const& ps, util::sptr<Expression const> e)
-            : Statement(ps)
+        BranchMediate(misc::position const& pos
+                    , util::sptr<Expression const> p
+                    , util::sptr<inst::MediateBase> consequence_mediate
+                    , util::sptr<inst::MediateBase> alternative_mediate)
+            : Statement(pos)
+            , predicate(std::move(p))
+            , _consequence_mediate(std::move(consequence_mediate))
+            , _alternative_mediate(std::move(alternative_mediate))
+        {}
+
+        void addTo(util::sref<inst::Scope> scope);
+        util::sptr<inst::Statement const> inst(util::sref<inst::Scope> scope);
+        void mediateInst(util::sref<inst::Scope> scope);
+    public:
+        util::sptr<Expression const> const predicate;
+    private:
+        util::sptr<inst::MediateBase> const _consequence_mediate;
+        util::sptr<inst::MediateBase> const _alternative_mediate;
+    };
+
+    struct DirectInst
+        : public Statement
+    {
+        void addTo(util::sref<inst::Scope>);
+        util::sptr<inst::Statement const> inst(util::sref<inst::Scope> scope);
+        void mediateInst(util::sref<inst::Scope> scope);
+    protected:
+        explicit DirectInst(misc::position const& pos)
+            : Statement(pos)
+            , _result_stmt_or_nul_if_not_inst(NULL)
+        {}
+
+        virtual util::sptr<inst::Statement const> _inst(util::sref<inst::Scope> scope) const = 0;
+    private:
+        util::sptr<inst::Statement const> _result_stmt_or_nul_if_not_inst;
+    };
+
+    struct Arithmetics
+        : public DirectInst
+    {
+        Arithmetics(misc::position const& pos, util::sptr<Expression const> e)
+            : DirectInst(pos)
             , expr(std::move(e))
         {}
 
-        util::sptr<inst::MediateBase> inst(util::sref<inst::Scope> scope) const;
-
         util::sptr<Expression const> const expr;
-    };
-
-    struct Branch
-        : public Statement
-    {
-        Branch(misc::position const& ps
-             , util::sptr<Expression const> p
-             , util::sptr<Scope> c
-             , util::sptr<Scope> a)
-                : Statement(ps)
-                , _predicate(std::move(p))
-                , _consequence(std::move(c))
-                , _alternative(std::move(a))
-        {}
-
-        util::sptr<inst::MediateBase> inst(util::sref<inst::Scope> scope) const;
-    private:
-        util::sptr<Expression const> const _predicate;
-        util::sptr<Scope> const _consequence;
-        util::sptr<Scope> const _alternative;
+    protected:
+        util::sptr<inst::Statement const> _inst(util::sref<inst::Scope> scope) const;
     };
 
     struct VarDef
-        : public Statement
+        : public DirectInst
     {
-        VarDef(misc::position const& ps, std::string const& n, util::sptr<Expression const> i)
-            : Statement(ps)
+        VarDef(misc::position const& pos, std::string const& n, util::sptr<Expression const> i)
+            : DirectInst(pos)
             , name(n)
             , init(std::move(i))
         {}
 
-        util::sptr<inst::MediateBase> inst(util::sref<inst::Scope> scope) const;
-
         std::string const name;
         util::sptr<Expression const> const init;
+    protected:
+        util::sptr<inst::Statement const> _inst(util::sref<inst::Scope> scope) const;
     };
 
     struct Return
-        : public Statement
+        : public DirectInst
     {
-        Return(misc::position const& ps, util::sptr<Expression const> r)
-            : Statement(ps)
+        Return(misc::position const& pos, util::sptr<Expression const> r)
+            : DirectInst(pos)
             , ret_val(std::move(r))
         {}
 
-        util::sptr<inst::MediateBase> inst(util::sref<inst::Scope> scope) const;
-
         util::sptr<Expression const> const ret_val;
+    protected:
+        util::sptr<inst::Statement const> _inst(util::sref<inst::Scope> scope) const;
     };
 
     struct ReturnNothing
-        : public Statement
+        : public DirectInst
     {
-        explicit ReturnNothing(misc::position const& ps)
-            : Statement(ps)
+        explicit ReturnNothing(misc::position const& pos)
+            : DirectInst(pos)
         {}
-
-        util::sptr<inst::MediateBase> inst(util::sref<inst::Scope> scope) const;
+    protected:
+        util::sptr<inst::Statement const> _inst(util::sref<inst::Scope> scope) const;
     };
 
 }

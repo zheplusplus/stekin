@@ -7,7 +7,6 @@ proto:scope.d \
       block.d \
       stmt-nodes.d \
       expr-nodes.d \
-      inst-mediates.d \
       function.d
 
 clean:

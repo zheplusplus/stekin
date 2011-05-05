@@ -1,5 +1,4 @@
 #include "stmt-nodes.h"
-#include "inst-mediates.h"
 #include "function.h"
 #include "../instance/stmt-nodes.h"
 #include "../instance/scope.h"
@@ -8,42 +7,63 @@
 
 using namespace proto;
 
-static util::sptr<inst::MediateBase> mkdirect(inst::Statement* stmt)
+void BranchMediate::addTo(util::sref<inst::Scope> scope)
 {
-    return std::move(util::mkptr(new DirectInst(std::move(util::mkptr(stmt)))));
+    _consequence_mediate->addTo(scope);
+    _alternative_mediate->addTo(scope);
 }
 
-util::sptr<inst::MediateBase> Arithmetics::inst(util::sref<inst::Scope> scope) const
+util::sptr<inst::Statement const> BranchMediate::inst(util::sref<inst::Scope> scope)
 {
-    return std::move(mkdirect(new inst::Arithmetics(std::move(expr->inst(scope)))));
+    return util::mkptr(new inst::Branch(pos
+                                      , predicate->inst(scope)
+                                      , _consequence_mediate->inst(scope)
+                                      , _alternative_mediate->inst(scope)));
 }
 
-util::sptr<inst::MediateBase> VarDef::inst(util::sref<inst::Scope> scope) const
+void BranchMediate::mediateInst(util::sref<inst::Scope> scope)
+{
+    _consequence_mediate->addTo(scope);
+    _alternative_mediate->addTo(scope);
+}
+
+void DirectInst::addTo(util::sref<inst::Scope>) {}
+
+util::sptr<inst::Statement const> DirectInst::inst(util::sref<inst::Scope> scope)
+{
+    mediateInst(scope);
+    return std::move(_result_stmt_or_nul_if_not_inst);
+}
+
+void DirectInst::mediateInst(util::sref<inst::Scope> scope)
+{
+    if (_result_stmt_or_nul_if_not_inst.nul()) {
+        _result_stmt_or_nul_if_not_inst = _inst(scope);
+    }
+}
+
+util::sptr<inst::Statement const> Arithmetics::_inst(util::sref<inst::Scope> scope) const
+{
+    return util::mkptr(new inst::Arithmetics(expr->inst(scope)));
+}
+
+util::sptr<inst::Statement const> VarDef::_inst(util::sref<inst::Scope> scope) const
 {
     util::sptr<inst::Expression const> init_val = init->inst(scope);
     util::sref<inst::Type const> init_type = init_val->typeof();
-    return std::move(mkdirect(new inst::Initialization(scope->defVar(pos, init_type, name)
-                                                                .stack_offset
-                                                     , std::move(init_val))));
+    return util::mkptr(new inst::Initialization(scope->defVar(pos, init_type, name).stack_offset
+                                              , std::move(init_val)));
 }
 
-util::sptr<inst::MediateBase> Branch::inst(util::sref<inst::Scope> scope) const
-{
-    return util::mkptr(new BranchMediate(pos
-                                       , _predicate->inst(scope)
-                                       , _consequence->inst()
-                                       , _alternative->inst()));
-}
-
-util::sptr<inst::MediateBase> Return::inst(util::sref<inst::Scope> scope) const
+util::sptr<inst::Statement const> Return::_inst(util::sref<inst::Scope> scope) const
 {
     util::sptr<inst::Expression const> e = ret_val->inst(scope);
     scope->setReturnType(pos, e->typeof());
-    return std::move(mkdirect(new inst::Return(std::move(e))));
+    return util::mkptr(new inst::Return(std::move(e)));
 }
 
-util::sptr<inst::MediateBase> ReturnNothing::inst(util::sref<inst::Scope> scope) const
+util::sptr<inst::Statement const> ReturnNothing::_inst(util::sref<inst::Scope> scope) const
 {
     scope->setReturnType(pos, inst::Type::BIT_VOID);
-    return std::move(mkdirect(new inst::ReturnNothing));
+    return util::mkptr(new inst::ReturnNothing);
 }

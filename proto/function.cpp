@@ -4,7 +4,6 @@
 #include "function.h"
 #include "expr-nodes.h"
 #include "stmt-nodes.h"
-#include "inst-mediates.h"
 #include "../instance/stmt-nodes.h"
 #include "../instance/function.h"
 #include "../util/map-compare.h"
@@ -52,9 +51,9 @@ std::list<inst::ArgNameTypeRec> makeArgInfo(
 }
 
 static util::sref<inst::Function> tryInst(util::sref<inst::Function> instance
-                                        , util::sptr<inst::MediateBase> body_mediate)
+                                        , util::sref<inst::MediateBase> body_mediate)
 {
-    instance->addPath(*body_mediate);
+    instance->addPath(body_mediate);
     instance->instNextPath();
     instance->addStmt(body_mediate->inst(instance));
     return instance;
@@ -79,7 +78,7 @@ util::sref<inst::Function> Function::inst(
                                                , ext_vars
                                                , hint_void_return);
     _instance_cache.insert(std::make_pair(InstanceInfo(ext_vars, arg_types), new_inst));
-    return tryInst(new_inst, _block.inst());
+    return tryInst(new_inst, *_block);
 }
 
 std::map<std::string, inst::Variable const> Function::bindExternalVars(

@@ -18,8 +18,8 @@ namespace flchk {
             , expr(std::move(e))
         {}
 
-        util::sptr<proto::Statement const> compile(util::sref<proto::Scope> scope
-                                                 , util::sref<SymbolTable> st) const;
+        util::sptr<proto::Statement> compile(util::sref<proto::Scope> scope
+                                           , util::sref<SymbolTable> st) const;
 
         util::sptr<Expression const> const expr;
     };
@@ -34,8 +34,8 @@ namespace flchk {
             , alternative(std::move(a))
         {}
 
-        util::sptr<proto::Statement const> compile(util::sref<proto::Scope> scope
-                                                 , util::sref<SymbolTable> st) const;
+        util::sptr<proto::Statement> compile(util::sref<proto::Scope> scope
+                                           , util::sref<SymbolTable> st) const;
 
         util::sptr<Expression const> const predicate;
         Block const consequence;
@@ -50,8 +50,8 @@ namespace flchk {
             , ret_val(std::move(retval))
         {}
 
-        util::sptr<proto::Statement const> compile(util::sref<proto::Scope> scope
-                                                 , util::sref<SymbolTable> st) const;
+        util::sptr<proto::Statement> compile(util::sref<proto::Scope> scope
+                                           , util::sref<SymbolTable> st) const;
 
         util::sptr<Expression const> const ret_val;
     };
@@ -63,8 +63,8 @@ namespace flchk {
             : Statement(pos)
         {}
 
-        util::sptr<proto::Statement const> compile(util::sref<proto::Scope>
-                                                 , util::sref<SymbolTable>) const;
+        util::sptr<proto::Statement> compile(util::sref<proto::Scope>
+                                           , util::sref<SymbolTable>) const;
     };
 
     struct VarDef
@@ -76,8 +76,8 @@ namespace flchk {
                 , init(std::move(i))
         {}
 
-        util::sptr<proto::Statement const> compile(util::sref<proto::Scope> scope
-                                                 , util::sref<SymbolTable> st) const;
+        util::sptr<proto::Statement> compile(util::sref<proto::Scope> scope
+                                           , util::sref<SymbolTable> st) const;
 
         std::string const name;
         util::sptr<Expression const> const init;

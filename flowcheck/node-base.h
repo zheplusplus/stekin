@@ -7,6 +7,7 @@
 
 #include "fwd-decl.h"
 #include "../proto/fwd-decl.h"
+#include "../instance/fwd-decl.h"
 #include "../util/pointer.h"
 #include "../misc/pos-type.h"
 
@@ -15,8 +16,8 @@ namespace flchk {
     struct Statement {
         misc::position const pos;
 
-        virtual util::sptr<proto::Statement const> compile(util::sref<proto::Scope> scope
-                                                         , util::sref<SymbolTable> st) const = 0;
+        virtual util::sptr<proto::Statement> compile(util::sref<proto::Scope> scope
+                                                   , util::sref<SymbolTable> st) const = 0;
 
         virtual ~Statement() {}
     protected:

@@ -2,6 +2,7 @@
 #define __STEKIN_PROTO_NODE_BASE_H__
 
 #include "../instance/fwd-decl.h"
+#include "../instance/inst-mediate.h"
 #include "../util/pointer.h"
 #include "../misc/pos-type.h"
 
@@ -19,11 +20,9 @@ namespace proto {
         {}
     };
 
-    struct Statement {
-        virtual ~Statement() {}
-
-        virtual util::sptr<inst::MediateBase> inst(util::sref<inst::Scope> sc) const = 0;
-
+    struct Statement
+        : public inst::MediateBase
+    {
         misc::position const pos;
     protected:
         explicit Statement(misc::position const ps)
