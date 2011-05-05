@@ -19,7 +19,7 @@ namespace flchk {
             , name(func_name)
             , param_names(params)
             , _body(std::move(func_body))
-            , _func_proto(NULL)
+            , _func_proto_or_nul_if_not_compiled(NULL)
         {}
 
         Function(Function&& rhs)
@@ -27,7 +27,7 @@ namespace flchk {
             , name(rhs.name)
             , param_names(rhs.param_names)
             , _body(std::move(rhs._body))
-            , _func_proto(rhs._func_proto)
+            , _func_proto_or_nul_if_not_compiled(rhs._func_proto_or_nul_if_not_compiled)
         {}
 
         util::sref<proto::Function> compile(util::sref<proto::Scope> scope);
@@ -38,7 +38,7 @@ namespace flchk {
         std::vector<std::string> const param_names;
     private:
         util::sptr<Filter> _body;
-        util::sref<proto::Function> _func_proto;
+        util::sref<proto::Function> _func_proto_or_nul_if_not_compiled;
     };
 
 }

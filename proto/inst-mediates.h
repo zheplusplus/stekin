@@ -29,7 +29,7 @@ namespace proto {
     {
         BlockMediate(std::list<util::sptr<Statement const>> const& stmts)
             : _stmts(stmts)
-            , _mediates(NULL)
+            , _mediates_or_nul_if_not_inst(NULL)
         {}
 
         void addTo(util::sref<inst::Scope> scope);
@@ -37,7 +37,7 @@ namespace proto {
         void mediateInst(util::sref<inst::Scope> scope);
     private:
         std::list<util::sptr<Statement const>> const& _stmts;
-        util::sptr<std::list<util::sptr<inst::MediateBase>>> _mediates;
+        util::sptr<std::list<util::sptr<inst::MediateBase>>> _mediates_or_nul_if_not_inst;
     };
 
     struct BranchMediate

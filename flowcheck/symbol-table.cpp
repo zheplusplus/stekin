@@ -50,11 +50,11 @@ std::vector<util::sref<Function>> Overloads::Overload::all() const
 std::vector<util::sref<Function>> Overloads::allFuncsOfName(std::string const& name) const
 {
     std::vector<util::sref<Function>> external_funcs_of_name(
-                                bool(_external_overloads_or_nul_on_global)
+                                _external_overloads_or_nul_on_global.not_nul()
                               ? (_external_overloads_or_nul_on_global->allFuncsOfName(name))
                               : (std::vector<util::sref<Function>>()));
     util::sref<Overload const> o = _overloadByNameOrNulIfNonexist(name);
-    if (bool(o)) {
+    if (o.not_nul()) {
         return appendFuncs(std::move(external_funcs_of_name), o->all());
     }
     return appendFuncs(std::move(external_funcs_of_name), std::vector<util::sref<Function>>());
@@ -63,13 +63,13 @@ std::vector<util::sref<Function>> Overloads::allFuncsOfName(std::string const& n
 util::sref<Function> Overloads::queryOrNulIfNonexist(std::string const& name, int param_count) const
 {
     util::sref<Overload const> o = _overloadByNameOrNulIfNonexist(name);
-    if (bool(o)) {
+    if (o.not_nul()) {
         util::sref<Function> f = o->queryOrNulIfNonexist(param_count);
-        if (bool(f)) {
+        if (f.not_nul()) {
             return f;
         }
     }
-    if (bool(_external_overloads_or_nul_on_global)) {
+    if (_external_overloads_or_nul_on_global.not_nul()) {
         return _external_overloads_or_nul_on_global->queryOrNulIfNonexist(name, param_count);
     }
     return util::sref<Function>(NULL);
@@ -136,7 +136,7 @@ void SymbolTable::defFunc(util::sref<Function> func)
 {
     util::sref<Function> old_func
             = _overloads.queryOrNulIfNonexist(func->name, func->param_names.size());
-    if (bool(old_func)) {
+    if (old_func.not_nul()) {
         error::funcAlreadyDef(old_func->pos, func->pos, func->name, func->param_names.size());
         return;
     }
@@ -198,7 +198,7 @@ util::sptr<proto::Expression const> SymbolTable::compileCall(
                   , std::vector<util::sptr<Expression const>> const& args)
 {
     util::sref<Function> func = _overloads.queryOrNulIfNonexist(name, args.size());
-    if (bool(func)) {
+    if (func.not_nul()) {
         return util::mkptr(
                 new proto::Call(pos, _compileFunction(pos, func, scope), _mkArgs(args, scope)));
     }
@@ -211,7 +211,7 @@ util::sref<Function> SymbolTable::queryFunc(misc::position const& pos
                                           , int param_count)
 {
     util::sref<Function> func = _overloads.queryOrNulIfNonexist(name, param_count);
-    if (bool(func)) {
+    if (func.not_nul()) {
         return func;
     }
     error::funcNotDef(pos, name, param_count);

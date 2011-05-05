@@ -25,8 +25,8 @@ util::sptr<inst::Statement const> BlockMediate::inst(util::sref<inst::Scope> sco
 {
     mediateInst(scope);
     util::sptr<inst::Block> block(new inst::Block);
-    std::for_each(_mediates->begin()
-                , _mediates->end()
+    std::for_each(_mediates_or_nul_if_not_inst->begin()
+                , _mediates_or_nul_if_not_inst->end()
                 , [&](util::sptr<inst::MediateBase> const& mediate)
                   {
                       block->addStmt(mediate->inst(scope));
@@ -36,16 +36,16 @@ util::sptr<inst::Statement const> BlockMediate::inst(util::sref<inst::Scope> sco
 
 void BlockMediate::mediateInst(util::sref<inst::Scope> scope)
 {
-    if (bool(_mediates)) {
+    if (_mediates_or_nul_if_not_inst.not_nul()) {
         return;
     }
-    _mediates.reset(new std::list<util::sptr<inst::MediateBase>>);
+    _mediates_or_nul_if_not_inst.reset(new std::list<util::sptr<inst::MediateBase>>);
     std::for_each(_stmts.begin()
                 , _stmts.end()
                 , [&](util::sptr<Statement const> const& stmt)
                   {
-                      _mediates->push_back(stmt->inst(scope));
-                      _mediates->back()->addTo(scope);
+                      _mediates_or_nul_if_not_inst->push_back(stmt->inst(scope));
+                      _mediates_or_nul_if_not_inst->back()->addTo(scope);
                   });
 }
 

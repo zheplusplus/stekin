@@ -94,7 +94,7 @@ void Accumulator::compileBlock(util::sref<proto::Scope> scope, util::sref<Symbol
     _block.compile(scope, st);
 }
 
-bool Accumulator::containsVoidReturn() const
+bool Accumulator::hintReturnVoid() const
 {
     return _contains_void_return || !_terminated();
 }
@@ -107,7 +107,7 @@ void Accumulator::_setTerminatedByVoidReturn(misc::position const& pos)
 
 void Accumulator::_setTerminatedNotByVoidReturn(misc::position const& pos)
 {
-    _termination_pos.reset(new misc::position(pos));
+    _term_pos_or_nul_if_not_term.reset(new misc::position(pos));
 }
 
 void Accumulator::_setTerminationBySubAccumulator(Accumulator const& sub)
@@ -119,8 +119,8 @@ void Accumulator::_checkBranchesTermination(Accumulator const& consequence
                                           , Accumulator const& alternative)
 {
     if (consequence._terminated() || alternative._terminated()) {
-        warning::oneOrTwoBranchesTerminated(*consequence._termination_pos
-                                          , *alternative._termination_pos);
+        warning::oneOrTwoBranchesTerminated(*consequence._term_pos_or_nul_if_not_term
+                                          , *alternative._term_pos_or_nul_if_not_term);
     }
 }
 
@@ -134,21 +134,21 @@ void Accumulator::_checkNotTerminated(misc::position const& pos)
 void Accumulator::_reportTerminated(misc::position const& pos)
 {
     if (!_error_reported) {
-        error::flowTerminated(pos, _termination_pos.cp());
+        error::flowTerminated(pos, _term_pos_or_nul_if_not_term.cp());
         _error_reported = true;
     }
 }
 
 bool Accumulator::_terminated() const
 {
-    return bool(_termination_pos);
+    return _term_pos_or_nul_if_not_term.not_nul();
 }
 
 void Accumulator::_setSelfTerminated(Accumulator term)
 {
     _setTerminationBySubAccumulator(term);
-    _termination_pos = std::move(term._termination_pos);
-    if (bool(_termination_pos)) {
+    _term_pos_or_nul_if_not_term = std::move(term._term_pos_or_nul_if_not_term);
+    if (_terminated()) {
         _error_reported = true;
     }
 }

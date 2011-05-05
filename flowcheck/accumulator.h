@@ -14,7 +14,7 @@ namespace flchk {
         Accumulator()
             : _contains_void_return(false)
             , _error_reported(false)
-            , _termination_pos(NULL)
+            , _term_pos_or_nul_if_not_term(NULL)
         {}
 
         Accumulator(Accumulator const&) = delete;
@@ -23,7 +23,7 @@ namespace flchk {
             : _block(std::move(rhs._block))
             , _contains_void_return(rhs._contains_void_return)
             , _error_reported(rhs._error_reported)
-            , _termination_pos(std::move(rhs._termination_pos))
+            , _term_pos_or_nul_if_not_term(std::move(rhs._term_pos_or_nul_if_not_term))
         {}
     public:
         void addReturn(misc::position const& pos, util::sptr<Expression const> ret_val);
@@ -55,7 +55,7 @@ namespace flchk {
                                    , util::sptr<Filter> body);
     public:
         void compileBlock(util::sref<proto::Scope> scope, util::sref<SymbolTable> st) const;
-        bool containsVoidReturn() const;
+        bool hintReturnVoid() const;
     private:
         void _setTerminatedByVoidReturn(misc::position const& pos);
         void _setTerminatedNotByVoidReturn(misc::position const& pos);
@@ -73,7 +73,7 @@ namespace flchk {
         Block _block;
         bool _contains_void_return;
         bool _error_reported;
-        util::sptr<misc::position> _termination_pos;
+        util::sptr<misc::position> _term_pos_or_nul_if_not_term;
     };
 
 }

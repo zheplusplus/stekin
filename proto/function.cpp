@@ -69,7 +69,7 @@ util::sref<inst::Function> Function::inst(
                                                                               , ext_vars
                                                                               , arg_types
                                                                               , name);
-    if (bool(result_inst)) {
+    if (result_inst.not_nul()) {
         return result_inst;
     }
 

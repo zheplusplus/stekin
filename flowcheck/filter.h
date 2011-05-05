@@ -48,7 +48,7 @@ namespace flchk {
         virtual util::sref<SymbolTable> getSymbols() = 0;
     public:
         void compile(util::sref<proto::Scope> scope);
-        bool bodyContainsVoidReturn() const;
+        bool hintReturnVoid() const;
     protected:
         Accumulator _accumulator;
     };

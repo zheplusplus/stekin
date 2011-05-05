@@ -61,14 +61,14 @@ namespace util {
             return *_ptr < *rhs._ptr;
         }
 
-        explicit operator bool() const
+        bool nul() const
         {
-            return NULL != _ptr;
+            return NULL == _ptr;
         }
 
-        operator _RawType() const
+        bool not_nul() const
         {
-            return *_ptr;
+            return !nul();
         }
 
         pointer operator->() const
@@ -98,6 +98,7 @@ namespace util {
         typedef typename base_type::deleter_type deleter_type;
 
         sptr() = default;
+        ~sptr() = default;
 
         explicit sptr(pointer p)
             : base_type(p)
@@ -135,7 +136,18 @@ namespace util {
             return *base_type::get();
         }
 
+        bool nul() const
+        {
+            return NULL == base_type::get();
+        }
+
+        bool not_nul() const
+        {
+            return !nul();
+        }
+
         pointer get() const = delete;
+        explicit operator bool() const = delete;
     };
 
     template <typename _RawType>

@@ -70,7 +70,7 @@ void Filter::compile(util::sref<proto::Scope> scope)
     _accumulator.compileBlock(scope, getSymbols());
 }
 
-bool Filter::bodyContainsVoidReturn() const
+bool Filter::hintReturnVoid() const
 {
-    return _accumulator.containsVoidReturn();
+    return _accumulator.hintReturnVoid();
 }
