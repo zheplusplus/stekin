@@ -17,84 +17,92 @@ using namespace proto;
 
 namespace {
 
-    util::sptr<inst::MediateBase> nulMediate()
+    util::sptr<inst::Statement const> nulInstStmt()
     {
-        return std::move(util::sptr<inst::MediateBase>(NULL));
+        return util::sptr<inst::Statement const>(NULL);
     }
 
     util::sptr<inst::Expression const> nulInstExpr()
     {
-        return std::move(util::sptr<inst::Expression const>(NULL));
+        return util::sptr<inst::Expression const>(NULL);
     }
 
     std::list<util::sptr<Function>> func_entities;
-
-    util::sptr<Scope> mkscope()
-    {
-        return std::move(util::mkptr(new Scope));
-    }
-
     std::vector<util::sptr<Scope>> func_scope_entities;
 
 }
 
-void Block::addStmt(util::sptr<Statement const> stmt)
+void Block::addTo(util::sref<inst::Scope>) {}
+void Block::mediateInst(util::sref<inst::Scope>) {}
+
+void Block::addMediate(util::sptr<inst::MediateBase> mediate)
 {
-    _stmts.push_back(std::move(stmt));
+    _mediates.push_back(std::move(mediate));
 }
 
-util::sptr<inst::MediateBase> Block::inst() const
+util::sptr<inst::Statement const> Block::inst(util::sref<inst::Scope>)
 {
     DataTree::actualOne()(SCOPE_BEGIN);
-    std::for_each(_stmts.begin()
-                , _stmts.end()
-                , [&](util::sptr<Statement const> const& stmt)
+    std::for_each(_mediates.begin()
+                , _mediates.end()
+                , [&](util::sptr<inst::MediateBase> const& mediate)
                   {
-                      stmt->inst(nul_inst_scope);
+                      mediate->inst(nul_inst_scope);
                   });
     DataTree::actualOne()(SCOPE_END);
-    return nulMediate();
+    return nulInstStmt();
 }
 
-util::sptr<inst::MediateBase> Scope::inst() const
+void DirectInst::addTo(util::sref<inst::Scope>) {}
+void DirectInst::mediateInst(util::sref<inst::Scope>) {}
+
+util::sptr<inst::Statement const> DirectInst::inst(util::sref<inst::Scope>)
 {
-    return _block.inst();
+    return _inst(nul_inst_scope);
 }
 
-util::sptr<inst::MediateBase> Return::inst(util::sref<inst::Scope>) const
+util::sptr<inst::MediateBase> Scope::inst()
+{
+    return std::move(_block);
+}
+
+util::sptr<inst::Statement const> Return::_inst(util::sref<inst::Scope>) const
 {
     DataTree::actualOne()(pos, RETURN);
     ret_val->inst(nul_inst_scope);
-    return nulMediate();
+    return nulInstStmt();
 }
 
-util::sptr<inst::MediateBase> ReturnNothing::inst(util::sref<inst::Scope>) const
+util::sptr<inst::Statement const> ReturnNothing::_inst(util::sref<inst::Scope>) const
 {
     DataTree::actualOne()(pos, RETURN_NOTHING);
-    return nulMediate();
+    return nulInstStmt();
 }
 
-util::sptr<inst::MediateBase> VarDef::inst(util::sref<inst::Scope>) const
+util::sptr<inst::Statement const> VarDef::_inst(util::sref<inst::Scope>) const
 {
     DataTree::actualOne()(pos, VAR_DEF, name);
     init->inst(nul_inst_scope);
-    return nulMediate();
+    return nulInstStmt();
 }
 
-util::sptr<inst::MediateBase> Branch::inst(util::sref<inst::Scope>) const
+void BranchMediate::addTo(util::sref<inst::Scope>) {}
+void BranchMediate::mediateInst(util::sref<inst::Scope>) {}
+
+util::sptr<inst::Statement const> BranchMediate::inst(util::sref<inst::Scope>)
 {
     DataTree::actualOne()(pos, BRANCH);
-    _predicate->inst(nul_inst_scope);
-    _consequence->inst();
-    _alternative->inst();
-    return nulMediate();
+    predicate->inst(nul_inst_scope);
+    _consequence_mediate->inst(nul_inst_scope);
+    _alternative_mediate->inst(nul_inst_scope);
+    return nulInstStmt();
 }
 
-util::sptr<inst::MediateBase> Arithmetics::inst(util::sref<inst::Scope>) const
+util::sptr<inst::Statement const> Arithmetics::_inst(util::sref<inst::Scope>) const
 {
     DataTree::actualOne()(pos, ARITHMETICS);
     expr->inst(nul_inst_scope);
-    return nulMediate();
+    return nulInstStmt();
 }
 
 util::sptr<inst::Expression const> BoolLiteral::inst(util::sref<inst::Scope>) const
@@ -194,9 +202,9 @@ util::sptr<inst::Expression const> WriteExpr::inst(util::sref<inst::Scope>) cons
     return std::move(nulInstExpr());
 }
 
-void Scope::addStmt(util::sptr<Statement const> stmt)
+void Scope::addMediate(util::sptr<inst::MediateBase> mediate)
 {
-    _block.addStmt(std::move(stmt));
+    _block->addMediate(std::move(mediate));
 }
 
 util::sref<Function> Scope::declare(misc::position const& pos

@@ -17,19 +17,19 @@ using namespace flchk;
 
 namespace {
 
-    util::sptr<proto::Statement const> nulProtoStmt()
+    util::sptr<proto::Statement> nulProtoStmt()
     {
-        return std::move(util::sptr<proto::Statement const>(NULL));
+        return util::sptr<proto::Statement>(NULL);
     }
 
     util::sptr<proto::Expression const> nulProtoExpr()
     {
-        return std::move(util::sptr<proto::Expression const>(NULL));
+        return util::sptr<proto::Expression const>(NULL);
     }
 
     util::sptr<flchk::Expression const> nulFlchkExpr()
     {
-        return std::move(util::sptr<flchk::Expression const>(NULL));
+        return util::sptr<flchk::Expression const>(NULL);
     }
 
     util::sref<SymbolTable> nulSymbols()
@@ -46,14 +46,14 @@ namespace {
             , consequence(std::move(c))
         {}
 
-        util::sptr<proto::Statement const> compile(util::sref<proto::Scope>
+        util::sptr<proto::Statement> compile(util::sref<proto::Scope>
                                                  , util::sref<SymbolTable>) const
         {
             DataTree::actualOne()(pos, BRANCH_CONSQ_ONLY);
             predicate->compile(nulscope, nulSymbols());
             DataTree::actualOne()(CONSEQUENCE);
             consequence.compile(nulscope, nulSymbols());
-            return std::move(nulProtoStmt());
+            return nulProtoStmt();
         }
 
         util::sptr<Expression const> const predicate;
@@ -69,14 +69,14 @@ namespace {
             , alternative(std::move(a))
         {}
 
-        util::sptr<proto::Statement const> compile(util::sref<proto::Scope>
+        util::sptr<proto::Statement> compile(util::sref<proto::Scope>
                                                  , util::sref<SymbolTable>) const
         {
             DataTree::actualOne()(pos, BRANCH_ALTER_ONLY);
             predicate->compile(nulscope, nulSymbols());
             DataTree::actualOne()(ALTERNATIVE);
             alternative.compile(nulscope, nulSymbols());
-            return std::move(nulProtoStmt());
+            return nulProtoStmt();
         }
 
         util::sptr<Expression const> const predicate;
@@ -284,16 +284,16 @@ util::sref<SymbolTable> SymbolDefFilter::getSymbols()
 
 GlobalFilter::GlobalFilter() = default;
 
-util::sptr<proto::Statement const> Arithmetics::compile(util::sref<proto::Scope>
-                                                      , util::sref<SymbolTable>) const 
+util::sptr<proto::Statement> Arithmetics::compile(util::sref<proto::Scope>
+                                                , util::sref<SymbolTable>) const 
 {
     DataTree::actualOne()(pos, ARITHMETICS);
     expr->compile(nulscope, nulSymbols());
-    return std::move(nulProtoStmt());
+    return nulProtoStmt();
 }
 
-util::sptr<proto::Statement const> Branch::compile(util::sref<proto::Scope>
-                                                 , util::sref<SymbolTable>) const 
+util::sptr<proto::Statement> Branch::compile(util::sref<proto::Scope>
+                                           , util::sref<SymbolTable>) const 
 {
     DataTree::actualOne()(pos, BRANCH);
     predicate->compile(nulscope, nulSymbols());
@@ -301,93 +301,93 @@ util::sptr<proto::Statement const> Branch::compile(util::sref<proto::Scope>
     consequence.compile(nulscope, nulSymbols());
     DataTree::actualOne()(ALTERNATIVE);
     alternative.compile(nulscope, nulSymbols());
-    return std::move(nulProtoStmt());
+    return nulProtoStmt();
 }
 
-util::sptr<proto::Statement const> VarDef::compile(util::sref<proto::Scope>
-                                                 , util::sref<SymbolTable>) const 
+util::sptr<proto::Statement> VarDef::compile(util::sref<proto::Scope>
+                                           , util::sref<SymbolTable>) const 
 {
     DataTree::actualOne()(pos, VAR_DEF, name);
     init->compile(nulscope, nulSymbols());
-    return std::move(nulProtoStmt());
+    return nulProtoStmt();
 }
 
-util::sptr<proto::Statement const> Return::compile(util::sref<proto::Scope>
-                                                 , util::sref<SymbolTable>) const 
+util::sptr<proto::Statement> Return::compile(util::sref<proto::Scope>
+                                           , util::sref<SymbolTable>) const 
 {
     DataTree::actualOne()(pos, RETURN);
     ret_val->compile(nulscope, nulSymbols());
-    return std::move(nulProtoStmt());
+    return nulProtoStmt();
 }
 
-util::sptr<proto::Statement const> ReturnNothing::compile(util::sref<proto::Scope>
-                                                        , util::sref<SymbolTable>) const 
+util::sptr<proto::Statement> ReturnNothing::compile(util::sref<proto::Scope>
+                                                  , util::sref<SymbolTable>) const 
 {
     DataTree::actualOne()(pos, RETURN_NOTHING);
-    return std::move(nulProtoStmt());
+    return nulProtoStmt();
 }
 
 util::sptr<proto::Expression const> PreUnaryOp::compile(util::sref<proto::Scope>
                                                       , util::sref<SymbolTable>) const
 {
     DataTree::actualOne()(pos, PRE_UNARY_OP, op_img);
-    return std::move(nulProtoExpr());
+    return nulProtoExpr();
 }
 
 util::sptr<proto::Expression const> BinaryOp::compile(util::sref<proto::Scope>
                                                     , util::sref<SymbolTable>) const
 {
     DataTree::actualOne()(pos, BINARY_OP, op_img);
-    return std::move(nulProtoExpr());
+    return nulProtoExpr();
 }
 
 util::sptr<proto::Expression const> Conjunction::compile(util::sref<proto::Scope>
                                                        , util::sref<SymbolTable>) const
 {
     DataTree::actualOne()(pos, BINARY_OP, "&&");
-    return std::move(nulProtoExpr());
+    return nulProtoExpr();
 }
 
 util::sptr<proto::Expression const> Disjunction::compile(util::sref<proto::Scope>
                                                        , util::sref<SymbolTable>) const
 {
     DataTree::actualOne()(pos, BINARY_OP, "||");
-    return std::move(nulProtoExpr());
+    return nulProtoExpr();
 }
 
 util::sptr<proto::Expression const> Negation::compile(util::sref<proto::Scope>
                                                     , util::sref<SymbolTable>) const
 {
     DataTree::actualOne()(pos, PRE_UNARY_OP, "!");
-    return std::move(nulProtoExpr());
+    return nulProtoExpr();
 }
 
 util::sptr<proto::Expression const> Reference::compile(util::sref<proto::Scope>
                                                      , util::sref<SymbolTable>) const
 {
     DataTree::actualOne()(pos, REFERENCE, name);
-    return std::move(nulProtoExpr());
+    return nulProtoExpr();
 }
 
 util::sptr<proto::Expression const> BoolLiteral::compile(util::sref<proto::Scope>
                                                        , util::sref<SymbolTable>) const
 {
     DataTree::actualOne()(pos, BOOLEAN, util::str(value));
-    return std::move(nulProtoExpr());
+    return nulProtoExpr();
 }
 
 util::sptr<proto::Expression const> IntLiteral::compile(util::sref<proto::Scope>
                                                       , util::sref<SymbolTable>) const
 {
     DataTree::actualOne()(pos, INTEGER, util::str(value));
-    return std::move(nulProtoExpr());
+    return nulProtoExpr();
 }
 
 util::sptr<proto::Expression const> FloatLiteral::compile(util::sref<proto::Scope>
                                                         , util::sref<SymbolTable>) const
 {
     DataTree::actualOne()(pos, FLOATING, util::str(value));
-    return std::move(nulProtoExpr());
+    return nulProtoExpr();
 }
 
 util::sptr<proto::Expression const> Call::compile(util::sref<proto::Scope>
@@ -400,14 +400,14 @@ util::sptr<proto::Expression const> Call::compile(util::sref<proto::Scope>
                   {
                       arg->compile(nulscope, nulSymbols());
                   });
-    return std::move(nulProtoExpr());
+    return nulProtoExpr();
 }
 
 util::sptr<proto::Expression const> FuncReference::compile(util::sref<proto::Scope>
                                                          , util::sref<SymbolTable>) const
 {
     DataTree::actualOne()(pos, FUNC_REFERENCE, name, param_count);
-    return std::move(nulProtoExpr());
+    return nulProtoExpr();
 }
 
 bool Expression::isLiteral() const
@@ -424,33 +424,33 @@ util::sptr<Expression const> Expression::operate(misc::position const&
                                                , std::string const&
                                                , mpz_class const&) const
 {
-    return std::move(nulFlchkExpr());
+    return nulFlchkExpr();
 }
 
 util::sptr<Expression const> Expression::operate(misc::position const&
                                                , std::string const&
                                                , mpf_class const&) const
 {
-    return std::move(nulFlchkExpr());
+    return nulFlchkExpr();
 }
 
 util::sptr<Expression const> Expression::operate(misc::position const&
                                                , std::string const&
                                                , bool) const
 {
-    return std::move(nulFlchkExpr());
+    return nulFlchkExpr();
 }
 
 util::sptr<Expression const> Expression::asRHS(misc::position const&
                                              , std::string const&
                                              , util::sptr<Expression const>) const
 {
-    return std::move(nulFlchkExpr());
+    return nulFlchkExpr();
 }
 
 util::sptr<Expression const> Expression::asRHS(misc::position const&, std::string const&) const
 {
-    return std::move(nulFlchkExpr());
+    return nulFlchkExpr();
 }
 
 bool PreUnaryOp::isLiteral() const
@@ -470,7 +470,7 @@ std::string PreUnaryOp::typeName() const
 
 util::sptr<Expression const> PreUnaryOp::fold() const
 {
-    return std::move(nulFlchkExpr());
+    return nulFlchkExpr();
 }
 
 bool BinaryOp::isLiteral() const
@@ -490,7 +490,7 @@ std::string BinaryOp::typeName() const
 
 util::sptr<Expression const> BinaryOp::fold() const
 {
-    return std::move(nulFlchkExpr());
+    return nulFlchkExpr();
 }
 
 bool Conjunction::isLiteral() const
@@ -510,7 +510,7 @@ std::string Conjunction::typeName() const
 
 util::sptr<Expression const> Conjunction::fold() const
 {
-    return std::move(nulFlchkExpr());
+    return nulFlchkExpr();
 }
 
 bool Disjunction::isLiteral() const
@@ -530,7 +530,7 @@ std::string Disjunction::typeName() const
 
 util::sptr<Expression const> Disjunction::fold() const
 {
-    return std::move(nulFlchkExpr());
+    return nulFlchkExpr();
 }
 
 bool Negation::isLiteral() const
@@ -550,7 +550,7 @@ std::string Negation::typeName() const
 
 util::sptr<Expression const> Negation::fold() const
 {
-    return std::move(nulFlchkExpr());
+    return nulFlchkExpr();
 }
 
 std::string Reference::typeName() const
@@ -560,7 +560,7 @@ std::string Reference::typeName() const
 
 util::sptr<Expression const> Reference::fold() const
 {
-    return std::move(nulFlchkExpr());
+    return nulFlchkExpr();
 }
 
 bool BoolLiteral::isLiteral() const
@@ -580,40 +580,40 @@ std::string BoolLiteral::typeName() const
 
 util::sptr<Expression const> BoolLiteral::fold() const
 {
-    return std::move(nulFlchkExpr());
+    return nulFlchkExpr();
 }
 
 util::sptr<Expression const> BoolLiteral::operate(misc::position const&
                                                 , std::string const&
                                                 , mpz_class const&) const
 {
-    return std::move(nulFlchkExpr());
+    return nulFlchkExpr();
 }
 
 util::sptr<Expression const> BoolLiteral::operate(misc::position const&
                                                 , std::string const&
                                                 , mpf_class const&) const
 {
-    return std::move(nulFlchkExpr());
+    return nulFlchkExpr();
 }
 
 util::sptr<Expression const> BoolLiteral::operate(misc::position const&
                                                 , std::string const&
                                                 , bool) const
 {
-    return std::move(nulFlchkExpr());
+    return nulFlchkExpr();
 }
 
 util::sptr<Expression const> BoolLiteral::asRHS(misc::position const&
                                               , std::string const&
                                               , util::sptr<Expression const>) const
 {
-    return std::move(nulFlchkExpr());
+    return nulFlchkExpr();
 }
 
 util::sptr<Expression const> BoolLiteral::asRHS(misc::position const&, std::string const&) const
 {
-    return std::move(nulFlchkExpr());
+    return nulFlchkExpr();
 }
 
 bool IntLiteral::isLiteral() const
@@ -633,40 +633,40 @@ std::string IntLiteral::typeName() const
 
 util::sptr<Expression const> IntLiteral::fold() const
 {
-    return std::move(nulFlchkExpr());
+    return nulFlchkExpr();
 }
 
 util::sptr<Expression const> IntLiteral::operate(misc::position const&
                                                , std::string const&
                                                , mpz_class const&) const
 {
-    return std::move(nulFlchkExpr());
+    return nulFlchkExpr();
 }
 
 util::sptr<Expression const> IntLiteral::operate(misc::position const&
                                                , std::string const&
                                                , mpf_class const&) const
 {
-    return std::move(nulFlchkExpr());
+    return nulFlchkExpr();
 }
 
 util::sptr<Expression const> IntLiteral::operate(misc::position const&
                                                , std::string const&
                                                , bool) const
 {
-    return std::move(nulFlchkExpr());
+    return nulFlchkExpr();
 }
 
 util::sptr<Expression const> IntLiteral::asRHS(misc::position const&
                                              , std::string const&
                                              , util::sptr<Expression const>) const
 {
-    return std::move(nulFlchkExpr());
+    return nulFlchkExpr();
 }
 
 util::sptr<Expression const> IntLiteral::asRHS(misc::position const&, std::string const&) const
 {
-    return std::move(nulFlchkExpr());
+    return nulFlchkExpr();
 }
 
 bool FloatLiteral::isLiteral() const
@@ -686,40 +686,40 @@ std::string FloatLiteral::typeName() const
 
 util::sptr<Expression const> FloatLiteral::fold() const
 {
-    return std::move(nulFlchkExpr());
+    return nulFlchkExpr();
 }
 
 util::sptr<Expression const> FloatLiteral::operate(misc::position const&
                                                  , std::string const&
                                                  , mpz_class const&) const
 {
-    return std::move(nulFlchkExpr());
+    return nulFlchkExpr();
 }
 
 util::sptr<Expression const> FloatLiteral::operate(misc::position const&
                                                  , std::string const&
                                                  , mpf_class const&) const
 {
-    return std::move(nulFlchkExpr());
+    return nulFlchkExpr();
 }
 
 util::sptr<Expression const> FloatLiteral::operate(misc::position const&
                                                  , std::string const&
                                                  , bool) const
 {
-    return std::move(nulFlchkExpr());
+    return nulFlchkExpr();
 }
 
 util::sptr<Expression const> FloatLiteral::asRHS(misc::position const&
                                                , std::string const&
                                                , util::sptr<Expression const>) const
 {
-    return std::move(nulFlchkExpr());
+    return nulFlchkExpr();
 }
 
 util::sptr<Expression const> FloatLiteral::asRHS(misc::position const&, std::string const&) const
 {
-    return std::move(nulFlchkExpr());
+    return nulFlchkExpr();
 }
 
 std::string Call::typeName() const
@@ -729,7 +729,7 @@ std::string Call::typeName() const
 
 util::sptr<Expression const> Call::fold() const
 {
-    return std::move(nulFlchkExpr());
+    return nulFlchkExpr();
 }
 
 std::string FuncReference::typeName() const
@@ -739,5 +739,5 @@ std::string FuncReference::typeName() const
 
 util::sptr<Expression const> FuncReference::fold() const
 {
-    return std::move(nulFlchkExpr());
+    return nulFlchkExpr();
 }

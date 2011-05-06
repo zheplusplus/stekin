@@ -10,6 +10,7 @@
 namespace test {
 
     extern util::sref<inst::Scope> const nul_inst_scope;
+    void instScope(util::sref<proto::Scope> scope);
 
     struct FlowcheckData {
         misc::position const pos;

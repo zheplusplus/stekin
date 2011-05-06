@@ -10,6 +10,11 @@ using namespace test;
 
 util::sref<inst::Scope> const test::nul_inst_scope(NULL);
 
+void test::instScope(util::sref<proto::Scope> scope)
+{
+    scope->inst()->inst(nul_inst_scope);
+}
+
 DataTree& DataTree::operator()(misc::position const& pos
                              , NodeType const& type
                              , std::string const& str)
