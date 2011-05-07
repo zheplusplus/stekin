@@ -13,9 +13,9 @@ namespace proto {
             , ref(misc::position(0), "value to write")
         {}
 
-        util::sptr<inst::Expression const> inst(util::sref<inst::Scope> sc) const;
+        util::sptr<inst::Expression const> inst(util::sref<inst::SymbolTable const> st);
 
-        Reference const ref;
+        Reference ref;
     };
 
 }

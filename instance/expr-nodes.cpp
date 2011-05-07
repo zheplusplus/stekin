@@ -61,7 +61,7 @@ util::sref<Type const> Call::typeof() const
 
 util::sref<Type const> FuncReference::typeof() const
 {
-    return util::mkref(_type);
+    return type;
 }
 
 util::sref<Type const> BinaryOp::typeof() const
@@ -124,7 +124,7 @@ void Call::write() const
 
 void FuncReference::write() const
 {
-    _type.write();
+    type->write();
 }
 
 void BinaryOp::write() const

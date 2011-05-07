@@ -23,25 +23,26 @@ void Block::addTo(util::sref<inst::Scope> scope)
     scope->addPath(util::mkref(*this));
 }
 
-util::sptr<inst::Statement const> Block::inst(util::sref<inst::Scope> scope)
+util::sptr<inst::Statement const> Block::inst(util::sref<inst::Scope> scope
+                                            , util::sref<inst::SymbolTable> st)
 {
-    mediateInst(scope);
+    mediateInst(scope, st);
     util::sptr<inst::Block> block(new inst::Block);
     std::for_each(_mediates.begin()
                 , _mediates.end()
                 , [&](util::sptr<inst::MediateBase> const& mediate)
                   {
-                      block->addStmt(mediate->inst(scope));
+                      block->addStmt(mediate->inst(scope, st));
                   });
     return std::move(block);
 }
 
-void Block::mediateInst(util::sref<inst::Scope> scope)
+void Block::mediateInst(util::sref<inst::Scope> scope, util::sref<inst::SymbolTable> st)
 {
     std::for_each(_mediates.begin()
                 , _mediates.end()
                 , [&](util::sptr<inst::MediateBase> const& mediate)
                   {
-                      mediate->mediateInst(scope);
+                      mediate->mediateInst(scope, st);
                   });
 }

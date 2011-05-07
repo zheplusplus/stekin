@@ -3,11 +3,14 @@
 
 #include <string>
 #include <vector>
+#include <map>
 #include <gmpxx.h>
 
 #include "node-base.h"
 #include "fwd-decl.h"
+#include "func-reference-type.h"
 #include "../instance/fwd-decl.h"
+#include "../util/map-compare.h"
 
 namespace proto {
 
@@ -19,7 +22,8 @@ namespace proto {
             , value(v)
         {}
 
-        util::sptr<inst::Expression const> inst(util::sref<inst::Scope>) const; 
+        util::sref<inst::Type const> type(util::sref<inst::SymbolTable const>);
+        util::sptr<inst::Expression const> inst(util::sref<inst::SymbolTable const>); 
 
         bool const value;
     };
@@ -32,7 +36,8 @@ namespace proto {
             , value(v)
         {}
 
-        util::sptr<inst::Expression const> inst(util::sref<inst::Scope>) const; 
+        util::sref<inst::Type const> type(util::sref<inst::SymbolTable const>);
+        util::sptr<inst::Expression const> inst(util::sref<inst::SymbolTable const>); 
 
         mpz_class value;
     };
@@ -45,7 +50,8 @@ namespace proto {
             , value(v)
         {}
 
-        util::sptr<inst::Expression const> inst(util::sref<inst::Scope>) const; 
+        util::sref<inst::Type const> type(util::sref<inst::SymbolTable const>);
+        util::sptr<inst::Expression const> inst(util::sref<inst::SymbolTable const>); 
 
         mpf_class value;
     };
@@ -58,7 +64,8 @@ namespace proto {
             , name(n)
         {}
 
-        util::sptr<inst::Expression const> inst(util::sref<inst::Scope> scope) const;
+        util::sref<inst::Type const> type(util::sref<inst::SymbolTable const> scope);
+        util::sptr<inst::Expression const> inst(util::sref<inst::SymbolTable const> scope);
 
         std::string const name;
     };
@@ -68,16 +75,17 @@ namespace proto {
     {
         Call(misc::position const& pos
            , util::sref<Function> f
-           , std::vector<util::sptr<Expression const>> a)
+           , std::vector<util::sptr<Expression>> a)
                 : Expression(pos)
                 , func(f)
                 , args(std::move(a))
         {}
 
-        util::sptr<inst::Expression const> inst(util::sref<inst::Scope> scope) const;
+        util::sref<inst::Type const> type(util::sref<inst::SymbolTable const> scope);
+        util::sptr<inst::Expression const> inst(util::sref<inst::SymbolTable const> scope);
 
         util::sref<Function> const func;
-        std::vector<util::sptr<Expression const>> const args;
+        std::vector<util::sptr<Expression>> const args;
     };
 
     struct Functor
@@ -85,16 +93,17 @@ namespace proto {
     {
         Functor(misc::position const& pos
               , std::string const& n
-              , std::vector<util::sptr<Expression const>> a)
+              , std::vector<util::sptr<Expression>> a)
             : Expression(pos)
             , name(n)
             , args(std::move(a))
         {}
 
-        util::sptr<inst::Expression const> inst(util::sref<inst::Scope> scope) const;
+        util::sref<inst::Type const> type(util::sref<inst::SymbolTable const> scope);
+        util::sptr<inst::Expression const> inst(util::sref<inst::SymbolTable const> scope);
 
         std::string const name;
-        std::vector<util::sptr<Expression const>> const args;
+        std::vector<util::sptr<Expression>> const args;
     };
 
     struct FuncReference
@@ -102,94 +111,103 @@ namespace proto {
     {
         FuncReference(misc::position const& pos, util::sref<Function> f)
             : Expression(pos)
-            , func(f)
+            , _func(f)
         {}
 
-        util::sptr<inst::Expression const> inst(util::sref<inst::Scope> scope) const;
-
-        util::sref<Function> const func;
+        util::sref<inst::Type const> type(util::sref<inst::SymbolTable const> scope);
+        util::sptr<inst::Expression const> inst(util::sref<inst::SymbolTable const> scope);
+    private:
+        util::sref<FuncReferenceType const> _mkType(util::sref<inst::SymbolTable const> scope);
+    private:
+        util::sref<Function> const _func;
+        std::map<std::map<std::string, inst::Variable const>
+               , FuncReferenceType const
+               , util::map_less_t> _type_cache;
     };
 
     struct BinaryOp
         : public Expression
     {
         BinaryOp(misc::position const& pos
-                , util::sptr<Expression const> l
+                , util::sptr<Expression> l
                 , std::string const& o
-                , util::sptr<Expression const> r)
+                , util::sptr<Expression> r)
             : Expression(pos)
             , lhs(std::move(l))
             , op(o)
             , rhs(std::move(r))
         {}
 
-        util::sptr<inst::Expression const> inst(util::sref<inst::Scope> scope) const;
+        util::sptr<inst::Expression const> inst(util::sref<inst::SymbolTable const> scope);
 
-        util::sptr<Expression const> const lhs;
+        util::sptr<Expression> const lhs;
         std::string const op;
-        util::sptr<Expression const> const rhs;
+        util::sptr<Expression> const rhs;
     };
 
     struct PreUnaryOp
         : public Expression
     {
-        PreUnaryOp(misc::position const& pos, std::string const& o, util::sptr<Expression const> r)
+        PreUnaryOp(misc::position const& pos, std::string const& o, util::sptr<Expression> r)
             : Expression(pos)
             , op(o)
             , rhs(std::move(r))
         {}
 
-        util::sptr<inst::Expression const> inst(util::sref<inst::Scope> scope) const;
+        util::sptr<inst::Expression const> inst(util::sref<inst::SymbolTable const> scope);
 
         std::string const op;
-        util::sptr<Expression const> const rhs;
+        util::sptr<Expression> const rhs;
     };
 
     struct Conjunction
         : public Expression
     {
         Conjunction(misc::position const& pos
-                  , util::sptr<Expression const> l
-                  , util::sptr<Expression const> r)
+                  , util::sptr<Expression> l
+                  , util::sptr<Expression> r)
             : Expression(pos)
             , lhs(std::move(l))
             , rhs(std::move(r))
         {}
 
-        util::sptr<inst::Expression const> inst(util::sref<inst::Scope> scope) const;
+        util::sref<inst::Type const> type(util::sref<inst::SymbolTable const>);
+        util::sptr<inst::Expression const> inst(util::sref<inst::SymbolTable const> scope);
 
-        util::sptr<Expression const> const lhs;
-        util::sptr<Expression const> const rhs;
+        util::sptr<Expression> const lhs;
+        util::sptr<Expression> const rhs;
     };
 
     struct Disjunction
         : public Expression
     {
         Disjunction(misc::position const& pos
-                  , util::sptr<Expression const> l
-                  , util::sptr<Expression const> r)
+                  , util::sptr<Expression> l
+                  , util::sptr<Expression> r)
             : Expression(pos)
             , lhs(std::move(l))
             , rhs(std::move(r))
         {}
 
-        util::sptr<inst::Expression const> inst(util::sref<inst::Scope> scope) const;
+        util::sref<inst::Type const> type(util::sref<inst::SymbolTable const>);
+        util::sptr<inst::Expression const> inst(util::sref<inst::SymbolTable const> scope);
 
-        util::sptr<Expression const> const lhs;
-        util::sptr<Expression const> const rhs;
+        util::sptr<Expression> const lhs;
+        util::sptr<Expression> const rhs;
     };
 
     struct Negation
         : public Expression
     {
-        Negation(misc::position const& pos, util::sptr<Expression const> r)
+        Negation(misc::position const& pos, util::sptr<Expression> r)
             : Expression(pos)
             , rhs(std::move(r))
         {}
 
-        util::sptr<inst::Expression const> inst(util::sref<inst::Scope> scope) const;
+        util::sref<inst::Type const> type(util::sref<inst::SymbolTable const>);
+        util::sptr<inst::Expression const> inst(util::sref<inst::SymbolTable const> scope);
 
-        util::sptr<Expression const> const rhs;
+        util::sptr<Expression> const rhs;
     };
 
 }

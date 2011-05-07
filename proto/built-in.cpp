@@ -3,7 +3,7 @@
 
 using namespace proto;
 
-util::sptr<inst::Expression const> WriteExpr::inst(util::sref<inst::Scope> scope) const
+util::sptr<inst::Expression const> WriteExpr::inst(util::sref<inst::SymbolTable const> st)
 {
-    return util::mkptr(new inst::WriteExpr(ref.inst(scope)));
+    return util::mkptr(new inst::WriteExpr(ref.inst(st)));
 }

@@ -13,17 +13,17 @@ using namespace proto;
 
 util::sref<inst::Function> Function::inst(
                                         misc::position const& pos
-                                      , util::sref<inst::Scope> ext_scope
+                                      , util::sref<inst::SymbolTable const> ext_st
                                       , std::vector<util::sref<inst::Type const>> const& arg_types)
 {
-    return inst(ext_scope->level(), bindExternalVars(pos, ext_scope), arg_types);
+    return inst(ext_st->level, bindExternalVars(pos, ext_st), arg_types);
 }
 
 static util::sref<inst::Function> instanceAlreadyDoneOrNulIfNonexist(
-                std::map<Function::InstanceInfo, util::sref<inst::Function>> const& instance_cache
-              , std::map<std::string, inst::Variable const> const& ext_vars
-              , std::vector<util::sref<inst::Type const>> const& arg_types
-              , std::string const& name)
+            std::map<Function::InstanceInfo, util::sref<inst::Function>> const& instance_cache
+          , std::map<std::string, inst::Variable const> const& ext_vars
+          , std::vector<util::sref<inst::Type const>> const& arg_types
+          , std::string const& name)
 {
     auto find_result = instance_cache.find(Function::InstanceInfo(ext_vars, arg_types));
     if (instance_cache.end() == find_result) {
@@ -53,9 +53,7 @@ std::list<inst::ArgNameTypeRec> makeArgInfo(
 static util::sref<inst::Function> tryInst(util::sref<inst::Function> instance
                                         , util::sref<inst::MediateBase> body_mediate)
 {
-    instance->addPath(body_mediate);
-    instance->instNextPath();
-    instance->addStmt(body_mediate->inst(instance));
+    instance->instantiate(body_mediate);
     return instance;
 }
 
@@ -72,25 +70,23 @@ util::sref<inst::Function> Function::inst(
         return result_inst;
     }
 
-    util::sref<inst::Function> new_inst
-                = inst::Function::createInstance(level
-                                               , makeArgInfo(param_names, arg_types)
-                                               , ext_vars
-                                               , hint_void_return);
+    inst::SymbolTable st(level, makeArgInfo(param_names, arg_types), ext_vars);
+    util::sref<inst::Function> new_inst = inst::Function::createInstance(util::mkref(st)
+                                                                       , hint_void_return);
     _instance_cache.insert(std::make_pair(InstanceInfo(ext_vars, arg_types), new_inst));
     return tryInst(new_inst, *_block);
 }
 
 std::map<std::string, inst::Variable const> Function::bindExternalVars(
                                                   misc::position const& pos
-                                                , util::sref<inst::Scope const> ext_scope) const
+                                                , util::sref<inst::SymbolTable const> ext_st) const
 {
     std::map<std::string, inst::Variable const> result;
     std::for_each(_free_variables.begin()
                 , _free_variables.end()
                 , [&](std::string const& var_name)
                   {
-                      result.insert(std::make_pair(var_name, ext_scope->queryVar(pos, var_name)));
+                      result.insert(std::make_pair(var_name, ext_st->queryVar(pos, var_name)));
                   });
     return result;
 }

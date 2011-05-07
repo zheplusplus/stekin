@@ -31,8 +31,8 @@ namespace flchk {
     struct Expression {
         misc::position const pos;
     public:
-        virtual util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope
-                                                          , util::sref<SymbolTable> st) const = 0;
+        virtual util::sptr<proto::Expression> compile(util::sref<proto::Scope> scope
+                                                    , util::sref<SymbolTable> st) const = 0;
     public:
         virtual std::string typeName() const = 0;
     public:

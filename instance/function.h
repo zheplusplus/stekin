@@ -17,11 +17,6 @@ namespace inst {
     struct Function
         : public Scope
     {
-        Variable defVar(misc::position const& pos
-                      , util::sref<Type const> type
-                      , std::string const& name);
-        Variable queryVar(misc::position const& pos, std::string const& name) const;
-
         void setReturnType(misc::position const& pos, util::sref<Type const> return_type);
         virtual util::sref<Type const> getReturnType() const;
         virtual bool isReturnTypeResolved() const;
@@ -30,27 +25,29 @@ namespace inst {
         void instNextPath();
         bool hasMorePath() const;
 
-        int level() const;
+        void instantiate(util::sref<MediateBase> mediate);
     public:
-        static util::sref<Function> createInstance(
-                                           int ext_level
-                                         , std::list<ArgNameTypeRec> const& args
-                                         , std::map<std::string, Variable const> const& extvars
-                                         , bool has_void_returns);
+        static util::sref<Function> createInstance(util::sref<SymbolTable> st
+                                                 , bool has_void_returns);
 
         static void writeDecls();
         static void writeImpls();
     protected:
-        Function(int ext_level
-               , std::list<ArgNameTypeRec> const& args
-               , std::map<std::string, Variable const> const& ext_vars)
-            : _symbols(ext_level, args, ext_vars)
+        explicit Function(util::sref<SymbolTable> st)
+            : _symbols_or_nul_if_inst_done(st)
+            , _level(0)
+            , _stack_size(0)
         {}
-    protected:
+
         Function(Function const&) = delete;
+    protected:
+        void _setSymbolInfo();
     private:
         std::list<util::sref<MediateBase>> _candidate_paths;
-        SymbolTable _symbols;
+        util::sref<SymbolTable> _symbols_or_nul_if_inst_done;
+        int _level;
+        int _stack_size;
+        std::list<Variable> _args;
     };
 
 }

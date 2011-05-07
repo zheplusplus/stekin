@@ -42,15 +42,11 @@ static util::id semantic(util::sptr<flchk::Filter> global_flow)
         throw CompileFailure();
     }
 
-    util::sref<inst::Function> inst_global_func(
-                    inst::Function::createInstance(0
-                                                 , std::list<inst::ArgNameTypeRec>()
-                                                 , std::map<std::string, inst::Variable const>()
-                                                 , true));
+    inst::SymbolTable st;
+    util::sref<inst::Function> inst_global_func(inst::Function::createInstance(util::mkref(st)
+                                                                             , true));
     util::sptr<inst::MediateBase> mediate(proto_global_scope->inst());
-    inst_global_func->addPath(*mediate);
-    inst_global_func->instNextPath();
-    inst_global_func->addStmt(mediate->inst(inst_global_func));
+    inst_global_func->instantiate(*mediate);
     if (error::hasError()) {
         throw CompileFailure();
     }

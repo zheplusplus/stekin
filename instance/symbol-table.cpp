@@ -3,6 +3,7 @@
 #include "symbol-table.h"
 #include "variable.h"
 #include "type.h"
+#include "operation.h"
 #include "../report/errors.h"
 #include "../misc/platform.h"
 
@@ -62,6 +63,21 @@ Variable SymbolTable::queryVar(misc::position const& pos, std::string const& nam
 
     error::varNotDef(pos, name);
     return BAD_REF;
+}
+
+Operation const* SymbolTable::queryBinary(misc::position const& pos
+                                        , std::string const& op
+                                        , util::sref<Type const> lhs
+                                        , util::sref<Type const> rhs) const
+{
+    return Operation::queryBinary(pos, op, lhs, rhs);
+}
+
+Operation const* SymbolTable::queryPreUnary(misc::position const& pos
+                                          , std::string const& op
+                                          , util::sref<Type const> rhs) const
+{
+    return Operation::queryPreUnary(pos, op, rhs);
 }
 
 int SymbolTable::stackSize() const

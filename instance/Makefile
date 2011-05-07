@@ -11,8 +11,7 @@ instance:type.d \
          expr-nodes.d \
          stmt-nodes.d \
          built-in.d \
-         block.d \
-         func-reference-type.d
+         block.d
 
 clean:
 	rm -f $(WORKDIR)/*.o

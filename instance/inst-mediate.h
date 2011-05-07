@@ -10,8 +10,9 @@ namespace inst {
         virtual ~MediateBase() {}
 
         virtual void addTo(util::sref<Scope> scope) = 0;
-        virtual util::sptr<Statement const> inst(util::sref<Scope> scope) = 0;
-        virtual void mediateInst(util::sref<Scope> scope) = 0;
+        virtual util::sptr<Statement const> inst(util::sref<Scope> scope
+                                               , util::sref<SymbolTable> st) = 0;
+        virtual void mediateInst(util::sref<Scope> scope, util::sref<SymbolTable> st) = 0;
     protected:
         MediateBase() {}
     };

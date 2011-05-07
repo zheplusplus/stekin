@@ -20,8 +20,9 @@ namespace proto {
         void addFunc(util::sptr<Function> func);
 
         void addTo(util::sref<inst::Scope> scope);
-        util::sptr<inst::Statement const> inst(util::sref<inst::Scope> scope);
-        void mediateInst(util::sref<inst::Scope> scope);
+        util::sptr<inst::Statement const> inst(util::sref<inst::Scope> scope
+                                             , util::sref<inst::SymbolTable> st);
+        void mediateInst(util::sref<inst::Scope> scope, util::sref<inst::SymbolTable> st);
     private:
         std::list<util::sptr<inst::MediateBase>> _mediates;
         std::list<util::sptr<Function>> _funcs;

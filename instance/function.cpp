@@ -11,18 +11,6 @@
 
 using namespace inst;
 
-Variable Function::defVar(misc::position const& pos
-                        , util::sref<Type const> type
-                        , std::string const& name)
-{
-    return _symbols.defVar(pos, type, name);
-}
-
-Variable Function::queryVar(misc::position const& pos, std::string const& name) const
-{
-    return _symbols.queryVar(pos, name);
-}
-
 util::sref<Type const> Function::getReturnType() const
 {
     return Type::BIT_VOID;
@@ -45,10 +33,8 @@ namespace {
     struct FunctionUnresolved
         : public Function
     {
-        FunctionUnresolved(int ext_level
-                         , std::list<ArgNameTypeRec> const& args
-                         , std::map<std::string, Variable const> const& extvars)
-            : Function(ext_level, args, extvars)
+        explicit FunctionUnresolved(util::sref<SymbolTable> st)
+            : Function(st)
             , _return_type(Type::BAD_TYPE)
         {}
 
@@ -106,14 +92,9 @@ namespace {
 
 }
 
-util::sref<Function> Function::createInstance(int ext_level
-                                            , std::list<ArgNameTypeRec> const& arg_types
-                                            , std::map<std::string, Variable const> const& extvars
-                                            , bool has_void_returns)
+util::sref<Function> Function::createInstance(util::sref<SymbolTable> st, bool has_void_returns)
 {
-    util::sptr<Function> func(has_void_returns
-                                        ? new Function(ext_level, arg_types, extvars)
-                                        : new FunctionUnresolved(ext_level, arg_types, extvars));
+    util::sptr<Function> func(has_void_returns ? new Function(st) : new FunctionUnresolved(st));
     util::sref<Function> fref = *func;
     FuncInstRecs::instance.add(std::move(func));
     return fref;
@@ -131,7 +112,7 @@ void Function::instNextPath()
     }
     util::sref<MediateBase> next_path = _candidate_paths.front();
     _candidate_paths.pop_front();
-    next_path->mediateInst(util::mkref(*this));
+    next_path->mediateInst(util::mkref(*this), _symbols_or_nul_if_inst_done);
 }
 
 bool Function::hasMorePath() const
@@ -139,9 +120,20 @@ bool Function::hasMorePath() const
     return !_candidate_paths.empty();
 }
 
-int Function::level() const
+void Function::_setSymbolInfo()
 {
-    return _symbols.level;
+    _level = _symbols_or_nul_if_inst_done->level;
+    _stack_size = _symbols_or_nul_if_inst_done->stackSize();
+    _args = _symbols_or_nul_if_inst_done->getArgs();
+    _symbols_or_nul_if_inst_done = util::sref<SymbolTable>(NULL);
+}
+
+void Function::instantiate(util::sref<MediateBase> mediate)
+{
+    addPath(mediate);
+    instNextPath();
+    _addStmt(mediate->inst(util::mkref(*this), _symbols_or_nul_if_inst_done));
+    _setSymbolInfo();
 }
 
 static std::list<output::StackVarRec> argsToVarRecs(std::list<inst::Variable> const& args)
@@ -166,9 +158,9 @@ void Function::writeDecls()
                   {
                       output::writeFuncDecl(func->getReturnType()->exportedName()
                                           , func.id()
-                                          , argsToVarRecs(func->_symbols.getArgs())
-                                          , func->_symbols.level
-                                          , func->_symbols.stackSize());
+                                          , argsToVarRecs(func->_args)
+                                          , func->_level
+                                          , func->_stack_size);
                   });
 }
 

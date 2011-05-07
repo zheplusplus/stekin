@@ -7,6 +7,7 @@ proto:scope.d \
       block.d \
       stmt-nodes.d \
       expr-nodes.d \
+      func-reference-type.d \
       function.d
 
 clean:

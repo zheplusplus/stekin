@@ -15,7 +15,7 @@ namespace proto {
         : public Scope
     {
         util::sref<inst::Function> inst(misc::position const& pos
-                                      , util::sref<inst::Scope> ext_scope
+                                      , util::sref<inst::SymbolTable const> ext_st
                                       , std::vector<util::sref<inst::Type const>> const& arg_types);
         util::sref<inst::Function> inst(int level
                                       , std::map<std::string, inst::Variable const> const& ext_vars
@@ -58,7 +58,7 @@ namespace proto {
     public:
         std::map<std::string, inst::Variable const> bindExternalVars(
                                                 misc::position const& pos
-                                              , util::sref<inst::Scope const> ext_scope) const;
+                                              , util::sref<inst::SymbolTable const> ext_st) const;
     };
 
 }

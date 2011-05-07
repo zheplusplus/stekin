@@ -5,11 +5,10 @@
 
 #include "node-base.h"
 #include "variable.h"
-#include "func-reference-type.h"
 #include "fwd-decl.h"
 #include "../util/pointer.h"
 #include "../misc/platform.h"
-#include "../proto/fwd-decl.h"
+#include "../proto/func-reference-type.h"
 
 namespace inst {
 
@@ -83,17 +82,13 @@ namespace inst {
     struct FuncReference
         : public Expression
     {
-        FuncReference(misc::position const& reference_pos
-                    , util::sref<proto::Function> func_proto
-                    , int level
-                    , std::map<std::string, Variable const> const& cr)
-            : _type(reference_pos, func_proto, level, cr)
+        explicit FuncReference(util::sref<proto::FuncReferenceType const> t)
+            : type(t)
         {}
 
         util::sref<Type const> typeof() const;
         void write() const;
-    private:
-        FuncReferenceType const _type;
+        util::sref<proto::FuncReferenceType const> const type;
     };
 
     struct BinaryOp
