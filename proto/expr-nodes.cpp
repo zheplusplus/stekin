@@ -46,68 +46,77 @@ util::sref<inst::Type const> Reference::type(util::sref<SymbolTable const> st)
 
 util::sptr<inst::Expression const> Reference::inst(util::sref<SymbolTable const> st)
 {
-    return util::mkptr(new inst::Reference(st->queryVar(pos, name)));
+    Variable var(st->queryVar(pos, name));
+    return util::mkptr(new inst::Reference(var.type, var.level, var.stack_offset));
 }
 
-template <typename _CallMaker>
-static util::sptr<inst::Expression const> instantiateFunction(
-            std::vector<util::sptr<Expression>> const& args
-          , util::sref<SymbolTable const> st
-          , _CallMaker call_maker)
+static std::vector<util::sptr<inst::Expression const>> instForArgs(
+                                            std::vector<util::sptr<Expression>> const& args
+                                          , util::sref<SymbolTable const> st)
 {
     std::vector<util::sptr<inst::Expression const>> arg_instances;
-    std::vector<util::sref<inst::Type const>> arg_types;
     std::for_each(args.begin()
                 , args.end()
-                , [&](util::sptr<Expression> const& expr)
+                , [&](util::sptr<Expression> const& arg)
                   {
-                      util::sptr<inst::Expression const> arg(expr->inst(st));
-                      arg_types.push_back(arg->typeof());
-                      arg_instances.push_back(std::move(arg));
+                      arg_instances.push_back(arg->inst(st));
                   });
-    return std::move(call_maker(arg_types, std::move(arg_instances)));
+    return std::move(arg_instances);
 }
 
-util::sref<inst::Type const> Call::type(util::sref<SymbolTable const> st)
+static std::vector<util::sref<inst::Type const>> instForTypes(
+                                            std::vector<util::sptr<Expression>> const& args
+                                          , util::sref<SymbolTable const> st)
 {
     std::vector<util::sref<inst::Type const>> arg_types;
     std::for_each(args.begin()
                 , args.end()
                 , [&](util::sptr<Expression> const& arg)
                   {
-                      arg_types.push_back(arg->inst(st)->typeof());
+                      arg_types.push_back(arg->type(st));
                   });
-    return func->inst(pos, st, arg_types)->getReturnType();
+    return arg_types;
+}
+
+util::sref<inst::Type const> Call::type(util::sref<SymbolTable const> st)
+{
+    _checkInst(st);
+    return _func->inst(pos, st, instForTypes(_args, st))->getReturnType();
 }
 
 util::sptr<inst::Expression const> Call::inst(util::sref<SymbolTable const> st)
 {
-    return instantiateFunction(
-                args
-              , st
-              , [&](std::vector<util::sref<inst::Type const>> const& arg_types
-                  , std::vector<util::sptr<inst::Expression const>> args)
-                {
-                    return util::mkptr(new inst::Call(func->inst(pos, st, arg_types)
-                                                    , std::move(args)));
-                });
+    _checkInst(st);
+    return std::move(_result_or_nul_if_not_inst);
+}
+
+void Call::_checkInst(util::sref<SymbolTable const> st)
+{
+    if (_result_or_nul_if_not_inst.nul()) {
+        util::sref<FuncInstDraft> draft(_func->inst(pos, st, instForTypes(_args, st)));
+        _result_or_nul_if_not_inst.reset(
+                new inst::Call(draft->getReturnType(), draft.id(), instForArgs(_args, st)));
+    }
 }
 
 util::sref<inst::Type const> Functor::type(util::sref<SymbolTable const> st)
 {
-    return inst(st)->typeof();
+    _checkInst(st);
+    return _result_or_nul_if_not_inst->typeof();
 }
 
 util::sptr<inst::Expression const> Functor::inst(util::sref<SymbolTable const> st)
 {
-    return instantiateFunction(
-                args
-              , st
-              , [&](std::vector<util::sref<inst::Type const>> const& arg_types
-                  , std::vector<util::sptr<inst::Expression const>> args)
-                {
-                    return st->queryVar(pos, name).call(pos, arg_types, std::move(args));
-                });
+    _checkInst(st);
+    return std::move(_result_or_nul_if_not_inst);
+}
+
+void Functor::_checkInst(util::sref<SymbolTable const> st)
+{
+    if (_result_or_nul_if_not_inst.nul()) {
+        _result_or_nul_if_not_inst
+              = st->queryVar(pos, name).call(pos, instForTypes(_args, st), instForArgs(_args, st));
+    }
 }
 
 util::sref<inst::Type const> FuncReference::type(util::sref<SymbolTable const> st)
@@ -117,12 +126,13 @@ util::sref<inst::Type const> FuncReference::type(util::sref<SymbolTable const> s
 
 util::sptr<inst::Expression const> FuncReference::inst(util::sref<SymbolTable const> st)
 {
-    return util::mkptr(new inst::FuncReference(_mkType(st)));
+    util::sref<FuncReferenceType const> ft = _mkType(st);
+    return util::mkptr(new inst::FuncReference(ft->size, ft->makeCallArgs(), ft));
 }
 
 util::sref<FuncReferenceType const> FuncReference::_mkType(util::sref<SymbolTable const> st)
 {
-    std::map<std::string, inst::Variable const> ext_vars(_func->bindExternalVars(pos, st));
+    std::map<std::string, Variable const> ext_vars(_func->bindExternalVars(pos, st));
     auto find_result = _type_cache.find(ext_vars);
     if (_type_cache.end() != find_result) {
         return util::mkref(find_result->second);
@@ -134,25 +144,28 @@ util::sref<FuncReferenceType const> FuncReference::_mkType(util::sref<SymbolTabl
                                                                       , ext_vars))).first->second);
 }
 
+util::sref<inst::Type const> BinaryOp::type(util::sref<SymbolTable const> st)
+{
+    Operation const* o = st->queryBinary(pos, op, lhs->type(st), rhs->type(st));
+    return o->ret_type;
+}
+
 util::sptr<inst::Expression const> BinaryOp::inst(util::sref<SymbolTable const> st)
 {
-    util::sptr<inst::Expression const> left = lhs->inst(st);
-    util::sptr<inst::Expression const> right = rhs->inst(st);
-    util::sref<inst::Type const> ltype = left->typeof();
-    util::sref<inst::Type const> rtype = right->typeof();
-    Operation const* o = st->queryBinary(pos, op, ltype, rtype);
-    return util::mkptr(new inst::BinaryOp(std::move(left)
-                                        , o->op_img
-                                        , o->ret_type
-                                        , std::move(right)));
+    Operation const* o = st->queryBinary(pos, op, lhs->type(st), rhs->type(st));
+    return util::mkptr(new inst::BinaryOp(lhs->inst(st), o->op_img, o->ret_type, rhs->inst(st)));
+}
+
+util::sref<inst::Type const> PreUnaryOp::type(util::sref<SymbolTable const> st)
+{
+    Operation const* o = st->queryPreUnary(pos, op, rhs->type(st));
+    return o->ret_type;
 }
 
 util::sptr<inst::Expression const> PreUnaryOp::inst(util::sref<SymbolTable const> st)
 {
-    util::sptr<inst::Expression const> right = rhs->inst(st);
-    util::sref<inst::Type const> rtype = right->typeof();
-    Operation const* o = st->queryPreUnary(pos, op, rtype);
-    return util::mkptr(new inst::PreUnaryOp(o->op_img, o->ret_type, std::move(right)));
+    Operation const* o = st->queryPreUnary(pos, op, rhs->type(st));
+    return util::mkptr(new inst::PreUnaryOp(o->op_img, o->ret_type, rhs->inst(st)));
 }
 
 util::sref<inst::Type const> Conjunction::type(util::sref<SymbolTable const>)

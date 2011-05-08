@@ -4,7 +4,9 @@
 #include "function.h"
 #include "expr-nodes.h"
 #include "global-filter.h"
+#include "../proto/variable.h"
 #include "../proto/expr-nodes.h"
+#include "../instance/expr-nodes.h"
 #include "../report/errors.h"
 
 using namespace flchk;

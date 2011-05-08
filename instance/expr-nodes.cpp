@@ -1,7 +1,7 @@
 #include <algorithm>
 
 #include "expr-nodes.h"
-#include "../proto/func-inst-draft.h"
+#include "type.h"
 #include "../output/func-writer.h"
 #include "../output/statement-writer.h"
 
@@ -50,12 +50,12 @@ util::sref<Type const> BoolLiteral::typeof() const
 
 util::sref<Type const> Reference::typeof() const
 {
-    return var.type;
+    return type;
 }
 
 util::sref<Type const> Call::typeof() const
 {
-    return func->getReturnType();
+    return type;
 }
 
 util::sref<Type const> FuncReference::typeof() const
@@ -105,12 +105,12 @@ void BoolLiteral::write() const
 
 void Reference::write() const
 {
-    output::refLevel(var.stack_offset, var.level, typeof()->exportedName());
+    output::refLevel(stack_offset, level, typeof()->exportedName());
 }
 
 void Call::write() const
 {
-    output::writeCallBegin(func.id());
+    output::writeCallBegin(call_id);
     std::for_each(args.begin()
                 , args.end()
                 , [&](util::sptr<Expression const> const& expr)
@@ -123,7 +123,16 @@ void Call::write() const
 
 void FuncReference::write() const
 {
-    type->write();
+    output::writeFuncReference(size);
+    std::for_each(args.begin()
+                , args.end()
+                , [&](ArgInfo const& arg)
+                  {
+                      output::funcReferenceNextVariable(arg.self_offset
+                                                      , output::StackVarRec(arg.exported_name
+                                                                          , arg.ref_offset
+                                                                          , arg.level));
+                  });
 }
 
 void BinaryOp::write() const

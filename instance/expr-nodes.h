@@ -4,11 +4,10 @@
 #include <vector>
 
 #include "node-base.h"
-#include "variable.h"
 #include "fwd-decl.h"
-#include "../proto/func-reference-type.h"
 #include "../util/pointer.h"
 #include "../misc/platform.h"
+#include "../misc/pos-type.h"
 
 namespace inst {
 
@@ -54,41 +53,66 @@ namespace inst {
     struct Reference
         : public Expression
     {
-        explicit Reference(Variable const& v)
-            : var(v)
+        Reference(util::sref<Type const> t, int l, int off)
+            : type(t)
+            , level(l)
+            , stack_offset(off)
         {}
 
         util::sref<Type const> typeof() const;
         void write() const;
 
-        Variable const var;
+        util::sref<Type const> const type;
+        int const level;
+        int const stack_offset;
     };
 
     struct Call
         : public Expression
     {
-        Call(util::sref<proto::FuncInstDraft const> f, std::vector<util::sptr<Expression const>> a)
-            : func(f)
+        Call(util::sref<Type const> t, util::id c, std::vector<util::sptr<Expression const>> a)
+            : type(t)
+            , call_id(c)
             , args(std::move(a))
         {}
 
         util::sref<Type const> typeof() const;
         void write() const;
 
-        util::sref<proto::FuncInstDraft const> const func;
+        util::sref<Type const> const type;
+        util::id const call_id;
         std::vector<util::sptr<Expression const>> args;
     };
 
     struct FuncReference
         : public Expression
     {
-        explicit FuncReference(util::sref<proto::FuncReferenceType const> t)
-            : type(t)
+        struct ArgInfo {
+            int const level;
+            int const ref_offset;
+            std::string const exported_name;
+            int const self_offset;
+
+            ArgInfo(int l, int roff, std::string const& en, int soff)
+                : level(l)
+                , ref_offset(roff)
+                , exported_name(en)
+                , self_offset(soff)
+            {}
+        };
+
+        FuncReference(int s, std::vector<ArgInfo> const& a, util::sref<Type const> t)
+            : size(s)
+            , args(a)
+            , type(t)
         {}
 
         util::sref<Type const> typeof() const;
         void write() const;
-        util::sref<proto::FuncReferenceType const> const type;
+
+        int const size;
+        std::vector<ArgInfo> const args;
+        util::sref<Type const> type;
     };
 
     struct BinaryOp

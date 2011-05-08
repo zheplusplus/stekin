@@ -3,6 +3,7 @@
 #include "node-base.h"
 #include "../proto/function.h"
 #include "../proto/built-in.h"
+#include "../instance/expr-nodes.h"
 
 using namespace flchk;
 

@@ -1,21 +1,21 @@
-#ifndef __STEKIN_INSTANCE_VARIABLE_H__ 
-#define __STEKIN_INSTANCE_VARIABLE_H__ 
+#ifndef __STEKIN_PROTO_VARIABLE_H__ 
+#define __STEKIN_PROTO_VARIABLE_H__ 
 
 #include <vector>
 
-#include "fwd-decl.h"
+#include "../instance/fwd-decl.h"
 #include "../misc/pos-type.h"
 #include "../util/pointer.h"
 
-namespace inst {
+namespace proto {
 
     struct Variable {
         misc::position const def_pos;
-        util::sref<Type const> const type;
+        util::sref<inst::Type const> const type;
         int const stack_offset;
         int const level;
 
-        Variable(misc::position const& pos, util::sref<Type const> t, int offset, int lvl)
+        Variable(misc::position const& pos, util::sref<inst::Type const> t, int offset, int lvl)
             : def_pos(pos)
             , type(t)
             , stack_offset(offset)
@@ -25,7 +25,7 @@ namespace inst {
         util::sptr<inst::Expression const> call(
                                         misc::position const& call_pos
                                       , std::vector<util::sref<inst::Type const>> const& arg_types
-                                      , std::vector<util::sptr<Expression const>> args) const;
+                                      , std::vector<util::sptr<inst::Expression const>> args) const;
 
         Variable adjustLocation(int offset_diff, int lvl) const;
 
@@ -36,4 +36,4 @@ namespace inst {
 
 }
 
-#endif /* __STEKIN_INSTANCE_VARIABLE_H__ */
+#endif /* __STEKIN_PROTO_VARIABLE_H__ */

@@ -11,6 +11,7 @@ namespace proto {
     struct Expression {
         virtual ~Expression() {}
 
+        virtual util::sref<inst::Type const> type(util::sref<SymbolTable const>) = 0;
         virtual util::sptr<inst::Expression const> inst(util::sref<SymbolTable const> st) = 0;
 
         misc::position const pos;

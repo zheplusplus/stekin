@@ -25,17 +25,17 @@ namespace proto {
     struct SymbolTable {
         SymbolTable(int ext_lvl
                   , std::list<ArgNameTypeRec> const& args
-                  , std::map<std::string, inst::Variable const> const& ext_vars);
+                  , std::map<std::string, Variable const> const& ext_vars);
 
         SymbolTable()
             : level(0)
             , _ss_used(0)
         {}
     public:
-        inst::Variable defVar(misc::position const& pos
-                            , util::sref<inst::Type const> type
-                            , std::string const& name);
-        inst::Variable queryVar(misc::position const& pos, std::string const& name) const;
+        Variable defVar(misc::position const& pos
+                      , util::sref<inst::Type const> type
+                      , std::string const& name);
+        Variable queryVar(misc::position const& pos, std::string const& name) const;
 
         Operation const* queryBinary(misc::position const& pos
                                    , std::string const& op
@@ -48,12 +48,12 @@ namespace proto {
         int const level;
     public:
         int stackSize() const;
-        std::list<inst::Variable> getArgs() const;
+        std::list<Variable> getArgs() const;
     private:
         int _ss_used;
-        std::list<inst::Variable> _args;
-        std::map<std::string, inst::Variable const> _local_defs;
-        std::map<std::string, inst::Variable const> const _external_defs;
+        std::list<Variable> _args;
+        std::map<std::string, Variable const> _local_defs;
+        std::map<std::string, Variable const> const _external_defs;
 
         SymbolTable(SymbolTable const&) = delete;
     };

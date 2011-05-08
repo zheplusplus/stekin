@@ -47,7 +47,7 @@ namespace proto {
         util::sref<SymbolTable> _symbols_or_nul_if_inst_done;
         int _level;
         int _stack_size;
-        std::list<inst::Variable> _args;
+        std::list<Variable> _args;
     };
 
 }

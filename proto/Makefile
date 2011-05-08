@@ -3,6 +3,7 @@ WORKDIR=proto
 include misc/mf-template.mk
 
 proto:scope.d \
+      variable.d \
       built-in.d \
       block.d \
       stmt-nodes.d \

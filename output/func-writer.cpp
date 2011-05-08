@@ -146,9 +146,9 @@ void output::stknMainFunc(util::id func_addr)
     std::cout << "    " << formFuncName(func_addr) << "()._stk_perform();" << std::endl;
 }
 
-void output::constructFuncReference(std::string const& type_exported_name)
+void output::writeFuncReference(int size)
 {
-    std::cout << type_exported_name << "()";
+    std::cout << formFuncReferenceType(size) << "()";
 }
 
 void output::funcReferenceNextVariable(int offset, StackVarRec const& init)

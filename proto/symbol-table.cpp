@@ -2,18 +2,18 @@
 
 #include "symbol-table.h"
 #include "operation.h"
-#include "../instance/variable.h"
+#include "variable.h"
 #include "../instance/type.h"
 #include "../report/errors.h"
 #include "../misc/platform.h"
 
 using namespace proto;
 
-static inst::Variable const BAD_REF(misc::position(0), inst::Type::BIT_VOID, 0, 0);
+static Variable const BAD_REF(misc::position(0), inst::Type::BIT_VOID, 0, 0);
 
 SymbolTable::SymbolTable(int ext_lvl
                        , std::list<ArgNameTypeRec> const& args
-                       , std::map<std::string, inst::Variable const> const& ext_vars)
+                       , std::map<std::string, Variable const> const& ext_vars)
     : level(ext_lvl + 1)
     , _ss_used(0)
     , _external_defs(ext_vars)
@@ -38,18 +38,18 @@ static int calc_offset_on_align(int base, int new_size)
     return base - mod + platform::WORD_LENGTH_INBYTE;
 }
 
-inst::Variable SymbolTable::defVar(misc::position const& pos
+Variable SymbolTable::defVar(misc::position const& pos
                                  , util::sref<inst::Type const> var_type
                                  , std::string const& name)
 {
     int offset = calc_offset_on_align(_ss_used, var_type->size);
     auto insert_result = _local_defs.insert(
-            std::make_pair(name, inst::Variable(pos, var_type, offset, level)));
+            std::make_pair(name, Variable(pos, var_type, offset, level)));
     _ss_used = offset + var_type->size;
     return insert_result.first->second;
 }
 
-inst::Variable SymbolTable::queryVar(misc::position const& pos, std::string const& name) const
+Variable SymbolTable::queryVar(misc::position const& pos, std::string const& name) const
 {
     auto find_result = _local_defs.find(name);
     if (_local_defs.end() != find_result) {
@@ -85,7 +85,7 @@ int SymbolTable::stackSize() const
     return _ss_used;
 }
 
-std::list<inst::Variable> SymbolTable::getArgs() const
+std::list<Variable> SymbolTable::getArgs() const
 {
     return _args;
 }

@@ -2,9 +2,10 @@
 #define __STACKENGING_INSTANCE_TYPE_H__
 
 #include <string>
+#include <vector>
 #include <map>
 
-#include "variable.h"
+#include "fwd-decl.h"
 #include "../util/pointer.h"
 #include "../misc/pos-type.h"
 #include "../proto/fwd-decl.h"
@@ -29,12 +30,13 @@ namespace inst {
         virtual bool operator<(Type const& rhs) const = 0;
     public:
         virtual bool eqAsBuiltIn(Type const& lhs) const;
-        virtual bool eqAsFuncReference(util::sref<proto::Function> lhs_func
-                                     , std::map<std::string, Variable const> const& rhs_cr) const;
+        virtual bool eqAsFuncReference(
+                            util::sref<proto::Function> lhs_func
+                          , std::map<std::string, proto::Variable const> const& rhs_cr) const;
 
         virtual bool ltAsBuiltIn(Type const& lhs) const = 0;
         virtual bool ltAsFuncReference(util::sref<proto::Function> lhs_func
-                                     , std::map<std::string, Variable const> const& rhs_cr)
+                                     , std::map<std::string, proto::Variable const> const& rhs_cr)
                                     const = 0;
     public:
         virtual void checkCondType(misc::position const& pos) const;
@@ -75,7 +77,7 @@ namespace inst {
         bool eqAsBuiltIn(Type const& lhs) const;
         bool ltAsBuiltIn(Type const& lhs) const;
         bool ltAsFuncReference(util::sref<proto::Function>
-                             , std::map<std::string, Variable const> const&) const;
+                             , std::map<std::string, proto::Variable const> const&) const;
     public:
         void checkCondType(misc::position const& pos) const;
     };

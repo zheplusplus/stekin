@@ -7,7 +7,6 @@ namespace inst {
     struct Statement;
     struct Type;
     struct Block;
-    struct Variable;
 
 }
 

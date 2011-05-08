@@ -21,7 +21,7 @@ util::sref<FuncInstDraft> Function::inst(misc::position const& pos
 
 static util::sref<FuncInstDraft> instanceAlreadyDoneOrNulIfNonexist(
             std::map<Function::InstanceInfo, util::sref<FuncInstDraft>> const& instance_cache
-          , std::map<std::string, inst::Variable const> const& ext_vars
+          , std::map<std::string, Variable const> const& ext_vars
           , std::vector<util::sref<inst::Type const>> const& arg_types
           , std::string const& name)
 {
@@ -50,7 +50,7 @@ std::list<ArgNameTypeRec> makeArgInfo(std::vector<std::string> const& param_name
 }
 
 util::sref<FuncInstDraft> Function::inst(int level
-                                       , std::map<std::string, inst::Variable const> const& ext_vars
+                                       , std::map<std::string, Variable const> const& ext_vars
                                        , std::vector<util::sref<inst::Type const>> const& arg_types)
 {
     util::sref<FuncInstDraft> result_inst = instanceAlreadyDoneOrNulIfNonexist(_instance_cache
@@ -68,11 +68,11 @@ util::sref<FuncInstDraft> Function::inst(int level
     return new_inst;
 }
 
-std::map<std::string, inst::Variable const> Function::bindExternalVars(
+std::map<std::string, Variable const> Function::bindExternalVars(
                                                   misc::position const& pos
                                                 , util::sref<SymbolTable const> ext_st) const
 {
-    std::map<std::string, inst::Variable const> result;
+    std::map<std::string, Variable const> result;
     std::for_each(_free_variables.begin()
                 , _free_variables.end()
                 , [&](std::string const& var_name)

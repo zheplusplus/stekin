@@ -5,7 +5,9 @@
 #include "function.h"
 #include "symbol-table.h"
 #include "filter.h"
+#include "../proto/variable.h"
 #include "../proto/expr-nodes.h"
+#include "../instance/expr-nodes.h"
 #include "../util/string.h"
 #include "../report/errors.h"
 

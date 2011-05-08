@@ -5,6 +5,7 @@
 #include "func-inst-draft.h"
 #include "node-base.h"
 #include "symbol-table.h"
+#include "variable.h"
 #include "../report/errors.h"
 #include "../output/func-writer.h"
 #include "../util/map-compare.h"
@@ -144,12 +145,12 @@ void FuncInstDraft::instantiate(util::sref<Statement> stmt)
     _setSymbolInfo();
 }
 
-static std::list<output::StackVarRec> argsToVarRecs(std::list<inst::Variable> const& args)
+static std::list<output::StackVarRec> argsToVarRecs(std::list<Variable> const& args)
 {
     std::list<output::StackVarRec> recs;
     std::for_each(args.begin()
                 , args.end()
-                , [&](inst::Variable const& var)
+                , [&](Variable const& var)
                   {
                       recs.push_back(output::StackVarRec(var.type->exportedName()
                                                        , var.stack_offset

@@ -1,5 +1,6 @@
 #include "type.h"
 #include "expr-nodes.h"
+#include "../proto/variable.h"
 #include "../output/name-mangler.h"
 #include "../report/errors.h"
 
@@ -28,7 +29,7 @@ bool Type::eqAsBuiltIn(Type const&) const
 }
 
 bool Type::eqAsFuncReference(util::sref<proto::Function>
-                           , std::map<std::string, Variable const> const&) const
+                           , std::map<std::string, proto::Variable const> const&) const
 {
     return false;
 }
@@ -39,7 +40,7 @@ bool Type::ltAsBuiltIn(Type const&) const
 }
 
 bool Type::ltAsFuncReference(util::sref<proto::Function>
-                           , std::map<std::string, Variable const> const&) const
+                           , std::map<std::string, proto::Variable const> const&) const
 {
     return false;
 }
@@ -80,7 +81,7 @@ bool BuiltInPrimitive::ltAsBuiltIn(Type const& lhs) const
 }
 
 bool BuiltInPrimitive::ltAsFuncReference(util::sref<proto::Function>
-                                       , std::map<std::string, Variable const> const&) const
+                                       , std::map<std::string, proto::Variable const> const&) const
 {
     return false;
 }

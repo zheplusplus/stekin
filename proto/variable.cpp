@@ -1,9 +1,9 @@
 #include "variable.h"
-#include "node-base.h"
-#include "type.h"
+#include "../instance/node-base.h"
+#include "../instance/type.h"
 #include "../output/statement-writer.h"
 
-using namespace inst;
+using namespace proto;
 
 bool Variable::operator<(Variable const& rhs) const
 {
@@ -29,9 +29,9 @@ bool Variable::operator!=(Variable const& rhs) const
 util::sptr<inst::Expression const> Variable::call(
                                         misc::position const& call_pos
                                       , std::vector<util::sref<inst::Type const>> const& arg_types
-                                      , std::vector<util::sptr<Expression const>> args) const
+                                      , std::vector<util::sptr<inst::Expression const>> args) const
 {
-    return std::move(type->call(call_pos, level, stack_offset, arg_types, std::move(args)));
+    return type->call(call_pos, level, stack_offset, arg_types, std::move(args));
 }
 
 Variable Variable::adjustLocation(int offset_diff, int lvl) const

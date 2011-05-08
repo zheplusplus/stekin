@@ -5,8 +5,8 @@
 #include <map>
 
 #include "scope.h"
+#include "variable.h"
 #include "../instance/fwd-decl.h"
-#include "../instance/variable.h"
 #include "../misc/pos-type.h"
 
 namespace proto {
@@ -18,7 +18,7 @@ namespace proto {
                                      , util::sref<SymbolTable const> ext_st
                                      , std::vector<util::sref<inst::Type const>> const& arg_types);
         util::sref<FuncInstDraft> inst(int level
-                                     , std::map<std::string, inst::Variable const> const& ext_vars
+                                     , std::map<std::string, Variable const> const& ext_vars
                                      , std::vector<util::sref<inst::Type const>> const& arg_types);
 
         Function(misc::position const& ps
@@ -39,12 +39,15 @@ namespace proto {
         bool hint_void_return;
 
         void setFreeVariables(std::vector<std::string> const& free_vars);
+        std::map<std::string, Variable const> bindExternalVars(
+                                                misc::position const& pos
+                                              , util::sref<SymbolTable const> ext_st) const;
     public:
         struct InstanceInfo {
-            std::map<std::string, inst::Variable const> const ext_vars;
+            std::map<std::string, Variable const> const ext_vars;
             std::vector<util::sref<inst::Type const>> const arg_types;
 
-            InstanceInfo(std::map<std::string, inst::Variable const> const& e
+            InstanceInfo(std::map<std::string, Variable const> const& e
                        , std::vector<util::sref<inst::Type const>> const& a)
                 : ext_vars(e)
                 , arg_types(a)
@@ -55,10 +58,6 @@ namespace proto {
     private:
         std::map<InstanceInfo, util::sref<FuncInstDraft>> _instance_cache;
         std::vector<std::string> _free_variables;
-    public:
-        std::map<std::string, inst::Variable const> bindExternalVars(
-                                                misc::position const& pos
-                                              , util::sref<SymbolTable const> ext_st) const;
     };
 
 }
