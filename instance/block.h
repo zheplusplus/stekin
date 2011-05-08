@@ -4,6 +4,7 @@
 #include <list>
 
 #include "fwd-decl.h"
+#include "node-base.h"
 #include "../util/pointer.h"
 
 namespace inst {

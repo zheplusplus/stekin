@@ -6,45 +6,48 @@
 
 namespace proto {
 
-    struct BranchMediate
+    struct Branch
         : public Statement
     {
-        BranchMediate(misc::position const& pos
-                    , util::sptr<Expression> p
-                    , util::sptr<inst::MediateBase> consequence_mediate
-                    , util::sptr<inst::MediateBase> alternative_mediate)
-            : Statement(pos)
-            , predicate(std::move(p))
-            , _consequence_mediate(std::move(consequence_mediate))
-            , _alternative_mediate(std::move(alternative_mediate))
+        Branch(misc::position const& ps
+             , util::sptr<Expression> p
+             , util::sptr<Statement> consequence_stmt
+             , util::sptr<Statement> alternative_stmt)
+                : pos(ps)
+                , predicate(std::move(p))
+                , _consequence_stmt(std::move(consequence_stmt))
+                , _alternative_stmt(std::move(alternative_stmt))
         {}
 
-        void addTo(util::sref<inst::Scope> scope);
-        util::sptr<inst::Statement const> inst(util::sref<inst::Scope> scope
-                                             , util::sref<inst::SymbolTable> st);
-        void mediateInst(util::sref<inst::Scope> scope, util::sref<inst::SymbolTable>);
+        void addTo(util::sref<FuncInstDraft> func);
+        util::sptr<inst::Statement const> inst(util::sref<FuncInstDraft> func
+                                             , util::sref<SymbolTable> st);
+        void mediateInst(util::sref<FuncInstDraft> func, util::sref<SymbolTable>);
     public:
+        misc::position const pos;
         util::sptr<Expression> const predicate;
     private:
-        util::sptr<inst::MediateBase> const _consequence_mediate;
-        util::sptr<inst::MediateBase> const _alternative_mediate;
+        util::sptr<Statement> const _consequence_stmt;
+        util::sptr<Statement> const _alternative_stmt;
     };
 
     struct DirectInst
         : public Statement
     {
-        void addTo(util::sref<inst::Scope>);
-        util::sptr<inst::Statement const> inst(util::sref<inst::Scope> scope
-                                             , util::sref<inst::SymbolTable> st);
-        void mediateInst(util::sref<inst::Scope> scope, util::sref<inst::SymbolTable> st);
+        void addTo(util::sref<FuncInstDraft>);
+        util::sptr<inst::Statement const> inst(util::sref<FuncInstDraft> func
+                                             , util::sref<SymbolTable> st);
+        void mediateInst(util::sref<FuncInstDraft> func, util::sref<SymbolTable> st);
+
+        misc::position const pos;
     protected:
-        explicit DirectInst(misc::position const& pos)
-            : Statement(pos)
+        explicit DirectInst(misc::position const& ps)
+            : pos(ps)
             , _result_stmt_or_nul_if_not_inst(NULL)
         {}
 
-        virtual util::sptr<inst::Statement const> _inst(util::sref<inst::Scope> scope
-                                                      , util::sref<inst::SymbolTable> st) const = 0;
+        virtual util::sptr<inst::Statement const> _inst(util::sref<FuncInstDraft> func
+                                                      , util::sref<SymbolTable> st) const = 0;
     private:
         util::sptr<inst::Statement const> _result_stmt_or_nul_if_not_inst;
     };
@@ -59,8 +62,8 @@ namespace proto {
 
         util::sptr<Expression> const expr;
     protected:
-        util::sptr<inst::Statement const> _inst(util::sref<inst::Scope> scope
-                                              , util::sref<inst::SymbolTable> st) const;
+        util::sptr<inst::Statement const> _inst(util::sref<FuncInstDraft> func
+                                              , util::sref<SymbolTable> st) const;
     };
 
     struct VarDef
@@ -75,8 +78,8 @@ namespace proto {
         std::string const name;
         util::sptr<Expression> const init;
     protected:
-        util::sptr<inst::Statement const> _inst(util::sref<inst::Scope> scope
-                                              , util::sref<inst::SymbolTable> st) const;
+        util::sptr<inst::Statement const> _inst(util::sref<FuncInstDraft> func
+                                              , util::sref<SymbolTable> st) const;
     };
 
     struct Return
@@ -89,8 +92,8 @@ namespace proto {
 
         util::sptr<Expression> const ret_val;
     protected:
-        util::sptr<inst::Statement const> _inst(util::sref<inst::Scope> scope
-                                              , util::sref<inst::SymbolTable> st) const;
+        util::sptr<inst::Statement const> _inst(util::sref<FuncInstDraft> func
+                                              , util::sref<SymbolTable> st) const;
     };
 
     struct ReturnNothing
@@ -100,8 +103,8 @@ namespace proto {
             : DirectInst(pos)
         {}
     protected:
-        util::sptr<inst::Statement const> _inst(util::sref<inst::Scope> scope
-                                              , util::sref<inst::SymbolTable>) const;
+        util::sptr<inst::Statement const> _inst(util::sref<FuncInstDraft> func
+                                              , util::sref<SymbolTable>) const;
     };
 
 }

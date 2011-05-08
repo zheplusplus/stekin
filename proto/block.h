@@ -4,27 +4,27 @@
 #include <list>
 
 #include "fwd-decl.h"
-#include "../instance/inst-mediate.h"
+#include "node-base.h"
 #include "../util/pointer.h"
 
 namespace proto {
 
     struct Block
-        : public inst::MediateBase
+        : public Statement
     {
         Block(Block const&) = delete;
 
         Block() = default;
 
-        void addMediate(util::sptr<inst::MediateBase> mediate);
+        void addStmt(util::sptr<Statement> stmt);
         void addFunc(util::sptr<Function> func);
 
-        void addTo(util::sref<inst::Scope> scope);
-        util::sptr<inst::Statement const> inst(util::sref<inst::Scope> scope
-                                             , util::sref<inst::SymbolTable> st);
-        void mediateInst(util::sref<inst::Scope> scope, util::sref<inst::SymbolTable> st);
+        void addTo(util::sref<FuncInstDraft> func);
+        util::sptr<inst::Statement const> inst(util::sref<FuncInstDraft> func
+                                             , util::sref<SymbolTable> st);
+        void mediateInst(util::sref<FuncInstDraft> func, util::sref<SymbolTable> st);
     private:
-        std::list<util::sptr<inst::MediateBase>> _mediates;
+        std::list<util::sptr<Statement>> _stmts;
         std::list<util::sptr<Function>> _funcs;
     };
 

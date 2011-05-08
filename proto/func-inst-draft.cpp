@@ -2,50 +2,52 @@
 #include <set>
 #include <algorithm>
 
+#include "func-inst-draft.h"
 #include "node-base.h"
-#include "function.h"
+#include "symbol-table.h"
 #include "../report/errors.h"
 #include "../output/func-writer.h"
 #include "../util/map-compare.h"
 #include "../util/pointer.h"
 
-using namespace inst;
+using namespace proto;
 
-util::sref<Type const> Function::getReturnType() const
+util::sref<inst::Type const> FuncInstDraft::getReturnType() const
 {
-    return Type::BIT_VOID;
+    return inst::Type::BIT_VOID;
 }
 
-void Function::setReturnType(misc::position const& pos, util::sref<Type const> return_type)
+void FuncInstDraft::setReturnType(misc::position const& pos
+                                , util::sref<inst::Type const> return_type)
 {
-    if (Type::BIT_VOID != return_type) {
-        error::conflictReturnType(pos, Type::BIT_VOID->name(), return_type->name());
+    if (inst::Type::BIT_VOID != return_type) {
+        error::conflictReturnType(pos, inst::Type::BIT_VOID->name(), return_type->name());
     }
 }
 
-bool Function::isReturnTypeResolved() const
+bool FuncInstDraft::isReturnTypeResolved() const
 {
     return true;
 }
 
 namespace {
 
-    struct FunctionUnresolved
-        : public Function
+    struct FuncInstDraftUnresolved
+        : public FuncInstDraft
     {
-        explicit FunctionUnresolved(util::sref<SymbolTable> st)
-            : Function(st)
-            , _return_type(Type::BAD_TYPE)
+        explicit FuncInstDraftUnresolved(util::sref<SymbolTable> st)
+            : FuncInstDraft(st)
+            , _return_type(inst::Type::BAD_TYPE)
         {}
 
-        util::sref<Type const> getReturnType() const
+        util::sref<inst::Type const> getReturnType() const
         {
             return _return_type;
         }
 
-        void setReturnType(misc::position const& pos, util::sref<Type const> return_type)
+        void setReturnType(misc::position const& pos, util::sref<inst::Type const> return_type)
         {
-            if (Type::BAD_TYPE == _return_type) {
+            if (inst::Type::BAD_TYPE == _return_type) {
                 _return_type = return_type;
                 return;
             }
@@ -56,19 +58,19 @@ namespace {
 
         bool isReturnTypeResolved() const
         {
-            return Type::BAD_TYPE != _return_type;
+            return inst::Type::BAD_TYPE != _return_type;
         }
 
-        util::sref<Type const> _return_type;
+        util::sref<inst::Type const> _return_type;
     };
 
     struct FuncInstRecs
-        : protected std::list<util::sptr<Function const>>
+        : protected std::list<util::sptr<FuncInstDraft const>>
     {
-        typedef std::list<util::sptr<Function const>> BaseType;
+        typedef std::list<util::sptr<FuncInstDraft const>> BaseType;
         typedef BaseType::const_iterator Iterator;
 
-        void add(util::sptr<Function const> func)
+        void add(util::sptr<FuncInstDraft const> func)
         {
             push_back(std::move(func));
         }
@@ -92,35 +94,36 @@ namespace {
 
 }
 
-util::sref<Function> Function::createInstance(util::sref<SymbolTable> st, bool has_void_returns)
+util::sref<FuncInstDraft> FuncInstDraft::create(util::sref<SymbolTable> st, bool has_void_returns)
 {
-    util::sptr<Function> func(has_void_returns ? new Function(st) : new FunctionUnresolved(st));
-    util::sref<Function> fref = *func;
+    util::sptr<FuncInstDraft> func(has_void_returns ? new FuncInstDraft(st)
+                                                    : new FuncInstDraftUnresolved(st));
+    util::sref<FuncInstDraft> fref = *func;
     FuncInstRecs::instance.add(std::move(func));
     return fref;
 }
 
-void Function::addPath(util::sref<MediateBase> path)
+void FuncInstDraft::addPath(util::sref<Statement> path)
 {
     _candidate_paths.push_back(path);
 }
 
-void Function::instNextPath()
+void FuncInstDraft::instNextPath()
 {
     if (!hasMorePath()) {
         return;
     }
-    util::sref<MediateBase> next_path = _candidate_paths.front();
+    util::sref<Statement> next_path = _candidate_paths.front();
     _candidate_paths.pop_front();
     next_path->mediateInst(util::mkref(*this), _symbols_or_nul_if_inst_done);
 }
 
-bool Function::hasMorePath() const
+bool FuncInstDraft::hasMorePath() const
 {
     return !_candidate_paths.empty();
 }
 
-void Function::_setSymbolInfo()
+void FuncInstDraft::_setSymbolInfo()
 {
     _level = _symbols_or_nul_if_inst_done->level;
     _stack_size = _symbols_or_nul_if_inst_done->stackSize();
@@ -128,11 +131,16 @@ void Function::_setSymbolInfo()
     _symbols_or_nul_if_inst_done = util::sref<SymbolTable>(NULL);
 }
 
-void Function::instantiate(util::sref<MediateBase> mediate)
+void FuncInstDraft::_addStmt(util::sptr<inst::Statement const> stmt)
 {
-    addPath(mediate);
+    _block.addStmt(std::move(stmt));
+}
+
+void FuncInstDraft::instantiate(util::sref<Statement> stmt)
+{
+    addPath(stmt);
     instNextPath();
-    _addStmt(mediate->inst(util::mkref(*this), _symbols_or_nul_if_inst_done));
+    _addStmt(stmt->inst(util::mkref(*this), _symbols_or_nul_if_inst_done));
     _setSymbolInfo();
 }
 
@@ -150,11 +158,11 @@ static std::list<output::StackVarRec> argsToVarRecs(std::list<inst::Variable> co
     return recs;
 }
 
-void Function::writeDecls()
+void FuncInstDraft::writeDecls()
 {
     std::for_each(FuncInstRecs::instance.begin()
                 , FuncInstRecs::instance.end()
-                , [&](util::sptr<Function const> const& func)
+                , [&](util::sptr<FuncInstDraft const> const& func)
                   {
                       output::writeFuncDecl(func->getReturnType()->exportedName()
                                           , func.id()
@@ -164,11 +172,11 @@ void Function::writeDecls()
                   });
 }
 
-void Function::writeImpls()
+void FuncInstDraft::writeImpls()
 {
     std::for_each(FuncInstRecs::instance.begin()
                 , FuncInstRecs::instance.end()
-                , [&](util::sptr<Function const> const& func)
+                , [&](util::sptr<FuncInstDraft const> const& func)
                   {
                       output::writeFuncImpl(func->getReturnType()->exportedName(), func.id());
                       func->_block.write();

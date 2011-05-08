@@ -1,8 +1,7 @@
 #include <algorithm>
 
 #include "expr-nodes.h"
-#include "function.h"
-#include "operation.h"
+#include "../proto/func-inst-draft.h"
 #include "../output/func-writer.h"
 #include "../output/statement-writer.h"
 
@@ -66,12 +65,12 @@ util::sref<Type const> FuncReference::typeof() const
 
 util::sref<Type const> BinaryOp::typeof() const
 {
-    return op->ret_type;
+    return type;
 }
 
 util::sref<Type const> PreUnaryOp::typeof() const
 {
-    return op->ret_type;
+    return type;
 }
 
 util::sref<Type const> Conjunction::typeof() const
@@ -131,7 +130,7 @@ void BinaryOp::write() const
 {
     output::beginExpr();
     lhs->write();
-    output::writeOperator(op->op_img);
+    output::writeOperator(op);
     rhs->write();
     output::endExpr();
 }
@@ -139,7 +138,7 @@ void BinaryOp::write() const
 void PreUnaryOp::write() const
 {
     output::beginExpr();
-    output::writeOperator(op->op_img);
+    output::writeOperator(op);
     rhs->write();
     output::endExpr();
 }

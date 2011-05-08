@@ -6,9 +6,9 @@
 #include "node-base.h"
 #include "variable.h"
 #include "fwd-decl.h"
+#include "../proto/func-reference-type.h"
 #include "../util/pointer.h"
 #include "../misc/platform.h"
-#include "../proto/func-reference-type.h"
 
 namespace inst {
 
@@ -67,7 +67,7 @@ namespace inst {
     struct Call
         : public Expression
     {
-        Call(util::sref<Function const> f, std::vector<util::sptr<Expression const>> a)
+        Call(util::sref<proto::FuncInstDraft const> f, std::vector<util::sptr<Expression const>> a)
             : func(f)
             , args(std::move(a))
         {}
@@ -75,7 +75,7 @@ namespace inst {
         util::sref<Type const> typeof() const;
         void write() const;
 
-        util::sref<Function const> const func;
+        util::sref<proto::FuncInstDraft const> const func;
         std::vector<util::sptr<Expression const>> args;
     };
 
@@ -94,9 +94,13 @@ namespace inst {
     struct BinaryOp
         : public Expression
     {
-        BinaryOp(util::sptr<Expression const> l, Operation const* o, util::sptr<Expression const> r)
+        BinaryOp(util::sptr<Expression const> l
+               , std::string const& o
+               , util::sref<Type const> t
+               , util::sptr<Expression const> r)
             : lhs(std::move(l))
             , op(o)
+            , type(t)
             , rhs(std::move(r))
         {}
 
@@ -104,22 +108,25 @@ namespace inst {
         void write() const;
 
         util::sptr<Expression const> const lhs;
-        Operation const* const op;
+        std::string const op;
+        util::sref<Type const> const type;
         util::sptr<Expression const> const rhs;
     };
 
     struct PreUnaryOp
         : public Expression
     {
-        PreUnaryOp(Operation const* o, util::sptr<Expression const> r)
+        PreUnaryOp(std::string const& o, util::sref<Type const> t , util::sptr<Expression const> r)
             : op(o)
+            , type(t)
             , rhs(std::move(r))
         {}
 
         util::sref<Type const> typeof() const;
         void write() const;
 
-        Operation const* const op;
+        std::string const op;
+        util::sref<Type const> type;
         util::sptr<Expression const> const rhs;
     };
 

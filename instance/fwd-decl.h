@@ -3,13 +3,8 @@
 
 namespace inst {
 
-    struct Function;
-    struct Operation;
-    struct SymbolTable;
     struct Expression;
     struct Statement;
-    struct Scope;
-    struct MediateBase;
     struct Type;
     struct Block;
     struct Variable;

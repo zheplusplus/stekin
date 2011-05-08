@@ -23,10 +23,10 @@ util::sptr<proto::Statement> Branch::compile(util::sref<proto::Scope> scope
     util::sptr<proto::Scope> alter_scope(new proto::Scope);
     consequence.compile(*consq_scope, st);
     alternative.compile(*alter_scope, st);
-    return util::mkptr(new proto::BranchMediate(pos
-                                              , predicate->compile(scope, st)
-                                              , consq_scope->inst()
-                                              , alter_scope->inst()));
+    return util::mkptr(new proto::Branch(pos
+                                       , predicate->compile(scope, st)
+                                       , consq_scope->inst()
+                                       , alter_scope->inst()));
 }
 
 util::sptr<proto::Statement> VarDef::compile(util::sref<proto::Scope> scope

@@ -30,7 +30,7 @@ void Block::compile(util::sref<proto::Scope> scope, util::sref<SymbolTable> st) 
                 , _stmts.end()
                 , [&](util::sptr<Statement const> const& stmt)
                   {
-                      scope->addMediate(stmt->compile(scope, st));
+                      scope->addStmt(stmt->compile(scope, st));
                   });
 }
 

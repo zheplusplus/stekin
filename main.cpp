@@ -9,9 +9,9 @@
 #include "proto/scope.h"
 #include "proto/node-base.h"
 #include "proto/function.h"
+#include "proto/symbol-table.h"
+#include "proto/func-inst-draft.h"
 #include "instance/node-base.h"
-#include "instance/inst-mediate.h"
-#include "instance/function.h"
 #include "output/func-writer.h"
 #include "util/pointer.h"
 #include "report/errors.h"
@@ -42,11 +42,10 @@ static util::id semantic(util::sptr<flchk::Filter> global_flow)
         throw CompileFailure();
     }
 
-    inst::SymbolTable st;
-    util::sref<inst::Function> inst_global_func(inst::Function::createInstance(util::mkref(st)
-                                                                             , true));
-    util::sptr<inst::MediateBase> mediate(proto_global_scope->inst());
-    inst_global_func->instantiate(*mediate);
+    proto::SymbolTable st;
+    util::sref<proto::FuncInstDraft> inst_global_func(
+            proto::FuncInstDraft::create(util::mkref(st), true));
+    inst_global_func->instantiate(*proto_global_scope->inst());
     if (error::hasError()) {
         throw CompileFailure();
     }
@@ -55,11 +54,11 @@ static util::id semantic(util::sptr<flchk::Filter> global_flow)
 
 static void outputAll(util::id global_func_id)
 {
-    inst::Function::writeDecls();
+    proto::FuncInstDraft::writeDecls();
     output::writeMainBegin();
     output::stknMainFunc(global_func_id);
     output::writeMainEnd();
-    inst::Function::writeImpls();
+    proto::FuncInstDraft::writeImpls();
 }
 
 int main()

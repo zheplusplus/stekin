@@ -1,7 +1,6 @@
 #include "variable.h"
 #include "node-base.h"
 #include "type.h"
-#include "scope.h"
 #include "../output/statement-writer.h"
 
 using namespace inst;
