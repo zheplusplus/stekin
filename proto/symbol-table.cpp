@@ -3,13 +3,13 @@
 #include "symbol-table.h"
 #include "operation.h"
 #include "variable.h"
-#include "../instance/type.h"
+#include "type.h"
 #include "../report/errors.h"
 #include "../misc/platform.h"
 
 using namespace proto;
 
-static Variable const BAD_REF(misc::position(0), inst::Type::BIT_VOID, 0, 0);
+static Variable const BAD_REF(misc::position(0), Type::BIT_VOID, 0, 0);
 
 SymbolTable::SymbolTable(int ext_lvl
                        , std::list<ArgNameTypeRec> const& args
@@ -39,8 +39,8 @@ static int calc_offset_on_align(int base, int new_size)
 }
 
 Variable SymbolTable::defVar(misc::position const& pos
-                                 , util::sref<inst::Type const> var_type
-                                 , std::string const& name)
+                           , util::sref<Type const> var_type
+                           , std::string const& name)
 {
     int offset = calc_offset_on_align(_ss_used, var_type->size);
     auto insert_result = _local_defs.insert(
@@ -67,15 +67,15 @@ Variable SymbolTable::queryVar(misc::position const& pos, std::string const& nam
 
 Operation const* SymbolTable::queryBinary(misc::position const& pos
                                         , std::string const& op
-                                        , util::sref<inst::Type const> lhs
-                                        , util::sref<inst::Type const> rhs) const
+                                        , util::sref<Type const> lhs
+                                        , util::sref<Type const> rhs) const
 {
     return Operation::queryBinary(pos, op, lhs, rhs);
 }
 
 Operation const* SymbolTable::queryPreUnary(misc::position const& pos
                                           , std::string const& op
-                                          , util::sref<inst::Type const> rhs) const
+                                          , util::sref<Type const> rhs) const
 {
     return Operation::queryPreUnary(pos, op, rhs);
 }

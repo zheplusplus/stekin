@@ -6,6 +6,7 @@
 #include "symbol-table.h"
 #include "../proto/function.h"
 #include "../proto/stmt-nodes.h"
+#include "../proto/variable.h"
 #include "../instance/node-base.h"
 
 using namespace flchk;

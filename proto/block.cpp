@@ -3,7 +3,7 @@
 #include "block.h"
 #include "function.h"
 #include "func-inst-draft.h"
-#include "../instance/node-base.h"
+#include "variable.h"
 #include "../instance/block.h"
 
 using namespace proto;

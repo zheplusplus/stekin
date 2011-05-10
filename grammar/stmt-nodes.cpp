@@ -3,7 +3,6 @@
 #include "../flowcheck/node-base.h"
 #include "../flowcheck/symbol-def-filter.h"
 #include "../flowcheck/function.h"
-#include "../proto/node-base.h"
 
 using namespace grammar;
 

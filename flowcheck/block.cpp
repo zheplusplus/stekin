@@ -7,6 +7,7 @@
 #include "../proto/node-base.h"
 #include "../proto/scope.h"
 #include "../proto/function.h"
+#include "../proto/variable.h"
 
 using namespace flchk;
 

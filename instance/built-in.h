@@ -2,6 +2,7 @@
 #define __STEKIN_INSTANCE_BUILT_IN_H__
 
 #include "node-base.h"
+#include "../util/pointer.h"
 
 namespace inst {
 
@@ -12,7 +13,6 @@ namespace inst {
             : expr(std::move(e))
         {}
 
-        util::sref<Type const> typeof() const;
         void write() const;
 
         util::sptr<Expression const> const expr;

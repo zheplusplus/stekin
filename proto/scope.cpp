@@ -1,6 +1,7 @@
 #include "scope.h"
 #include "function.h"
 #include "node-base.h"
+#include "variable.h"
 #include "../instance/node-base.h"
 
 using namespace proto;

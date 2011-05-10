@@ -3,7 +3,6 @@
 
 #include "node-base.h"
 #include "../util/pointer.h"
-#include "../misc/pos-type.h"
 
 namespace inst {
 
@@ -22,10 +21,13 @@ namespace inst {
     struct Branch
         : public Statement
     {
-        Branch(misc::position const& pos
-             , util::sptr<Expression const> p
+        Branch(util::sptr<Expression const> p
              , util::sptr<Statement const> c
-             , util::sptr<Statement const> a);
+             , util::sptr<Statement const> a)
+                : predicate(std::move(p))
+                , consequence(std::move(c))
+                , alternative(std::move(a))
+        {}
 
         void write() const;
 
@@ -37,15 +39,17 @@ namespace inst {
     struct Initialization
         : public Statement
     {
-        Initialization(int o, util::sptr<Expression const> i)
+        Initialization(int o, util::sptr<Expression const> i, std::string const& en)
             : offset(o)
             , init(std::move(i))
+            , type_exported_name(en)
         {}
 
         void write() const;
 
         int const offset;
         util::sptr<Expression const> const init;
+        std::string const type_exported_name;
     };
 
     struct Return

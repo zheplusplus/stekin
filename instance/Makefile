@@ -2,8 +2,7 @@ WORKDIR=instance
 
 include misc/mf-template.mk
 
-instance:type.d \
-         expr-nodes.d \
+instance:expr-nodes.d \
          stmt-nodes.d \
          built-in.d \
          block.d

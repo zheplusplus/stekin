@@ -4,7 +4,6 @@
 #include "../flowcheck/filter.h"
 #include "../flowcheck/function.h"
 #include "../flowcheck/expr-nodes.h"
-#include "../proto/node-base.h"
 
 using namespace grammar;
 

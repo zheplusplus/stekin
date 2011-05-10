@@ -1,92 +1,10 @@
 #include <algorithm>
 
 #include "expr-nodes.h"
-#include "type.h"
 #include "../output/func-writer.h"
 #include "../output/statement-writer.h"
 
 using namespace inst;
-
-Conjunction::Conjunction(misc::position const& p
-                       , util::sptr<Expression const> l
-                       , util::sptr<Expression const> r)
-    : lhs(std::move(l))
-    , rhs(std::move(r))
-{
-    lhs->typeof()->checkCondType(p);
-    rhs->typeof()->checkCondType(p);
-}
-
-Disjunction::Disjunction(misc::position const& p
-                       , util::sptr<Expression const> l
-                       , util::sptr<Expression const> r)
-    : lhs(std::move(l))
-    , rhs(std::move(r))
-{
-    lhs->typeof()->checkCondType(p);
-    rhs->typeof()->checkCondType(p);
-}
-
-Negation::Negation(misc::position const& p, util::sptr<Expression const> r)
-    : rhs(std::move(r))
-{
-    rhs->typeof()->checkCondType(p);
-}
-
-util::sref<Type const> IntLiteral::typeof() const
-{
-    return Type::BIT_INT;
-}
-
-util::sref<Type const> FloatLiteral::typeof() const
-{
-    return Type::BIT_FLOAT;
-}
-
-util::sref<Type const> BoolLiteral::typeof() const
-{
-    return Type::BIT_BOOL;
-}
-
-util::sref<Type const> Reference::typeof() const
-{
-    return type;
-}
-
-util::sref<Type const> Call::typeof() const
-{
-    return type;
-}
-
-util::sref<Type const> FuncReference::typeof() const
-{
-    return type;
-}
-
-util::sref<Type const> BinaryOp::typeof() const
-{
-    return type;
-}
-
-util::sref<Type const> PreUnaryOp::typeof() const
-{
-    return type;
-}
-
-util::sref<Type const> Conjunction::typeof() const
-{
-    return Type::BIT_BOOL;
-}
-
-util::sref<Type const> Disjunction::typeof() const
-{
-    return Type::BIT_BOOL;
-}
-
-util::sref<Type const> Negation::typeof() const
-{
-    return Type::BIT_BOOL;
-}
 
 void IntLiteral::write() const
 {
@@ -105,7 +23,7 @@ void BoolLiteral::write() const
 
 void Reference::write() const
 {
-    output::refLevel(stack_offset, level, typeof()->exportedName());
+    output::refLevel(stack_offset, level, type_exported_name);
 }
 
 void Call::write() const

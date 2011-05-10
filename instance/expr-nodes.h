@@ -4,7 +4,6 @@
 #include <vector>
 
 #include "node-base.h"
-#include "fwd-decl.h"
 #include "../util/pointer.h"
 #include "../misc/platform.h"
 #include "../misc/pos-type.h"
@@ -18,7 +17,6 @@ namespace inst {
             : value(v)
         {}
 
-        util::sref<Type const> typeof() const;
         void write() const;
 
         platform::i4_type const value;
@@ -31,7 +29,6 @@ namespace inst {
             : value(v)
         {}
 
-        util::sref<Type const> typeof() const;
         void write() const;
 
         platform::f8_type const value;
@@ -44,7 +41,6 @@ namespace inst {
             : value(v)
         {}
 
-        util::sref<Type const> typeof() const;
         void write() const;
 
         bool const value;
@@ -53,16 +49,15 @@ namespace inst {
     struct Reference
         : public Expression
     {
-        Reference(util::sref<Type const> t, int l, int off)
-            : type(t)
+        Reference(std::string const& en, int l, int off)
+            : type_exported_name(en)
             , level(l)
             , stack_offset(off)
         {}
 
-        util::sref<Type const> typeof() const;
         void write() const;
 
-        util::sref<Type const> const type;
+        std::string const type_exported_name;
         int const level;
         int const stack_offset;
     };
@@ -70,16 +65,13 @@ namespace inst {
     struct Call
         : public Expression
     {
-        Call(util::sref<Type const> t, util::id c, std::vector<util::sptr<Expression const>> a)
-            : type(t)
-            , call_id(c)
+        Call(util::id c, std::vector<util::sptr<Expression const>> a)
+            : call_id(c)
             , args(std::move(a))
         {}
 
-        util::sref<Type const> typeof() const;
         void write() const;
 
-        util::sref<Type const> const type;
         util::id const call_id;
         std::vector<util::sptr<Expression const>> args;
     };
@@ -101,18 +93,15 @@ namespace inst {
             {}
         };
 
-        FuncReference(int s, std::vector<ArgInfo> const& a, util::sref<Type const> t)
+        FuncReference(int s, std::vector<ArgInfo> const& a)
             : size(s)
             , args(a)
-            , type(t)
         {}
 
-        util::sref<Type const> typeof() const;
         void write() const;
 
         int const size;
         std::vector<ArgInfo> const args;
-        util::sref<Type const> type;
     };
 
     struct BinaryOp
@@ -120,48 +109,41 @@ namespace inst {
     {
         BinaryOp(util::sptr<Expression const> l
                , std::string const& o
-               , util::sref<Type const> t
                , util::sptr<Expression const> r)
             : lhs(std::move(l))
             , op(o)
-            , type(t)
             , rhs(std::move(r))
         {}
 
-        util::sref<Type const> typeof() const;
         void write() const;
 
         util::sptr<Expression const> const lhs;
         std::string const op;
-        util::sref<Type const> const type;
         util::sptr<Expression const> const rhs;
     };
 
     struct PreUnaryOp
         : public Expression
     {
-        PreUnaryOp(std::string const& o, util::sref<Type const> t , util::sptr<Expression const> r)
+        PreUnaryOp(std::string const& o, util::sptr<Expression const> r)
             : op(o)
-            , type(t)
             , rhs(std::move(r))
         {}
 
-        util::sref<Type const> typeof() const;
         void write() const;
 
         std::string const op;
-        util::sref<Type const> type;
         util::sptr<Expression const> const rhs;
     };
 
     struct Conjunction
         : public Expression
     {
-        Conjunction(misc::position const& p
-                  , util::sptr<Expression const> l
-                  , util::sptr<Expression const> r);
+        Conjunction(util::sptr<Expression const> l, util::sptr<Expression const> r)
+            : lhs(std::move(l))
+            , rhs(std::move(r))
+        {}
 
-        util::sref<Type const> typeof() const;
         void write() const;
 
         util::sptr<Expression const> const lhs;
@@ -171,11 +153,11 @@ namespace inst {
     struct Disjunction
         : public Expression
     {
-        Disjunction(misc::position const& p
-                  , util::sptr<Expression const> l
-                  , util::sptr<Expression const> r);
+        Disjunction(util::sptr<Expression const> l, util::sptr<Expression const> r)
+            : lhs(std::move(l))
+            , rhs(std::move(r))
+        {}
 
-        util::sref<Type const> typeof() const;
         void write() const;
 
         util::sptr<Expression const> const lhs;
@@ -185,9 +167,10 @@ namespace inst {
     struct Negation
         : public Expression
     {
-        Negation(misc::position const& p, util::sptr<Expression const> r);
+        explicit Negation(util::sptr<Expression const> r)
+            : rhs(std::move(r))
+        {}
 
-        util::sref<Type const> typeof() const;
         void write() const;
 
         util::sptr<Expression const> const rhs;

@@ -7,7 +7,6 @@
 
 #include "fwd-decl.h"
 #include "../proto/fwd-decl.h"
-#include "../instance/fwd-decl.h"
 #include "../util/pointer.h"
 #include "../misc/pos-type.h"
 

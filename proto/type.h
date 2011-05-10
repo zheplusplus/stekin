@@ -1,5 +1,5 @@
-#ifndef __STACKENGING_INSTANCE_TYPE_H__
-#define __STACKENGING_INSTANCE_TYPE_H__
+#ifndef __STEKIN_PROTO_TYPE_H__
+#define __STEKIN_PROTO_TYPE_H__
 
 #include <string>
 #include <vector>
@@ -8,9 +8,8 @@
 #include "fwd-decl.h"
 #include "../util/pointer.h"
 #include "../misc/pos-type.h"
-#include "../proto/fwd-decl.h"
 
-namespace inst {
+namespace proto {
 
     struct Type {
         int const size;
@@ -18,25 +17,23 @@ namespace inst {
         virtual std::string exportedName() const = 0;
         virtual std::string name() const = 0;
     public:
-        virtual util::sptr<inst::Expression const> call(
-                  misc::position const& call_pos
-                , int level
-                , int stack_offset
-                , std::vector<util::sref<inst::Type const>> const& arg_types
-                , std::vector<util::sptr<Expression const>> args) const = 0;
+        virtual util::sref<FuncInstDraft> call(
+                              misc::position const& call_pos
+                            , int level
+                            , int stack_offset
+                            , std::vector<util::sref<Type const>> const& arg_types) const = 0;
     public:
         bool operator!=(Type const& rhs) const;
         virtual bool operator==(Type const& rhs) const = 0;
         virtual bool operator<(Type const& rhs) const = 0;
     public:
         virtual bool eqAsBuiltIn(Type const& lhs) const;
-        virtual bool eqAsFuncReference(
-                            util::sref<proto::Function> lhs_func
-                          , std::map<std::string, proto::Variable const> const& rhs_cr) const;
+        virtual bool eqAsFuncReference(util::sref<Function> lhs_func
+                                     , std::map<std::string, Variable const> const& rhs_cr) const;
 
         virtual bool ltAsBuiltIn(Type const& lhs) const = 0;
-        virtual bool ltAsFuncReference(util::sref<proto::Function> lhs_func
-                                     , std::map<std::string, proto::Variable const> const& rhs_cr)
+        virtual bool ltAsFuncReference(util::sref<Function> lhs_func
+                                     , std::map<std::string, Variable const> const& rhs_cr)
                                     const = 0;
     public:
         virtual void checkCondType(misc::position const& pos) const;
@@ -65,23 +62,21 @@ namespace inst {
         std::string exportedName() const;
         std::string name() const;
     public:
-        util::sptr<inst::Expression const> call(
-                  misc::position const& call_pos
-                , int
-                , int
-                , std::vector<util::sref<inst::Type const>> const&
-                , std::vector<util::sptr<Expression const>>) const;
+        util::sref<FuncInstDraft> call(misc::position const& call_pos
+                                     , int
+                                     , int
+                                     , std::vector<util::sref<Type const>> const&) const;
     public:
         bool operator==(Type const& rhs) const;
         bool operator<(Type const& rhs) const;
         bool eqAsBuiltIn(Type const& lhs) const;
         bool ltAsBuiltIn(Type const& lhs) const;
-        bool ltAsFuncReference(util::sref<proto::Function>
-                             , std::map<std::string, proto::Variable const> const&) const;
+        bool ltAsFuncReference(util::sref<Function>
+                             , std::map<std::string, Variable const> const&) const;
     public:
         void checkCondType(misc::position const& pos) const;
     };
 
 }
 
-#endif /* __STACKENGING_INSTANCE_TYPE_H__ */
+#endif /* __STEKIN_PROTO_TYPE_H__ */

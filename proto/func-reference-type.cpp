@@ -4,6 +4,7 @@
 #include "function.h"
 #include "node-base.h"
 #include "func-inst-draft.h"
+#include "variable.h"
 #include "../instance/expr-nodes.h"
 #include "../output/name-mangler.h"
 #include "../output/func-writer.h"
@@ -26,12 +27,12 @@ std::string FuncReferenceType::name() const
          + " parameters ]";
 }
 
-bool FuncReferenceType::operator==(inst::Type const& rhs) const
+bool FuncReferenceType::operator==(Type const& rhs) const
 {
     return rhs.eqAsFuncReference(_func, context_references);
 }
 
-bool FuncReferenceType::operator<(inst::Type const& rhs) const
+bool FuncReferenceType::operator<(Type const& rhs) const
 {
     return rhs.ltAsFuncReference(_func, context_references);
 }
@@ -89,15 +90,13 @@ int FuncReferenceType::_calcSize(std::map<std::string, Variable const> const& cr
     return size;
 }
 
-util::sptr<inst::Expression const> FuncReferenceType::call(
-            misc::position const&
-          , int level
-          , int stack_offset
-          , std::vector<util::sref<inst::Type const>> const& arg_types
-          , std::vector<util::sptr<inst::Expression const>> args) const
+util::sref<FuncInstDraft> FuncReferenceType::call(
+                                misc::position const&
+                              , int level
+                              , int stack_offset
+                              , std::vector<util::sref<Type const>> const& arg_types) const
 {
-    util::sref<FuncInstDraft> func(_func->inst(level, _adjustVars(stack_offset, level), arg_types));
-    return util::mkptr(new inst::Call(func->getReturnType(), func.id() , std::move(args)));
+    return _func->inst(level, _adjustVars(stack_offset, level), arg_types);
 }
 
 std::vector<inst::FuncReference::ArgInfo> FuncReferenceType::makeCallArgs() const

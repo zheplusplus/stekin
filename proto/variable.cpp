@@ -1,6 +1,7 @@
 #include "variable.h"
+#include "func-inst-draft.h"
+#include "type.h"
 #include "../instance/node-base.h"
-#include "../instance/type.h"
 #include "../output/statement-writer.h"
 
 using namespace proto;
@@ -26,12 +27,11 @@ bool Variable::operator!=(Variable const& rhs) const
     return !operator==(rhs);
 }
 
-util::sptr<inst::Expression const> Variable::call(
-                                        misc::position const& call_pos
-                                      , std::vector<util::sref<inst::Type const>> const& arg_types
-                                      , std::vector<util::sptr<inst::Expression const>> args) const
+util::sref<proto::FuncInstDraft> Variable::call(
+                                misc::position const& call_pos
+                              , std::vector<util::sref<Type const>> const& arg_types) const
 {
-    return type->call(call_pos, level, stack_offset, arg_types, std::move(args));
+    return type->call(call_pos, level, stack_offset, arg_types);
 }
 
 Variable Variable::adjustLocation(int offset_diff, int lvl) const

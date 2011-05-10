@@ -1,9 +1,9 @@
 #include "stmt-nodes.h"
-#include "function.h"
 #include "func-inst-draft.h"
 #include "symbol-table.h"
+#include "type.h"
+#include "variable.h"
 #include "../instance/stmt-nodes.h"
-#include "../instance/type.h"
 
 using namespace proto;
 
@@ -16,8 +16,8 @@ void Branch::addTo(util::sref<FuncInstDraft> func)
 util::sptr<inst::Statement const> Branch::inst(util::sref<FuncInstDraft> func
                                              , util::sref<SymbolTable> st)
 {
-    return util::mkptr(new inst::Branch(pos
-                                      , predicate->inst(st)
+    predicate->type(st)->checkCondType(pos);
+    return util::mkptr(new inst::Branch(predicate->inst(st)
                                       , _consequence_stmt->inst(func, st)
                                       , _alternative_stmt->inst(func, st)));
 }
@@ -53,23 +53,22 @@ util::sptr<inst::Statement const> Arithmetics::_inst(util::sref<FuncInstDraft>
 util::sptr<inst::Statement const> VarDef::_inst(util::sref<FuncInstDraft>
                                               , util::sref<SymbolTable> st) const
 {
-    util::sptr<inst::Expression const> init_val = init->inst(st);
-    util::sref<inst::Type const> init_type = init_val->typeof();
-    return util::mkptr(new inst::Initialization(st->defVar(pos, init_type, name).stack_offset
-                                              , std::move(init_val)));
+    util::sref<Type const> type(init->type(st));
+    return util::mkptr(new inst::Initialization(st->defVar(pos, type, name).stack_offset
+                                              , init->inst(st)
+                                              , type->exportedName()));
 }
 
 util::sptr<inst::Statement const> Return::_inst(util::sref<FuncInstDraft> func
                                               , util::sref<SymbolTable> st) const
 {
-    util::sptr<inst::Expression const> e = ret_val->inst(st);
-    func->setReturnType(pos, e->typeof());
-    return util::mkptr(new inst::Return(std::move(e)));
+    func->setReturnType(pos, ret_val->type(st));
+    return util::mkptr(new inst::Return(ret_val->inst(st)));
 }
 
 util::sptr<inst::Statement const> ReturnNothing::_inst(util::sref<FuncInstDraft> func
                                                      , util::sref<SymbolTable>) const
 {
-    func->setReturnType(pos, inst::Type::BIT_VOID);
+    func->setReturnType(pos, Type::BIT_VOID);
     return util::mkptr(new inst::ReturnNothing);
 }

@@ -7,7 +7,7 @@
 #include "filter.h"
 #include "../proto/variable.h"
 #include "../proto/expr-nodes.h"
-#include "../instance/expr-nodes.h"
+#include "../proto/func-inst-draft.h"
 #include "../util/string.h"
 #include "../report/errors.h"
 

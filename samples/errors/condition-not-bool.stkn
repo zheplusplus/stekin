@@ -1,6 +1,11 @@
-condition: 0 && true
+func conjunction_check(x)
+    condition: x && true
 
-if 0
-    return
-else
+conjunction_check(0)
+
+func condition_check(x)
+    if x
+        return
     write(false)
+
+condition_check(0)

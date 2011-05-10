@@ -7,7 +7,6 @@
 
 #include "fwd-decl.h"
 #include "../instance/block.h"
-#include "../instance/type.h"
 #include "../misc/pos-type.h"
 
 namespace proto {
@@ -15,9 +14,8 @@ namespace proto {
     struct FuncInstDraft {
         virtual ~FuncInstDraft() {}
     public:
-        virtual void setReturnType(misc::position const& pos
-                                 , util::sref<inst::Type const> return_type);
-        virtual util::sref<inst::Type const> getReturnType() const;
+        virtual void setReturnType(misc::position const& pos, util::sref<Type const> return_type);
+        virtual util::sref<Type const> getReturnType() const;
         virtual bool isReturnTypeResolved() const;
 
         void addPath(util::sref<Statement> path);
@@ -27,6 +25,7 @@ namespace proto {
         void instantiate(util::sref<Statement> stmt);
     public:
         static util::sref<FuncInstDraft> create(util::sref<SymbolTable> st, bool has_void_returns);
+        static util::sref<FuncInstDraft> badDraft();
 
         static void writeDecls();
         static void writeImpls();

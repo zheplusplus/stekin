@@ -4,9 +4,8 @@
 #include <list>
 #include <map>
 
+#include "fwd-decl.h"
 #include "scope.h"
-#include "variable.h"
-#include "../instance/fwd-decl.h"
 #include "../misc/pos-type.h"
 
 namespace proto {
@@ -16,10 +15,10 @@ namespace proto {
     {
         util::sref<FuncInstDraft> inst(misc::position const& pos
                                      , util::sref<SymbolTable const> ext_st
-                                     , std::vector<util::sref<inst::Type const>> const& arg_types);
+                                     , std::vector<util::sref<Type const>> const& arg_types);
         util::sref<FuncInstDraft> inst(int level
                                      , std::map<std::string, Variable const> const& ext_vars
-                                     , std::vector<util::sref<inst::Type const>> const& arg_types);
+                                     , std::vector<util::sref<Type const>> const& arg_types);
 
         Function(misc::position const& ps
                , std::string const& func_name
@@ -45,10 +44,10 @@ namespace proto {
     public:
         struct InstanceInfo {
             std::map<std::string, Variable const> const ext_vars;
-            std::vector<util::sref<inst::Type const>> const arg_types;
+            std::vector<util::sref<Type const>> const arg_types;
 
             InstanceInfo(std::map<std::string, Variable const> const& e
-                       , std::vector<util::sref<inst::Type const>> const& a)
+                       , std::vector<util::sref<Type const>> const& a)
                 : ext_vars(e)
                 , arg_types(a)
             {}

@@ -6,7 +6,6 @@
 #include <list>
 
 #include "fwd-decl.h"
-#include "../instance/fwd-decl.h"
 #include "../misc/pos-type.h"
 #include "../util/pointer.h"
 
@@ -14,9 +13,9 @@ namespace proto {
 
     struct ArgNameTypeRec {
         std::string const name;
-        util::sref<inst::Type const> const atype;
+        util::sref<Type const> const atype;
 
-        ArgNameTypeRec(std::string const& n, util::sref<inst::Type const> const t)
+        ArgNameTypeRec(std::string const& n, util::sref<Type const> const t)
             : name(n)
             , atype(t)
         {}
@@ -33,17 +32,17 @@ namespace proto {
         {}
     public:
         Variable defVar(misc::position const& pos
-                      , util::sref<inst::Type const> type
+                      , util::sref<Type const> type
                       , std::string const& name);
         Variable queryVar(misc::position const& pos, std::string const& name) const;
 
         Operation const* queryBinary(misc::position const& pos
                                    , std::string const& op
-                                   , util::sref<inst::Type const> lhs
-                                   , util::sref<inst::Type const> rhs) const;
+                                   , util::sref<Type const> lhs
+                                   , util::sref<Type const> rhs) const;
         Operation const* queryPreUnary(misc::position const& pos
                                      , std::string const& op
-                                     , util::sref<inst::Type const> rhs) const;
+                                     , util::sref<Type const> rhs) const;
     public:
         int const level;
     public:

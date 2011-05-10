@@ -6,6 +6,7 @@
 #include "symbol-table.h"
 #include "expr-nodes.h"
 #include "stmt-nodes.h"
+#include "variable.h"
 #include "../instance/stmt-nodes.h"
 #include "../util/map-compare.h"
 #include "../report/errors.h"
@@ -14,7 +15,7 @@ using namespace proto;
 
 util::sref<FuncInstDraft> Function::inst(misc::position const& pos
                                        , util::sref<SymbolTable const> ext_st
-                                       , std::vector<util::sref<inst::Type const>> const& arg_types)
+                                       , std::vector<util::sref<Type const>> const& arg_types)
 {
     return inst(ext_st->level, bindExternalVars(pos, ext_st), arg_types);
 }
@@ -22,7 +23,7 @@ util::sref<FuncInstDraft> Function::inst(misc::position const& pos
 static util::sref<FuncInstDraft> instanceAlreadyDoneOrNulIfNonexist(
             std::map<Function::InstanceInfo, util::sref<FuncInstDraft>> const& instance_cache
           , std::map<std::string, Variable const> const& ext_vars
-          , std::vector<util::sref<inst::Type const>> const& arg_types
+          , std::vector<util::sref<Type const>> const& arg_types
           , std::string const& name)
 {
     auto find_result = instance_cache.find(Function::InstanceInfo(ext_vars, arg_types));
@@ -40,7 +41,7 @@ static util::sref<FuncInstDraft> instanceAlreadyDoneOrNulIfNonexist(
 }
 
 std::list<ArgNameTypeRec> makeArgInfo(std::vector<std::string> const& param_names
-                                    , std::vector<util::sref<inst::Type const>> const& arg_types)
+                                    , std::vector<util::sref<Type const>> const& arg_types)
 {
     std::list<ArgNameTypeRec> args;
     for (unsigned i = 0; i < arg_types.size(); ++i) {
@@ -51,7 +52,7 @@ std::list<ArgNameTypeRec> makeArgInfo(std::vector<std::string> const& param_name
 
 util::sref<FuncInstDraft> Function::inst(int level
                                        , std::map<std::string, Variable const> const& ext_vars
-                                       , std::vector<util::sref<inst::Type const>> const& arg_types)
+                                       , std::vector<util::sref<Type const>> const& arg_types)
 {
     util::sref<FuncInstDraft> result_inst = instanceAlreadyDoneOrNulIfNonexist(_instance_cache
                                                                              , ext_vars

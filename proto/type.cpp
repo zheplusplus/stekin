@@ -1,10 +1,11 @@
 #include "type.h"
 #include "expr-nodes.h"
-#include "../proto/variable.h"
+#include "variable.h"
+#include "func-inst-draft.h"
 #include "../output/name-mangler.h"
 #include "../report/errors.h"
 
-using namespace inst;
+using namespace proto;
 
 static BuiltInPrimitive const BAD_TYPE_DEF("*BAD STEKIN TYPE*", 0);
 static BuiltInPrimitive const VOID("void", 0);
@@ -28,8 +29,8 @@ bool Type::eqAsBuiltIn(Type const&) const
     return false;
 }
 
-bool Type::eqAsFuncReference(util::sref<proto::Function>
-                           , std::map<std::string, proto::Variable const> const&) const
+bool Type::eqAsFuncReference(util::sref<Function>
+                           , std::map<std::string, Variable const> const&) const
 {
     return false;
 }
@@ -39,8 +40,8 @@ bool Type::ltAsBuiltIn(Type const&) const
     return false;
 }
 
-bool Type::ltAsFuncReference(util::sref<proto::Function>
-                           , std::map<std::string, proto::Variable const> const&) const
+bool Type::ltAsFuncReference(util::sref<Function>
+                           , std::map<std::string, Variable const> const&) const
 {
     return false;
 }
@@ -80,8 +81,8 @@ bool BuiltInPrimitive::ltAsBuiltIn(Type const& lhs) const
     return &lhs < this;
 }
 
-bool BuiltInPrimitive::ltAsFuncReference(util::sref<proto::Function>
-                                       , std::map<std::string, proto::Variable const> const&) const
+bool BuiltInPrimitive::ltAsFuncReference(util::sref<Function>
+                                       , std::map<std::string, Variable const> const&) const
 {
     return false;
 }
@@ -93,13 +94,11 @@ void BuiltInPrimitive::checkCondType(misc::position const& pos) const
     }
 }
 
-util::sptr<inst::Expression const> BuiltInPrimitive::call(
-                  misc::position const& call_pos
-                , int
-                , int
-                , std::vector<util::sref<inst::Type const>> const&
-                , std::vector<util::sptr<Expression const>>) const
+util::sref<FuncInstDraft> BuiltInPrimitive::call(misc::position const& call_pos
+                                               , int
+                                               , int
+                                               , std::vector<util::sref<Type const>> const&) const
 {
     error::requestVariableNotCallable(call_pos);
-    return std::move(util::mkptr(new BoolLiteral(false)));
+    return FuncInstDraft::badDraft();
 }

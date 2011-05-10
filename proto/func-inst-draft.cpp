@@ -5,6 +5,7 @@
 #include "func-inst-draft.h"
 #include "node-base.h"
 #include "symbol-table.h"
+#include "type.h"
 #include "variable.h"
 #include "../report/errors.h"
 #include "../output/func-writer.h"
@@ -13,16 +14,15 @@
 
 using namespace proto;
 
-util::sref<inst::Type const> FuncInstDraft::getReturnType() const
+util::sref<Type const> FuncInstDraft::getReturnType() const
 {
-    return inst::Type::BIT_VOID;
+    return Type::BIT_VOID;
 }
 
-void FuncInstDraft::setReturnType(misc::position const& pos
-                                , util::sref<inst::Type const> return_type)
+void FuncInstDraft::setReturnType(misc::position const& pos, util::sref<Type const> return_type)
 {
-    if (inst::Type::BIT_VOID != return_type) {
-        error::conflictReturnType(pos, inst::Type::BIT_VOID->name(), return_type->name());
+    if (Type::BIT_VOID != return_type) {
+        error::conflictReturnType(pos, Type::BIT_VOID->name(), return_type->name());
     }
 }
 
@@ -38,17 +38,17 @@ namespace {
     {
         explicit FuncInstDraftUnresolved(util::sref<SymbolTable> st)
             : FuncInstDraft(st)
-            , _return_type(inst::Type::BAD_TYPE)
+            , _return_type(Type::BAD_TYPE)
         {}
 
-        util::sref<inst::Type const> getReturnType() const
+        util::sref<Type const> getReturnType() const
         {
             return _return_type;
         }
 
-        void setReturnType(misc::position const& pos, util::sref<inst::Type const> return_type)
+        void setReturnType(misc::position const& pos, util::sref<Type const> return_type)
         {
-            if (inst::Type::BAD_TYPE == _return_type) {
+            if (Type::BAD_TYPE == _return_type) {
                 _return_type = return_type;
                 return;
             }
@@ -59,10 +59,10 @@ namespace {
 
         bool isReturnTypeResolved() const
         {
-            return inst::Type::BAD_TYPE != _return_type;
+            return Type::BAD_TYPE != _return_type;
         }
 
-        util::sref<inst::Type const> _return_type;
+        util::sref<Type const> _return_type;
     };
 
     struct FuncInstRecs
@@ -102,6 +102,13 @@ util::sref<FuncInstDraft> FuncInstDraft::create(util::sref<SymbolTable> st, bool
     util::sref<FuncInstDraft> fref = *func;
     FuncInstRecs::instance.add(std::move(func));
     return fref;
+}
+
+util::sref<FuncInstDraft> FuncInstDraft::badDraft()
+{
+    static SymbolTable st;
+    static FuncInstDraft bad_draft(util::mkref(st));
+    return util::mkref(bad_draft);
 }
 
 void FuncInstDraft::addPath(util::sref<Statement> path)
