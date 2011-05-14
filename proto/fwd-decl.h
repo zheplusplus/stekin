@@ -6,7 +6,13 @@ namespace proto {
     struct Expression;
     struct Statement;
     struct Function;
+    struct FuncInstDraft;
     struct Scope;
+    struct Type;
+    struct FuncReferenceType;
+    struct Operation;
+    struct Variable;
+    struct SymbolTable;
 
 }
 

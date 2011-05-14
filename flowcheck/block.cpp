@@ -5,8 +5,9 @@
 #include "node-base.h"
 #include "filter.h"
 #include "../proto/node-base.h"
-#include "../proto/scope.h"
 #include "../proto/function.h"
+#include "../proto/variable.h"
+#include "../proto/func-reference-type.h"
 
 using namespace flchk;
 
@@ -30,7 +31,7 @@ void Block::compile(util::sref<proto::Scope> scope, util::sref<SymbolTable> st) 
                 , _stmts.end()
                 , [&](util::sptr<Statement const> const& stmt)
                   {
-                      scope->addMediate(stmt->compile(scope, st));
+                      scope->addStmt(stmt->compile(scope, st));
                   });
 }
 

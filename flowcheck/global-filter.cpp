@@ -3,6 +3,8 @@
 #include "node-base.h"
 #include "../proto/function.h"
 #include "../proto/built-in.h"
+#include "../proto/func-inst-draft.h"
+#include "../proto/variable.h"
 
 using namespace flchk;
 
@@ -15,8 +17,8 @@ namespace {
             : Expression(misc::position(0))
         {}
 
-        util::sptr<proto::Expression const> compile(util::sref<proto::Scope>
-                                                  , util::sref<SymbolTable>) const
+        util::sptr<proto::Expression> compile(util::sref<proto::Scope>
+                                            , util::sref<SymbolTable>) const
         {
             return util::mkptr(new proto::WriteExpr);
         }

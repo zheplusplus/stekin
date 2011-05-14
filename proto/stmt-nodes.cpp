@@ -1,69 +1,74 @@
 #include "stmt-nodes.h"
-#include "function.h"
+#include "func-inst-draft.h"
+#include "symbol-table.h"
+#include "type.h"
+#include "variable.h"
 #include "../instance/stmt-nodes.h"
-#include "../instance/scope.h"
-#include "../instance/type.h"
-#include "../instance/symbol-table.h"
 
 using namespace proto;
 
-void BranchMediate::addTo(util::sref<inst::Scope> scope)
+void Branch::addTo(util::sref<FuncInstDraft> func)
 {
-    _consequence_mediate->addTo(scope);
-    _alternative_mediate->addTo(scope);
+    _consequence_stmt->addTo(func);
+    _alternative_stmt->addTo(func);
 }
 
-util::sptr<inst::Statement const> BranchMediate::inst(util::sref<inst::Scope> scope)
+util::sptr<inst::Statement const> Branch::inst(util::sref<FuncInstDraft> func
+                                             , util::sref<SymbolTable> st)
 {
-    return util::mkptr(new inst::Branch(pos
-                                      , predicate->inst(scope)
-                                      , _consequence_mediate->inst(scope)
-                                      , _alternative_mediate->inst(scope)));
+    predicate->type(st)->checkCondType(pos);
+    return util::mkptr(new inst::Branch(predicate->inst(st)
+                                      , _consequence_stmt->inst(func, st)
+                                      , _alternative_stmt->inst(func, st)));
 }
 
-void BranchMediate::mediateInst(util::sref<inst::Scope> scope)
+void Branch::mediateInst(util::sref<FuncInstDraft> func, util::sref<SymbolTable>)
 {
-    _consequence_mediate->addTo(scope);
-    _alternative_mediate->addTo(scope);
+    _consequence_stmt->addTo(func);
+    _alternative_stmt->addTo(func);
 }
 
-void DirectInst::addTo(util::sref<inst::Scope>) {}
+void DirectInst::addTo(util::sref<FuncInstDraft>) {}
 
-util::sptr<inst::Statement const> DirectInst::inst(util::sref<inst::Scope> scope)
+util::sptr<inst::Statement const> DirectInst::inst(util::sref<FuncInstDraft> func
+                                                 , util::sref<SymbolTable> st)
 {
-    mediateInst(scope);
+    mediateInst(func, st);
     return std::move(_result_stmt_or_nul_if_not_inst);
 }
 
-void DirectInst::mediateInst(util::sref<inst::Scope> scope)
+void DirectInst::mediateInst(util::sref<FuncInstDraft> func, util::sref<SymbolTable> st)
 {
     if (_result_stmt_or_nul_if_not_inst.nul()) {
-        _result_stmt_or_nul_if_not_inst = _inst(scope);
+        _result_stmt_or_nul_if_not_inst = _inst(func, st);
     }
 }
 
-util::sptr<inst::Statement const> Arithmetics::_inst(util::sref<inst::Scope> scope) const
+util::sptr<inst::Statement const> Arithmetics::_inst(util::sref<FuncInstDraft>
+                                                   , util::sref<SymbolTable> st) const
 {
-    return util::mkptr(new inst::Arithmetics(expr->inst(scope)));
+    return util::mkptr(new inst::Arithmetics(expr->inst(st)));
 }
 
-util::sptr<inst::Statement const> VarDef::_inst(util::sref<inst::Scope> scope) const
+util::sptr<inst::Statement const> VarDef::_inst(util::sref<FuncInstDraft>
+                                              , util::sref<SymbolTable> st) const
 {
-    util::sptr<inst::Expression const> init_val = init->inst(scope);
-    util::sref<inst::Type const> init_type = init_val->typeof();
-    return util::mkptr(new inst::Initialization(scope->defVar(pos, init_type, name).stack_offset
-                                              , std::move(init_val)));
+    util::sref<Type const> type(init->type(st));
+    return util::mkptr(new inst::Initialization(st->defVar(pos, type, name).stack_offset
+                                              , init->inst(st)
+                                              , type->exportedName()));
 }
 
-util::sptr<inst::Statement const> Return::_inst(util::sref<inst::Scope> scope) const
+util::sptr<inst::Statement const> Return::_inst(util::sref<FuncInstDraft> func
+                                              , util::sref<SymbolTable> st) const
 {
-    util::sptr<inst::Expression const> e = ret_val->inst(scope);
-    scope->setReturnType(pos, e->typeof());
-    return util::mkptr(new inst::Return(std::move(e)));
+    func->setReturnType(pos, ret_val->type(st));
+    return util::mkptr(new inst::Return(ret_val->inst(st)));
 }
 
-util::sptr<inst::Statement const> ReturnNothing::_inst(util::sref<inst::Scope> scope) const
+util::sptr<inst::Statement const> ReturnNothing::_inst(util::sref<FuncInstDraft> func
+                                                     , util::sref<SymbolTable>) const
 {
-    scope->setReturnType(pos, inst::Type::BIT_VOID);
+    func->setReturnType(pos, Type::BIT_VOID);
     return util::mkptr(new inst::ReturnNothing);
 }

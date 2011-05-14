@@ -1,93 +1,10 @@
 #include <algorithm>
 
 #include "expr-nodes.h"
-#include "function.h"
-#include "operation.h"
 #include "../output/func-writer.h"
 #include "../output/statement-writer.h"
 
 using namespace inst;
-
-Conjunction::Conjunction(misc::position const& p
-                       , util::sptr<Expression const> l
-                       , util::sptr<Expression const> r)
-    : lhs(std::move(l))
-    , rhs(std::move(r))
-{
-    lhs->typeof()->checkCondType(p);
-    rhs->typeof()->checkCondType(p);
-}
-
-Disjunction::Disjunction(misc::position const& p
-                       , util::sptr<Expression const> l
-                       , util::sptr<Expression const> r)
-    : lhs(std::move(l))
-    , rhs(std::move(r))
-{
-    lhs->typeof()->checkCondType(p);
-    rhs->typeof()->checkCondType(p);
-}
-
-Negation::Negation(misc::position const& p, util::sptr<Expression const> r)
-    : rhs(std::move(r))
-{
-    rhs->typeof()->checkCondType(p);
-}
-
-util::sref<Type const> IntLiteral::typeof() const
-{
-    return Type::BIT_INT;
-}
-
-util::sref<Type const> FloatLiteral::typeof() const
-{
-    return Type::BIT_FLOAT;
-}
-
-util::sref<Type const> BoolLiteral::typeof() const
-{
-    return Type::BIT_BOOL;
-}
-
-util::sref<Type const> Reference::typeof() const
-{
-    return var.type;
-}
-
-util::sref<Type const> Call::typeof() const
-{
-    return func->getReturnType();
-}
-
-util::sref<Type const> FuncReference::typeof() const
-{
-    return util::mkref(_type);
-}
-
-util::sref<Type const> BinaryOp::typeof() const
-{
-    return op->ret_type;
-}
-
-util::sref<Type const> PreUnaryOp::typeof() const
-{
-    return op->ret_type;
-}
-
-util::sref<Type const> Conjunction::typeof() const
-{
-    return Type::BIT_BOOL;
-}
-
-util::sref<Type const> Disjunction::typeof() const
-{
-    return Type::BIT_BOOL;
-}
-
-util::sref<Type const> Negation::typeof() const
-{
-    return Type::BIT_BOOL;
-}
 
 void IntLiteral::write() const
 {
@@ -106,12 +23,12 @@ void BoolLiteral::write() const
 
 void Reference::write() const
 {
-    output::refLevel(var.stack_offset, var.level, typeof()->exportedName());
+    output::refLevel(stack_offset, level, type_exported_name);
 }
 
 void Call::write() const
 {
-    output::writeCallBegin(func.id());
+    output::writeCallBegin(call_id);
     std::for_each(args.begin()
                 , args.end()
                 , [&](util::sptr<Expression const> const& expr)
@@ -124,14 +41,23 @@ void Call::write() const
 
 void FuncReference::write() const
 {
-    _type.write();
+    output::writeFuncReference(size);
+    std::for_each(args.begin()
+                , args.end()
+                , [&](ArgInfo const& arg)
+                  {
+                      output::funcReferenceNextVariable(arg.self_offset
+                                                      , output::StackVarRec(arg.exported_name
+                                                                          , arg.ref_offset
+                                                                          , arg.level));
+                  });
 }
 
 void BinaryOp::write() const
 {
     output::beginExpr();
     lhs->write();
-    output::writeOperator(op->op_img);
+    output::writeOperator(op);
     rhs->write();
     output::endExpr();
 }
@@ -139,7 +65,7 @@ void BinaryOp::write() const
 void PreUnaryOp::write() const
 {
     output::beginExpr();
-    output::writeOperator(op->op_img);
+    output::writeOperator(op);
     rhs->write();
     output::endExpr();
 }

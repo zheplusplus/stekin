@@ -1,8 +1,9 @@
 #include "scope.h"
 #include "function.h"
 #include "node-base.h"
+#include "variable.h"
+#include "func-reference-type.h"
 #include "../instance/node-base.h"
-#include "../instance/inst-mediate.h"
 
 using namespace proto;
 
@@ -17,12 +18,12 @@ util::sref<Function> Scope::declare(misc::position const& pos
     return result;
 }
 
-void Scope::addMediate(util::sptr<inst::MediateBase> mediate)
+void Scope::addStmt(util::sptr<Statement> stmt)
 {
-    _block->addMediate(std::move(mediate));
+    _block->addStmt(std::move(stmt));
 }
 
-util::sptr<inst::MediateBase> Scope::inst()
+util::sptr<Statement> Scope::inst()
 {
     return std::move(_block);
 }

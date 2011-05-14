@@ -4,12 +4,9 @@
 #include <vector>
 
 #include "node-base.h"
-#include "variable.h"
-#include "func-reference-type.h"
-#include "fwd-decl.h"
 #include "../util/pointer.h"
 #include "../misc/platform.h"
-#include "../proto/fwd-decl.h"
+#include "../misc/pos-type.h"
 
 namespace inst {
 
@@ -20,7 +17,6 @@ namespace inst {
             : value(v)
         {}
 
-        util::sref<Type const> typeof() const;
         void write() const;
 
         platform::i4_type const value;
@@ -33,7 +29,6 @@ namespace inst {
             : value(v)
         {}
 
-        util::sref<Type const> typeof() const;
         void write() const;
 
         platform::f8_type const value;
@@ -46,7 +41,6 @@ namespace inst {
             : value(v)
         {}
 
-        util::sref<Type const> typeof() const;
         void write() const;
 
         bool const value;
@@ -55,87 +49,101 @@ namespace inst {
     struct Reference
         : public Expression
     {
-        explicit Reference(Variable const& v)
-            : var(v)
+        Reference(std::string const& en, int l, int off)
+            : type_exported_name(en)
+            , level(l)
+            , stack_offset(off)
         {}
 
-        util::sref<Type const> typeof() const;
         void write() const;
 
-        Variable const var;
+        std::string const type_exported_name;
+        int const level;
+        int const stack_offset;
     };
 
     struct Call
         : public Expression
     {
-        Call(util::sref<Function const> f, std::vector<util::sptr<Expression const>> a)
-            : func(f)
+        Call(util::id c, std::vector<util::sptr<Expression const>> a)
+            : call_id(c)
             , args(std::move(a))
         {}
 
-        util::sref<Type const> typeof() const;
         void write() const;
 
-        util::sref<Function const> const func;
+        util::id const call_id;
         std::vector<util::sptr<Expression const>> args;
     };
 
     struct FuncReference
         : public Expression
     {
-        FuncReference(misc::position const& reference_pos
-                    , util::sref<proto::Function> func_proto
-                    , int level
-                    , std::map<std::string, Variable const> const& cr)
-            : _type(reference_pos, func_proto, level, cr)
+        struct ArgInfo {
+            int const level;
+            int const ref_offset;
+            std::string const exported_name;
+            int const self_offset;
+
+            ArgInfo(int l, int roff, std::string const& en, int soff)
+                : level(l)
+                , ref_offset(roff)
+                , exported_name(en)
+                , self_offset(soff)
+            {}
+        };
+
+        FuncReference(int s, std::vector<ArgInfo> const& a)
+            : size(s)
+            , args(a)
         {}
 
-        util::sref<Type const> typeof() const;
         void write() const;
-    private:
-        FuncReferenceType const _type;
+
+        int const size;
+        std::vector<ArgInfo> const args;
     };
 
     struct BinaryOp
         : public Expression
     {
-        BinaryOp(util::sptr<Expression const> l, Operation const* o, util::sptr<Expression const> r)
+        BinaryOp(util::sptr<Expression const> l
+               , std::string const& o
+               , util::sptr<Expression const> r)
             : lhs(std::move(l))
             , op(o)
             , rhs(std::move(r))
         {}
 
-        util::sref<Type const> typeof() const;
         void write() const;
 
         util::sptr<Expression const> const lhs;
-        Operation const* const op;
+        std::string const op;
         util::sptr<Expression const> const rhs;
     };
 
     struct PreUnaryOp
         : public Expression
     {
-        PreUnaryOp(Operation const* o, util::sptr<Expression const> r)
+        PreUnaryOp(std::string const& o, util::sptr<Expression const> r)
             : op(o)
             , rhs(std::move(r))
         {}
 
-        util::sref<Type const> typeof() const;
         void write() const;
 
-        Operation const* const op;
+        std::string const op;
         util::sptr<Expression const> const rhs;
     };
 
     struct Conjunction
         : public Expression
     {
-        Conjunction(misc::position const& p
-                  , util::sptr<Expression const> l
-                  , util::sptr<Expression const> r);
+        Conjunction(util::sptr<Expression const> l, util::sptr<Expression const> r)
+            : lhs(std::move(l))
+            , rhs(std::move(r))
+        {}
 
-        util::sref<Type const> typeof() const;
         void write() const;
 
         util::sptr<Expression const> const lhs;
@@ -145,11 +153,11 @@ namespace inst {
     struct Disjunction
         : public Expression
     {
-        Disjunction(misc::position const& p
-                  , util::sptr<Expression const> l
-                  , util::sptr<Expression const> r);
+        Disjunction(util::sptr<Expression const> l, util::sptr<Expression const> r)
+            : lhs(std::move(l))
+            , rhs(std::move(r))
+        {}
 
-        util::sref<Type const> typeof() const;
         void write() const;
 
         util::sptr<Expression const> const lhs;
@@ -159,9 +167,10 @@ namespace inst {
     struct Negation
         : public Expression
     {
-        Negation(misc::position const& p, util::sptr<Expression const> r);
+        explicit Negation(util::sptr<Expression const> r)
+            : rhs(std::move(r))
+        {}
 
-        util::sref<Type const> typeof() const;
         void write() const;
 
         util::sptr<Expression const> const rhs;

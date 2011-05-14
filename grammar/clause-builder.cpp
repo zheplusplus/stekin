@@ -3,7 +3,6 @@
 #include "../flowcheck/global-filter.h"
 #include "../flowcheck/node-base.h"
 #include "../flowcheck/function.h"
-#include "../proto/node-base.h"
 #include "../report/errors.h"
 
 using namespace grammar;

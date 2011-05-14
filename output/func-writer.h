@@ -36,7 +36,7 @@ namespace output {
     void writeMainEnd();
     void stknMainFunc(util::id func_addr);
 
-    void constructFuncReference(std::string const& type_exported_name);
+    void writeFuncReference(int size);
     void funcReferenceNextVariable(int offset, StackVarRec const& init);
 
 }

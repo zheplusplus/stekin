@@ -1,15 +1,17 @@
 #include <algorithm>
 
 #include "func-reference-type.h"
-#include "expr-nodes.h"
+#include "function.h"
+#include "node-base.h"
+#include "func-inst-draft.h"
+#include "variable.h"
+#include "../instance/expr-nodes.h"
 #include "../output/name-mangler.h"
 #include "../output/func-writer.h"
 #include "../util/string.h"
 #include "../util/map-compare.h"
-#include "../proto/function.h"
-#include "../proto/node-base.h"
 
-using namespace inst;
+using namespace proto;
 
 std::string FuncReferenceType::exportedName() const
 {
@@ -19,35 +21,37 @@ std::string FuncReferenceType::exportedName() const
 std::string FuncReferenceType::name() const
 {
     return "Function reference [ "
-         + _func_proto->name
+         + _func->name
          + " with "
-         + util::str(int(_func_proto->param_names.size()))
+         + util::str(int(_func->param_names.size()))
          + " parameters ]";
 }
 
 bool FuncReferenceType::operator==(Type const& rhs) const
 {
-    return rhs.eqAsFuncReference(_func_proto, context_references);
+    return rhs.eqAsFuncReference(_func, context_references);
 }
 
 bool FuncReferenceType::operator<(Type const& rhs) const
 {
-    return rhs.ltAsFuncReference(_func_proto, context_references);
+    return rhs.ltAsFuncReference(_func, context_references);
 }
 
-bool FuncReferenceType::eqAsFuncReference(util::sref<proto::Function> lhs_func
-                                        , std::map<std::string, Variable const> const& rhs_cr) const
+bool FuncReferenceType::eqAsFuncReference(
+            util::sref<Function> lhs_func
+          , std::map<std::string, Variable const> const& rhs_cr) const
 {
-    return _func_proto.id() == lhs_func.id() && context_references == rhs_cr;
+    return _func.id() == lhs_func.id() && context_references == rhs_cr;
 }
 
-bool FuncReferenceType::ltAsFuncReference(util::sref<proto::Function> lhs_func
-                                        , std::map<std::string, Variable const> const& rhs_cr) const
+bool FuncReferenceType::ltAsFuncReference(
+            util::sref<Function> lhs_func
+          , std::map<std::string, Variable const> const& rhs_cr) const
 {
-    if (_func_proto.id() == lhs_func.id()) {
+    if (_func.id() == lhs_func.id()) {
         return util::map_less(context_references, rhs_cr);
     }
-    return _func_proto.id() < lhs_func.id();
+    return _func.id() < lhs_func.id();
 }
 
 bool FuncReferenceType::ltAsBuiltIn(Type const&) const
@@ -66,9 +70,9 @@ std::map<std::string, Variable const> FuncReferenceType::_encloseReference(
                 , cr.end()
                 , [&](std::pair<std::string, Variable const> const& reference)
                   {
-                      map.insert(std::make_pair(reference.first
-                                              , Variable(pos, reference.second.type, offset, level))
-                                );
+                      map.insert(std::make_pair(
+                                        reference.first
+                                      , Variable(pos, reference.second.type, offset, level)));
                       offset += reference.second.type->size;
                   });
     return map;
@@ -86,34 +90,31 @@ int FuncReferenceType::_calcSize(std::map<std::string, Variable const> const& cr
     return size;
 }
 
-util::sptr<inst::Expression const> FuncReferenceType::call(
-            misc::position const&
-          , int level
-          , int stack_offset
-          , std::vector<util::sref<inst::Type const>> const& arg_types
-          , std::vector<util::sptr<Expression const>> args) const
+util::sref<FuncInstDraft> FuncReferenceType::call(
+                                misc::position const&
+                              , int level
+                              , int stack_offset
+                              , std::vector<util::sref<Type const>> const& arg_types) const
 {
-    return std::move(util::mkptr(new Call(_func_proto->inst(level
-                                                          , _adjustVars(stack_offset, level)
-                                                          , arg_types)
-                                        , std::move(args))));
+    return _func->inst(level, _adjustVars(stack_offset, level), arg_types);
 }
 
-void FuncReferenceType::write() const
+std::vector<inst::FuncReference::ArgInfo> FuncReferenceType::makeCallArgs() const
 {
-    output::constructFuncReference(exportedName());
+    std::list<inst::FuncReference::ArgInfo> result;
     int offset = 0;
     std::for_each(context_references.begin()
                 , context_references.end()
                 , [&](std::pair<std::string, Variable const> const& reference)
                   {
-                      output::funcReferenceNextVariable(
-                                     offset
-                                   , output::StackVarRec(reference.second.type->exportedName()
-                                                       , reference.second.stack_offset
-                                                       , reference.second.level));
+                      result.push_back(inst::FuncReference::ArgInfo(
+                                                          reference.second.level
+                                                        , reference.second.stack_offset
+                                                        , reference.second.type->exportedName()
+                                                        , offset));
                       offset += reference.second.type->size;
                   });
+    return std::vector<inst::FuncReference::ArgInfo>(result.begin(), result.end());
 }
 
 std::map<std::string, Variable const>

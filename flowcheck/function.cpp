@@ -6,6 +6,8 @@
 #include "symbol-table.h"
 #include "../proto/node-base.h"
 #include "../proto/function.h"
+#include "../proto/variable.h"
+#include "../proto/func-reference-type.h"
 
 using namespace flchk;
 

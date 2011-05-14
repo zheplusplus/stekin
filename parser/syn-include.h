@@ -9,7 +9,6 @@
 #include "syntax-types.h"
 #include "yy-misc.h"
 #include "../grammar/expr-nodes.h"
-#include "../flowcheck/expr-nodes.h"
 #include "../util/pointer.h"
 #include "../report/errors.h"
 

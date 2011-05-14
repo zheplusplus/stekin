@@ -1,7 +1,5 @@
 #!/bin/sh
 
-echo "sample-test:"
-
 verify() {
     if ./stkn.sh -cm samples/$1.stkn tmp.out && ./tmp.out | diff samples/$1.expected - ;
     then
@@ -10,6 +8,14 @@ verify() {
         echo $1 "FAILED!"
     fi
 }
+
+if [ $# == 1 ];
+then
+    verify $1
+    exit
+fi
+
+echo "sample-test:"
 
 verify empty
 verify write

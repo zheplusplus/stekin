@@ -1,12 +1,12 @@
 #ifndef __STEKIN_PROTO_FUNCTION_TEMPLATE_H__
 #define __STEKIN_PROTO_FUNCTION_TEMPLATE_H__
 
+#include <vector>
 #include <list>
 #include <map>
 
+#include "fwd-decl.h"
 #include "scope.h"
-#include "../instance/fwd-decl.h"
-#include "../instance/variable.h"
 #include "../misc/pos-type.h"
 
 namespace proto {
@@ -14,12 +14,12 @@ namespace proto {
     struct Function
         : public Scope
     {
-        util::sref<inst::Function> inst(misc::position const& pos
-                                      , util::sref<inst::Scope> ext_scope
-                                      , std::vector<util::sref<inst::Type const>> const& arg_types);
-        util::sref<inst::Function> inst(int level
-                                      , std::map<std::string, inst::Variable const> const& ext_vars
-                                      , std::vector<util::sref<inst::Type const>> const& arg_types);
+        util::sref<FuncInstDraft> inst(misc::position const& pos
+                                     , util::sref<SymbolTable const> ext_st
+                                     , std::vector<util::sref<Type const>> const& arg_types);
+        util::sref<FuncInstDraft> inst(int level
+                                     , std::map<std::string, Variable const> const& ext_vars
+                                     , std::vector<util::sref<Type const>> const& arg_types);
 
         Function(misc::position const& ps
                , std::string const& func_name
@@ -39,13 +39,19 @@ namespace proto {
         bool hint_void_return;
 
         void setFreeVariables(std::vector<std::string> const& free_vars);
+        std::map<std::string, Variable const> bindExternalVars(
+                                                misc::position const& pos
+                                              , util::sref<SymbolTable const> ext_st) const;
+
+        util::sref<FuncReferenceType const> refType(misc::position const& reference_pos
+                                                  , util::sref<SymbolTable const> st);
     public:
         struct InstanceInfo {
-            std::map<std::string, inst::Variable const> const ext_vars;
-            std::vector<util::sref<inst::Type const>> const arg_types;
+            std::map<std::string, Variable const> const ext_vars;
+            std::vector<util::sref<Type const>> const arg_types;
 
-            InstanceInfo(std::map<std::string, inst::Variable const> const& e
-                       , std::vector<util::sref<inst::Type const>> const& a)
+            InstanceInfo(std::map<std::string, Variable const> const& e
+                       , std::vector<util::sref<Type const>> const& a)
                 : ext_vars(e)
                 , arg_types(a)
             {}
@@ -53,12 +59,9 @@ namespace proto {
             bool operator<(InstanceInfo const& rhs) const;
         };
     private:
-        std::map<InstanceInfo, util::sref<inst::Function>> _instance_cache;
+        std::map<InstanceInfo, util::sref<FuncInstDraft>> _instance_cache;
+        std::vector<util::sptr<FuncReferenceType const>> _reference_types;
         std::vector<std::string> _free_variables;
-    public:
-        std::map<std::string, inst::Variable const> bindExternalVars(
-                                                misc::position const& pos
-                                              , util::sref<inst::Scope const> ext_scope) const;
     };
 
 }

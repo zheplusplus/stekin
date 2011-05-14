@@ -6,6 +6,8 @@
 #include "symbol-table.h"
 #include "../proto/function.h"
 #include "../proto/stmt-nodes.h"
+#include "../proto/variable.h"
+#include "../proto/func-reference-type.h"
 #include "../instance/node-base.h"
 
 using namespace flchk;
@@ -23,16 +25,16 @@ util::sptr<proto::Statement> Branch::compile(util::sref<proto::Scope> scope
     util::sptr<proto::Scope> alter_scope(new proto::Scope);
     consequence.compile(*consq_scope, st);
     alternative.compile(*alter_scope, st);
-    return util::mkptr(new proto::BranchMediate(pos
-                                              , predicate->compile(scope, st)
-                                              , consq_scope->inst()
-                                              , alter_scope->inst()));
+    return util::mkptr(new proto::Branch(pos
+                                       , predicate->compile(scope, st)
+                                       , consq_scope->inst()
+                                       , alter_scope->inst()));
 }
 
 util::sptr<proto::Statement> VarDef::compile(util::sref<proto::Scope> scope
                                            , util::sref<SymbolTable> st) const
 {
-    util::sptr<proto::Expression const> init_value(init->compile(scope, st));
+    util::sptr<proto::Expression> init_value(init->compile(scope, st));
     st->defVar(pos, name);
     return util::mkptr(new proto::VarDef(pos, name, std::move(init_value)));
 }

@@ -13,3 +13,7 @@ m: 10
 x: make_pair(m, 6)
 write(x(first))
 write(x(second))
+
+y: make_pair(false, true)
+write(y(first))
+write(y(second))

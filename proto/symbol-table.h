@@ -1,5 +1,5 @@
-#ifndef __STEKIN_INSTANCE_SYMBOL_TABLE_H__ 
-#define __STEKIN_INSTANCE_SYMBOL_TABLE_H__
+#ifndef __STEKIN_PROTO_SYMBOL_TABLE_H__ 
+#define __STEKIN_PROTO_SYMBOL_TABLE_H__
 
 #include <string>
 #include <map>
@@ -9,7 +9,7 @@
 #include "../misc/pos-type.h"
 #include "../util/pointer.h"
 
-namespace inst {
+namespace proto {
 
     struct ArgNameTypeRec {
         std::string const name;
@@ -30,18 +30,19 @@ namespace inst {
             : level(0)
             , _ss_used(0)
         {}
-
-        SymbolTable(SymbolTable&& rhs)
-            : level(rhs.level)
-            , _ss_used(0)
-            , _args(rhs._args)
-            , _external_defs(std::move(rhs._external_defs))
-        {}
     public:
         Variable defVar(misc::position const& pos
                       , util::sref<Type const> type
                       , std::string const& name);
         Variable queryVar(misc::position const& pos, std::string const& name) const;
+
+        util::sref<Operation const> queryBinary(misc::position const& pos
+                                              , std::string const& op
+                                              , util::sref<Type const> lhs
+                                              , util::sref<Type const> rhs) const;
+        util::sref<Operation const> queryPreUnary(misc::position const& pos
+                                                , std::string const& op
+                                                , util::sref<Type const> rhs) const;
     public:
         int const level;
     public:
@@ -58,4 +59,4 @@ namespace inst {
 
 }
 
-#endif /* __STEKIN_INSTANCE_SYMBOL_TABLE_H__ */
+#endif /* __STEKIN_PROTO_SYMBOL_TABLE_H__ */

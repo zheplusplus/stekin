@@ -25,9 +25,9 @@ namespace proto {
                                    , std::vector<std::string> const& param_names
                                    , bool contains_void_return);
     public:
-        void addMediate(util::sptr<inst::MediateBase> mediate);
+        void addStmt(util::sptr<Statement> stmt);
     public:
-        util::sptr<inst::MediateBase> inst();
+        util::sptr<Statement> inst();
     protected:
         util::sptr<Block> _block;
     };

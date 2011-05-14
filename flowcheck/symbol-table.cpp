@@ -4,7 +4,9 @@
 #include "function.h"
 #include "expr-nodes.h"
 #include "global-filter.h"
+#include "../proto/variable.h"
 #include "../proto/expr-nodes.h"
+#include "../proto/func-inst-draft.h"
 #include "../report/errors.h"
 
 using namespace flchk;
@@ -143,11 +145,11 @@ void SymbolTable::defFunc(util::sref<Function> func)
     _overloads.declare(func);
 }
 
-std::vector<util::sptr<proto::Expression const>> SymbolTable::_mkArgs(
+std::vector<util::sptr<proto::Expression>> SymbolTable::_mkArgs(
               std::vector<util::sptr<Expression const>> const& args
             , util::sref<proto::Scope> scope)
 {
-    std::vector<util::sptr<proto::Expression const>> arguments;
+    std::vector<util::sptr<proto::Expression>> arguments;
     arguments.reserve(args.size());
     std::for_each(args.begin()
                 , args.end()
@@ -162,12 +164,12 @@ util::sref<proto::Function> SymbolTable::_compileFunction(misc::position const& 
                                                         , util::sref<Function> func
                                                         , util::sref<proto::Scope> scope)
 {
-    util::sref<proto::Function> compile_func = func->compile(scope);
+    util::sref<proto::Function> compiled_func = func->compile(scope);
     refVars(pos, func->freeVariables());
-    return compile_func;
+    return compiled_func;
 }
 
-util::sptr<proto::Expression const> SymbolTable::_compileAsFunctor(
+util::sptr<proto::Expression> SymbolTable::_compileAsFunctor(
                 misc::position const& pos
               , std::string const& name
               , util::sref<proto::Scope> scope
@@ -176,7 +178,7 @@ util::sptr<proto::Expression const> SymbolTable::_compileAsFunctor(
     return util::mkptr(new proto::Functor(pos, name, _mkArgs(args, scope)));
 }
 
-util::sptr<proto::Expression const> SymbolTable::compileRef(misc::position const& pos
+util::sptr<proto::Expression> SymbolTable::compileRef(misc::position const& pos
                                                           , std::string const& name
                                                           , util::sref<proto::Scope> scope)
 {
@@ -191,7 +193,7 @@ util::sptr<proto::Expression const> SymbolTable::compileRef(misc::position const
     return util::mkptr(new proto::Reference(pos, name));
 }
 
-util::sptr<proto::Expression const> SymbolTable::compileCall(
+util::sptr<proto::Expression> SymbolTable::compileCall(
                     misc::position const& pos
                   , util::sref<proto::Scope> scope
                   , std::string const& name

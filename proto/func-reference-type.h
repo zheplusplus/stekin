@@ -1,48 +1,48 @@
-#ifndef __STACKENGING_INSTANCE_FUNCTION_REFERENCE_TYPE_H__
-#define __STACKENGING_INSTANCE_FUNCTION_REFERENCE_TYPE_H__
+#ifndef __STEKIN_PROTO_FUNCTION_REFERENCE_TYPE_H__
+#define __STEKIN_PROTO_FUNCTION_REFERENCE_TYPE_H__
 
 #include "type.h"
+#include "../instance/expr-nodes.h"
 #include "../misc/pos-type.h"
 
-namespace inst {
+namespace proto {
 
     struct FuncReferenceType
         : public Type
     {
         FuncReferenceType(misc::position const& reference_pos
-                        , util::sref<proto::Function> func_proto
+                        , util::sref<Function> func
                         , int level
                         , std::map<std::string, Variable const> const& cr)
             : Type(_calcSize(cr))
             , context_references(cr)
             , closed_references(std::move(_encloseReference(reference_pos, level, cr)))
-            , _func_proto(func_proto)
+            , _func(func)
         {}
     public:
         std::string exportedName() const;
         std::string name() const;
     public:
-        util::sptr<inst::Expression const> call(misc::position const&
-                                              , int level
-                                              , int stack_offset
-                                              , std::vector<util::sref<Type const>> const& arg_types
-                                              , std::vector<util::sptr<Expression const>> args)
-                                            const;
+        util::sref<FuncInstDraft> call(
+                                misc::position const&
+                              , int level
+                              , int stack_offset
+                              , std::vector<util::sref<Type const>> const& arg_types) const;
 
         bool operator==(Type const& rhs) const;
         bool operator<(Type const& rhs) const;
-        bool eqAsFuncReference(util::sref<proto::Function> lhs_func
+        bool eqAsFuncReference(util::sref<Function> lhs_func
                              , std::map<std::string, Variable const> const& rhs_cr) const;
-        bool ltAsFuncReference(util::sref<proto::Function> lhs_func
+        bool ltAsFuncReference(util::sref<Function> lhs_func
                              , std::map<std::string, Variable const> const& rhs_cr) const;
         bool ltAsBuiltIn(Type const&) const;
     public:
         std::map<std::string, Variable const> const context_references;
         std::map<std::string, Variable const> const closed_references;
     public:
-        void write() const;
+        std::vector<inst::FuncReference::ArgInfo> makeCallArgs() const;
     private:
-        util::sref<proto::Function> const _func_proto;
+        util::sref<Function> const _func;
     private:
         static std::map<std::string, Variable const> _encloseReference(
                         misc::position const& pos
@@ -55,4 +55,4 @@ namespace inst {
 
 }
 
-#endif /* __STACKENGING_INSTANCE_FUNCTION_REFERENCE_TYPE_H__ */
+#endif /* __STEKIN_PROTO_FUNCTION_REFERENCE_TYPE_H__ */

@@ -2,53 +2,42 @@
 #include <set>
 #include <algorithm>
 
+#include "func-inst-draft.h"
 #include "node-base.h"
-#include "function.h"
+#include "symbol-table.h"
+#include "type.h"
+#include "variable.h"
 #include "../report/errors.h"
 #include "../output/func-writer.h"
 #include "../util/map-compare.h"
 #include "../util/pointer.h"
 
-using namespace inst;
+using namespace proto;
 
-Variable Function::defVar(misc::position const& pos
-                        , util::sref<Type const> type
-                        , std::string const& name)
-{
-    return _symbols.defVar(pos, type, name);
-}
-
-Variable Function::queryVar(misc::position const& pos, std::string const& name) const
-{
-    return _symbols.queryVar(pos, name);
-}
-
-util::sref<Type const> Function::getReturnType() const
+util::sref<Type const> FuncInstDraft::getReturnType() const
 {
     return Type::BIT_VOID;
 }
 
-void Function::setReturnType(misc::position const& pos, util::sref<Type const> return_type)
+void FuncInstDraft::setReturnType(misc::position const& pos, util::sref<Type const> return_type)
 {
     if (Type::BIT_VOID != return_type) {
         error::conflictReturnType(pos, Type::BIT_VOID->name(), return_type->name());
     }
 }
 
-bool Function::isReturnTypeResolved() const
+bool FuncInstDraft::isReturnTypeResolved() const
 {
     return true;
 }
 
 namespace {
 
-    struct FunctionUnresolved
-        : public Function
+    struct FuncInstDraftUnresolved
+        : public FuncInstDraft
     {
-        FunctionUnresolved(int ext_level
-                         , std::list<ArgNameTypeRec> const& args
-                         , std::map<std::string, Variable const> const& extvars)
-            : Function(ext_level, args, extvars)
+        explicit FuncInstDraftUnresolved(util::sref<SymbolTable> st)
+            : FuncInstDraft(st)
             , _return_type(Type::BAD_TYPE)
         {}
 
@@ -77,12 +66,12 @@ namespace {
     };
 
     struct FuncInstRecs
-        : protected std::list<util::sptr<Function const>>
+        : protected std::list<util::sptr<FuncInstDraft const>>
     {
-        typedef std::list<util::sptr<Function const>> BaseType;
+        typedef std::list<util::sptr<FuncInstDraft const>> BaseType;
         typedef BaseType::const_iterator Iterator;
 
-        void add(util::sptr<Function const> func)
+        void add(util::sptr<FuncInstDraft const> func)
         {
             push_back(std::move(func));
         }
@@ -106,50 +95,69 @@ namespace {
 
 }
 
-util::sref<Function> Function::createInstance(int ext_level
-                                            , std::list<ArgNameTypeRec> const& arg_types
-                                            , std::map<std::string, Variable const> const& extvars
-                                            , bool has_void_returns)
+util::sref<FuncInstDraft> FuncInstDraft::create(util::sref<SymbolTable> st, bool has_void_returns)
 {
-    util::sptr<Function> func(has_void_returns
-                                        ? new Function(ext_level, arg_types, extvars)
-                                        : new FunctionUnresolved(ext_level, arg_types, extvars));
-    util::sref<Function> fref = *func;
+    util::sptr<FuncInstDraft> func(has_void_returns ? new FuncInstDraft(st)
+                                                    : new FuncInstDraftUnresolved(st));
+    util::sref<FuncInstDraft> fref = *func;
     FuncInstRecs::instance.add(std::move(func));
     return fref;
 }
 
-void Function::addPath(util::sref<MediateBase> path)
+util::sref<FuncInstDraft> FuncInstDraft::badDraft()
+{
+    static SymbolTable st;
+    static FuncInstDraft bad_draft(util::mkref(st));
+    return util::mkref(bad_draft);
+}
+
+void FuncInstDraft::addPath(util::sref<Statement> path)
 {
     _candidate_paths.push_back(path);
 }
 
-void Function::instNextPath()
+void FuncInstDraft::instNextPath()
 {
     if (!hasMorePath()) {
         return;
     }
-    util::sref<MediateBase> next_path = _candidate_paths.front();
+    util::sref<Statement> next_path = _candidate_paths.front();
     _candidate_paths.pop_front();
-    next_path->mediateInst(util::mkref(*this));
+    next_path->mediateInst(util::mkref(*this), _symbols_or_nul_if_inst_done);
 }
 
-bool Function::hasMorePath() const
+bool FuncInstDraft::hasMorePath() const
 {
     return !_candidate_paths.empty();
 }
 
-int Function::level() const
+void FuncInstDraft::_setSymbolInfo()
 {
-    return _symbols.level;
+    _level = _symbols_or_nul_if_inst_done->level;
+    _stack_size = _symbols_or_nul_if_inst_done->stackSize();
+    _args = _symbols_or_nul_if_inst_done->getArgs();
+    _symbols_or_nul_if_inst_done = util::sref<SymbolTable>(NULL);
 }
 
-static std::list<output::StackVarRec> argsToVarRecs(std::list<inst::Variable> const& args)
+void FuncInstDraft::_addStmt(util::sptr<inst::Statement const> stmt)
+{
+    _block.addStmt(std::move(stmt));
+}
+
+void FuncInstDraft::instantiate(util::sref<Statement> stmt)
+{
+    addPath(stmt);
+    instNextPath();
+    _addStmt(stmt->inst(util::mkref(*this), _symbols_or_nul_if_inst_done));
+    _setSymbolInfo();
+}
+
+static std::list<output::StackVarRec> argsToVarRecs(std::list<Variable> const& args)
 {
     std::list<output::StackVarRec> recs;
     std::for_each(args.begin()
                 , args.end()
-                , [&](inst::Variable const& var)
+                , [&](Variable const& var)
                   {
                       recs.push_back(output::StackVarRec(var.type->exportedName()
                                                        , var.stack_offset
@@ -158,25 +166,25 @@ static std::list<output::StackVarRec> argsToVarRecs(std::list<inst::Variable> co
     return recs;
 }
 
-void Function::writeDecls()
+void FuncInstDraft::writeDecls()
 {
     std::for_each(FuncInstRecs::instance.begin()
                 , FuncInstRecs::instance.end()
-                , [&](util::sptr<Function const> const& func)
+                , [&](util::sptr<FuncInstDraft const> const& func)
                   {
                       output::writeFuncDecl(func->getReturnType()->exportedName()
                                           , func.id()
-                                          , argsToVarRecs(func->_symbols.getArgs())
-                                          , func->_symbols.level
-                                          , func->_symbols.stackSize());
+                                          , argsToVarRecs(func->_args)
+                                          , func->_level
+                                          , func->_stack_size);
                   });
 }
 
-void Function::writeImpls()
+void FuncInstDraft::writeImpls()
 {
     std::for_each(FuncInstRecs::instance.begin()
                 , FuncInstRecs::instance.end()
-                , [&](util::sptr<Function const> const& func)
+                , [&](util::sptr<FuncInstDraft const> const& func)
                   {
                       output::writeFuncImpl(func->getReturnType()->exportedName(), func.id());
                       func->_block.write();

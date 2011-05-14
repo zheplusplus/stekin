@@ -1,22 +1,9 @@
 #include <algorithm>
 
 #include "stmt-nodes.h"
-#include "operation.h"
-#include "type.h"
 #include "../output/statement-writer.h"
 
 using namespace inst;
-
-Branch::Branch(misc::position const& pos
-             , util::sptr<Expression const> p
-             , util::sptr<Statement const> c
-             , util::sptr<Statement const> a)
-    : predicate(std::move(p))
-    , consequence(std::move(c))
-    , alternative(std::move(a))
-{
-    predicate->typeof()->checkCondType(pos);
-}
 
 void Arithmetics::write() const
 {
@@ -35,7 +22,7 @@ void Branch::write() const
 
 void Initialization::write() const
 {
-    output::refThisLevel(offset, init->typeof()->exportedName());
+    output::refThisLevel(offset, type_exported_name);
     output::signAssign();
     init->write();
     output::endOfStatement();

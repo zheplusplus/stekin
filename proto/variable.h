@@ -1,5 +1,5 @@
-#ifndef __STEKIN_INSTANCE_VARIABLE_H__ 
-#define __STEKIN_INSTANCE_VARIABLE_H__ 
+#ifndef __STEKIN_PROTO_VARIABLE_H__ 
+#define __STEKIN_PROTO_VARIABLE_H__ 
 
 #include <vector>
 
@@ -7,7 +7,7 @@
 #include "../misc/pos-type.h"
 #include "../util/pointer.h"
 
-namespace inst {
+namespace proto {
 
     struct Variable {
         misc::position const def_pos;
@@ -22,10 +22,8 @@ namespace inst {
             , level(lvl)
         {}
 
-        util::sptr<inst::Expression const> call(
-                                        misc::position const& call_pos
-                                      , std::vector<util::sref<inst::Type const>> const& arg_types
-                                      , std::vector<util::sptr<Expression const>> args) const;
+        util::sref<FuncInstDraft> call(misc::position const& call_pos
+                                     , std::vector<util::sref<Type const>> const& arg_types) const;
 
         Variable adjustLocation(int offset_diff, int lvl) const;
 
@@ -36,4 +34,4 @@ namespace inst {
 
 }
 
-#endif /* __STEKIN_INSTANCE_VARIABLE_H__ */
+#endif /* __STEKIN_PROTO_VARIABLE_H__ */
