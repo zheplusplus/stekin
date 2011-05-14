@@ -2,6 +2,7 @@
 #include "function.h"
 #include "node-base.h"
 #include "variable.h"
+#include "func-reference-type.h"
 #include "../instance/node-base.h"
 
 using namespace proto;

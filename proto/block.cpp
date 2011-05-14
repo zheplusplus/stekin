@@ -4,6 +4,7 @@
 #include "function.h"
 #include "func-inst-draft.h"
 #include "variable.h"
+#include "func-reference-type.h"
 #include "../instance/block.h"
 
 using namespace proto;

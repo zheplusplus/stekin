@@ -7,6 +7,7 @@
 #include "../proto/function.h"
 #include "../proto/stmt-nodes.h"
 #include "../proto/variable.h"
+#include "../proto/func-reference-type.h"
 #include "../instance/node-base.h"
 
 using namespace flchk;

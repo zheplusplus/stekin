@@ -9,6 +9,7 @@ namespace proto {
     struct FuncInstDraft;
     struct Scope;
     struct Type;
+    struct FuncReferenceType;
     struct Operation;
     struct Variable;
     struct SymbolTable;

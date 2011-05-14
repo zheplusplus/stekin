@@ -1,6 +1,7 @@
 #ifndef __STEKIN_PROTO_FUNCTION_TEMPLATE_H__
 #define __STEKIN_PROTO_FUNCTION_TEMPLATE_H__
 
+#include <vector>
 #include <list>
 #include <map>
 
@@ -41,6 +42,9 @@ namespace proto {
         std::map<std::string, Variable const> bindExternalVars(
                                                 misc::position const& pos
                                               , util::sref<SymbolTable const> ext_st) const;
+
+        util::sref<FuncReferenceType const> refType(misc::position const& reference_pos
+                                                  , util::sref<SymbolTable const> st);
     public:
         struct InstanceInfo {
             std::map<std::string, Variable const> const ext_vars;
@@ -56,6 +60,7 @@ namespace proto {
         };
     private:
         std::map<InstanceInfo, util::sref<FuncInstDraft>> _instance_cache;
+        std::vector<util::sptr<FuncReferenceType const>> _reference_types;
         std::vector<std::string> _free_variables;
     };
 

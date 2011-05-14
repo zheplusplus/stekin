@@ -13,6 +13,7 @@
 #include "proto/func-inst-draft.h"
 #include "proto/variable.h"
 #include "proto/type.h"
+#include "proto/func-reference-type.h"
 #include "instance/node-base.h"
 #include "output/func-writer.h"
 #include "util/pointer.h"

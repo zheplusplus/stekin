@@ -83,6 +83,24 @@ std::map<std::string, Variable const> Function::bindExternalVars(
     return result;
 }
 
+util::sref<FuncReferenceType const> Function::refType(misc::position const& reference_pos
+                                                    , util::sref<SymbolTable const> st)
+{
+    std::map<std::string, Variable const> ext_vars(bindExternalVars(reference_pos, st));
+    auto find_result = std::find_if(_reference_types.begin()
+                                  , _reference_types.end()
+                                  , [&](util::sptr<FuncReferenceType const> const& type)
+                                    {
+                                        return type->context_references == ext_vars;
+                                    });
+    if (find_result != _reference_types.end()) {
+        return **find_result;
+    }
+    _reference_types.push_back(util::mkptr(
+                    new FuncReferenceType(reference_pos, util::mkref(*this), st->level, ext_vars)));
+    return *_reference_types.back();
+}
+
 void Function::setFreeVariables(std::vector<std::string> const& free_vars)
 {
     _free_variables = free_vars;

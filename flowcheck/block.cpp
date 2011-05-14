@@ -5,9 +5,9 @@
 #include "node-base.h"
 #include "filter.h"
 #include "../proto/node-base.h"
-#include "../proto/scope.h"
 #include "../proto/function.h"
 #include "../proto/variable.h"
+#include "../proto/func-reference-type.h"
 
 using namespace flchk;
 

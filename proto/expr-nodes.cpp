@@ -81,22 +81,13 @@ static std::vector<util::sref<Type const>> instForTypes(
 
 util::sref<Type const> Call::type(util::sref<SymbolTable const> st)
 {
-    _checkInst(st);
     return _func->inst(pos, st, instForTypes(_args, st))->getReturnType();
 }
 
 util::sptr<inst::Expression const> Call::inst(util::sref<SymbolTable const> st)
 {
-    _checkInst(st);
-    return std::move(_result_or_nul_if_not_inst);
-}
-
-void Call::_checkInst(util::sref<SymbolTable const> st)
-{
-    if (_result_or_nul_if_not_inst.nul()) {
-        util::sref<FuncInstDraft> draft(_func->inst(pos, st, instForTypes(_args, st)));
-        _result_or_nul_if_not_inst.reset(new inst::Call(draft.id(), instForArgs(_args, st)));
-    }
+    util::sref<FuncInstDraft> draft(_func->inst(pos, st, instForTypes(_args, st)));
+    return util::mkptr(new inst::Call(draft.id(), instForArgs(_args, st)));
 }
 
 util::sref<Type const> Functor::type(util::sref<SymbolTable const> st)
@@ -117,33 +108,18 @@ util::sref<FuncInstDraft> Functor::_mkDraft(util::sref<SymbolTable const> st) co
 
 util::sref<Type const> FuncReference::type(util::sref<SymbolTable const> st)
 {
-    return _mkType(st);
+    return _func->refType(pos, st);
 }
 
 util::sptr<inst::Expression const> FuncReference::inst(util::sref<SymbolTable const> st)
 {
-    util::sref<FuncReferenceType const> ft(_mkType(st));
+    util::sref<FuncReferenceType const> ft(_func->refType(pos, st));
     return util::mkptr(new inst::FuncReference(ft->size, ft->makeCallArgs()));
-}
-
-util::sref<FuncReferenceType const> FuncReference::_mkType(util::sref<SymbolTable const> st)
-{
-    std::map<std::string, Variable const> ext_vars(_func->bindExternalVars(pos, st));
-    auto find_result = _type_cache.find(ext_vars);
-    if (_type_cache.end() != find_result) {
-        return util::mkref(find_result->second);
-    }
-    return util::mkref(_type_cache.insert(std::make_pair(ext_vars, FuncReferenceType(
-                                                                        pos
-                                                                      , _func
-                                                                      , st->level
-                                                                      , ext_vars))).first->second);
 }
 
 util::sref<Type const> BinaryOp::type(util::sref<SymbolTable const> st)
 {
-    Operation const* o = st->queryBinary(pos, op, lhs->type(st), rhs->type(st));
-    return o->ret_type;
+    return st->queryBinary(pos, op, lhs->type(st), rhs->type(st))->ret_type;
 }
 
 util::sptr<inst::Expression const> BinaryOp::inst(util::sref<SymbolTable const> st)
@@ -154,8 +130,7 @@ util::sptr<inst::Expression const> BinaryOp::inst(util::sref<SymbolTable const> 
 
 util::sref<Type const> PreUnaryOp::type(util::sref<SymbolTable const> st)
 {
-    Operation const* o = st->queryPreUnary(pos, op, rhs->type(st));
-    return o->ret_type;
+    return st->queryPreUnary(pos, op, rhs->type(st))->ret_type;
 }
 
 util::sptr<inst::Expression const> PreUnaryOp::inst(util::sref<SymbolTable const> st)

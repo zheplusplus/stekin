@@ -79,7 +79,6 @@ namespace proto {
                 : Expression(pos)
                 , _func(f)
                 , _args(std::move(a))
-                , _result_or_nul_if_not_inst(NULL)
         {}
 
         util::sref<Type const> type(util::sref<SymbolTable const> st);
@@ -87,9 +86,6 @@ namespace proto {
     private:
         util::sref<Function> const _func;
         std::vector<util::sptr<Expression>> const _args;
-        util::sptr<inst::Expression const> _result_or_nul_if_not_inst;
-    private:
-        void _checkInst(util::sref<SymbolTable const> st);
     };
 
     struct Functor
@@ -124,12 +120,7 @@ namespace proto {
         util::sref<Type const> type(util::sref<SymbolTable const> st);
         util::sptr<inst::Expression const> inst(util::sref<SymbolTable const> st);
     private:
-        util::sref<FuncReferenceType const> _mkType(util::sref<SymbolTable const> st);
-    private:
         util::sref<Function> const _func;
-        std::map<std::map<std::string, Variable const>
-               , FuncReferenceType const
-               , util::map_less_t> _type_cache;
     };
 
     struct BinaryOp
