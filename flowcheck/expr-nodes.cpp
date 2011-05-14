@@ -280,8 +280,8 @@ namespace {
 
 }
 
-util::sptr<proto::Expression> PreUnaryOp::compile(util::sref<proto::Scope> scope
-                                                , util::sref<SymbolTable> st) const
+util::sptr<proto::Expression const> PreUnaryOp::compile(util::sref<proto::Scope> scope
+                                                      , util::sref<SymbolTable> st) const
 {
     return util::mkptr(new proto::PreUnaryOp(pos, op_img, rhs->compile(scope, st)));
 }
@@ -307,8 +307,8 @@ util::sptr<Expression const> PreUnaryOp::fold() const
     return rhs->fold()->asRHS(pos, op_img);
 }
 
-util::sptr<proto::Expression> BinaryOp::compile(util::sref<proto::Scope> scope
-                                              , util::sref<SymbolTable> st) const
+util::sptr<proto::Expression const> BinaryOp::compile(util::sref<proto::Scope> scope
+                                                    , util::sref<SymbolTable> st) const
 {
     return util::mkptr(new proto::BinaryOp(pos
                                          , lhs->compile(scope, st)
@@ -340,8 +340,8 @@ util::sptr<Expression const> BinaryOp::fold() const
     return rhs->fold()->asRHS(pos, op_img, lhs->fold());
 }
 
-util::sptr<proto::Expression> Conjunction::compile(util::sref<proto::Scope> scope
-                                                 , util::sref<SymbolTable> st) const
+util::sptr<proto::Expression const> Conjunction::compile(util::sref<proto::Scope> scope
+                                                       , util::sref<SymbolTable> st) const
 {
     return util::mkptr(new proto::Conjunction(pos
                                             , lhs->compile(scope, st)
@@ -371,8 +371,8 @@ util::sptr<Expression const> Conjunction::fold() const
     return util::mkptr(new Conjunction(pos, lhs->fold(), rhs->fold()));
 }
 
-util::sptr<proto::Expression> Disjunction::compile(util::sref<proto::Scope> scope
-                                                 , util::sref<SymbolTable> st) const
+util::sptr<proto::Expression const> Disjunction::compile(util::sref<proto::Scope> scope
+                                                       , util::sref<SymbolTable> st) const
 {
     return util::mkptr(new proto::Disjunction(pos
                                             , lhs->compile(scope, st)
@@ -402,8 +402,8 @@ util::sptr<Expression const> Disjunction::fold() const
     return util::mkptr(new Disjunction(pos, lhs->fold(), rhs->fold()));
 }
 
-util::sptr<proto::Expression> Negation::compile(util::sref<proto::Scope> scope
-                                              , util::sref<SymbolTable> st) const
+util::sptr<proto::Expression const> Negation::compile(util::sref<proto::Scope> scope
+                                                    , util::sref<SymbolTable> st) const
 {
     return util::mkptr(new proto::Negation(pos, rhs->compile(scope, st)));
 }
@@ -431,8 +431,8 @@ util::sptr<Expression const> Negation::fold() const
     return util::mkptr(new Negation(pos, rhs->fold()));
 }
 
-util::sptr<proto::Expression> Reference::compile(util::sref<proto::Scope> scope
-                                               , util::sref<SymbolTable> st) const
+util::sptr<proto::Expression const> Reference::compile(util::sref<proto::Scope> scope
+                                                     , util::sref<SymbolTable> st) const
 {
     return st->compileRef(pos, name, scope);
 }
@@ -447,8 +447,8 @@ util::sptr<Expression const> Reference::fold() const
     return util::mkptr(new Reference(pos, name));
 }
 
-util::sptr<proto::Expression> BoolLiteral::compile(util::sref<proto::Scope>
-                                                 , util::sref<SymbolTable>) const
+util::sptr<proto::Expression const> BoolLiteral::compile(util::sref<proto::Scope>
+                                                       , util::sref<SymbolTable>) const
 {
     return util::mkptr(new proto::BoolLiteral(pos, value));
 }
@@ -513,8 +513,8 @@ util::sptr<Expression const> BoolLiteral::asRHS(misc::position const& op_pos
     return makeFakeExpr(op_pos);
 }
 
-util::sptr<proto::Expression> IntLiteral::compile(util::sref<proto::Scope>
-                                                , util::sref<SymbolTable>) const
+util::sptr<proto::Expression const> IntLiteral::compile(util::sref<proto::Scope>
+                                                      , util::sref<SymbolTable>) const
 {
     return util::mkptr(new proto::IntLiteral(pos, value));
 }
@@ -578,8 +578,8 @@ util::sptr<Expression const> IntLiteral::asRHS(misc::position const& op_pos
     return util::mkptr(new IntLiteral(op_pos, value));
 }
 
-util::sptr<proto::Expression> FloatLiteral::compile(util::sref<proto::Scope>
-                                                  , util::sref<SymbolTable>) const
+util::sptr<proto::Expression const> FloatLiteral::compile(util::sref<proto::Scope>
+                                                        , util::sref<SymbolTable>) const
 {
     return util::mkptr(new proto::FloatLiteral(pos, value));
 }
@@ -643,8 +643,8 @@ util::sptr<Expression const> FloatLiteral::asRHS(misc::position const& op_pos
     return util::mkptr(new FloatLiteral(op_pos, value));
 }
 
-util::sptr<proto::Expression> Call::compile(util::sref<proto::Scope> scope
-                                          , util::sref<SymbolTable> st) const
+util::sptr<proto::Expression const> Call::compile(util::sref<proto::Scope> scope
+                                                , util::sref<SymbolTable> st) const
 {
     return st->compileCall(pos, scope, name, args);
 }
@@ -677,8 +677,8 @@ util::sptr<Expression const> Call::fold() const
     return util::mkptr(new Call(pos, name, std::move(args_fold)));
 }
 
-util::sptr<proto::Expression> FuncReference::compile(util::sref<proto::Scope> scope
-                                                   , util::sref<SymbolTable> st) const
+util::sptr<proto::Expression const> FuncReference::compile(util::sref<proto::Scope> scope
+                                                         , util::sref<SymbolTable> st) const
 {
     return util::mkptr(new proto::FuncReference(pos, st->queryFunc(pos, name, param_count)
                                                        ->compile(scope)));

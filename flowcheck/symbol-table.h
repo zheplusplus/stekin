@@ -62,10 +62,10 @@ namespace flchk {
         void defVar(misc::position const& pos, std::string const& name);
         void defFunc(util::sref<Function> func);
 
-        util::sptr<proto::Expression> compileRef(misc::position const& pos
-                                               , std::string const& name
-                                               , util::sref<proto::Scope> scope);
-        util::sptr<proto::Expression> compileCall(
+        util::sptr<proto::Expression const> compileRef(misc::position const& pos
+                                                     , std::string const& name
+                                                     , util::sref<proto::Scope> scope);
+        util::sptr<proto::Expression const> compileCall(
                         misc::position const& pos
                       , util::sref<proto::Scope> scope
                       , std::string const& name
@@ -76,13 +76,13 @@ namespace flchk {
         std::vector<std::string> freeVariables() const;
     private:
         void _markReference(misc::position const& pos, std::string const& name);
-        std::vector<util::sptr<proto::Expression>> _mkArgs(
+        std::vector<util::sptr<proto::Expression const>> _mkArgs(
                         std::vector<util::sptr<Expression const>> const& args
                       , util::sref<proto::Scope> scope);
         util::sref<proto::Function> _compileFunction(misc::position const& pos
                                                    , util::sref<Function> func
                                                    , util::sref<proto::Scope> scope);
-        util::sptr<proto::Expression> _compileAsFunctor(
+        util::sptr<proto::Expression const> _compileAsFunctor(
                         misc::position const& pos
                       , std::string const& name
                       , util::sref<proto::Scope> scope

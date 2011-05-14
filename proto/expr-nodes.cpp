@@ -52,13 +52,13 @@ util::sptr<inst::Expression const> Reference::inst(util::sref<SymbolTable const>
 }
 
 static std::vector<util::sptr<inst::Expression const>> instForArgs(
-                                            std::vector<util::sptr<Expression>> const& args
+                                            std::vector<util::sptr<Expression const>> const& args
                                           , util::sref<SymbolTable const> st)
 {
     std::vector<util::sptr<inst::Expression const>> arg_instances;
     std::for_each(args.begin()
                 , args.end()
-                , [&](util::sptr<Expression> const& arg)
+                , [&](util::sptr<Expression const> const& arg)
                   {
                       arg_instances.push_back(arg->inst(st));
                   });
@@ -66,13 +66,13 @@ static std::vector<util::sptr<inst::Expression const>> instForArgs(
 }
 
 static std::vector<util::sref<Type const>> instForTypes(
-                                            std::vector<util::sptr<Expression>> const& args
+                                            std::vector<util::sptr<Expression const>> const& args
                                           , util::sref<SymbolTable const> st)
 {
     std::vector<util::sref<Type const>> arg_types;
     std::for_each(args.begin()
                 , args.end()
-                , [&](util::sptr<Expression> const& arg)
+                , [&](util::sptr<Expression const> const& arg)
                   {
                       arg_types.push_back(arg->type(st));
                   });

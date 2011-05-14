@@ -75,7 +75,7 @@ namespace proto {
     {
         Call(misc::position const& pos
            , util::sref<Function> f
-           , std::vector<util::sptr<Expression>> a)
+           , std::vector<util::sptr<Expression const>> a)
                 : Expression(pos)
                 , _func(f)
                 , _args(std::move(a))
@@ -85,7 +85,7 @@ namespace proto {
         util::sptr<inst::Expression const> inst(util::sref<SymbolTable const> st) const;
     private:
         util::sref<Function> const _func;
-        std::vector<util::sptr<Expression>> const _args;
+        std::vector<util::sptr<Expression const>> const _args;
     };
 
     struct Functor
@@ -93,7 +93,7 @@ namespace proto {
     {
         Functor(misc::position const& pos
               , std::string const& n
-              , std::vector<util::sptr<Expression>> a)
+              , std::vector<util::sptr<Expression const>> a)
             : Expression(pos)
             , name(n)
             , _args(std::move(a))
@@ -104,7 +104,7 @@ namespace proto {
 
         std::string const name;
     private:
-        std::vector<util::sptr<Expression>> const _args;
+        std::vector<util::sptr<Expression const>> const _args;
     private:
         util::sref<FuncInstDraft> _mkDraft(util::sref<SymbolTable const> st) const;
     };
@@ -127,9 +127,9 @@ namespace proto {
         : public Expression
     {
         BinaryOp(misc::position const& pos
-                , util::sptr<Expression> l
+                , util::sptr<Expression const> l
                 , std::string const& o
-                , util::sptr<Expression> r)
+                , util::sptr<Expression const> r)
             : Expression(pos)
             , lhs(std::move(l))
             , op(o)
@@ -139,15 +139,15 @@ namespace proto {
         util::sref<Type const> type(util::sref<SymbolTable const> st) const;
         util::sptr<inst::Expression const> inst(util::sref<SymbolTable const> st) const;
 
-        util::sptr<Expression> const lhs;
+        util::sptr<Expression const> const lhs;
         std::string const op;
-        util::sptr<Expression> const rhs;
+        util::sptr<Expression const> const rhs;
     };
 
     struct PreUnaryOp
         : public Expression
     {
-        PreUnaryOp(misc::position const& pos, std::string const& o, util::sptr<Expression> r)
+        PreUnaryOp(misc::position const& pos, std::string const& o, util::sptr<Expression const> r)
             : Expression(pos)
             , op(o)
             , rhs(std::move(r))
@@ -157,15 +157,15 @@ namespace proto {
         util::sptr<inst::Expression const> inst(util::sref<SymbolTable const> st) const;
 
         std::string const op;
-        util::sptr<Expression> const rhs;
+        util::sptr<Expression const> const rhs;
     };
 
     struct Conjunction
         : public Expression
     {
         Conjunction(misc::position const& pos
-                  , util::sptr<Expression> l
-                  , util::sptr<Expression> r)
+                  , util::sptr<Expression const> l
+                  , util::sptr<Expression const> r)
             : Expression(pos)
             , lhs(std::move(l))
             , rhs(std::move(r))
@@ -174,16 +174,16 @@ namespace proto {
         util::sref<Type const> type(util::sref<SymbolTable const>) const;
         util::sptr<inst::Expression const> inst(util::sref<SymbolTable const> st) const;
 
-        util::sptr<Expression> const lhs;
-        util::sptr<Expression> const rhs;
+        util::sptr<Expression const> const lhs;
+        util::sptr<Expression const> const rhs;
     };
 
     struct Disjunction
         : public Expression
     {
         Disjunction(misc::position const& pos
-                  , util::sptr<Expression> l
-                  , util::sptr<Expression> r)
+                  , util::sptr<Expression const> l
+                  , util::sptr<Expression const> r)
             : Expression(pos)
             , lhs(std::move(l))
             , rhs(std::move(r))
@@ -192,14 +192,14 @@ namespace proto {
         util::sref<Type const> type(util::sref<SymbolTable const>) const;
         util::sptr<inst::Expression const> inst(util::sref<SymbolTable const> st) const;
 
-        util::sptr<Expression> const lhs;
-        util::sptr<Expression> const rhs;
+        util::sptr<Expression const> const lhs;
+        util::sptr<Expression const> const rhs;
     };
 
     struct Negation
         : public Expression
     {
-        Negation(misc::position const& pos, util::sptr<Expression> r)
+        Negation(misc::position const& pos, util::sptr<Expression const> r)
             : Expression(pos)
             , rhs(std::move(r))
         {}
@@ -207,7 +207,7 @@ namespace proto {
         util::sref<Type const> type(util::sref<SymbolTable const>) const;
         util::sptr<inst::Expression const> inst(util::sref<SymbolTable const> st) const;
 
-        util::sptr<Expression> const rhs;
+        util::sptr<Expression const> const rhs;
     };
 
 }

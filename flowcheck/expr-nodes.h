@@ -19,8 +19,8 @@ namespace flchk {
             , rhs(std::move(r))
         {}
 
-        util::sptr<proto::Expression> compile(util::sref<proto::Scope> scope
-                                            , util::sref<SymbolTable> st) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope
+                                                  , util::sref<SymbolTable> st) const;
         bool isLiteral() const;
         bool boolValue() const;
         util::sptr<Expression const> fold() const;
@@ -43,8 +43,8 @@ namespace flchk {
             , rhs(std::move(r))
         {}
 
-        util::sptr<proto::Expression> compile(util::sref<proto::Scope> scope
-                                            , util::sref<SymbolTable> st) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope
+                                                  , util::sref<SymbolTable> st) const;
         bool isLiteral() const;
         bool boolValue() const;
         std::string typeName() const;
@@ -66,8 +66,8 @@ namespace flchk {
             , rhs(std::move(r))
         {}
 
-        util::sptr<proto::Expression> compile(util::sref<proto::Scope> scope
-                                            , util::sref<SymbolTable> st) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope
+                                                  , util::sref<SymbolTable> st) const;
         bool isLiteral() const;
         bool boolValue() const;
         std::string typeName() const;
@@ -88,8 +88,8 @@ namespace flchk {
             , rhs(std::move(r))
         {}
 
-        util::sptr<proto::Expression> compile(util::sref<proto::Scope> scope
-                                            , util::sref<SymbolTable> st) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope
+                                                  , util::sref<SymbolTable> st) const;
         bool isLiteral() const;
         bool boolValue() const;
         std::string typeName() const;
@@ -107,8 +107,8 @@ namespace flchk {
             , rhs(std::move(r))
         {}
 
-        util::sptr<proto::Expression> compile(util::sref<proto::Scope> scope
-                                            , util::sref<SymbolTable> st) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope
+                                                  , util::sref<SymbolTable> st) const;
         bool isLiteral() const;
         bool boolValue() const;
         std::string typeName() const;
@@ -125,8 +125,8 @@ namespace flchk {
             , name(n)
         {}
 
-        util::sptr<proto::Expression> compile(util::sref<proto::Scope> scope
-                                            , util::sref<SymbolTable> st) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope
+                                                  , util::sref<SymbolTable> st) const;
         std::string typeName() const;
         util::sptr<Expression const> fold() const;
 
@@ -141,8 +141,8 @@ namespace flchk {
             , value(v)
         {}
 
-        util::sptr<proto::Expression> compile(util::sref<proto::Scope>
-                                            , util::sref<SymbolTable>) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::Scope>
+                                                  , util::sref<SymbolTable>) const;
         bool isLiteral() const;
         bool boolValue() const;
         std::string typeName() const;
@@ -182,8 +182,8 @@ namespace flchk {
             , value(v)
         {}
 
-        util::sptr<proto::Expression> compile(util::sref<proto::Scope>
-                                            , util::sref<SymbolTable>) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::Scope>
+                                                  , util::sref<SymbolTable>) const;
         bool isLiteral() const;
         bool boolValue() const;
         std::string typeName() const;
@@ -221,8 +221,8 @@ namespace flchk {
             , value(v)
         {}
 
-        util::sptr<proto::Expression> compile(util::sref<proto::Scope>
-                                            , util::sref<SymbolTable>) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::Scope>
+                                                  , util::sref<SymbolTable>) const;
         bool isLiteral() const;
         bool boolValue() const;
         std::string typeName() const;
@@ -258,8 +258,8 @@ namespace flchk {
                 , args(std::move(a))
         {}
 
-        util::sptr<proto::Expression> compile(util::sref<proto::Scope> scope
-                                            , util::sref<SymbolTable> st) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope
+                                                  , util::sref<SymbolTable> st) const;
         std::string typeName() const;
         util::sptr<Expression const> fold() const;
 
@@ -276,8 +276,8 @@ namespace flchk {
             , param_count(pc)
         {}
 
-        util::sptr<proto::Expression> compile(util::sref<proto::Scope> scope
-                                            , util::sref<SymbolTable> st) const;
+        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope
+                                                  , util::sref<SymbolTable> st) const;
         std::string typeName() const;
         util::sptr<Expression const> fold() const;
 
