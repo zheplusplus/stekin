@@ -34,7 +34,7 @@ util::sptr<proto::Statement> Branch::compile(util::sref<proto::Scope> scope
 util::sptr<proto::Statement> VarDef::compile(util::sref<proto::Scope> scope
                                            , util::sref<SymbolTable> st) const
 {
-    util::sptr<proto::Expression> init_value(init->compile(scope, st));
+    util::sptr<proto::Expression const> init_value(init->compile(scope, st));
     st->defVar(pos, name);
     return util::mkptr(new proto::VarDef(pos, name, std::move(init_value)));
 }
