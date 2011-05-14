@@ -124,7 +124,7 @@ util::sref<Type const> BinaryOp::type(util::sref<SymbolTable const> st) const
 
 util::sptr<inst::Expression const> BinaryOp::inst(util::sref<SymbolTable const> st) const
 {
-    Operation const* o = st->queryBinary(pos, op, lhs->type(st), rhs->type(st));
+    util::sref<Operation const> o(st->queryBinary(pos, op, lhs->type(st), rhs->type(st)));
     return util::mkptr(new inst::BinaryOp(lhs->inst(st), o->op_img, rhs->inst(st)));
 }
 
@@ -135,7 +135,7 @@ util::sref<Type const> PreUnaryOp::type(util::sref<SymbolTable const> st) const
 
 util::sptr<inst::Expression const> PreUnaryOp::inst(util::sref<SymbolTable const> st) const
 {
-    Operation const* o = st->queryPreUnary(pos, op, rhs->type(st));
+    util::sref<Operation const> o(st->queryPreUnary(pos, op, rhs->type(st)));
     return util::mkptr(new inst::PreUnaryOp(o->op_img, rhs->inst(st)));
 }
 

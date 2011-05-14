@@ -36,13 +36,13 @@ namespace proto {
                       , std::string const& name);
         Variable queryVar(misc::position const& pos, std::string const& name) const;
 
-        Operation const* queryBinary(misc::position const& pos
-                                   , std::string const& op
-                                   , util::sref<Type const> lhs
-                                   , util::sref<Type const> rhs) const;
-        Operation const* queryPreUnary(misc::position const& pos
-                                     , std::string const& op
-                                     , util::sref<Type const> rhs) const;
+        util::sref<Operation const> queryBinary(misc::position const& pos
+                                              , std::string const& op
+                                              , util::sref<Type const> lhs
+                                              , util::sref<Type const> rhs) const;
+        util::sref<Operation const> queryPreUnary(misc::position const& pos
+                                                , std::string const& op
+                                                , util::sref<Type const> rhs) const;
     public:
         int const level;
     public:

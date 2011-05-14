@@ -65,17 +65,17 @@ Variable SymbolTable::queryVar(misc::position const& pos, std::string const& nam
     return BAD_REF;
 }
 
-Operation const* SymbolTable::queryBinary(misc::position const& pos
-                                        , std::string const& op
-                                        , util::sref<Type const> lhs
-                                        , util::sref<Type const> rhs) const
+util::sref<Operation const> SymbolTable::queryBinary(misc::position const& pos
+                                                   , std::string const& op
+                                                   , util::sref<Type const> lhs
+                                                   , util::sref<Type const> rhs) const
 {
     return Operation::queryBinary(pos, op, lhs, rhs);
 }
 
-Operation const* SymbolTable::queryPreUnary(misc::position const& pos
-                                          , std::string const& op
-                                          , util::sref<Type const> rhs) const
+util::sref<Operation const> SymbolTable::queryPreUnary(misc::position const& pos
+                                                     , std::string const& op
+                                                     , util::sref<Type const> rhs) const
 {
     return Operation::queryPreUnary(pos, op, rhs);
 }

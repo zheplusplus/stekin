@@ -18,13 +18,13 @@ namespace proto {
             , op_img(oi)
         {}
 
-        static Operation const* queryBinary(misc::position const& pos
-                                          , std::string const& op
-                                          , util::sref<Type const> lhs
-                                          , util::sref<Type const> rhs);
-        static Operation const* queryPreUnary(misc::position const& pos
-                                            , std::string const& op
-                                            , util::sref<Type const> rhs);
+        static util::sref<Operation const> queryBinary(misc::position const& pos
+                                                     , std::string const& op
+                                                     , util::sref<Type const> lhs
+                                                     , util::sref<Type const> rhs);
+        static util::sref<Operation const> queryPreUnary(misc::position const& pos
+                                                       , std::string const& op
+                                                       , util::sref<Type const> rhs);
     };
 
 }
