@@ -6,12 +6,12 @@
 
 using namespace proto;
 
-util::sref<Type const> WriteExpr::type(util::sref<SymbolTable const>)
+util::sref<Type const> WriteExpr::type(util::sref<SymbolTable const>) const
 {
     return Type::BIT_VOID;
 }
 
-util::sptr<inst::Expression const> WriteExpr::inst(util::sref<SymbolTable const> st)
+util::sptr<inst::Expression const> WriteExpr::inst(util::sref<SymbolTable const> st) const
 {
     return util::mkptr(new inst::WriteExpr(ref.inst(st)));
 }

@@ -22,8 +22,8 @@ namespace proto {
             , value(v)
         {}
 
-        util::sref<Type const> type(util::sref<SymbolTable const>);
-        util::sptr<inst::Expression const> inst(util::sref<SymbolTable const>); 
+        util::sref<Type const> type(util::sref<SymbolTable const>) const;
+        util::sptr<inst::Expression const> inst(util::sref<SymbolTable const>) const; 
 
         bool const value;
     };
@@ -36,8 +36,8 @@ namespace proto {
             , value(v)
         {}
 
-        util::sref<Type const> type(util::sref<SymbolTable const>);
-        util::sptr<inst::Expression const> inst(util::sref<SymbolTable const>); 
+        util::sref<Type const> type(util::sref<SymbolTable const>) const;
+        util::sptr<inst::Expression const> inst(util::sref<SymbolTable const>) const; 
 
         mpz_class value;
     };
@@ -50,8 +50,8 @@ namespace proto {
             , value(v)
         {}
 
-        util::sref<Type const> type(util::sref<SymbolTable const>);
-        util::sptr<inst::Expression const> inst(util::sref<SymbolTable const>); 
+        util::sref<Type const> type(util::sref<SymbolTable const>) const;
+        util::sptr<inst::Expression const> inst(util::sref<SymbolTable const>) const; 
 
         mpf_class value;
     };
@@ -64,8 +64,8 @@ namespace proto {
             , name(n)
         {}
 
-        util::sref<Type const> type(util::sref<SymbolTable const> st);
-        util::sptr<inst::Expression const> inst(util::sref<SymbolTable const> st);
+        util::sref<Type const> type(util::sref<SymbolTable const> st) const;
+        util::sptr<inst::Expression const> inst(util::sref<SymbolTable const> st) const;
 
         std::string const name;
     };
@@ -81,8 +81,8 @@ namespace proto {
                 , _args(std::move(a))
         {}
 
-        util::sref<Type const> type(util::sref<SymbolTable const> st);
-        util::sptr<inst::Expression const> inst(util::sref<SymbolTable const> st);
+        util::sref<Type const> type(util::sref<SymbolTable const> st) const;
+        util::sptr<inst::Expression const> inst(util::sref<SymbolTable const> st) const;
     private:
         util::sref<Function> const _func;
         std::vector<util::sptr<Expression>> const _args;
@@ -99,8 +99,8 @@ namespace proto {
             , _args(std::move(a))
         {}
 
-        util::sref<Type const> type(util::sref<SymbolTable const> st);
-        util::sptr<inst::Expression const> inst(util::sref<SymbolTable const> st);
+        util::sref<Type const> type(util::sref<SymbolTable const> st) const;
+        util::sptr<inst::Expression const> inst(util::sref<SymbolTable const> st) const;
 
         std::string const name;
     private:
@@ -117,8 +117,8 @@ namespace proto {
             , _func(f)
         {}
 
-        util::sref<Type const> type(util::sref<SymbolTable const> st);
-        util::sptr<inst::Expression const> inst(util::sref<SymbolTable const> st);
+        util::sref<Type const> type(util::sref<SymbolTable const> st) const;
+        util::sptr<inst::Expression const> inst(util::sref<SymbolTable const> st) const;
     private:
         util::sref<Function> const _func;
     };
@@ -136,8 +136,8 @@ namespace proto {
             , rhs(std::move(r))
         {}
 
-        util::sref<Type const> type(util::sref<SymbolTable const> st);
-        util::sptr<inst::Expression const> inst(util::sref<SymbolTable const> st);
+        util::sref<Type const> type(util::sref<SymbolTable const> st) const;
+        util::sptr<inst::Expression const> inst(util::sref<SymbolTable const> st) const;
 
         util::sptr<Expression> const lhs;
         std::string const op;
@@ -153,8 +153,8 @@ namespace proto {
             , rhs(std::move(r))
         {}
 
-        util::sref<Type const> type(util::sref<SymbolTable const> st);
-        util::sptr<inst::Expression const> inst(util::sref<SymbolTable const> st);
+        util::sref<Type const> type(util::sref<SymbolTable const> st) const;
+        util::sptr<inst::Expression const> inst(util::sref<SymbolTable const> st) const;
 
         std::string const op;
         util::sptr<Expression> const rhs;
@@ -171,8 +171,8 @@ namespace proto {
             , rhs(std::move(r))
         {}
 
-        util::sref<Type const> type(util::sref<SymbolTable const>);
-        util::sptr<inst::Expression const> inst(util::sref<SymbolTable const> st);
+        util::sref<Type const> type(util::sref<SymbolTable const>) const;
+        util::sptr<inst::Expression const> inst(util::sref<SymbolTable const> st) const;
 
         util::sptr<Expression> const lhs;
         util::sptr<Expression> const rhs;
@@ -189,8 +189,8 @@ namespace proto {
             , rhs(std::move(r))
         {}
 
-        util::sref<Type const> type(util::sref<SymbolTable const>);
-        util::sptr<inst::Expression const> inst(util::sref<SymbolTable const> st);
+        util::sref<Type const> type(util::sref<SymbolTable const>) const;
+        util::sptr<inst::Expression const> inst(util::sref<SymbolTable const> st) const;
 
         util::sptr<Expression> const lhs;
         util::sptr<Expression> const rhs;
@@ -204,8 +204,8 @@ namespace proto {
             , rhs(std::move(r))
         {}
 
-        util::sref<Type const> type(util::sref<SymbolTable const>);
-        util::sptr<inst::Expression const> inst(util::sref<SymbolTable const> st);
+        util::sref<Type const> type(util::sref<SymbolTable const>) const;
+        util::sptr<inst::Expression const> inst(util::sref<SymbolTable const> st) const;
 
         util::sptr<Expression> const rhs;
     };
