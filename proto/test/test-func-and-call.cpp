@@ -1,10 +1,10 @@
 #include <gtest/gtest.h>
 
 #include "test-common.h"
-#include "../scope.h"
 #include "../function.h"
-#include "../stmt-nodes.h"
+#include "../symbol-table.h"
 #include "../expr-nodes.h"
+#include "../stmt-nodes.h"
 #include "../../util/string.h"
 #include "../../test/phony-errors.h"
 
@@ -16,149 +16,116 @@ struct FuncNCallTest
     void SetUp()
     {
         ProtoTest::SetUp();
-        resetFunc(true);
-        inst_scope.reset(new PhonyFunc);
+        global_st.reset(new proto::SymbolTable);
+        scope.reset(new proto::Scope);
     }
 
-    void resetFunc(bool hint_return_void)
-    {
-        misc::position pos(65535);
-        func.reset(new proto::Function(pos, "f", std::vector<std::string>(), hint_return_void));
-    }
-
-    util::sptr<proto::Function> func;
-    util::sptr<inst::Scope> inst_scope;
+    util::sptr<proto::SymbolTable> global_st;
+    util::sptr<proto::Scope> scope;
 };
 
-TEST_F(FuncNCallTest, NoBranchRecursionFunc)
+TEST_F(FuncNCallTest, EmptyBodyFunc)
 {
     misc::position pos(1);
-    func->inst(pos, *inst_scope, std::vector<util::sref<inst::Type const>>());
+    util::sref<proto::Function> func(
+            scope->declare(pos, "empty_body", std::vector<std::string>(), true));
     ASSERT_FALSE(error::hasError());
 
-    resetFunc(true);
-    func->addStmt(util::mkptr(new proto::ReturnNothing(pos)));
-    func->inst(pos, *inst_scope, std::vector<util::sref<inst::Type const>>());
-    ASSERT_FALSE(error::hasError());
-
-    resetFunc(false);
-    func->addStmt(util::mkptr(new proto::Return(pos, util::mkptr(
-                                                    new proto::IntLiteral(pos, 20110127)))));
-    func->inst(pos, *inst_scope, std::vector<util::sref<inst::Type const>>());
+    proto::Call call(pos, func, std::vector<util::sptr<proto::Expression const>>());
+    call.inst(*global_st)->write();
     ASSERT_FALSE(error::hasError());
 
     DataTree::expectOne()
-        (INIT_AS_VOID_RET)
-        (ADD_PATH)
-        (NEXT_PATH)
-        (ADD_STMT_TO_SCOPE)
+        (CALL, "0")
+    ;
+}
 
-        (INIT_AS_VOID_RET)
-        (ADD_PATH)
-        (NEXT_PATH)
-            (pos, SET_RETURN_TYPE_VOID)
-        (ADD_STMT_TO_BLOCK)
-        (ADD_STMT_TO_SCOPE)
+TEST_F(FuncNCallTest, NoBranchRecursionFunc)
+{
+    misc::position pos(2);
+    util::sref<proto::Function> func(
+            scope->declare(pos, "first", std::vector<std::string>(), true));
+    ASSERT_FALSE(error::hasError());
 
-        (ADD_PATH)
-        (NEXT_PATH)
-                (INTEGER, "20110127")
-            (pos, SET_RETURN_TYPE)
-        (ADD_STMT_TO_BLOCK)
-        (ADD_STMT_TO_SCOPE)
+    func->addStmt(util::mkptr(new proto::ReturnNothing(pos)));
+    proto::Call call_first(pos, func, std::vector<util::sptr<proto::Expression const>>());
+    call_first.inst(*global_st)->write();
+    ASSERT_FALSE(error::hasError());
+
+    func = scope->declare(pos, "second", std::vector<std::string>(), false);
+    func->addStmt(util::mkptr(
+                    new proto::Return(pos, util::mkptr(
+                                                new proto::IntLiteral(pos, mpz_class(20110127))))));
+    proto::Call call_second(pos, func, std::vector<util::sptr<proto::Expression const>>());
+    call_second.inst(*global_st)->write();
+    ASSERT_FALSE(error::hasError());
+
+    func = scope->declare(pos, "second", std::vector<std::string>({ "x" }), false);
+    func->addStmt(util::mkptr(
+                    new proto::Return(pos, util::mkptr(new proto::Reference(pos, "x")))));
+    std::vector<util::sptr<proto::Expression const>> args;
+    args.push_back(util::mkptr(new proto::BoolLiteral(pos, false)));
+    proto::Call call_second_x(pos, func, std::move(args));
+    call_second_x.inst(*global_st)->write();
+    ASSERT_FALSE(error::hasError());
+
+    DataTree::expectOne()
+        (CALL, "0")
+        (CALL, "0")
+        (CALL, "1")
     ;
 }
 
 TEST_F(FuncNCallTest, FuncWithBranchRecursion)
 {
-    misc::position pos(2);
-    util::sptr<proto::Scope> sub_scope0(NULL);
-    util::sptr<proto::Scope> sub_scope1(NULL);
-    util::sref<proto::Function> test_func(NULL);
+    misc::position pos(3);
+    util::sptr<proto::Scope> sub_scope0(new proto::Scope);
+    util::sptr<proto::Scope> sub_scope1(new proto::Scope);
+    util::sref<proto::Function> test_func(
+            scope->declare(pos, "test_func", std::vector<std::string>({ "x" }), false));
 
-    test_func = func->declare(pos, "test_func", std::vector<std::string>(), false);
-    sub_scope0 = util::mkptr(new proto::Scope);
-    sub_scope1 = util::mkptr(new proto::Scope);
-
-    util::sptr<proto::Expression const> recursive_call(util::mkptr(new proto::Call(
-                                   pos
-                                 , test_func
-                                 , std::vector<util::sptr<proto::Expression const>>())));
-    sub_scope0->addStmt(std::move(util::mkptr(new proto::Return(pos, std::move(recursive_call)))));
+    std::vector<util::sptr<proto::Expression const>> args;
+    args.push_back(util::mkptr(new proto::BoolLiteral(pos, true)));
+    sub_scope0->addStmt(util::mkptr(new proto::Return(pos, util::mkptr(new proto::Call(
+                                                                               pos
+                                                                             , test_func
+                                                                             , std::move(args))))));
     ASSERT_FALSE(error::hasError());
     test_func->addStmt(util::mkptr(new proto::Branch(pos
-                                                   , util::mkptr(new proto::IntLiteral(pos, 1))
-                                                   , std::move(sub_scope0)
-                                                   , std::move(sub_scope1))));
+                                                   , util::mkptr(new proto::Reference(pos, "x"))
+                                                   , sub_scope0->inst()
+                                                   , sub_scope1->inst())));
     test_func->addStmt(util::mkptr(new proto::Return(pos, util::mkptr(
-                                                            new proto::IntLiteral(pos, 1)))));
+                                                            new proto::BoolLiteral(pos, false)))));
 
-    test_func->inst(pos, *inst_scope, std::vector<util::sref<inst::Type const>>());
+    args.push_back(util::mkptr(new proto::BoolLiteral(pos, false)));
+    proto::Call call(pos, test_func, std::move(args));
+    call.inst(*global_st)->write();
     ASSERT_FALSE(error::hasError());
 
     DataTree::expectOne()
-        (ADD_PATH)
-        (NEXT_PATH)
-        (ADD_PATH)
-        (ADD_PATH)
-            (INTEGER, "1")
-        (pos, SET_RETURN_TYPE)
-
-                (QUERY_RETURN_TYPE_RESOLVE_STATUS)
-                (QUERY_RETURN_TYPE_RESOLVE_STATUS)
-                    (CALL, util::str(0))
-                (pos, SET_RETURN_TYPE)
-            (ADD_STMT_TO_BLOCK)
-        (ADD_STMT_TO_BLOCK)
-        (ADD_STMT_TO_BLOCK)
-        (ADD_STMT_TO_SCOPE)
+        (CALL, "1")
     ;
 }
 
 TEST_F(FuncNCallTest, CouldNotResolve)
 {
-    misc::position pos(3);
-    util::sptr<proto::Scope> sub_scope0(NULL);
-    util::sptr<proto::Scope> sub_scope1(NULL);
-    util::sref<proto::Function> test_func(NULL);
+    misc::position pos(4);
+    util::sptr<proto::Scope> sub_scope0(new proto::Scope);
+    util::sptr<proto::Scope> sub_scope1(new proto::Scope);
+    util::sref<proto::Function> test_func(
+            scope->declare(pos, "test_func", std::vector<std::string>(), false));
 
-    test_func = func->declare(pos, "test_func", std::vector<std::string>(), false);
-    sub_scope0 = util::mkptr(new proto::Scope);
-    sub_scope1 = util::mkptr(new proto::Scope);
-
-    test_func->addStmt(util::mkptr(new proto::Branch(pos
-                                                   , util::mkptr(new proto::IntLiteral(pos, 1))
-                                                   , std::move(sub_scope0)
-                                                   , std::move(sub_scope1))));
-
-    util::sptr<proto::Expression const> recursive_call(new proto::Call(
-                                   pos
-                                 , test_func
-                                 , std::vector<util::sptr<proto::Expression const>>()));
-    test_func->addStmt(std::move(util::mkptr(new proto::Return(pos, std::move(recursive_call)))));
+    test_func->addStmt(util::mkptr(new proto::Return(pos, util::mkptr(new proto::Call(
+                                           pos
+                                         , test_func
+                                         , std::vector<util::sptr<proto::Expression const>>())))));
     ASSERT_FALSE(error::hasError());
 
-    test_func->inst(pos, *inst_scope, std::vector<util::sref<inst::Type const>>());
-    ASSERT_TRUE(error::hasError());
-
-    DataTree::expectOne()
-        (ADD_PATH)
-        (NEXT_PATH)
-        (ADD_PATH)
-        (ADD_PATH)
-
-        (QUERY_RETURN_TYPE_RESOLVE_STATUS)
-        (NEXT_PATH)
-        (QUERY_RETURN_TYPE_RESOLVE_STATUS)
-        (NEXT_PATH)
-
-        (QUERY_RETURN_TYPE_RESOLVE_STATUS)
-        (QUERY_RETURN_TYPE_RESOLVE_STATUS)
-
-                (CALL, util::str(0))
-            (pos, SET_RETURN_TYPE)
-            (ADD_STMT_TO_BLOCK)
-        (ADD_STMT_TO_BLOCK)
-        (ADD_STMT_TO_SCOPE)
-    ;
+    proto::Call call(pos, test_func, std::vector<util::sptr<proto::Expression const>>());
+    call.inst(*global_st);
+    EXPECT_TRUE(error::hasError());
+    ASSERT_EQ(1, getRetTypeUnresolvables().size());
+    ASSERT_EQ("test_func", getRetTypeUnresolvables()[0].name);
+    ASSERT_EQ(0, getRetTypeUnresolvables()[0].arg_count);
 }

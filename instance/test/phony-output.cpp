@@ -1,8 +1,6 @@
 #include "../../output/func-writer.h"
 #include "../../output/statement-writer.h"
 #include "../../output/name-mangler.h"
-#include "../../proto/function.h"
-#include "../../proto/node-base.h"
 
 using namespace output;
 
@@ -27,7 +25,7 @@ void output::branchElse() {}
 void output::blockBegin() {}
 void output::blockEnd() {}
 void output::endOfStatement() {}
-void output::constructFuncReference(std::string const&) {}
+void output::writeFuncReference(int) {}
 void output::funcReferenceNextVariable(int, StackVarRec const&) {}
 void output::beginWriteStmt() {}
 void output::endWriteStmt() {}
@@ -40,11 +38,4 @@ std::string output::formFuncReferenceType(int)
 std::string output::formType(std::string const&)
 {
     return "";
-}
-
-util::sref<inst::Function> proto::Function::inst(int
-                                               , std::map<std::string, inst::Variable const> const&
-                                               , std::vector<util::sref<inst::Type const>> const&)
-{
-    return util::sref<inst::Function>(NULL);
 }

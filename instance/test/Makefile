@@ -11,18 +11,8 @@ TEST_OBJ=$(WORKDIR)/*.o \
          $(TESTDIR)/test-common.o \
          $(TESTDIR)/phony-output.o
 
-$(TESTDIR)/test-instance.out:$(TEST_DEP) \
-                             test-expr-nodes.dt \
-                             test-stmt-nodes.dt \
-                             test-operation-query.dt \
-                             test-symbol-table.dt \
-                             test-function.dt
+$(TESTDIR)/test-instance.out:$(TEST_DEP)
 	$(LINK) $(TEST_OBJ) \
-	        $(TESTDIR)/test-expr-nodes.o \
-	        $(TESTDIR)/test-stmt-nodes.o \
-	        $(TESTDIR)/test-operation-query.o \
-	        $(TESTDIR)/test-symbol-table.o \
-	        $(TESTDIR)/test-function.o \
 	        $(TEST_LIBS) \
 	     -o $(TESTDIR)/test-instance.out
 

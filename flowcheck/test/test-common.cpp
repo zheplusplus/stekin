@@ -3,16 +3,18 @@
 #include "../../test/phony-errors.h"
 #include "../../test/phony-warnings.h"
 #include "../../proto/function.h"
+#include "../../proto/func-inst-draft.h"
 #include "../../instance/node-base.h"
 #include "../../util/string.h"
 
 using namespace test;
 
-util::sref<inst::Scope> const test::nul_inst_scope(NULL);
+util::sref<proto::FuncInstDraft> const test::nul_draft(NULL);
+util::sref<proto::SymbolTable> const test::nul_st(NULL);
 
 void test::instScope(util::sref<proto::Scope> scope)
 {
-    scope->inst()->inst(nul_inst_scope);
+    scope->inst()->inst(nul_draft, nul_st);
 }
 
 DataTree& DataTree::operator()(misc::position const& pos

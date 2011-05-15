@@ -4,9 +4,6 @@
 
 using namespace test;
 
-inst::BuiltInPrimitive const test::PROTO_TEST_TYPE("proto_test_type", 1);
-inst::BuiltInPrimitive const test::PROTO_TEST_VOID("proto_test_void", 0);
-
 DataTree& DataTree::operator()(misc::position const& pos
                              , NodeType const& type
                              , std::string const& str)
@@ -48,12 +45,27 @@ std::ostream& operator<<(std::ostream& os, ProtoData const& data)
                                     : (os << data.pos << " arg size=" << data.func_arg_size);
 }
 
-NodeType const test::ADD_STMT_TO_SCOPE("add statement to scope");
-NodeType const test::ADD_STMT_TO_BLOCK("add statement to block");
+std::ostream& operator<<(std::ostream& os, proto::Variable const& var)
+{
+    os << "variable pos=" << var.def_pos
+       << " type=" << var.type
+       << " offset=" << var.stack_offset
+       << " level=" << var.level;
+    return os;
+}
 
-NodeType const test::QUERY_VAR("query var");
-NodeType const test::QUERY_BINARY_OP("query binary op");
-NodeType const test::QUERY_PRE_UNARY_OP("query pre-unary op");
+std::ostream& operator<<(std::ostream& os, util::sref<proto::Type const> type)
+{
+    return os << type->name();
+}
+
+NodeType const test::BLOCK_BEGIN("block begin");
+NodeType const test::BLOCK_END("block end");
+NodeType const test::ARITHMETICS("arithmetics");
+NodeType const test::BRANCH("branch");
+NodeType const test::INITIALIZATION("initialization");
+NodeType const test::RETURN("return");
+NodeType const test::RETURN_NOTHING("return nothing");
 
 NodeType const test::BOOLEAN("boolean");
 NodeType const test::INTEGER("integer");
@@ -66,14 +78,7 @@ NodeType const test::FUNC_REFERENCE("func reference");
 NodeType const test::CONJUNCTION("conjunction");
 NodeType const test::DISJUNCTION("disjunction");
 NodeType const test::NEGATION("negation");
-
-NodeType const test::INIT_AS_VOID_RET("init as void return");
-NodeType const test::SET_RETURN_TYPE_VOID("set return type void");
-NodeType const test::SET_RETURN_TYPE("set return type");
-NodeType const test::QUERY_RETURN_TYPE_RESOLVE_STATUS("is return type resolved");
-
-NodeType const test::NEXT_PATH("inst next path");
-NodeType const test::ADD_PATH("add path");
+NodeType const test::WRITE("write");
 
 void ProtoTest::SetUp()
 {

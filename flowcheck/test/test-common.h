@@ -3,13 +3,16 @@
 
 #include "../../proto/node-base.h"
 #include "../../proto/scope.h"
+#include "../../proto/func-reference-type.h"
+#include "../../proto/variable.h"
 #include "../../misc/pos-type.h"
 #include "../../test/data-node.h"
 #include "../../test/data-trees.h"
 
 namespace test {
 
-    extern util::sref<inst::Scope> const nul_inst_scope;
+    extern util::sref<proto::FuncInstDraft> const nul_draft;
+    extern util::sref<proto::SymbolTable> const nul_st;
     void instScope(util::sref<proto::Scope> scope);
 
     struct FlowcheckData {

@@ -2,6 +2,8 @@
 
 #include "test-common.h"
 #include "../expr-nodes.h"
+#include "../symbol-table.h"
+#include "../variable.h"
 #include "../../test/phony-errors.h"
 
 using namespace test;
@@ -12,10 +14,10 @@ struct ExprNodesTest
     void SetUp()
     {
         ProtoTest::SetUp();
-        inst_scope.reset(new PhonyFunc);
+        global_st.reset(new proto::SymbolTable);
     }
 
-    util::sptr<inst::Scope> inst_scope;
+    util::sptr<proto::SymbolTable> global_st;
 };
 
 TEST_F(ExprNodesTest, Literals)
@@ -28,12 +30,12 @@ TEST_F(ExprNodesTest, Literals)
     proto::FloatLiteral float0(pos, 0.4321);
     proto::FloatLiteral float1(pos, 1234.56);
 
-    bool0.inst(*inst_scope)->typeof();
-    bool1.inst(*inst_scope)->typeof();
-    int0.inst(*inst_scope)->typeof();
-    int1.inst(*inst_scope)->typeof();
-    float0.inst(*inst_scope)->typeof();
-    float1.inst(*inst_scope)->typeof();
+    bool0.inst(*global_st)->write();
+    bool1.inst(*global_st)->write();
+    int0.inst(*global_st)->write();
+    int1.inst(*global_st)->write();
+    float0.inst(*global_st)->write();
+    float1.inst(*global_st)->write();
     ASSERT_FALSE(error::hasError());
 
     DataTree::expectOne()
@@ -49,16 +51,18 @@ TEST_F(ExprNodesTest, Literals)
 TEST_F(ExprNodesTest, Reference)
 {
     misc::position pos(2);
+    global_st->defVar(pos, proto::Type::BIT_BOOL, "ushiro");
+    global_st->defVar(pos, proto::Type::BIT_INT, "moji");
+    ASSERT_FALSE(error::hasError());
+
     proto::Reference ref0(pos, "ushiro");
     proto::Reference ref1(pos, "moji");
-    ref0.inst(*inst_scope)->typeof();
-    ref1.inst(*inst_scope)->typeof();
+    ref0.inst(*global_st)->write();
+    ref1.inst(*global_st)->write();
     ASSERT_FALSE(error::hasError());
 
     DataTree::expectOne()
-        (pos, QUERY_VAR, "ushiro")
         (REFERENCE)
-        (pos, QUERY_VAR, "moji")
         (REFERENCE)
     ;
 }
@@ -66,33 +70,25 @@ TEST_F(ExprNodesTest, Reference)
 TEST_F(ExprNodesTest, Operations)
 {
     misc::position pos(3);
-    proto::BinaryOp bin(pos
-                      , std::move(util::mkptr(new proto::IntLiteral(pos, 20110122)))
-                      , "+"
-                      , std::move(util::mkptr(new proto::Reference(pos, "littleBird"))));
-    proto::PreUnaryOp preu(pos
-                          , "-"
-                          , std::move(util::mkptr(new proto::Reference(pos, "uninstall"))));
+    global_st->defVar(pos, proto::Type::BIT_INT, "littleBird");
+    global_st->defVar(pos, proto::Type::BIT_FLOAT, "uninstall");
+    ASSERT_FALSE(error::hasError());
 
-    bin.inst(*inst_scope)->typeof();
-    preu.inst(*inst_scope)->typeof();
+    proto::BinaryOp bin(pos
+                      , util::mkptr(new proto::IntLiteral(pos, mpz_class("20110122")))
+                      , "+"
+                      , util::mkptr(new proto::Reference(pos, "littleBird")));
+    proto::PreUnaryOp preu(pos, "-", util::mkptr(new proto::Reference(pos, "uninstall")));
+
+    bin.inst(*global_st)->write();
+    preu.inst(*global_st)->write();
     ASSERT_FALSE(error::hasError());
 
     DataTree::expectOne()
-            (pos, QUERY_VAR, "littleBird")
+        (BINARY_OP, "+")
             (INTEGER, "20110122")
             (REFERENCE)
-        (pos, QUERY_BINARY_OP, "+")
-
-        (BINARY_OP)
-            (INTEGER, "20110122")
-            (REFERENCE)
-
-            (pos, QUERY_VAR, "uninstall")
-            (REFERENCE)
-        (pos, QUERY_PRE_UNARY_OP, "-")
-
-        (PRE_UNARY_OP)
+        (PRE_UNARY_OP, "-")
             (REFERENCE)
     ;
 }
@@ -100,29 +96,82 @@ TEST_F(ExprNodesTest, Operations)
 TEST_F(ExprNodesTest, Logic)
 {
     misc::position pos(4);
+    global_st->defVar(pos, proto::Type::BIT_BOOL, "vermillion");
     proto::Conjunction conj(pos
-                          , std::move(util::mkptr(new proto::BoolLiteral(pos, true)))
-                          , std::move(util::mkptr(new proto::BoolLiteral(pos, false))));
+                          , util::mkptr(new proto::BoolLiteral(pos, true))
+                          , util::mkptr(new proto::Reference(pos, "vermillion")));
     proto::Disjunction disj(pos
-                          , std::move(util::mkptr(new proto::IntLiteral(pos, 198765432)))
-                          , std::move(util::mkptr(new proto::IntLiteral(pos, 0))));
-    proto::Negation nega(pos, std::move(util::mkptr(new proto::BoolLiteral(pos, true))));
+                          , util::mkptr(new proto::Reference(pos, "vermillion"))
+                          , util::mkptr(new proto::BoolLiteral(pos, false)));
+    proto::Negation nega(pos, util::mkptr(new proto::Reference(pos, "vermillion")));
 
-    conj.inst(*inst_scope)->typeof();
-    disj.inst(*inst_scope)->typeof();
-    nega.inst(*inst_scope)->typeof();
+    conj.inst(*global_st)->write();
+    disj.inst(*global_st)->write();
+    nega.inst(*global_st)->write();
     ASSERT_FALSE(error::hasError());
 
     DataTree::expectOne()
         (CONJUNCTION)
             (BOOLEAN, "true")
-            (BOOLEAN, "false")
-
+            (REFERENCE)
         (DISJUNCTION)
-            (INTEGER, "198765432")
-            (INTEGER, "0")
-
+            (REFERENCE)
+            (BOOLEAN, "false")
         (NEGATION)
-            (BOOLEAN, "true")
+            (REFERENCE)
     ;
+}
+
+TEST_F(ExprNodesTest, ConjunctionConditionTypeCheck)
+{
+    misc::position pos(5);
+    global_st->defVar(pos, proto::Type::BIT_INT, "chizu");
+    proto::Conjunction(pos
+                     , util::mkptr(new proto::BoolLiteral(pos, true))
+                     , util::mkptr(new proto::Reference(pos, "chizu")))
+        .inst(*global_st);
+    proto::Conjunction(pos
+                     , util::mkptr(new proto::Reference(pos, "chizu"))
+                     , util::mkptr(new proto::BoolLiteral(pos, false)))
+        .inst(*global_st);
+
+    EXPECT_TRUE(error::hasError());
+    ASSERT_EQ(2, getCondNotBools().size());
+    ASSERT_EQ(pos, getCondNotBools()[0].pos);
+    ASSERT_EQ(proto::Type::BIT_INT->name(), getCondNotBools()[0].type_name);
+    ASSERT_EQ(pos, getCondNotBools()[1].pos);
+    ASSERT_EQ(proto::Type::BIT_INT->name(), getCondNotBools()[1].type_name);
+}
+
+TEST_F(ExprNodesTest, DisjunctionConditionTypeCheck)
+{
+    misc::position pos(6);
+    global_st->defVar(pos, proto::Type::BIT_FLOAT, "kako");
+    proto::Disjunction(pos
+                     , util::mkptr(new proto::Reference(pos, "kako"))
+                     , util::mkptr(new proto::BoolLiteral(pos, true)))
+        .inst(*global_st);
+    proto::Disjunction(pos
+                     , util::mkptr(new proto::BoolLiteral(pos, false))
+                     , util::mkptr(new proto::Reference(pos, "kako")))
+        .inst(*global_st);
+
+    EXPECT_TRUE(error::hasError());
+    ASSERT_EQ(2, getCondNotBools().size());
+    ASSERT_EQ(pos, getCondNotBools()[0].pos);
+    ASSERT_EQ(proto::Type::BIT_FLOAT->name(), getCondNotBools()[0].type_name);
+    ASSERT_EQ(pos, getCondNotBools()[1].pos);
+    ASSERT_EQ(proto::Type::BIT_FLOAT->name(), getCondNotBools()[1].type_name);
+}
+
+TEST_F(ExprNodesTest, NegationConditionTypeCheck)
+{
+    misc::position pos(7);
+    global_st->defVar(pos, proto::Type::BIT_VOID, "kirie");
+    proto::Negation(pos, util::mkptr(new proto::Reference(pos, "kirie"))).inst(*global_st);
+
+    EXPECT_TRUE(error::hasError());
+    ASSERT_EQ(1, getCondNotBools().size());
+    ASSERT_EQ(pos, getCondNotBools()[0].pos);
+    ASSERT_EQ(proto::Type::BIT_VOID->name(), getCondNotBools()[0].type_name);
 }
