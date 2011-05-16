@@ -36,6 +36,7 @@ static util::sref<FuncInstDraft> instanceAlreadyDoneOrNulIfNonexist(
     }
     if (!instance->isReturnTypeResolved()) {
         error::returnTypeUnresolvable(name, arg_types.size());
+        instance->setReturnType(misc::position(0), Type::BAD_TYPE);
     }
     return instance;
 }

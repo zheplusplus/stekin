@@ -14,23 +14,6 @@
 
 using namespace proto;
 
-util::sref<Type const> FuncInstDraft::getReturnType() const
-{
-    return Type::BIT_VOID;
-}
-
-void FuncInstDraft::setReturnType(misc::position const& pos, util::sref<Type const> return_type)
-{
-    if (Type::BIT_VOID != return_type) {
-        error::conflictReturnType(pos, Type::BIT_VOID->name(), return_type->name());
-    }
-}
-
-bool FuncInstDraft::isReturnTypeResolved() const
-{
-    return true;
-}
-
 namespace {
 
     struct FuncInstDraftUnresolved
@@ -38,31 +21,38 @@ namespace {
     {
         explicit FuncInstDraftUnresolved(util::sref<SymbolTable> st)
             : FuncInstDraft(st)
-            , _return_type(Type::BAD_TYPE)
+            , _return_type_or_nul_if_not_set(NULL)
         {}
 
         util::sref<Type const> getReturnType() const
         {
-            return _return_type;
+            if (_return_type_or_nul_if_not_set.nul()) {
+                return Type::BAD_TYPE;
+            }
+            return _return_type_or_nul_if_not_set;
         }
 
         void setReturnType(misc::position const& pos, util::sref<Type const> return_type)
         {
-            if (Type::BAD_TYPE == _return_type) {
-                _return_type = return_type;
+            if (_return_type_or_nul_if_not_set.nul()
+                || Type::BAD_TYPE == _return_type_or_nul_if_not_set)
+            {
+                _return_type_or_nul_if_not_set = return_type;
                 return;
             }
-            if (_return_type != return_type) {
-                error::conflictReturnType(pos, _return_type->name(), return_type->name());
+            if (_return_type_or_nul_if_not_set != return_type) {
+                error::conflictReturnType(pos
+                                        , _return_type_or_nul_if_not_set->name()
+                                        , return_type->name());
             }
         }
 
         bool isReturnTypeResolved() const
         {
-            return Type::BAD_TYPE != _return_type;
+            return _return_type_or_nul_if_not_set.not_nul();
         }
 
-        util::sref<Type const> _return_type;
+        util::sref<Type const> _return_type_or_nul_if_not_set;
     };
 
     struct FuncInstRecs
@@ -93,6 +83,23 @@ namespace {
 
     FuncInstRecs FuncInstRecs::instance;
 
+}
+
+util::sref<Type const> FuncInstDraft::getReturnType() const
+{
+    return Type::BIT_VOID;
+}
+
+void FuncInstDraft::setReturnType(misc::position const& pos, util::sref<Type const> return_type)
+{
+    if (Type::BIT_VOID != return_type) {
+        error::conflictReturnType(pos, Type::BIT_VOID->name(), return_type->name());
+    }
+}
+
+bool FuncInstDraft::isReturnTypeResolved() const
+{
+    return true;
 }
 
 util::sref<FuncInstDraft> FuncInstDraft::create(util::sref<SymbolTable> st, bool has_void_returns)
