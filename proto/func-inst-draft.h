@@ -6,7 +6,8 @@
 #include <string>
 
 #include "fwd-decl.h"
-#include "../instance/block.h"
+#include "symbol-table.h"
+#include "../instance/function.h"
 #include "../misc/pos-type.h"
 
 namespace proto {
@@ -23,30 +24,29 @@ namespace proto {
         bool hasMorePath() const;
 
         void instantiate(util::sref<Statement> stmt);
+        util::sptr<inst::Function const> deliver();
     public:
-        static util::sref<FuncInstDraft> create(util::sref<SymbolTable> st, bool has_void_returns);
+        static util::sptr<FuncInstDraft> create(int ext_lvl
+                                              , std::list<ArgNameTypeRec> const& args
+                                              , std::map<std::string, Variable const> const& extvars
+                                              , bool has_void_returns);
+        static util::sptr<FuncInstDraft> createGlobal();
         static util::sref<FuncInstDraft> badDraft();
-
-        static void writeDecls();
-        static void writeImpls();
     protected:
-        explicit FuncInstDraft(util::sref<SymbolTable> st)
-            : _symbols_or_nul_if_inst_done(st)
-            , _level(0)
-            , _stack_size(0)
+        FuncInstDraft(int ext_lvl
+                    , std::list<ArgNameTypeRec> const& args
+                    , std::map<std::string, Variable const> const& extvars)
+            : _inst_func_or_nul_if_not_inst(NULL)
+            , _symbols(ext_lvl, args, extvars)
         {}
 
+        FuncInstDraft() {}
+
         FuncInstDraft(FuncInstDraft const&) = delete;
-    protected:
-        void _setSymbolInfo();
-        void _addStmt(util::sptr<inst::Statement const> stmt);
     private:
-        inst::Block _block;
+        util::sptr<inst::Function> _inst_func_or_nul_if_not_inst;
         std::list<util::sref<Statement>> _candidate_paths;
-        util::sref<SymbolTable> _symbols_or_nul_if_inst_done;
-        int _level;
-        int _stack_size;
-        std::list<Variable> _args;
+        SymbolTable _symbols;
     };
 
 }

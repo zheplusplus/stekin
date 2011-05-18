@@ -1,5 +1,7 @@
 #include <map>
 #include <list>
+#include <algorithm>
+#include <vector>
 
 #include "parser/yy-misc.h"
 #include "grammar/clause-builder.h"
@@ -20,7 +22,24 @@
 #include "report/errors.h"
 
 namespace {
+
     struct CompileFailure {};
+
+    struct Functions {
+        util::id const main_id;
+        std::vector<util::sptr<inst::Function const>> funcs;
+
+        Functions(util::id mid, std::vector<util::sptr<inst::Function const>> f)
+            : main_id(mid)
+            , funcs(std::move(f))
+        {}
+
+        Functions(Functions&& rhs)
+            : main_id(rhs.main_id)
+            , funcs(std::move(rhs.funcs))
+        {}
+    };
+
 }
 
 static util::sptr<flchk::Filter> frontEnd()
@@ -37,7 +56,7 @@ static util::sptr<flchk::Filter> frontEnd()
     return std::move(global_flow);
 }
 
-static util::id semantic(util::sptr<flchk::Filter> global_flow)
+static Functions semantic(util::sptr<flchk::Filter> global_flow)
 {
     util::sptr<proto::Scope> proto_global_scope(new proto::Scope);
     global_flow->compile(*proto_global_scope);
@@ -46,22 +65,34 @@ static util::id semantic(util::sptr<flchk::Filter> global_flow)
     }
 
     proto::SymbolTable st;
-    util::sref<proto::FuncInstDraft> inst_global_func(
-            proto::FuncInstDraft::create(util::mkref(st), true));
-    inst_global_func->instantiate(*proto_global_scope->inst());
+    util::sptr<proto::FuncInstDraft> inst_global_func(proto::FuncInstDraft::createGlobal());
+    util::sptr<proto::Block> global_block(proto_global_scope->deliver());
+    inst_global_func->instantiate(*global_block);
     if (error::hasError()) {
         throw CompileFailure();
     }
-    return inst_global_func.id();
+    std::vector<util::sptr<inst::Function const>> funcs(global_block->deliverFuncs());
+    funcs.push_back(inst_global_func->deliver());
+    return Functions(inst_global_func.id(), std::move(funcs));
 }
 
-static void outputAll(util::id global_func_id)
+static void outputAll(Functions funcs)
 {
-    proto::FuncInstDraft::writeDecls();
+    std::for_each(funcs.funcs.begin()
+                , funcs.funcs.end()
+                , [&](util::sptr<inst::Function const> const& func)
+                  {
+                      func->writeDecl();
+                  });
     output::writeMainBegin();
-    output::stknMainFunc(global_func_id);
+    output::stknMainFunc(funcs.main_id);
     output::writeMainEnd();
-    proto::FuncInstDraft::writeImpls();
+    std::for_each(funcs.funcs.begin()
+                , funcs.funcs.end()
+                , [&](util::sptr<inst::Function const> const& func)
+                  {
+                      func->writeImpl();
+                  });
 }
 
 int main()

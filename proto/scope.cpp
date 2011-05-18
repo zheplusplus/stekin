@@ -3,6 +3,7 @@
 #include "node-base.h"
 #include "variable.h"
 #include "func-reference-type.h"
+#include "func-inst-draft.h"
 #include "../instance/node-base.h"
 
 using namespace proto;
@@ -23,7 +24,7 @@ void Scope::addStmt(util::sptr<Statement> stmt)
     _block->addStmt(std::move(stmt));
 }
 
-util::sptr<Statement> Scope::inst()
+util::sptr<Block> Scope::deliver()
 {
     return std::move(_block);
 }

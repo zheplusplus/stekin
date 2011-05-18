@@ -18,6 +18,7 @@ namespace proto {
         Scope()
             : _block(new Block)
         {}
+
         virtual ~Scope() {}
     public:
         util::sref<Function> declare(misc::position const& pos
@@ -27,7 +28,7 @@ namespace proto {
     public:
         void addStmt(util::sptr<Statement> stmt);
     public:
-        util::sptr<Statement> inst();
+        util::sptr<Block> deliver();
     protected:
         util::sptr<Block> _block;
     };

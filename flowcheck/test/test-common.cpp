@@ -14,7 +14,7 @@ util::sref<proto::SymbolTable> const test::nul_st(NULL);
 
 void test::instScope(util::sref<proto::Scope> scope)
 {
-    scope->inst()->inst(nul_draft, nul_st);
+    scope->deliver()->inst(nul_draft, nul_st);
 }
 
 DataTree& DataTree::operator()(misc::position const& pos

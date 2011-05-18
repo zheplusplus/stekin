@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "stmt-nodes.h"
 #include "func-inst-draft.h"
 #include "symbol-table.h"
@@ -28,6 +30,24 @@ void Branch::mediateInst(util::sref<FuncInstDraft> func, util::sref<SymbolTable>
     _alternative_stmt->addTo(func);
 }
 
+static std::vector<util::sptr<inst::Function const>>
+        join(std::vector<util::sptr<inst::Function const>> a
+           , std::vector<util::sptr<inst::Function const>> b)
+{
+    std::for_each(b.begin()
+                , b.end()
+                , [&](util::sptr<inst::Function const>& f)
+                  {
+                      a.push_back(std::move(f));
+                  });
+    return std::move(a);
+}
+
+std::vector<util::sptr<inst::Function const>> Branch::deliverFuncs()
+{
+    return join(_consequence_stmt->deliverFuncs(), _alternative_stmt->deliverFuncs());
+}
+
 void DirectInst::addTo(util::sref<FuncInstDraft>) {}
 
 util::sptr<inst::Statement const> DirectInst::inst(util::sref<FuncInstDraft> func
@@ -42,6 +62,11 @@ void DirectInst::mediateInst(util::sref<FuncInstDraft> func, util::sref<SymbolTa
     if (_result_stmt_or_nul_if_not_inst.nul()) {
         _result_stmt_or_nul_if_not_inst = _inst(func, st);
     }
+}
+
+std::vector<util::sptr<inst::Function const>> DirectInst::deliverFuncs()
+{
+    return std::vector<util::sptr<inst::Function const>>();
 }
 
 util::sptr<inst::Statement const> Arithmetics::_inst(util::sref<FuncInstDraft>

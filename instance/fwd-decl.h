@@ -6,6 +6,7 @@ namespace inst {
     struct Expression;
     struct Statement;
     struct Block;
+    struct Function;
 
 }
 

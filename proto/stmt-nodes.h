@@ -23,6 +23,7 @@ namespace proto {
         util::sptr<inst::Statement const> inst(util::sref<FuncInstDraft> func
                                              , util::sref<SymbolTable> st);
         void mediateInst(util::sref<FuncInstDraft> func, util::sref<SymbolTable>);
+        std::vector<util::sptr<inst::Function const>> deliverFuncs();
     public:
         misc::position const pos;
         util::sptr<Expression const> const predicate;
@@ -38,6 +39,7 @@ namespace proto {
         util::sptr<inst::Statement const> inst(util::sref<FuncInstDraft> func
                                              , util::sref<SymbolTable> st);
         void mediateInst(util::sref<FuncInstDraft> func, util::sref<SymbolTable> st);
+        std::vector<util::sptr<inst::Function const>> deliverFuncs();
 
         misc::position const pos;
     protected:

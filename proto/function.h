@@ -7,6 +7,7 @@
 
 #include "fwd-decl.h"
 #include "scope.h"
+#include "func-inst-draft.h"
 #include "../misc/pos-type.h"
 
 namespace proto {
@@ -45,21 +46,50 @@ namespace proto {
 
         util::sref<FuncReferenceType const> refType(misc::position const& reference_pos
                                                   , util::sref<SymbolTable const> st);
-    public:
+        std::vector<util::sptr<inst::Function const>> deliverFuncs();
+    private:
         struct InstanceInfo {
             std::map<std::string, Variable const> const ext_vars;
             std::vector<util::sref<Type const>> const arg_types;
+            util::sptr<FuncInstDraft> draft;
 
             InstanceInfo(std::map<std::string, Variable const> const& e
-                       , std::vector<util::sref<Type const>> const& a)
+                       , std::vector<util::sref<Type const>> const& a
+                       , util::sptr<FuncInstDraft> d)
                 : ext_vars(e)
                 , arg_types(a)
+                , draft(std::move(d))
             {}
 
-            bool operator<(InstanceInfo const& rhs) const;
+            InstanceInfo(InstanceInfo&& rhs)
+                : ext_vars(rhs.ext_vars)
+                , arg_types(rhs.arg_types)
+                , draft(std::move(rhs.draft))
+            {}
+        };
+
+        struct InstanceCache
+            : protected std::list<InstanceInfo>
+        {
+            InstanceCache() = default;
+            ~InstanceCache() = default;
+
+            typedef std::list<InstanceInfo> BaseType;
+            typedef BaseType::const_iterator Iterator;
+
+            Iterator find(std::map<std::string, Variable const> const& ext_vars
+                        , std::vector<util::sref<Type const>> const& arg_types) const;
+            Iterator end() const;
+            void append(InstanceInfo info);
+
+            std::vector<util::sptr<inst::Function const>> deliverFuncs();
         };
     private:
-        std::map<InstanceInfo, util::sref<FuncInstDraft>> _instance_cache;
+        util::sref<FuncInstDraft> _draftInCacheOrNulIfNonexist(
+                                std::map<std::string, Variable const> const& ext_vars
+                              , std::vector<util::sref<Type const>> const& arg_types) const;
+    private:
+        InstanceCache _draft_cache;
         std::vector<util::sptr<FuncReferenceType const>> _reference_types;
         std::vector<std::string> _free_variables;
     };

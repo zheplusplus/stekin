@@ -39,6 +39,11 @@ util::sptr<inst::Statement const> Block::inst(util::sref<FuncInstDraft>, util::s
     return std::move(NUL_INST_STMT);
 }
 
+std::vector<util::sptr<inst::Function const>> Block::deliverFuncs()
+{
+    return std::vector<util::sptr<inst::Function const>>();
+}
+
 void DirectInst::addTo(util::sref<FuncInstDraft>) {}
 void DirectInst::mediateInst(util::sref<FuncInstDraft>, util::sref<SymbolTable>) {}
 
@@ -48,7 +53,12 @@ util::sptr<inst::Statement const> DirectInst::inst(util::sref<FuncInstDraft>
     return _inst(nul_draft, nul_st);
 }
 
-util::sptr<Statement> Scope::inst()
+std::vector<util::sptr<inst::Function const>> DirectInst::deliverFuncs()
+{
+    return std::vector<util::sptr<inst::Function const>>();
+}
+
+util::sptr<Block> Scope::deliver()
 {
     return std::move(_block);
 }
@@ -86,6 +96,11 @@ util::sptr<inst::Statement const> Branch::inst(util::sref<FuncInstDraft>, util::
     _consequence_stmt->inst(nul_draft, nul_st);
     _alternative_stmt->inst(nul_draft, nul_st);
     return std::move(NUL_INST_STMT);
+}
+
+std::vector<util::sptr<inst::Function const>> Branch::deliverFuncs()
+{
+    return std::vector<util::sptr<inst::Function const>>();
 }
 
 util::sptr<inst::Statement const> Arithmetics::_inst(util::sref<FuncInstDraft>

@@ -23,6 +23,8 @@ namespace proto {
         util::sptr<inst::Statement const> inst(util::sref<FuncInstDraft> func
                                              , util::sref<SymbolTable> st);
         void mediateInst(util::sref<FuncInstDraft> func, util::sref<SymbolTable> st);
+
+        std::vector<util::sptr<inst::Function const>> deliverFuncs();
     private:
         std::list<util::sptr<Statement>> _stmts;
         std::list<util::sptr<Function>> _funcs;

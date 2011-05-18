@@ -2,6 +2,7 @@
 #include "../../instance/block.h"
 #include "../../instance/expr-nodes.h"
 #include "../../instance/stmt-nodes.h"
+#include "../../instance/function.h"
 #include "../../instance/built-in.h"
 #include "../../output/func-writer.h"
 #include "../../output/name-mangler.h"
@@ -124,6 +125,9 @@ void WriteExpr::write() const
 {
     DataTree::actualOne()(WRITE);
 }
+
+void Function::writeDecl() const {}
+void Function::writeImpl() const {}
 
 void output::writeFuncDecl(std::string const&, util::id, std::list<StackVarRec> const&, int, int) {}
 void output::writeFuncImpl(std::string const&, util::id) {}

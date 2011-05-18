@@ -93,8 +93,8 @@ TEST_F(FuncNCallTest, FuncWithBranchRecursion)
     ASSERT_FALSE(error::hasError());
     test_func->addStmt(util::mkptr(new proto::Branch(pos
                                                    , util::mkptr(new proto::Reference(pos, "x"))
-                                                   , sub_scope0->inst()
-                                                   , sub_scope1->inst())));
+                                                   , sub_scope0->deliver()
+                                                   , sub_scope1->deliver())));
     test_func->addStmt(util::mkptr(new proto::Return(pos, util::mkptr(
                                                             new proto::BoolLiteral(pos, false)))));
 

@@ -1,6 +1,8 @@
 #ifndef __STEKIN_PROTO_NODE_BASE_H__
 #define __STEKIN_PROTO_NODE_BASE_H__
 
+#include <vector>
+
 #include "fwd-decl.h"
 #include "../instance/fwd-decl.h"
 #include "../util/pointer.h"
@@ -27,8 +29,8 @@ namespace proto {
         virtual void addTo(util::sref<FuncInstDraft> func) = 0;
         virtual util::sptr<inst::Statement const> inst(util::sref<FuncInstDraft> func
                                                      , util::sref<SymbolTable> st) = 0;
-        virtual void mediateInst(util::sref<FuncInstDraft> func
-                               , util::sref<SymbolTable> st) = 0;
+        virtual void mediateInst(util::sref<FuncInstDraft> func, util::sref<SymbolTable> st) = 0;
+        virtual std::vector<util::sptr<inst::Function const>> deliverFuncs() = 0;
     protected:
         Statement() {}
     };

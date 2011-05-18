@@ -47,3 +47,32 @@ void Block::mediateInst(util::sref<FuncInstDraft> func, util::sref<SymbolTable> 
                       stmt->mediateInst(func, st);
                   });
 }
+
+static void append(std::vector<util::sptr<inst::Function const>>& a
+                 , std::vector<util::sptr<inst::Function const>> b)
+{
+    std::for_each(b.begin()
+                , b.end()
+                , [&](util::sptr<inst::Function const>& f)
+                  {
+                      a.push_back(std::move(f));
+                  });
+}
+
+std::vector<util::sptr<inst::Function const>> Block::deliverFuncs()
+{
+    std::vector<util::sptr<inst::Function const>> result;
+    std::for_each(_stmts.begin()
+                , _stmts.end()
+                , [&](util::sptr<Statement>& stmt)
+                  {
+                      append(result, stmt->deliverFuncs());
+                  });
+    std::for_each(_funcs.begin()
+                , _funcs.end()
+                , [&](util::sptr<Function>& func)
+                  {
+                      append(result, func->deliverFuncs());
+                  });
+    return std::move(result);
+}

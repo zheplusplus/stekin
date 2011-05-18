@@ -1,5 +1,4 @@
 #include <algorithm>
-#include <list>
 
 #include "function.h"
 #include "func-inst-draft.h"
@@ -20,25 +19,23 @@ util::sref<FuncInstDraft> Function::inst(misc::position const& pos
     return inst(ext_st->level, bindExternalVars(pos, ext_st), arg_types);
 }
 
-static util::sref<FuncInstDraft> instanceAlreadyDoneOrNulIfNonexist(
-            std::map<Function::InstanceInfo, util::sref<FuncInstDraft>> const& instance_cache
-          , std::map<std::string, Variable const> const& ext_vars
-          , std::vector<util::sref<Type const>> const& arg_types
-          , std::string const& name)
+util::sref<FuncInstDraft> Function::_draftInCacheOrNulIfNonexist(
+                        std::map<std::string, Variable const> const& ext_vars
+                      , std::vector<util::sref<Type const>> const& arg_types) const
 {
-    auto find_result = instance_cache.find(Function::InstanceInfo(ext_vars, arg_types));
-    if (instance_cache.end() == find_result) {
+    auto find_result = _draft_cache.find(ext_vars, arg_types);
+    if (_draft_cache.end() == find_result) {
         return util::sref<FuncInstDraft>(NULL);
     }
-    util::sref<FuncInstDraft> instance = find_result->second;
-    while (!instance->isReturnTypeResolved() && instance->hasMorePath()) {
-        instance->instNextPath();
+    util::sref<FuncInstDraft> draft = *(find_result->draft);
+    while (!draft->isReturnTypeResolved() && draft->hasMorePath()) {
+        draft->instNextPath();
     }
-    if (!instance->isReturnTypeResolved()) {
+    if (!draft->isReturnTypeResolved()) {
         error::returnTypeUnresolvable(name, arg_types.size());
-        instance->setReturnType(misc::position(0), Type::BAD_TYPE);
+        draft->setReturnType(misc::position(0), Type::BAD_TYPE);
     }
-    return instance;
+    return draft;
 }
 
 std::list<ArgNameTypeRec> makeArgInfo(std::vector<std::string> const& param_names
@@ -55,19 +52,19 @@ util::sref<FuncInstDraft> Function::inst(int level
                                        , std::map<std::string, Variable const> const& ext_vars
                                        , std::vector<util::sref<Type const>> const& arg_types)
 {
-    util::sref<FuncInstDraft> result_inst = instanceAlreadyDoneOrNulIfNonexist(_instance_cache
-                                                                             , ext_vars
-                                                                             , arg_types
-                                                                             , name);
-    if (result_inst.not_nul()) {
-        return result_inst;
+    util::sref<FuncInstDraft> draft = _draftInCacheOrNulIfNonexist(ext_vars, arg_types);
+    if (draft.not_nul()) {
+        return draft;
     }
 
-    SymbolTable st(level, makeArgInfo(param_names, arg_types), ext_vars);
-    util::sref<FuncInstDraft> new_inst = FuncInstDraft::create(util::mkref(st), hint_void_return);
-    _instance_cache.insert(std::make_pair(InstanceInfo(ext_vars, arg_types), new_inst));
-    new_inst->instantiate(*_block);
-    return new_inst;
+    util::sptr<FuncInstDraft> new_draft(FuncInstDraft::create(level
+                                                            , makeArgInfo(param_names, arg_types)
+                                                            , ext_vars
+                                                            , hint_void_return));
+    util::sref<FuncInstDraft> draft_ref(*new_draft);
+    _draft_cache.append(InstanceInfo(ext_vars, arg_types, std::move(new_draft)));
+    draft_ref->instantiate(*_block);
+    return draft_ref;
 }
 
 std::map<std::string, Variable const> Function::bindExternalVars(
@@ -107,10 +104,49 @@ void Function::setFreeVariables(std::vector<std::string> const& free_vars)
     _free_variables = free_vars;
 }
 
-bool Function::InstanceInfo::operator<(Function::InstanceInfo const& rhs) const
+std::vector<util::sptr<inst::Function const>> Function::deliverFuncs()
 {
-    if (arg_types != rhs.arg_types) {
-        return arg_types < rhs.arg_types;
-    }
-    return util::map_less(ext_vars, rhs.ext_vars);
+    std::vector<util::sptr<inst::Function const>> result(_block->deliverFuncs());
+    std::vector<util::sptr<inst::Function const>> drafts_inst(_draft_cache.deliverFuncs());
+    std::for_each(drafts_inst.begin()
+                , drafts_inst.end()
+                , [&](util::sptr<inst::Function const>& func)
+                  {
+                      result.push_back(std::move(func));
+                  });
+    return std::move(result);
+}
+
+Function::InstanceCache::Iterator
+        Function::InstanceCache::find(std::map<std::string, Variable const> const& ext_vars
+                                    , std::vector<util::sref<Type const>> const& arg_types) const
+{
+    return std::find_if(BaseType::begin()
+                      , BaseType::end()
+                      , [&](InstanceInfo const& info)
+                        {
+                            return ext_vars == info.ext_vars && arg_types == info.arg_types;
+                        });
+}
+
+Function::InstanceCache::Iterator Function::InstanceCache::end() const
+{
+    return std::list<InstanceInfo>::end();
+}
+
+void Function::InstanceCache::append(InstanceInfo info)
+{
+    push_back(std::move(info));
+}
+
+std::vector<util::sptr<inst::Function const>> Function::InstanceCache::deliverFuncs()
+{
+    std::vector<util::sptr<inst::Function const>> result;
+    std::for_each(BaseType::begin()
+                , BaseType::end()
+                , [&](InstanceInfo& info)
+                  {
+                      result.push_back(std::move(info.draft->deliver()));
+                  });
+    return std::move(result);
 }
