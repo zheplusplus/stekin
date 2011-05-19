@@ -29,6 +29,11 @@ namespace test {
             , func_arg_size(arg_size)
         {}
 
+        ProtoData(int arg_size)
+            : pos(-1)
+            , func_arg_size(arg_size)
+        {}
+
         bool operator==(ProtoData const& rhs) const
         {
             return pos == rhs.pos && func_arg_size == rhs.func_arg_size;
@@ -51,6 +56,7 @@ namespace test {
 
         DataTree& operator()(NodeType const& type);
         DataTree& operator()(NodeType const& type, std::string const& str);
+        DataTree& operator()(NodeType const& type, std::string const& str, int func_arg_size);
     };
 
     extern NodeType const BLOCK_BEGIN;
@@ -73,6 +79,9 @@ namespace test {
     extern NodeType const DISJUNCTION;
     extern NodeType const NEGATION;
     extern NodeType const WRITE;
+
+    extern NodeType const FUNC_DECL;
+    extern NodeType const FUNC_IMPL;
 
     struct ProtoTest
         : public testing::Test

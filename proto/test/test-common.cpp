@@ -39,6 +39,12 @@ DataTree& DataTree::operator()(NodeType const& type, std::string const& str)
     return *this;
 }
 
+DataTree& DataTree::operator()(NodeType const& type, std::string const& str, int func_arg_size)
+{
+    BaseType::operator()(type, ProtoData(func_arg_size), str);
+    return *this;
+}
+
 std::ostream& operator<<(std::ostream& os, ProtoData const& data)
 {
     return -1 == data.func_arg_size ? (os << data.pos)
@@ -79,6 +85,9 @@ NodeType const test::CONJUNCTION("conjunction");
 NodeType const test::DISJUNCTION("disjunction");
 NodeType const test::NEGATION("negation");
 NodeType const test::WRITE("write");
+
+NodeType const test::FUNC_DECL("function declaration");
+NodeType const test::FUNC_IMPL("function implement");
 
 void ProtoTest::SetUp()
 {

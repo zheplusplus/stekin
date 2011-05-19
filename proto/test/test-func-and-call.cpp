@@ -129,3 +129,28 @@ TEST_F(FuncNCallTest, CouldNotResolve)
     ASSERT_EQ("test_func", getRetTypeUnresolvables()[0].name);
     ASSERT_EQ(0, getRetTypeUnresolvables()[0].arg_count);
 }
+
+TEST_F(FuncNCallTest, WriteEmptyFunc)
+{
+    misc::position pos(5);
+    util::sref<proto::Function> func(
+            scope->declare(pos, "empty_body", std::vector<std::string>(), true));
+    ASSERT_FALSE(error::hasError());
+
+    proto::Call call(pos, func, std::vector<util::sptr<proto::Expression const>>());
+    call.inst(*global_st);
+
+    std::vector<util::sptr<inst::Function const>> funcs(scope->deliver()->deliverFuncs());
+    ASSERT_FALSE(error::hasError());
+
+    ASSERT_EQ(1, funcs.size());
+    funcs[0]->writeDecl();
+    funcs[0]->writeImpl();
+
+    DataTree::expectOne()
+        (FUNC_DECL, "1", 0)
+        (FUNC_IMPL, "1", 0)
+            (BLOCK_BEGIN)
+            (BLOCK_END)
+    ;
+}

@@ -126,11 +126,16 @@ void WriteExpr::write() const
     DataTree::actualOne()(WRITE);
 }
 
-void Function::writeDecl() const {}
-void Function::writeImpl() const {}
+void Function::writeDecl() const
+{
+    DataTree::actualOne()(FUNC_DECL, util::str(level), args.size());
+}
 
-void output::writeFuncDecl(std::string const&, util::id, std::list<StackVarRec> const&, int, int) {}
-void output::writeFuncImpl(std::string const&, util::id) {}
+void Function::writeImpl() const
+{
+    DataTree::actualOne()(FUNC_IMPL, util::str(level), args.size());
+    body->write();
+}
 
 std::string output::formType(std::string const& type)
 {
