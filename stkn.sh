@@ -1,3 +1,5 @@
+#!/bin/bash
+
 if [ "-cm" == $1 ];
 then
     CHECK_MEMORY="valgrind -q --leak-check=full"
