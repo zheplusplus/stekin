@@ -98,9 +98,9 @@ samples 目录下有很多样例可以参考. 其中 samples/errors 目录下的
 
 New Features
 ------------
-简单的**闭包**函数被引入了. 由于 Stekin 支持多个函数重载同名但参数个数不相同, 如果闭包引用的函数有重载, 那么引用函数必须在函数名之后加上 `@参数个数`.
+允许引用外部函数中的局部变量作为闭包使用
 
-从 SICP 上将一些 Lisp 示例代码翻译为 Stekin 代码, 详见示例目录下的
+从 SICP 上将一些 Lisp 示例代码翻译为 Stekin 代码, 详见
 
 * samples/pair.stkn
 * samples/sqrt.stkn
@@ -111,16 +111,16 @@ What will be added / changed next?
 ----------------------------------
 功能
 
-* 允许引用外部函数中的局部变量作为闭包使用
+* 降低对闭包对象的复制次数, 尽可能以引用方式传递闭包
 
 设计
 
-* 将符号表由 `proto` 移入 `flowcheck`
-* 修正现在 `instance` 和 `proto` 就 `proto::Function` 而互相依赖的问题
+* 将 `instance` 模块去掉, 并为后端增加一级 `assembly` 模块, 节点为类汇编指令的结构
 
 测试
 
-* 完善测试案例
+* 降低测试构造语法树的复杂度
+* 引入 backtracpp 作为子项目, 简化调试
 
 Contributing
 ------------
