@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 verify() {
     if ./stkn.sh -cm samples/$1.stkn tmp.out && ./tmp.out | diff samples/$1.expected - ;
