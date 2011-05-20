@@ -5,3 +5,4 @@ parser/syn.hpp
 *.out
 tmp.*
 libs
+backtracpp

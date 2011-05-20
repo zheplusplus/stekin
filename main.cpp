@@ -20,6 +20,7 @@
 #include "output/func-writer.h"
 #include "util/pointer.h"
 #include "report/errors.h"
+#include "inspect/trace.h"
 
 namespace {
 
@@ -97,6 +98,7 @@ static void outputAll(Functions funcs)
 
 int main()
 {
+    inspect::prepare_for_trace();
     try {
         outputAll(semantic(frontEnd()));
         return 0;
