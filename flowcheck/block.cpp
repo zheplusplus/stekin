@@ -8,6 +8,7 @@
 #include "../proto/function.h"
 #include "../proto/variable.h"
 #include "../proto/func-reference-type.h"
+#include "../util/vector-append.h"
 
 using namespace flchk;
 
@@ -37,17 +38,6 @@ void Block::compile(util::sref<proto::Scope> scope, util::sref<SymbolTable> st) 
 
 void Block::append(Block following)
 {
-    std::for_each(following._funcs.begin()
-                , following._funcs.end()
-                , [&](util::sptr<Function>& func)
-                  {
-                      _funcs.push_back(std::move(func));
-                  });
-
-    std::for_each(following._stmts.begin()
-                , following._stmts.end()
-                , [&](util::sptr<Statement const>& stmt)
-                  {
-                      _stmts.push_back(std::move(stmt));
-                  });
+    util::ptrs_append(_funcs, std::move(following._funcs));
+    util::ptrs_append(_stmts, std::move(following._stmts));
 }

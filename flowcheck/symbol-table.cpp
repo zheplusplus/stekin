@@ -7,21 +7,10 @@
 #include "../proto/variable.h"
 #include "../proto/expr-nodes.h"
 #include "../proto/func-inst-draft.h"
+#include "../util/vector-append.h"
 #include "../report/errors.h"
 
 using namespace flchk;
-
-static std::vector<util::sref<Function>> appendFuncs(std::vector<util::sref<Function>> a
-                                                   , std::vector<util::sref<Function>> b)
-{
-    std::for_each(b.begin()
-                , b.end()
-                , [&](util::sref<Function> f)
-                  {
-                      a.push_back(f);
-                  });
-    return std::move(a);
-}
 
 util::sref<Function> Overloads::Overload::queryOrNulIfNonexist(int param_count) const
 {
@@ -57,9 +46,9 @@ std::vector<util::sref<Function>> Overloads::allFuncsOfName(std::string const& n
                               : (std::vector<util::sref<Function>>()));
     util::sref<Overload const> o = _overloadByNameOrNulIfNonexist(name);
     if (o.not_nul()) {
-        return appendFuncs(std::move(external_funcs_of_name), o->all());
+        return util::refs_append(std::move(external_funcs_of_name), o->all());
     }
-    return appendFuncs(std::move(external_funcs_of_name), std::vector<util::sref<Function>>());
+    return external_funcs_of_name;
 }
 
 util::sref<Function> Overloads::queryOrNulIfNonexist(std::string const& name, int param_count) const

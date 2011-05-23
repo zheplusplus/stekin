@@ -6,6 +6,7 @@
 #include "type.h"
 #include "variable.h"
 #include "../instance/stmt-nodes.h"
+#include "../util/vector-append.h"
 
 using namespace proto;
 
@@ -30,22 +31,9 @@ void Branch::mediateInst(util::sref<FuncInstDraft> func, util::sref<SymbolTable>
     _alternative_stmt->addTo(func);
 }
 
-static std::vector<util::sptr<inst::Function const>>
-        join(std::vector<util::sptr<inst::Function const>> a
-           , std::vector<util::sptr<inst::Function const>> b)
-{
-    std::for_each(b.begin()
-                , b.end()
-                , [&](util::sptr<inst::Function const>& f)
-                  {
-                      a.push_back(std::move(f));
-                  });
-    return std::move(a);
-}
-
 std::vector<util::sptr<inst::Function const>> Branch::deliverFuncs()
 {
-    return join(_consequence_stmt->deliverFuncs(), _alternative_stmt->deliverFuncs());
+    return util::ptrs_append(_consequence_stmt->deliverFuncs(), _alternative_stmt->deliverFuncs());
 }
 
 void DirectInst::addTo(util::sref<FuncInstDraft>) {}

@@ -48,39 +48,39 @@ namespace proto {
                                                   , util::sref<SymbolTable const> st);
         std::vector<util::sptr<inst::Function const>> deliverFuncs();
     private:
-        struct InstanceInfo {
+        struct DraftInfo {
             std::map<std::string, Variable const> const ext_vars;
             std::vector<util::sref<Type const>> const arg_types;
             util::sptr<FuncInstDraft> draft;
 
-            InstanceInfo(std::map<std::string, Variable const> const& e
-                       , std::vector<util::sref<Type const>> const& a
-                       , util::sptr<FuncInstDraft> d)
+            DraftInfo(std::map<std::string, Variable const> const& e
+                    , std::vector<util::sref<Type const>> const& a
+                    , util::sptr<FuncInstDraft> d)
                 : ext_vars(e)
                 , arg_types(a)
                 , draft(std::move(d))
             {}
 
-            InstanceInfo(InstanceInfo&& rhs)
+            DraftInfo(DraftInfo&& rhs)
                 : ext_vars(rhs.ext_vars)
                 , arg_types(rhs.arg_types)
                 , draft(std::move(rhs.draft))
             {}
         };
 
-        struct InstanceCache
-            : protected std::list<InstanceInfo>
+        struct DraftCache
+            : protected std::list<DraftInfo>
         {
-            InstanceCache() = default;
-            ~InstanceCache() = default;
+            DraftCache() = default;
+            ~DraftCache() = default;
 
-            typedef std::list<InstanceInfo> BaseType;
+            typedef std::list<DraftInfo> BaseType;
             typedef BaseType::const_iterator Iterator;
 
             Iterator find(std::map<std::string, Variable const> const& ext_vars
                         , std::vector<util::sref<Type const>> const& arg_types) const;
             Iterator end() const;
-            void append(InstanceInfo info);
+            void append(DraftInfo info);
 
             std::vector<util::sptr<inst::Function const>> deliverFuncs();
         };
@@ -89,7 +89,7 @@ namespace proto {
                                 std::map<std::string, Variable const> const& ext_vars
                               , std::vector<util::sref<Type const>> const& arg_types) const;
     private:
-        InstanceCache _draft_cache;
+        DraftCache _draft_cache;
         std::vector<util::sptr<FuncReferenceType const>> _reference_types;
         std::vector<std::string> _free_variables;
     };

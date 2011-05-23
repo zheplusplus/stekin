@@ -8,6 +8,7 @@
 #include "variable.h"
 #include "../instance/stmt-nodes.h"
 #include "../util/map-compare.h"
+#include "../util/vector-append.h"
 #include "../report/errors.h"
 
 using namespace proto;
@@ -62,7 +63,7 @@ util::sref<FuncInstDraft> Function::inst(int level
                                                             , ext_vars
                                                             , hint_void_return));
     util::sref<FuncInstDraft> draft_ref(*new_draft);
-    _draft_cache.append(InstanceInfo(ext_vars, arg_types, std::move(new_draft)));
+    _draft_cache.append(DraftInfo(ext_vars, arg_types, std::move(new_draft)));
     draft_ref->instantiate(*_block);
     return draft_ref;
 }
@@ -106,45 +107,37 @@ void Function::setFreeVariables(std::vector<std::string> const& free_vars)
 
 std::vector<util::sptr<inst::Function const>> Function::deliverFuncs()
 {
-    std::vector<util::sptr<inst::Function const>> result(_block->deliverFuncs());
-    std::vector<util::sptr<inst::Function const>> drafts_inst(_draft_cache.deliverFuncs());
-    std::for_each(drafts_inst.begin()
-                , drafts_inst.end()
-                , [&](util::sptr<inst::Function const>& func)
-                  {
-                      result.push_back(std::move(func));
-                  });
-    return std::move(result);
+    return util::ptrs_append(_block->deliverFuncs(), _draft_cache.deliverFuncs());
 }
 
-Function::InstanceCache::Iterator
-        Function::InstanceCache::find(std::map<std::string, Variable const> const& ext_vars
-                                    , std::vector<util::sref<Type const>> const& arg_types) const
+Function::DraftCache::Iterator
+        Function::DraftCache::find(std::map<std::string, Variable const> const& ext_vars
+                                 , std::vector<util::sref<Type const>> const& arg_types) const
 {
     return std::find_if(BaseType::begin()
                       , BaseType::end()
-                      , [&](InstanceInfo const& info)
+                      , [&](DraftInfo const& info)
                         {
                             return ext_vars == info.ext_vars && arg_types == info.arg_types;
                         });
 }
 
-Function::InstanceCache::Iterator Function::InstanceCache::end() const
+Function::DraftCache::Iterator Function::DraftCache::end() const
 {
-    return std::list<InstanceInfo>::end();
+    return std::list<DraftInfo>::end();
 }
 
-void Function::InstanceCache::append(InstanceInfo info)
+void Function::DraftCache::append(DraftInfo info)
 {
     push_back(std::move(info));
 }
 
-std::vector<util::sptr<inst::Function const>> Function::InstanceCache::deliverFuncs()
+std::vector<util::sptr<inst::Function const>> Function::DraftCache::deliverFuncs()
 {
     std::vector<util::sptr<inst::Function const>> result;
     std::for_each(BaseType::begin()
                 , BaseType::end()
-                , [&](InstanceInfo& info)
+                , [&](DraftInfo& info)
                   {
                       result.push_back(std::move(info.draft->deliver()));
                   });

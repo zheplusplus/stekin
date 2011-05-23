@@ -3,7 +3,6 @@
 
 #include <string>
 #include <vector>
-#include <list>
 
 #include "fwd-decl.h"
 #include "../proto/fwd-decl.h"
@@ -30,8 +29,8 @@ namespace flchk {
                                    , util::sptr<Filter> body);
         void append(Block following);
     private:
-        std::list<util::sptr<Statement const>> _stmts;
-        std::list<util::sptr<Function>> _funcs;
+        std::vector<util::sptr<Statement const>> _stmts;
+        std::vector<util::sptr<Function>> _funcs;
     };
 
 }

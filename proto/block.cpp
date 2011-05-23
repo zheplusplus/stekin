@@ -6,6 +6,7 @@
 #include "variable.h"
 #include "func-reference-type.h"
 #include "../instance/block.h"
+#include "../util/vector-append.h"
 
 using namespace proto;
 
@@ -48,17 +49,6 @@ void Block::mediateInst(util::sref<FuncInstDraft> func, util::sref<SymbolTable> 
                   });
 }
 
-static void append(std::vector<util::sptr<inst::Function const>>& a
-                 , std::vector<util::sptr<inst::Function const>> b)
-{
-    std::for_each(b.begin()
-                , b.end()
-                , [&](util::sptr<inst::Function const>& f)
-                  {
-                      a.push_back(std::move(f));
-                  });
-}
-
 std::vector<util::sptr<inst::Function const>> Block::deliverFuncs()
 {
     std::vector<util::sptr<inst::Function const>> result;
@@ -66,13 +56,13 @@ std::vector<util::sptr<inst::Function const>> Block::deliverFuncs()
                 , _stmts.end()
                 , [&](util::sptr<Statement>& stmt)
                   {
-                      append(result, stmt->deliverFuncs());
+                      util::ptrs_append(result, stmt->deliverFuncs());
                   });
     std::for_each(_funcs.begin()
                 , _funcs.end()
                 , [&](util::sptr<Function>& func)
                   {
-                      append(result, func->deliverFuncs());
+                      util::ptrs_append(result, func->deliverFuncs());
                   });
     return std::move(result);
 }
