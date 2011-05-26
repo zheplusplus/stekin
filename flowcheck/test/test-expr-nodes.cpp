@@ -20,31 +20,31 @@ typedef FlowcheckTest ExprNodesTest;
 TEST_F(ExprNodesTest, Literals)
 {
     misc::position pos(1);
-    util::sptr<proto::Scope> scope(new proto::Scope);
+    util::sptr<proto::Block> block(new proto::Block);
     flchk::SymbolTable st;
     flchk::IntLiteral int0(pos, "20110116");
-    int0.compile(*scope, util::mkref(st))->inst(nul_st);
+    int0.compile(*block, util::mkref(st))->inst(nul_st);
     EXPECT_TRUE(int0.isLiteral());
 
     flchk::FloatLiteral float0(pos, "19.50");
-    float0.compile(*scope, util::mkref(st))->inst(nul_st);
+    float0.compile(*block, util::mkref(st))->inst(nul_st);
     EXPECT_TRUE(float0.isLiteral());
 
     flchk::BoolLiteral bool0(pos, true);
-    bool0.compile(*scope, util::mkref(st))->inst(nul_st);
+    bool0.compile(*block, util::mkref(st))->inst(nul_st);
     EXPECT_TRUE(bool0.isLiteral());
     EXPECT_TRUE(bool0.boolValue());
 
     flchk::IntLiteral int1(pos, "441499");
-    int1.compile(*scope, util::mkref(st))->inst(nul_st);
+    int1.compile(*block, util::mkref(st))->inst(nul_st);
     EXPECT_TRUE(int1.isLiteral());
 
     flchk::FloatLiteral float1(pos, "0.1950");
-    float1.compile(*scope, util::mkref(st))->inst(nul_st);
+    float1.compile(*block, util::mkref(st))->inst(nul_st);
     EXPECT_TRUE(float1.isLiteral());
 
     flchk::BoolLiteral bool1(pos, false);
-    bool1.compile(*scope, util::mkref(st))->inst(nul_st);
+    bool1.compile(*block, util::mkref(st))->inst(nul_st);
     EXPECT_TRUE(bool1.isLiteral());
     EXPECT_FALSE(bool1.boolValue());
 
@@ -63,15 +63,15 @@ TEST_F(ExprNodesTest, Literals)
 TEST_F(ExprNodesTest, Reference)
 {
     misc::position pos(1);
-    util::sptr<proto::Scope> scope(new proto::Scope);
+    util::sptr<proto::Block> block(new proto::Block);
     flchk::GlobalFilter filter;
     flchk::Reference ref0(pos, "a20110116");
     EXPECT_FALSE(ref0.isLiteral());
-    ref0.compile(*scope, filter.getSymbols())->inst(nul_st);
+    ref0.compile(*block, filter.getSymbols())->inst(nul_st);
 
     flchk::Reference ref1(pos, "b1950");
     EXPECT_FALSE(ref0.isLiteral());
-    ref1.compile(*scope, filter.getSymbols())->inst(nul_st);
+    ref1.compile(*block, filter.getSymbols())->inst(nul_st);
 
     EXPECT_FALSE(error::hasError());
 
@@ -84,7 +84,7 @@ TEST_F(ExprNodesTest, Reference)
 TEST_F(ExprNodesTest, Operations)
 {
     misc::position pos(2);
-    util::sptr<proto::Scope> scope(new proto::Scope);
+    util::sptr<proto::Block> block(new proto::Block);
     flchk::GlobalFilter filter;
     flchk::BinaryOp binary0(pos
                           , std::move(util::mkptr(new flchk::IntLiteral(pos, "1")))
@@ -112,26 +112,26 @@ TEST_F(ExprNodesTest, Operations)
                           , util::mkptr(new flchk::IntLiteral(pos, "2")));
     flchk::Negation nega(pos, util::mkptr(new flchk::FloatLiteral(pos, "1954.01")));
 
-    binary0.compile(*scope, filter.getSymbols())->inst(nul_st);
+    binary0.compile(*block, filter.getSymbols())->inst(nul_st);
     EXPECT_TRUE(binary0.isLiteral());
 
-    binary1.compile(*scope, filter.getSymbols())->inst(nul_st);
+    binary1.compile(*block, filter.getSymbols())->inst(nul_st);
     EXPECT_TRUE(binary1.isLiteral());
     EXPECT_TRUE(binary1.boolValue());
 
-    pre_unary0.compile(*scope, filter.getSymbols())->inst(nul_st);
+    pre_unary0.compile(*block, filter.getSymbols())->inst(nul_st);
     EXPECT_TRUE(pre_unary0.isLiteral());
 
-    pre_unary1.compile(*scope, filter.getSymbols())->inst(nul_st);
+    pre_unary1.compile(*block, filter.getSymbols())->inst(nul_st);
     EXPECT_FALSE(pre_unary1.isLiteral());
 
-    conj.compile(*scope, filter.getSymbols())->inst(nul_st);
+    conj.compile(*block, filter.getSymbols())->inst(nul_st);
     EXPECT_FALSE(conj.isLiteral());
 
-    disj.compile(*scope, filter.getSymbols())->inst(nul_st);
+    disj.compile(*block, filter.getSymbols())->inst(nul_st);
     EXPECT_TRUE(disj.isLiteral());
 
-    nega.compile(*scope, filter.getSymbols())->inst(nul_st);
+    nega.compile(*block, filter.getSymbols())->inst(nul_st);
     EXPECT_TRUE(nega.isLiteral());
 
     EXPECT_FALSE(error::hasError());
@@ -164,7 +164,7 @@ TEST_F(ExprNodesTest, Calls)
 {
     misc::position pos(3);
     misc::position pos_d(300);
-    util::sptr<proto::Scope> scope(new proto::Scope);
+    util::sptr<proto::Block> block(new proto::Block);
     flchk::GlobalFilter filter;
     filter.defFunc(pos_d, "fib", std::vector<std::string>(), util::mkptr(
                                                 new flchk::FuncBodyFilter(filter.getSymbols())));
@@ -180,10 +180,10 @@ TEST_F(ExprNodesTest, Calls)
     params.push_back(util::mkptr(new flchk::Reference(pos, "darekatasukete")));
     flchk::Call Call1(pos, "leap", std::move(params));
 
-    Call0.compile(*scope, filter.getSymbols())->inst(nul_st);
+    Call0.compile(*block, filter.getSymbols())->inst(nul_st);
     EXPECT_FALSE(Call0.isLiteral());
 
-    Call1.compile(*scope, filter.getSymbols())->inst(nul_st);
+    Call1.compile(*block, filter.getSymbols())->inst(nul_st);
     EXPECT_FALSE(Call1.isLiteral());
 
     EXPECT_FALSE(error::hasError());
@@ -204,7 +204,7 @@ TEST_F(ExprNodesTest, Calls)
 TEST_F(ExprNodesTest, FuncReference)
 {
     misc::position pos(4);
-    util::sptr<proto::Scope> scope(new proto::Scope);
+    util::sptr<proto::Block> block(new proto::Block);
     flchk::GlobalFilter filter;
     misc::position pos_d(400);
     filter.defFunc(pos_d, "fib", std::vector<std::string>(), util::mkptr(
@@ -216,13 +216,13 @@ TEST_F(ExprNodesTest, FuncReference)
     flchk::FuncReference func_ref1(pos, "fib", 1);
     flchk::FuncReference func_ref2(pos, "fib", 0);
 
-    func_ref0.compile(*scope, filter.getSymbols())->inst(nul_st);
+    func_ref0.compile(*block, filter.getSymbols())->inst(nul_st);
     EXPECT_FALSE(func_ref0.isLiteral());
 
-    func_ref1.compile(*scope, filter.getSymbols())->inst(nul_st);
+    func_ref1.compile(*block, filter.getSymbols())->inst(nul_st);
     EXPECT_FALSE(func_ref0.isLiteral());
 
-    func_ref2.compile(*scope, filter.getSymbols())->inst(nul_st);
+    func_ref2.compile(*block, filter.getSymbols())->inst(nul_st);
     EXPECT_FALSE(func_ref0.isLiteral());
 
     EXPECT_FALSE(error::hasError());

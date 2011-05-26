@@ -19,7 +19,7 @@ namespace flchk {
             , rhs(std::move(r))
         {}
 
-        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope
+        util::sptr<proto::Expression const> compile(util::sref<proto::Block> block
                                                   , util::sref<SymbolTable> st) const;
         bool isLiteral() const;
         bool boolValue() const;
@@ -43,7 +43,7 @@ namespace flchk {
             , rhs(std::move(r))
         {}
 
-        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope
+        util::sptr<proto::Expression const> compile(util::sref<proto::Block> block
                                                   , util::sref<SymbolTable> st) const;
         bool isLiteral() const;
         bool boolValue() const;
@@ -66,7 +66,7 @@ namespace flchk {
             , rhs(std::move(r))
         {}
 
-        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope
+        util::sptr<proto::Expression const> compile(util::sref<proto::Block> block
                                                   , util::sref<SymbolTable> st) const;
         bool isLiteral() const;
         bool boolValue() const;
@@ -88,7 +88,7 @@ namespace flchk {
             , rhs(std::move(r))
         {}
 
-        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope
+        util::sptr<proto::Expression const> compile(util::sref<proto::Block> block
                                                   , util::sref<SymbolTable> st) const;
         bool isLiteral() const;
         bool boolValue() const;
@@ -107,7 +107,7 @@ namespace flchk {
             , rhs(std::move(r))
         {}
 
-        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope
+        util::sptr<proto::Expression const> compile(util::sref<proto::Block> block
                                                   , util::sref<SymbolTable> st) const;
         bool isLiteral() const;
         bool boolValue() const;
@@ -125,7 +125,7 @@ namespace flchk {
             , name(n)
         {}
 
-        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope
+        util::sptr<proto::Expression const> compile(util::sref<proto::Block> block
                                                   , util::sref<SymbolTable> st) const;
         std::string typeName() const;
         util::sptr<Expression const> fold() const;
@@ -141,7 +141,7 @@ namespace flchk {
             , value(v)
         {}
 
-        util::sptr<proto::Expression const> compile(util::sref<proto::Scope>
+        util::sptr<proto::Expression const> compile(util::sref<proto::Block>
                                                   , util::sref<SymbolTable>) const;
         bool isLiteral() const;
         bool boolValue() const;
@@ -182,7 +182,7 @@ namespace flchk {
             , value(v)
         {}
 
-        util::sptr<proto::Expression const> compile(util::sref<proto::Scope>
+        util::sptr<proto::Expression const> compile(util::sref<proto::Block>
                                                   , util::sref<SymbolTable>) const;
         bool isLiteral() const;
         bool boolValue() const;
@@ -221,7 +221,7 @@ namespace flchk {
             , value(v)
         {}
 
-        util::sptr<proto::Expression const> compile(util::sref<proto::Scope>
+        util::sptr<proto::Expression const> compile(util::sref<proto::Block>
                                                   , util::sref<SymbolTable>) const;
         bool isLiteral() const;
         bool boolValue() const;
@@ -258,7 +258,7 @@ namespace flchk {
                 , args(std::move(a))
         {}
 
-        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope
+        util::sptr<proto::Expression const> compile(util::sref<proto::Block> block
                                                   , util::sref<SymbolTable> st) const;
         std::string typeName() const;
         util::sptr<Expression const> fold() const;
@@ -276,7 +276,7 @@ namespace flchk {
             , param_count(pc)
         {}
 
-        util::sptr<proto::Expression const> compile(util::sref<proto::Scope> scope
+        util::sptr<proto::Expression const> compile(util::sref<proto::Block> block
                                                   , util::sref<SymbolTable> st) const;
         std::string typeName() const;
         util::sptr<Expression const> fold() const;

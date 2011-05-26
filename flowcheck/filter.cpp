@@ -65,9 +65,9 @@ void Filter::addBranchAlterOnly(misc::position const& pos
     _accumulator.addBranchAlterOnly(pos, std::move(pred), std::move(alternative->_accumulator));
 }
 
-void Filter::compile(util::sref<proto::Scope> scope)
+void Filter::compile(util::sref<proto::Block> block)
 {
-    _accumulator.compileBlock(scope, getSymbols());
+    _accumulator.compileBlock(block, getSymbols());
 }
 
 bool Filter::hintReturnVoid() const

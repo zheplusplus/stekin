@@ -20,7 +20,7 @@ namespace flchk {
             , _funcs(std::move(rhs._funcs))
         {}
 
-        void compile(util::sref<proto::Scope> scope, util::sref<SymbolTable> st) const;
+        void compile(util::sref<proto::Block> block, util::sref<SymbolTable> st) const;
 
         void addStmt(util::sptr<Statement const> stmt);
         util::sref<Function> defFunc(misc::position const& pos

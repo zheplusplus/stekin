@@ -17,7 +17,10 @@ namespace proto {
         Block() = default;
 
         void addStmt(util::sptr<Statement> stmt);
-        void addFunc(util::sptr<Function> func);
+        util::sref<Function> declare(misc::position const& pos
+                                   , std::string const& name
+                                   , std::vector<std::string> const& param_names
+                                   , bool contains_void_return);
 
         void addTo(util::sref<FuncInstDraft> func);
         util::sptr<inst::Statement const> inst(util::sref<FuncInstDraft> func

@@ -6,7 +6,6 @@
 #include "global-filter.h"
 #include "../proto/variable.h"
 #include "../proto/expr-nodes.h"
-#include "../proto/func-inst-draft.h"
 #include "../util/vector-append.h"
 #include "../report/errors.h"
 
@@ -136,7 +135,7 @@ void SymbolTable::defFunc(util::sref<Function> func)
 
 std::vector<util::sptr<proto::Expression const>> SymbolTable::_mkArgs(
               std::vector<util::sptr<Expression const>> const& args
-            , util::sref<proto::Scope> scope)
+            , util::sref<proto::Block> block)
 {
     std::vector<util::sptr<proto::Expression const>> arguments;
     arguments.reserve(args.size());
@@ -144,16 +143,16 @@ std::vector<util::sptr<proto::Expression const>> SymbolTable::_mkArgs(
                 , args.end()
                 , [&](util::sptr<Expression const> const& expr)
                   {
-                      arguments.push_back(expr->compile(scope, util::mkref(*this)));
+                      arguments.push_back(expr->compile(block, util::mkref(*this)));
                   });
     return std::move(arguments);
 }
 
 util::sref<proto::Function> SymbolTable::_compileFunction(misc::position const& pos
                                                         , util::sref<Function> func
-                                                        , util::sref<proto::Scope> scope)
+                                                        , util::sref<proto::Block> block)
 {
-    util::sref<proto::Function> compiled_func = func->compile(scope);
+    util::sref<proto::Function> compiled_func = func->compile(block);
     refVars(pos, func->freeVariables());
     return compiled_func;
 }
@@ -161,22 +160,22 @@ util::sref<proto::Function> SymbolTable::_compileFunction(misc::position const& 
 util::sptr<proto::Expression const> SymbolTable::_compileAsFunctor(
                 misc::position const& pos
               , std::string const& name
-              , util::sref<proto::Scope> scope
+              , util::sref<proto::Block> block
               , std::vector<util::sptr<Expression const>> const& args)
 {
-    return util::mkptr(new proto::Functor(pos, name, _mkArgs(args, scope)));
+    return util::mkptr(new proto::Functor(pos, name, _mkArgs(args, block)));
 }
 
 util::sptr<proto::Expression const> SymbolTable::compileRef(misc::position const& pos
                                                           , std::string const& name
-                                                          , util::sref<proto::Scope> scope)
+                                                          , util::sref<proto::Block> block)
 {
     std::vector<util::sref<Function>> funcs = _overloads.allFuncsOfName(name);
     if (!funcs.empty()) {
         if (funcs.size() > 1) {
             error::funcReferenceAmbiguous(pos, name);
         }
-        return util::mkptr(new proto::FuncReference(pos, _compileFunction(pos, funcs[0], scope)));
+        return util::mkptr(new proto::FuncReference(pos, _compileFunction(pos, funcs[0], block)));
     }
     _markReference(pos, name);
     return util::mkptr(new proto::Reference(pos, name));
@@ -184,17 +183,17 @@ util::sptr<proto::Expression const> SymbolTable::compileRef(misc::position const
 
 util::sptr<proto::Expression const> SymbolTable::compileCall(
                     misc::position const& pos
-                  , util::sref<proto::Scope> scope
+                  , util::sref<proto::Block> block
                   , std::string const& name
                   , std::vector<util::sptr<Expression const>> const& args)
 {
     util::sref<Function> func = _overloads.queryOrNulIfNonexist(name, args.size());
     if (func.not_nul()) {
         return util::mkptr(
-                new proto::Call(pos, _compileFunction(pos, func, scope), _mkArgs(args, scope)));
+                new proto::Call(pos, _compileFunction(pos, func, block), _mkArgs(args, block)));
     }
     _markReference(pos, name);
-    return _compileAsFunctor(pos, name, scope, args);
+    return _compileAsFunctor(pos, name, block, args);
 }
 
 util::sref<Function> SymbolTable::queryFunc(misc::position const& pos

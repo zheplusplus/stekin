@@ -18,7 +18,7 @@ typedef FlowcheckTest FilterTest;
 TEST_F(FilterTest, GlobalFilter)
 {
     misc::position pos(1);
-    util::sptr<proto::Scope> scope(new proto::Scope);
+    util::sptr<proto::Block> block(new proto::Block);
 
     util::sptr<flchk::BinaryOp> binary(
             new flchk::BinaryOp(pos
@@ -46,8 +46,8 @@ TEST_F(FilterTest, GlobalFilter)
                     , std::move(filter_alter));
     filter0.addReturnNothing(pos);
 
-    filter0.compile(*scope);
-    instScope(*scope);
+    filter0.compile(*block);
+    instBlock(*block);
 
     EXPECT_FALSE(error::hasError());
 
@@ -81,7 +81,7 @@ TEST_F(FilterTest, TerminatedError)
     misc::position pos(2);
     misc::position pos_error(200);
     misc::position pos_ignored(201);
-    util::sptr<proto::Scope> scope(new proto::Scope);
+    util::sptr<proto::Block> block(new proto::Block);
 
     flchk::GlobalFilter filter0;
     filter0.defVar(pos, "patricia", util::mkptr(new flchk::Reference(pos, "martin")));
@@ -99,7 +99,7 @@ TEST_F(FilterTest, TerminatedWarningIfConsequence)
 {
     misc::position pos(3);
     misc::position pos_warning(300);
-    util::sptr<proto::Scope> scope(new proto::Scope);
+    util::sptr<proto::Block> block(new proto::Block);
 
     flchk::GlobalFilter filter0;
 
@@ -124,7 +124,7 @@ TEST_F(FilterTest, TerminatedWarningIfAlternative)
 {
     misc::position pos(4);
     misc::position pos_warning(400);
-    util::sptr<proto::Scope> scope(new proto::Scope);
+    util::sptr<proto::Block> block(new proto::Block);
 
     flchk::GlobalFilter filter0;
 
@@ -149,7 +149,7 @@ TEST_F(FilterTest, TerminatedWarningBothBranches)
     misc::position pos(5);
     misc::position pos_warning_consq(500);
     misc::position pos_warning_alter(501);
-    util::sptr<proto::Scope> scope(new proto::Scope);
+    util::sptr<proto::Block> block(new proto::Block);
 
     flchk::GlobalFilter filter0;
 
@@ -173,7 +173,7 @@ TEST_F(FilterTest, TerminatedWarningBothBranches)
 TEST_F(FilterTest, TwoPathBranchFoldedOnFalse)
 {
     misc::position pos(6);
-    util::sptr<proto::Scope> scope(new proto::Scope);
+    util::sptr<proto::Block> block(new proto::Block);
 
     util::sptr<flchk::BinaryOp> binary(
             new flchk::BinaryOp(pos
@@ -194,8 +194,8 @@ TEST_F(FilterTest, TwoPathBranchFoldedOnFalse)
     filter0.addBranch(pos, std::move(binary), std::move(filter_consq), std::move(filter_alter));
     filter0.addReturnNothing(pos);
 
-    filter0.compile(*scope);
-    instScope(*scope);
+    filter0.compile(*block);
+    instBlock(*block);
 
     EXPECT_FALSE(error::hasError());
 
@@ -211,7 +211,7 @@ TEST_F(FilterTest, TwoPathBranchFoldedOnFalse)
 TEST_F(FilterTest, TwoPathBranchFoldedOnTrue)
 {
     misc::position pos(7);
-    util::sptr<proto::Scope> scope(new proto::Scope);
+    util::sptr<proto::Block> block(new proto::Block);
 
     util::sptr<flchk::BinaryOp> binary(
             new flchk::BinaryOp(pos
@@ -232,8 +232,8 @@ TEST_F(FilterTest, TwoPathBranchFoldedOnTrue)
     filter0.addBranch(pos, std::move(binary), std::move(filter_consq), std::move(filter_alter));
     filter0.addReturnNothing(pos);
 
-    filter0.compile(*scope);
-    instScope(*scope);
+    filter0.compile(*block);
+    instBlock(*block);
 
     EXPECT_FALSE(error::hasError());
 
@@ -249,7 +249,7 @@ TEST_F(FilterTest, TwoPathBranchFoldedOnTrue)
 TEST_F(FilterTest, IfNotFoldedOnFalse)
 {
     misc::position pos(8);
-    util::sptr<proto::Scope> scope(new proto::Scope);
+    util::sptr<proto::Block> block(new proto::Block);
 
     util::sptr<flchk::BinaryOp> binary(
             new flchk::BinaryOp(pos
@@ -266,8 +266,8 @@ TEST_F(FilterTest, IfNotFoldedOnFalse)
     filter0.addBranchAlterOnly(pos, std::move(binary), std::move(filter_alter));
     filter0.addReturnNothing(pos);
 
-    filter0.compile(*scope);
-    instScope(*scope);
+    filter0.compile(*block);
+    instBlock(*block);
 
     EXPECT_FALSE(error::hasError());
 
@@ -283,7 +283,7 @@ TEST_F(FilterTest, IfNotFoldedOnFalse)
 TEST_F(FilterTest, IfNotFoldedOnTrue)
 {
     misc::position pos(8);
-    util::sptr<proto::Scope> scope(new proto::Scope);
+    util::sptr<proto::Block> block(new proto::Block);
 
     util::sptr<flchk::BinaryOp> binary(
             new flchk::BinaryOp(pos
@@ -300,8 +300,8 @@ TEST_F(FilterTest, IfNotFoldedOnTrue)
     filter0.addBranchAlterOnly(pos, std::move(binary), std::move(filter_alter));
     filter0.addReturnNothing(pos);
 
-    filter0.compile(*scope);
-    instScope(*scope);
+    filter0.compile(*block);
+    instBlock(*block);
 
     EXPECT_FALSE(error::hasError());
 

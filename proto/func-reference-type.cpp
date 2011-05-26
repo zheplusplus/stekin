@@ -2,6 +2,7 @@
 
 #include "func-reference-type.h"
 #include "function.h"
+#include "block.h"
 #include "node-base.h"
 #include "func-inst-draft.h"
 #include "variable.h"

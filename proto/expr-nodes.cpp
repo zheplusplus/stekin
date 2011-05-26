@@ -2,6 +2,7 @@
 
 #include "expr-nodes.h"
 #include "function.h"
+#include "block.h"
 #include "func-inst-draft.h"
 #include "symbol-table.h"
 #include "operation.h"

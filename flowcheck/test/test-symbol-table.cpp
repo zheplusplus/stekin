@@ -19,7 +19,7 @@ struct SymbolTableTest
     {
         FlowcheckTest::SetUp();
         symbols.reset(new flchk::SymbolTable);
-        scope.reset(new proto::Scope);
+        block.reset(new proto::Block);
     }
 
     util::sref<flchk::SymbolTable const> refSym()
@@ -32,7 +32,7 @@ struct SymbolTableTest
         return util::mkptr(new flchk::FuncBodyFilter(refSym()));
     }
 
-    util::sptr<proto::Scope> scope;
+    util::sptr<proto::Block> block;
     util::sptr<flchk::SymbolTable> symbols;
 };
 
@@ -58,9 +58,9 @@ TEST_F(SymbolTableTest, RefLocalVar)
     symbols->defVar(pos, "seele");
     symbols->defVar(pos, "lilith");
 
-    symbols->compileRef(pos, "nerv", *scope)->inst(nul_st);
-    symbols->compileRef(pos, "seele", *scope)->inst(nul_st);
-    symbols->compileRef(pos, "lilith", *scope)->inst(nul_st);
+    symbols->compileRef(pos, "nerv", *block)->inst(nul_st);
+    symbols->compileRef(pos, "seele", *block)->inst(nul_st);
+    symbols->compileRef(pos, "lilith", *block)->inst(nul_st);
     ASSERT_FALSE(error::hasError());
 
     flchk::SymbolTable inner_symbols(refSym());
@@ -69,10 +69,10 @@ TEST_F(SymbolTableTest, RefLocalVar)
     inner_symbols.defVar(pos, "adam");
     inner_symbols.defVar(pos, "eve");
 
-    inner_symbols.compileRef(pos, "nerv", *scope)->inst(nul_st);
-    inner_symbols.compileRef(pos, "seele", *scope)->inst(nul_st);
-    inner_symbols.compileRef(pos, "adam", *scope)->inst(nul_st);
-    inner_symbols.compileRef(pos, "eve", *scope)->inst(nul_st);
+    inner_symbols.compileRef(pos, "nerv", *block)->inst(nul_st);
+    inner_symbols.compileRef(pos, "seele", *block)->inst(nul_st);
+    inner_symbols.compileRef(pos, "adam", *block)->inst(nul_st);
+    inner_symbols.compileRef(pos, "eve", *block)->inst(nul_st);
     ASSERT_FALSE(error::hasError());
 
     EXPECT_TRUE(symbols->freeVariables().empty());
@@ -92,20 +92,20 @@ TEST_F(SymbolTableTest, RefLocalVar)
 TEST_F(SymbolTableTest, RefExternal)
 {
     misc::position pos(3);
-    symbols->compileRef(pos, "soryu", *scope)->inst(nul_st);
-    symbols->compileRef(pos, "ikari", *scope)->inst(nul_st);
-    symbols->compileRef(pos, "horaki", *scope)->inst(nul_st);
+    symbols->compileRef(pos, "soryu", *block)->inst(nul_st);
+    symbols->compileRef(pos, "ikari", *block)->inst(nul_st);
+    symbols->compileRef(pos, "horaki", *block)->inst(nul_st);
     ASSERT_FALSE(error::hasError());
     flchk::SymbolTable inner_symbols(refSym());
-    inner_symbols.compileRef(pos, "soryu", *scope)->inst(nul_st);
-    inner_symbols.compileRef(pos, "ikari", *scope)->inst(nul_st);
-    inner_symbols.compileRef(pos, "horaki", *scope)->inst(nul_st);
+    inner_symbols.compileRef(pos, "soryu", *block)->inst(nul_st);
+    inner_symbols.compileRef(pos, "ikari", *block)->inst(nul_st);
+    inner_symbols.compileRef(pos, "horaki", *block)->inst(nul_st);
     ASSERT_FALSE(error::hasError());
     util::sref<flchk::SymbolTable const> inner_sym_ref(util::mkref(inner_symbols));
     flchk::SymbolTable innest_symbols(inner_sym_ref);
-    innest_symbols.compileRef(pos, "soryu", *scope)->inst(nul_st);
-    innest_symbols.compileRef(pos, "ikari", *scope)->inst(nul_st);
-    innest_symbols.compileRef(pos, "horaki", *scope)->inst(nul_st);
+    innest_symbols.compileRef(pos, "soryu", *block)->inst(nul_st);
+    innest_symbols.compileRef(pos, "ikari", *block)->inst(nul_st);
+    innest_symbols.compileRef(pos, "horaki", *block)->inst(nul_st);
     ASSERT_FALSE(error::hasError());
 
     ASSERT_EQ(3, symbols->freeVariables().size());
@@ -162,8 +162,8 @@ TEST_F(SymbolTableTest, VarRefBeforeDef)
     misc::position ref_pos0(300);
     misc::position ref_pos1(301);
 
-    symbols->compileRef(ref_pos0, "katsuragi", *scope);
-    symbols->compileRef(ref_pos1, "katsuragi", *scope);
+    symbols->compileRef(ref_pos0, "katsuragi", *block);
+    symbols->compileRef(ref_pos1, "katsuragi", *block);
     symbols->defVar(pos, "katsuragi");
     ASSERT_TRUE(error::hasError());
     std::vector<InvalidRefRec> invalid_refs = getInvalidRefs();
@@ -175,10 +175,10 @@ TEST_F(SymbolTableTest, VarRefBeforeDef)
     ASSERT_EQ("katsuragi", invalid_refs[0].name);
 
     clearErr();
-    symbols->compileRef(pos, "penpen", *scope);
+    symbols->compileRef(pos, "penpen", *block);
 
     flchk::SymbolTable inner_symbols(refSym());
-    inner_symbols.compileRef(pos, "katsuragi", *scope);
+    inner_symbols.compileRef(pos, "katsuragi", *block);
     inner_symbols.defVar(pos, "penpen");
     ASSERT_FALSE(error::hasError());
 }
@@ -346,9 +346,9 @@ TEST_F(SymbolTableTest, FuncRefAmbiguous)
     flchk::Function gdmb(pos, "girl_dead_monster", params, mkBody());
     symbols->defFunc(util::mkref(gdmb));
 
-    symbols->compileRef(err_pos0, "guild", *scope);
+    symbols->compileRef(err_pos0, "guild", *block);
     ASSERT_TRUE(error::hasError());
-    symbols->compileRef(err_pos1, "girl_dead_monster", *scope);
+    symbols->compileRef(err_pos1, "girl_dead_monster", *block);
     ASSERT_TRUE(error::hasError());
     ASSERT_EQ(2, getAmbiguousRefs().size());
     ASSERT_EQ("guild", getAmbiguousRefs()[0].name);

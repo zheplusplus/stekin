@@ -18,7 +18,7 @@ namespace flchk {
             , expr(std::move(e))
         {}
 
-        util::sptr<proto::Statement> compile(util::sref<proto::Scope> scope
+        util::sptr<proto::Statement> compile(util::sref<proto::Block> block
                                            , util::sref<SymbolTable> st) const;
 
         util::sptr<Expression const> const expr;
@@ -34,7 +34,7 @@ namespace flchk {
             , alternative(std::move(a))
         {}
 
-        util::sptr<proto::Statement> compile(util::sref<proto::Scope> scope
+        util::sptr<proto::Statement> compile(util::sref<proto::Block> block
                                            , util::sref<SymbolTable> st) const;
 
         util::sptr<Expression const> const predicate;
@@ -50,7 +50,7 @@ namespace flchk {
             , ret_val(std::move(retval))
         {}
 
-        util::sptr<proto::Statement> compile(util::sref<proto::Scope> scope
+        util::sptr<proto::Statement> compile(util::sref<proto::Block> block
                                            , util::sref<SymbolTable> st) const;
 
         util::sptr<Expression const> const ret_val;
@@ -63,7 +63,7 @@ namespace flchk {
             : Statement(pos)
         {}
 
-        util::sptr<proto::Statement> compile(util::sref<proto::Scope>
+        util::sptr<proto::Statement> compile(util::sref<proto::Block>
                                            , util::sref<SymbolTable>) const;
     };
 
@@ -76,7 +76,7 @@ namespace flchk {
                 , init(std::move(i))
         {}
 
-        util::sptr<proto::Statement> compile(util::sref<proto::Scope> scope
+        util::sptr<proto::Statement> compile(util::sref<proto::Block> block
                                            , util::sref<SymbolTable> st) const;
 
         std::string const name;

@@ -1,7 +1,6 @@
 #include <algorithm>
 
 #include "function.h"
-#include "func-inst-draft.h"
 #include "symbol-table.h"
 #include "expr-nodes.h"
 #include "stmt-nodes.h"
@@ -108,6 +107,29 @@ void Function::setFreeVariables(std::vector<std::string> const& free_vars)
 std::vector<util::sptr<inst::Function const>> Function::deliverFuncs()
 {
     return util::ptrs_append(_block->deliverFuncs(), _draft_cache.deliverFuncs());
+}
+
+util::sptr<Block> Function::deliver()
+{
+    return std::move(_block);
+}
+
+void Function::addStmt(util::sptr<Statement> stmt)
+{
+    _block->addStmt(std::move(stmt));
+}
+
+util::sref<Function> Function::declare(misc::position const& pos
+                                     , std::string const& name
+                                     , std::vector<std::string> const& param_names
+                                     , bool contains_void_return)
+{
+    return _block->declare(pos, name, param_names, contains_void_return);
+}
+
+util::sref<Block> Function::block()
+{
+    return *_block;
 }
 
 Function::DraftCache::Iterator

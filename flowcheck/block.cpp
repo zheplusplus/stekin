@@ -7,7 +7,6 @@
 #include "../proto/node-base.h"
 #include "../proto/function.h"
 #include "../proto/variable.h"
-#include "../proto/func-reference-type.h"
 #include "../util/vector-append.h"
 
 using namespace flchk;
@@ -26,13 +25,13 @@ util::sref<Function> Block::defFunc(misc::position const& pos
     return *_funcs.back();
 }
 
-void Block::compile(util::sref<proto::Scope> scope, util::sref<SymbolTable> st) const 
+void Block::compile(util::sref<proto::Block> block, util::sref<SymbolTable> st) const 
 {
     std::for_each(_stmts.begin()
                 , _stmts.end()
                 , [&](util::sptr<Statement const> const& stmt)
                   {
-                      scope->addStmt(stmt->compile(scope, st));
+                      block->addStmt(stmt->compile(block, st));
                   });
 }
 

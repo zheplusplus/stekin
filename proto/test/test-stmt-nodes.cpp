@@ -29,9 +29,9 @@ TEST_F(StmtNodesTest, BranchConditionTypeCheck)
     misc::position pos(1);
     misc::position pos_d(100);
     global_st->defVar(pos_d, proto::Type::BIT_INT, "kokopelli");
-    util::sptr<proto::Scope> scope(new proto::Scope);
+    util::sptr<proto::Block> block(new proto::Block);
 
-    util::sref<proto::Function> func(scope->declare(pos_d, "f", std::vector<std::string>(), true));
+    util::sref<proto::Function> func(block->declare(pos_d, "f", std::vector<std::string>(), true));
     func->setFreeVariables(std::vector<std::string>{ "kokopelli" });
     func->addStmt(util::mkptr(new proto::Branch(pos
                                               , util::mkptr(new proto::Reference(pos, "kokopelli"))

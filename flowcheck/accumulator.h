@@ -54,7 +54,7 @@ namespace flchk {
                                    , std::vector<std::string> const& param_names
                                    , util::sptr<Filter> body);
     public:
-        void compileBlock(util::sref<proto::Scope> scope, util::sref<SymbolTable> st) const;
+        void compileBlock(util::sref<proto::Block> block, util::sref<SymbolTable> st) const;
         bool hintReturnVoid() const;
     private:
         void _setTerminatedByVoidReturn(misc::position const& pos);

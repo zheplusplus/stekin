@@ -15,9 +15,15 @@ void Block::addStmt(util::sptr<Statement> stmt)
     _stmts.push_back(std::move(stmt));
 }
 
-void Block::addFunc(util::sptr<Function> func)
+util::sref<Function> Block::declare(misc::position const& pos
+                                  , std::string const& name
+                                  , std::vector<std::string> const& param_names
+                                  , bool contains_void_return)
 {
+    util::sptr<Function> func(new Function(pos, name, param_names, contains_void_return));
+    util::sref<Function> result = *func;
     _funcs.push_back(std::move(func));
+    return result;
 }
 
 void Block::addTo(util::sref<FuncInstDraft> func)

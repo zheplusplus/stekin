@@ -32,7 +32,7 @@ TEST_F(ClauseBuilderTest, AcceptorStackNext)
                                                        , std::move(grammar::Block()))));
     ASSERT_FALSE(error::hasError());
     grammar::Block block0(std::move(stack0.packAll()));
-    block0.compile(std::move(mkfilter()))->compile(nulscope);
+    block0.compile(std::move(mkfilter()))->compile(nulblock);
 
     DataTree::expectOne()
         (BLOCK_BEGIN)
@@ -82,7 +82,7 @@ TEST_F(ClauseBuilderTest, AcceptorStackAdd)
                                           new grammar::Reference(item_pos, "buriza_do_kyanon")))));
     ASSERT_FALSE(error::hasError());
     grammar::Block block0(std::move(stack0.packAll()));
-    block0.compile(std::move(mkfilter()))->compile(nulscope);
+    block0.compile(std::move(mkfilter()))->compile(nulblock);
 
     DataTree::expectOne()
         (BLOCK_BEGIN)
@@ -132,7 +132,7 @@ TEST_F(ClauseBuilderTest, AcceptorStackMatchElse)
                                         new grammar::Reference(item_pos, "magewrath")))));
     ASSERT_FALSE(error::hasError());
     grammar::Block block0(std::move(stack0.packAll()));
-    block0.compile(std::move(mkfilter()))->compile(nulscope);
+    block0.compile(std::move(mkfilter()))->compile(nulblock);
 
     DataTree::expectOne()
         (BLOCK_BEGIN)
@@ -190,7 +190,7 @@ TEST_F(ClauseBuilderTest, ClauseBuilder)
                        , std::vector<std::string>({ "amn", "tir" }));
         builder0.addArith(1, util::mkptr(new grammar::Reference(item_pos1, "widowmaker")));
 
-    builder0.buildAndClear()->compile(nulscope);
+    builder0.buildAndClear()->compile(nulblock);
     ASSERT_FALSE(error::hasError());
 
     DataTree::expectOne()

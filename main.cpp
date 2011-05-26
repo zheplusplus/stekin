@@ -8,7 +8,6 @@
 #include "flowcheck/filter.h"
 #include "flowcheck/node-base.h"
 #include "flowcheck/function.h"
-#include "proto/scope.h"
 #include "proto/node-base.h"
 #include "proto/function.h"
 #include "proto/symbol-table.h"
@@ -59,20 +58,19 @@ static util::sptr<flchk::Filter> frontEnd()
 
 static Functions semantic(util::sptr<flchk::Filter> global_flow)
 {
-    util::sptr<proto::Scope> proto_global_scope(new proto::Scope);
-    global_flow->compile(*proto_global_scope);
+    proto::Block proto_global_block;
+    global_flow->compile(util::mkref(proto_global_block));
     if (error::hasError()) {
         throw CompileFailure();
     }
 
     proto::SymbolTable st;
     util::sptr<proto::FuncInstDraft> inst_global_func(proto::FuncInstDraft::createGlobal());
-    util::sptr<proto::Block> global_block(proto_global_scope->deliver());
-    inst_global_func->instantiate(*global_block);
+    inst_global_func->instantiate(util::mkref(proto_global_block));
     if (error::hasError()) {
         throw CompileFailure();
     }
-    std::vector<util::sptr<inst::Function const>> funcs(global_block->deliverFuncs());
+    std::vector<util::sptr<inst::Function const>> funcs(proto_global_block.deliverFuncs());
     funcs.push_back(inst_global_func->deliver());
     return Functions(inst_global_func.id(), std::move(funcs));
 }

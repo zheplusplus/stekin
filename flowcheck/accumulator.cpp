@@ -89,9 +89,9 @@ util::sref<Function> Accumulator::defFunc(misc::position const& pos
     return _block.defFunc(pos, name, param_names, std::move(body));
 }
 
-void Accumulator::compileBlock(util::sref<proto::Scope> scope, util::sref<SymbolTable> st) const
+void Accumulator::compileBlock(util::sref<proto::Block> block, util::sref<SymbolTable> st) const
 {
-    _block.compile(scope, st);
+    _block.compile(block, st);
 }
 
 bool Accumulator::hintReturnVoid() const

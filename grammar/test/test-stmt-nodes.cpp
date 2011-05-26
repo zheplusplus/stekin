@@ -23,7 +23,7 @@ TEST_F(StmtNodesTest, Arithmetics)
     grammar::Arithmetics arith1(pos, std::move(util::mkptr(new grammar::BoolLiteral(pos, false))));
     arith0.compile(*filter);
     arith1.compile(*filter);
-    filter->compile(nulscope);
+    filter->compile(nulblock);
 
     DataTree::expectOne()
         (BLOCK_BEGIN)
@@ -45,7 +45,7 @@ TEST_F(StmtNodesTest, VarDef)
                                             util::mkptr(new grammar::Reference(pos, "tsundere"))));
     def0.compile(*filter);
     def1.compile(*filter);
-    filter->compile(nulscope);
+    filter->compile(nulblock);
 
     DataTree::expectOne()
         (BLOCK_BEGIN)
@@ -65,7 +65,7 @@ TEST_F(StmtNodesTest, Returns)
     grammar::ReturnNothing ret1(pos);
     ret0.compile(*filter);
     ret1.compile(*filter);
-    filter->compile(nulscope);
+    filter->compile(nulblock);
 
     DataTree::expectOne()
         (BLOCK_BEGIN)
@@ -85,7 +85,7 @@ TEST_F(StmtNodesTest, Block)
                 util::mkptr(new grammar::VarDef(pos, "Misato", std::move(
                             util::mkptr(new grammar::Reference(pos, "Katsuragi")))))));
     block.addStmt(std::move(util::mkptr(new grammar::ReturnNothing(pos))));
-    block.compile(std::move(filter))->compile(nulscope);
+    block.compile(std::move(filter))->compile(nulblock);
 
     DataTree::expectOne()
         (BLOCK_BEGIN)
@@ -140,7 +140,7 @@ TEST_F(StmtNodesTest, Branch)
                   , std::move(block2)
                   , std::move(block3))
         .compile(*filter);
-    filter->compile(nulscope);
+    filter->compile(nulblock);
 
     DataTree::expectOne()
         (BLOCK_BEGIN)
@@ -205,7 +205,7 @@ TEST_F(StmtNodesTest, Functions)
                           , std::vector<std::string>({ "Konata", "Kagami", "Tsukasa", "Miyuki" })
                           , std::move(body));
     func1.compile(*filter);
-    filter->compile(nulscope);
+    filter->compile(nulblock);
 
     DataTree::expectOne()
         (BLOCK_BEGIN)
@@ -259,7 +259,7 @@ TEST_F(StmtNodesTest, Mixed)
                          , std::vector<std::string>({ "Suzumiya", "Koizumi", "Nagato", "Asahina" })
                          , std::move(body));
     func.compile(*filter);
-    filter->compile(nulscope);
+    filter->compile(nulblock);
 
     DataTree::expectOne()
         (BLOCK_BEGIN)

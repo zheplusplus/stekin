@@ -12,9 +12,9 @@ using namespace test;
 util::sref<proto::FuncInstDraft> const test::nul_draft(NULL);
 util::sref<proto::SymbolTable> const test::nul_st(NULL);
 
-void test::instScope(util::sref<proto::Scope> scope)
+void test::instBlock(util::sref<proto::Block> block)
 {
-    scope->deliver()->inst(nul_draft, nul_st);
+    block->inst(nul_draft, nul_st);
 }
 
 DataTree& DataTree::operator()(misc::position const& pos

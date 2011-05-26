@@ -9,7 +9,7 @@
 
 namespace test {
 
-    extern util::sref<proto::Scope> const nulscope;
+    extern util::sref<proto::Block> const nulblock;
     util::sptr<flchk::Filter> mkfilter();
 
     struct GrammarData {

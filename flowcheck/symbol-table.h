@@ -64,10 +64,10 @@ namespace flchk {
 
         util::sptr<proto::Expression const> compileRef(misc::position const& pos
                                                      , std::string const& name
-                                                     , util::sref<proto::Scope> scope);
+                                                     , util::sref<proto::Block> block);
         util::sptr<proto::Expression const> compileCall(
                         misc::position const& pos
-                      , util::sref<proto::Scope> scope
+                      , util::sref<proto::Block> block
                       , std::string const& name
                       , std::vector<util::sptr<Expression const>> const& args);
         util::sref<Function> queryFunc(misc::position const& pos
@@ -78,14 +78,14 @@ namespace flchk {
         void _markReference(misc::position const& pos, std::string const& name);
         std::vector<util::sptr<proto::Expression const>> _mkArgs(
                         std::vector<util::sptr<Expression const>> const& args
-                      , util::sref<proto::Scope> scope);
+                      , util::sref<proto::Block> block);
         util::sref<proto::Function> _compileFunction(misc::position const& pos
                                                    , util::sref<Function> func
-                                                   , util::sref<proto::Scope> scope);
+                                                   , util::sref<proto::Block> block);
         util::sptr<proto::Expression const> _compileAsFunctor(
                         misc::position const& pos
                       , std::string const& name
-                      , util::sref<proto::Scope> scope
+                      , util::sref<proto::Block> block
                       , std::vector<util::sptr<Expression const>> const& args);
     private:
         std::map<std::string, std::list<misc::position>> _external_var_refs;

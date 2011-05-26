@@ -2,7 +2,7 @@
 #define __STEKIN_FLOWCHECK_TEST_TEST_COMMON_H__
 
 #include "../../proto/node-base.h"
-#include "../../proto/scope.h"
+#include "../../proto/block.h"
 #include "../../proto/func-reference-type.h"
 #include "../../proto/variable.h"
 #include "../../misc/pos-type.h"
@@ -13,7 +13,7 @@ namespace test {
 
     extern util::sref<proto::FuncInstDraft> const nul_draft;
     extern util::sref<proto::SymbolTable> const nul_st;
-    void instScope(util::sref<proto::Scope> scope);
+    void instBlock(util::sref<proto::Block> block);
 
     struct FlowcheckData {
         misc::position const pos;

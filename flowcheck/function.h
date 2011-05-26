@@ -30,7 +30,7 @@ namespace flchk {
             , _func_proto_or_nul_if_not_compiled(rhs._func_proto_or_nul_if_not_compiled)
         {}
 
-        util::sref<proto::Function> compile(util::sref<proto::Scope> scope);
+        util::sref<proto::Function> compile(util::sref<proto::Block> block);
         std::vector<std::string> freeVariables() const;
 
         misc::position const pos;

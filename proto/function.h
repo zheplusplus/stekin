@@ -1,20 +1,19 @@
-#ifndef __STEKIN_PROTO_FUNCTION_TEMPLATE_H__
-#define __STEKIN_PROTO_FUNCTION_TEMPLATE_H__
+#ifndef __STEKIN_PROTO_FUNCTION_H__
+#define __STEKIN_PROTO_FUNCTION_H__
 
 #include <vector>
 #include <list>
 #include <map>
 
 #include "fwd-decl.h"
-#include "scope.h"
+#include "block.h"
 #include "func-inst-draft.h"
+#include "func-reference-type.h"
 #include "../misc/pos-type.h"
 
 namespace proto {
 
-    struct Function
-        : public Scope
-    {
+    struct Function {
         util::sref<FuncInstDraft> inst(misc::position const& pos
                                      , util::sref<SymbolTable const> ext_st
                                      , std::vector<util::sref<Type const>> const& arg_types);
@@ -30,6 +29,7 @@ namespace proto {
             , name(func_name)
             , param_names(params)
             , hint_void_return(func_hint_void_return)
+            , _block(new Block)
         {}
 
         Function(Function const&) = delete;
@@ -47,6 +47,14 @@ namespace proto {
         util::sref<FuncReferenceType const> refType(misc::position const& reference_pos
                                                   , util::sref<SymbolTable const> st);
         std::vector<util::sptr<inst::Function const>> deliverFuncs();
+        util::sptr<Block> deliver();
+
+        void addStmt(util::sptr<Statement> stmt);
+        util::sref<Function> declare(misc::position const& pos
+                                   , std::string const& name
+                                   , std::vector<std::string> const& param_names
+                                   , bool contains_void_return);
+        util::sref<Block> block();
     private:
         struct DraftInfo {
             std::map<std::string, Variable const> const ext_vars;
@@ -92,8 +100,9 @@ namespace proto {
         DraftCache _draft_cache;
         std::vector<util::sptr<FuncReferenceType const>> _reference_types;
         std::vector<std::string> _free_variables;
+        util::sptr<Block> _block;
     };
 
 }
 
-#endif /* __STEKIN_PROTO_FUNCTION_TEMPLATE_H__ */
+#endif /* __STEKIN_PROTO_FUNCTION_H__ */

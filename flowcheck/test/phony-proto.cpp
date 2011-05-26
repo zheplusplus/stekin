@@ -44,6 +44,22 @@ std::vector<util::sptr<inst::Function const>> Block::deliverFuncs()
     return std::vector<util::sptr<inst::Function const>>();
 }
 
+util::sref<Function> Block::declare(misc::position const& pos
+                                  , std::string const& name
+                                  , std::vector<std::string> const& param_names
+                                  , bool hint_return_void)
+{
+    DataTree::actualOne()(pos, FUNC_DECL, name, param_names.size(), hint_return_void);
+    std::for_each(param_names.begin()
+                , param_names.end()
+                , [&](std::string const& param)
+                  {
+                      DataTree::actualOne()(pos, PARAMETER, param);
+                  });
+    func_entities.push_back(util::mkptr(new Function(pos, name, param_names, hint_return_void)));
+    return *func_entities.back();
+}
+
 void DirectInst::addTo(util::sref<FuncInstDraft>) {}
 void DirectInst::mediateInst(util::sref<FuncInstDraft>, util::sref<SymbolTable>) {}
 
@@ -56,11 +72,6 @@ util::sptr<inst::Statement const> DirectInst::inst(util::sref<FuncInstDraft>
 std::vector<util::sptr<inst::Function const>> DirectInst::deliverFuncs()
 {
     return std::vector<util::sptr<inst::Function const>>();
-}
-
-util::sptr<Block> Scope::deliver()
-{
-    return std::move(_block);
 }
 
 util::sptr<inst::Statement const> Return::_inst(util::sref<FuncInstDraft>
@@ -208,25 +219,22 @@ util::sptr<inst::Expression const> WriteExpr::inst(util::sref<SymbolTable const>
     return std::move(NUL_INST_EXPR);
 }
 
-void Scope::addStmt(util::sptr<Statement> stmt)
+void Function::addStmt(util::sptr<Statement> stmt)
 {
     _block->addStmt(std::move(stmt));
 }
 
-util::sref<Function> Scope::declare(misc::position const& pos
-                                  , std::string const& name
-                                  , std::vector<std::string> const& param_names
-                                  , bool hint_return_void)
+util::sref<Function> Function::declare(misc::position const& pos
+                                     , std::string const& name
+                                     , std::vector<std::string> const& param_names
+                                     , bool hint_return_void)
 {
-    DataTree::actualOne()(pos, FUNC_DECL, name, param_names.size(), hint_return_void);
-    std::for_each(param_names.begin()
-                , param_names.end()
-                , [&](std::string const& param)
-                  {
-                      DataTree::actualOne()(pos, PARAMETER, param);
-                  });
-    func_entities.push_back(util::mkptr(new Function(pos, name, param_names, hint_return_void)));
-    return *func_entities.back();
+    return _block->declare(pos, name, param_names, hint_return_void);
+}
+
+util::sref<Block> Function::block()
+{
+    return *_block;
 }
 
 void Function::setFreeVariables(std::vector<std::string> const&) {}
