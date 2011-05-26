@@ -1,3 +1,7 @@
+ifndef BACKTRACPP_REPO
+	BACKTRACPP_REPO=git://github.com/neuront/backtracpp.git
+endif
+
 WORKDIR=.
 
 include misc/mf-template.mk
@@ -29,7 +33,7 @@ lib:checkout-subs
 	make -f misc/Makefile MODE=$(MODE)
 	make -f backtracpp/Makefile LIB_DIR=libs REL_PATH=backtracpp
 
-runtest:all test-lib checkout-subs
+runtest:all test-lib
 	make -f util/test/Makefile MODE=$(MODE)
 	make -f parser/test/Makefile MODE=$(MODE)
 	make -f grammar/test/Makefile MODE=$(MODE)
@@ -43,7 +47,7 @@ test-lib:checkout-subs
 	make -f test/Makefile MODE=$(MODE)
 
 checkout-subs:
-	test ! -b backtracpp || git clone git@github.com:neuront/backtracpp.git
+	test ! -b backtracpp && git clone $(BACKTRACPP_REPO) || true
 
 clean:
 	make -f util/Makefile clean
