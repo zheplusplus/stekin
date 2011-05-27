@@ -38,16 +38,16 @@ void IfAcceptor::deliverTo(util::sref<Acceptor> acc)
 void IfAcceptor::acceptElse(misc::position const& else_pos)
 {
     if (_elseMatched()) {
-        error::ifAlreadyMatchElse(_last_else_pos.cp(), else_pos);
+        error::ifAlreadyMatchElse(_last_else_pos_or_nul_if_not_matched.cp(), else_pos);
     } else {
         _current_branch = &_alternative;
-        _last_else_pos.reset(new misc::position(else_pos));
+        _last_else_pos_or_nul_if_not_matched.reset(new misc::position(else_pos));
     }
 }
 
 bool IfAcceptor::_elseMatched() const
 {
-    return _last_else_pos.not_nul();
+    return _last_else_pos_or_nul_if_not_matched.not_nul();
 }
 
 void IfnotAcceptor::acceptFunc(util::sptr<Function const> func)

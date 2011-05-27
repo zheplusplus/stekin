@@ -97,9 +97,6 @@ namespace util {
         typedef typename base_type::pointer pointer;
         typedef typename base_type::deleter_type deleter_type;
 
-        sptr() = default;
-        ~sptr() = default;
-
         explicit sptr(pointer p)
             : base_type(p)
         {}

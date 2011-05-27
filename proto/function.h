@@ -29,7 +29,6 @@ namespace proto {
             , name(func_name)
             , param_names(params)
             , hint_void_return(func_hint_void_return)
-            , _block(new Block)
         {}
 
         Function(Function const&) = delete;
@@ -47,7 +46,6 @@ namespace proto {
         util::sref<FuncReferenceType const> refType(misc::position const& reference_pos
                                                   , util::sref<SymbolTable const> st);
         std::vector<util::sptr<inst::Function const>> deliverFuncs();
-        util::sptr<Block> deliver();
 
         void addStmt(util::sptr<Statement> stmt);
         util::sref<Function> declare(misc::position const& pos
@@ -100,7 +98,7 @@ namespace proto {
         DraftCache _draft_cache;
         std::vector<util::sptr<FuncReferenceType const>> _reference_types;
         std::vector<std::string> _free_variables;
-        util::sptr<Block> _block;
+        Block _block;
     };
 
 }

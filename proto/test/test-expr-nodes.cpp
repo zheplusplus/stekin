@@ -11,6 +11,10 @@ using namespace test;
 struct ExprNodesTest
     : public ProtoTest
 {
+    ExprNodesTest()
+        : global_st(NULL)
+    {}
+
     void SetUp()
     {
         ProtoTest::SetUp();

@@ -19,33 +19,35 @@ struct TestAcceptor
 {
     TestAcceptor()
         : grammar::Acceptor(misc::position(0))
-        , filter(std::move(mkfilter()))
+        , stmt_or_nul_if_not_set(NULL)
+        , func_or_nul_if_not_set(NULL)
+        , filter(mkfilter())
     {}
 
     void acceptStmt(util::sptr<grammar::Statement const> s)
     {
-        stmt = std::move(s);
+        stmt_or_nul_if_not_set = std::move(s);
     }
 
     void acceptFunc(util::sptr<grammar::Function const> f)
     {
-        func = std::move(f);
+        func_or_nul_if_not_set = std::move(f);
     }
 
     void compile()
     {
         grammar::Block Block;
-        if (stmt.not_nul()) {
-            Block.addStmt(std::move(stmt));
+        if (stmt_or_nul_if_not_set.not_nul()) {
+            Block.addStmt(std::move(stmt_or_nul_if_not_set));
         }
-        if (func.not_nul()) {
-            Block.addFunc(std::move(func));
+        if (func_or_nul_if_not_set.not_nul()) {
+            Block.addFunc(std::move(func_or_nul_if_not_set));
         }
         filter = std::move(Block.compile(std::move(filter)));
     }
 
-    util::sptr<grammar::Statement const> stmt;
-    util::sptr<grammar::Function const> func;
+    util::sptr<grammar::Statement const> stmt_or_nul_if_not_set;
+    util::sptr<grammar::Function const> func_or_nul_if_not_set;
     util::sptr<flchk::Filter> filter;
 
     void deliverTo(util::sref<grammar::Acceptor>) {}
@@ -71,8 +73,8 @@ TEST_F(AcceptorTest, IfAcceptor)
                             util::mkptr(new grammar::Reference(pos, "Raynor")))))));
 
     acceptor_a.deliverTo(util::mkref(receiver));
-    ASSERT_TRUE(receiver.stmt.not_nul());
-    ASSERT_TRUE(receiver.func.nul());
+    ASSERT_TRUE(receiver.stmt_or_nul_if_not_set.not_nul());
+    ASSERT_TRUE(receiver.func_or_nul_if_not_set.nul());
     receiver.compile();
 
     grammar::IfAcceptor acceptor_b(pos_head
@@ -82,8 +84,8 @@ TEST_F(AcceptorTest, IfAcceptor)
                             util::mkptr(new grammar::Reference(pos, "Karrigan")))))));
 
     acceptor_b.deliverTo(util::mkref(receiver));
-    ASSERT_TRUE(receiver.stmt.not_nul());
-    ASSERT_TRUE(receiver.func.nul());
+    ASSERT_TRUE(receiver.stmt_or_nul_if_not_set.not_nul());
+    ASSERT_TRUE(receiver.func_or_nul_if_not_set.nul());
     receiver.compile();
 
     grammar::IfAcceptor acceptor_c(pos_head
@@ -95,8 +97,8 @@ TEST_F(AcceptorTest, IfAcceptor)
     ASSERT_FALSE(error::hasError());
 
     acceptor_c.deliverTo(util::mkref(receiver));
-    ASSERT_TRUE(receiver.stmt.not_nul());
-    ASSERT_TRUE(receiver.func.nul());
+    ASSERT_TRUE(receiver.stmt_or_nul_if_not_set.not_nul());
+    ASSERT_TRUE(receiver.func_or_nul_if_not_set.nul());
     receiver.compile();
 
     grammar::IfAcceptor acceptor_d(pos_head
@@ -108,8 +110,8 @@ TEST_F(AcceptorTest, IfAcceptor)
                             util::mkptr(new grammar::FloatLiteral(pos, "20.54")))))));
 
     acceptor_d.deliverTo(util::mkref(receiver));
-    ASSERT_TRUE(receiver.stmt.not_nul());
-    ASSERT_TRUE(receiver.func.nul());
+    ASSERT_TRUE(receiver.stmt_or_nul_if_not_set.not_nul());
+    ASSERT_TRUE(receiver.func_or_nul_if_not_set.nul());
     receiver.compile();
     receiver.filter->compile(nulblock);
 
@@ -192,8 +194,8 @@ TEST_F(AcceptorTest, IfNotAcceptor)
                             util::mkptr(new grammar::Reference(pos, "Marine")))))));
 
     ifnot_acc0.deliverTo(util::mkref(receiver));
-    ASSERT_TRUE(receiver.stmt.not_nul());
-    ASSERT_TRUE(receiver.func.nul());
+    ASSERT_TRUE(receiver.stmt_or_nul_if_not_set.not_nul());
+    ASSERT_TRUE(receiver.func_or_nul_if_not_set.nul());
     receiver.compile();
     receiver.filter->compile(nulblock);
 
@@ -228,16 +230,14 @@ TEST_F(AcceptorTest, FuncAcceptor)
 
     grammar::FunctionAcceptor func_acc0(pos
                                       , "func1", std::vector<std::string>({ "Duke", "Duran" }));
-    func_acc0.acceptStmt(std::move(
-                util::mkptr(new grammar::Arithmetics(pos, std::move(
-                            util::mkptr(new grammar::FloatLiteral(pos, "21.37")))))));
-    func_acc0.acceptStmt(std::move(
-                util::mkptr(new grammar::VarDef(pos, "SonOfKorhal", std::move(
-                            util::mkptr(new grammar::IntLiteral(pos, "20110116")))))));
+    func_acc0.acceptStmt(util::mkptr(new grammar::Arithmetics(pos, util::mkptr(
+                                                    new grammar::FloatLiteral(pos, "21.37")))));
+    func_acc0.acceptStmt(util::mkptr(new grammar::VarDef(pos, "SonOfKorhal", util::mkptr(
+                                                    new grammar::IntLiteral(pos, "20110116")))));
 
     func_acc0.deliverTo(util::mkref(receiver));
-    ASSERT_TRUE(receiver.stmt.nul());
-    ASSERT_TRUE(receiver.func.not_nul());
+    ASSERT_TRUE(receiver.stmt_or_nul_if_not_set.nul());
+    ASSERT_TRUE(receiver.func_or_nul_if_not_set.not_nul());
     receiver.compile();
     receiver.filter->compile(nulblock);
 
@@ -271,22 +271,19 @@ TEST_F(AcceptorTest, FuncAccNested)
 
     grammar::FunctionAcceptor func_acc0(pos
                                       , "funca", std::vector<std::string>({ "firebat", "ghost" }));
-    func_acc0.acceptStmt(std::move(
-                util::mkptr(new grammar::Arithmetics(pos, std::move(
-                            util::mkptr(new grammar::FloatLiteral(pos, "22.15")))))));
-    func_acc0.acceptStmt(std::move(
-                util::mkptr(new grammar::VarDef(pos, "medic", std::move(
-                            util::mkptr(new grammar::Reference(pos, "wraith")))))));
+    func_acc0.acceptStmt(util::mkptr(new grammar::Arithmetics(pos, util::mkptr(
+                                                new grammar::FloatLiteral(pos, "22.15")))));
+    func_acc0.acceptStmt(util::mkptr(new grammar::VarDef(pos, "medic", util::mkptr(
+                                                new grammar::Reference(pos, "wraith")))));
 
     grammar::FunctionAcceptor func_acc1(pos, "funca", std::vector<std::string>({ "vulture" }));
-    func_acc1.acceptStmt(std::move(
-                util::mkptr(new grammar::Arithmetics(pos, std::move(
-                            util::mkptr(new grammar::Reference(pos, "goliath")))))));
+    func_acc1.acceptStmt(util::mkptr(new grammar::Arithmetics(pos, util::mkptr(
+                                                new grammar::Reference(pos, "goliath")))));
 
     func_acc1.deliverTo(util::mkref(func_acc0));
     func_acc0.deliverTo(util::mkref(receiver));
-    ASSERT_TRUE(receiver.stmt.nul());
-    ASSERT_TRUE(receiver.func.not_nul());
+    ASSERT_TRUE(receiver.stmt_or_nul_if_not_set.nul());
+    ASSERT_TRUE(receiver.func_or_nul_if_not_set.not_nul());
     receiver.compile();
     receiver.filter->compile(nulblock);
 

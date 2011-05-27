@@ -15,6 +15,10 @@ using namespace test;
 struct StmtNodesTest
     : public ProtoTest
 {
+    StmtNodesTest()
+        : global_st(NULL)
+    {}
+
     void SetUp()
     {
         ProtoTest::SetUp();

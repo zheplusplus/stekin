@@ -13,6 +13,11 @@ using namespace test;
 struct FuncNCallTest
     : public ProtoTest
 {
+    FuncNCallTest()
+        : global_st(NULL)
+        , block(NULL)
+    {}
+
     void SetUp()
     {
         ProtoTest::SetUp();

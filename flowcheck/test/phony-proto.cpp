@@ -221,7 +221,7 @@ util::sptr<inst::Expression const> WriteExpr::inst(util::sref<SymbolTable const>
 
 void Function::addStmt(util::sptr<Statement> stmt)
 {
-    _block->addStmt(std::move(stmt));
+    _block.addStmt(std::move(stmt));
 }
 
 util::sref<Function> Function::declare(misc::position const& pos
@@ -229,12 +229,12 @@ util::sref<Function> Function::declare(misc::position const& pos
                                      , std::vector<std::string> const& param_names
                                      , bool hint_return_void)
 {
-    return _block->declare(pos, name, param_names, hint_return_void);
+    return _block.declare(pos, name, param_names, hint_return_void);
 }
 
 util::sref<Block> Function::block()
 {
-    return *_block;
+    return util::mkref(_block);
 }
 
 void Function::setFreeVariables(std::vector<std::string> const&) {}

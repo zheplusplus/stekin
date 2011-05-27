@@ -15,6 +15,11 @@ using namespace test;
 struct SymbolTableTest
     : public FlowcheckTest
 {
+    SymbolTableTest()
+        : block(NULL)
+        , symbols(NULL)
+    {}
+
     void SetUp()
     {
         FlowcheckTest::SetUp();

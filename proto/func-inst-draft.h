@@ -40,7 +40,9 @@ namespace proto {
             , _symbols(ext_lvl, args, extvars)
         {}
 
-        FuncInstDraft() {}
+        FuncInstDraft()
+            : _inst_func_or_nul_if_not_inst(NULL)
+        {}
 
         FuncInstDraft(FuncInstDraft const&) = delete;
     private:
