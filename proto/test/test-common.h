@@ -90,6 +90,25 @@ namespace test {
         void TearDown();
     };
 
+    struct BlockFiller {
+        explicit BlockFiller(util::sref<proto::Block> block)
+            : _block(block)
+        {}
+
+        BlockFiller branch(misc::position const& pos
+                         , util::sptr<proto::Expression const> p
+                         , util::sptr<proto::Block> c
+                         , util::sptr<proto::Block> a) const;
+        BlockFiller arith(misc::position const& pos, util::sptr<proto::Expression const> e) const;
+        BlockFiller def(misc::position const& pos
+                      , std::string const& name
+                      , util::sptr<proto::Expression const> e) const;
+        BlockFiller ret(misc::position const& pos, util::sptr<proto::Expression const> e) const;
+        BlockFiller ret(misc::position const& pos) const;
+    private:
+        util::sref<proto::Block> const _block;
+    };
+
 }
 
 std::ostream& operator<<(std::ostream& os, test::ProtoData const& data);

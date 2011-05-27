@@ -1,6 +1,9 @@
 #include "test-common.h"
+#include "../stmt-nodes.h"
+#include "../block.h"
 #include "../../test/common.h"
 #include "../../test/phony-errors.h"
+#include "../../instance/node-base.h"
 
 using namespace test;
 
@@ -97,4 +100,40 @@ void ProtoTest::SetUp()
 void ProtoTest::TearDown()
 {
     DataTree::verify();
+}
+
+BlockFiller BlockFiller::branch(misc::position const& pos
+                              , util::sptr<proto::Expression const> p
+                              , util::sptr<proto::Block> c
+                              , util::sptr<proto::Block> a) const
+{
+    _block->addStmt(util::mkptr(new proto::Branch(pos, std::move(p), std::move(c), std::move(a))));
+    return *this;
+}
+
+BlockFiller BlockFiller::arith(misc::position const& pos
+                             , util::sptr<proto::Expression const> e) const
+{
+    _block->addStmt(util::mkptr(new proto::Arithmetics(pos, std::move(e))));
+    return *this;
+}
+
+BlockFiller BlockFiller::def(misc::position const& pos
+                           , std::string const& name
+                           , util::sptr<proto::Expression const> e) const
+{
+    _block->addStmt(util::mkptr(new proto::VarDef(pos, name, std::move(e))));
+    return *this;
+}
+
+BlockFiller BlockFiller::ret(misc::position const& pos, util::sptr<proto::Expression const> e) const
+{
+    _block->addStmt(util::mkptr(new proto::Return(pos, std::move(e))));
+    return *this;
+}
+
+BlockFiller BlockFiller::ret(misc::position const& pos) const
+{
+    _block->addStmt(util::mkptr(new proto::ReturnNothing(pos)));
+    return *this;
 }
