@@ -3,15 +3,16 @@
 #include "variable.h"
 #include "func-inst-draft.h"
 #include "../output/name-mangler.h"
+#include "../misc/platform.h"
 #include "../report/errors.h"
 
 using namespace proto;
 
 static BuiltInPrimitive const BAD_TYPE_DEF("*BAD STEKIN TYPE*", 0);
 static BuiltInPrimitive const VOID("void", 0);
-static BuiltInPrimitive const BOOL("bool", 1);
-static BuiltInPrimitive const INT("int", 4);
-static BuiltInPrimitive const FLOAT("float", 8);
+static BuiltInPrimitive const BOOL("bool", platform::BOOL_SIZE);
+static BuiltInPrimitive const INT("int", platform::INT_SIZE);
+static BuiltInPrimitive const FLOAT("float", platform::FLOAT_SIZE);
 
 util::sref<Type const> const Type::BAD_TYPE(util::mkref(BAD_TYPE_DEF));
 util::sref<Type const> const Type::BIT_VOID(util::mkref(VOID));

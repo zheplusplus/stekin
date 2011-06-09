@@ -11,6 +11,8 @@ namespace util {
                           , std::string const& replacement);
 
     std::string str(int i);
+    std::string str(long i);
+    std::string str(long long i);
     std::string str(double d);
     std::string str(bool b);
     std::string str(void const* p);

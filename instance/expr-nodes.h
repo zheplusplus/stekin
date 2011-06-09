@@ -13,25 +13,25 @@ namespace inst {
     struct IntLiteral
         : public Expression
     {
-        explicit IntLiteral(platform::i4_type v)
+        explicit IntLiteral(platform::int_type v)
             : value(v)
         {}
 
         void write() const;
 
-        platform::i4_type const value;
+        platform::int_type const value;
     };
 
     struct FloatLiteral
         : public Expression
     {
-        explicit FloatLiteral(platform::f8_type v)
+        explicit FloatLiteral(platform::float_type v)
             : value(v)
         {}
 
         void write() const;
 
-        platform::f8_type const value;
+        platform::float_type const value;
     };
 
     struct BoolLiteral

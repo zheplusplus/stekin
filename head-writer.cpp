@@ -21,9 +21,9 @@ int main()
         util::replace_all(
         util::replace_all(
             HEAD_TEMPLATE
-                , "$INT_TYPE_NAME", platform::i4_traits::type_name())
-                , "$FLOAT_TYPE_NAME", platform::f8_traits::type_name())
-                , "$BOOLEAN_TYPE_NAME", platform::b1_traits::type_name())
+                , "$INT_TYPE_NAME", platform::int_traits::type_name())
+                , "$FLOAT_TYPE_NAME", platform::float_traits::type_name())
+                , "$BOOLEAN_TYPE_NAME", platform::bool_traits::type_name())
     ;
     return 0;
 }

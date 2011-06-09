@@ -30,6 +30,16 @@ std::string util::str(int i)
     return str_from_something(i);
 }
 
+std::string util::str(long i)
+{
+    return str_from_something(i);
+}
+
+std::string util::str(long long i)
+{
+    return str_from_something(i);
+}
+
 std::string util::str(double d)
 {
     return str_from_something(d);
