@@ -169,7 +169,7 @@ TEST_F(FuncNCallTest, WriteNestedCallInBranches)
     util::sref<proto::Function> func(
             block->declare(pos, "f0", std::vector<std::string>({ "x" }), false));
     util::sref<proto::Function> nested(
-            func->declare(pos, "n0", std::vector<std::string>(), false));
+            func->block()->declare(pos, "n0", std::vector<std::string>(), false));
 
     std::vector<util::sptr<proto::Expression const>> call_args;
     call_args.push_back(util::mkptr(new proto::BoolLiteral(pos, true)));
@@ -235,7 +235,7 @@ TEST_F(FuncNCallTest, WriteNestedCallOutsideBranches)
     util::sref<proto::Function> func(
             block->declare(pos, "f0", std::vector<std::string>({ "x" }), false));
     util::sref<proto::Function> nested(
-            func->declare(pos, "n0", std::vector<std::string>(), false));
+            func->block()->declare(pos, "n0", std::vector<std::string>(), false));
 
     std::vector<util::sptr<proto::Expression const>> call_args;
     call_args.push_back(util::mkptr(new proto::BoolLiteral(pos, true)));

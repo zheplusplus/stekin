@@ -47,11 +47,6 @@ namespace proto {
                                                   , util::sref<SymbolTable const> st);
         std::vector<util::sptr<inst::Function const>> deliverFuncs();
 
-        void addStmt(util::sptr<Statement> stmt);
-        util::sref<Function> declare(misc::position const& pos
-                                   , std::string const& name
-                                   , std::vector<std::string> const& param_names
-                                   , bool contains_void_return);
         util::sref<Block> block();
     private:
         struct DraftInfo {

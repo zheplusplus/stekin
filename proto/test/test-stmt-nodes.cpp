@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 
 #include "test-common.h"
-#include "../stmt-nodes.h"
 #include "../expr-nodes.h"
 #include "../block.h"
 #include "../function.h"
@@ -37,10 +36,12 @@ TEST_F(StmtNodesTest, BranchConditionTypeCheck)
 
     util::sref<proto::Function> func(block->declare(pos_d, "f", std::vector<std::string>(), true));
     func->setFreeVariables(std::vector<std::string>{ "kokopelli" });
-    func->addStmt(util::mkptr(new proto::Branch(pos
-                                              , util::mkptr(new proto::Reference(pos, "kokopelli"))
-                                              , util::mkptr(new proto::Block)
-                                              , util::mkptr(new proto::Block))));
+    BlockFiller(func->block())
+        .branch(pos
+              , util::mkptr(new proto::Reference(pos, "kokopelli"))
+              , util::mkptr(new proto::Block)
+              , util::mkptr(new proto::Block))
+    ;
     proto::Call call(pos_d, func, std::vector<util::sptr<proto::Expression const>>());
     call.inst(*global_st);
 

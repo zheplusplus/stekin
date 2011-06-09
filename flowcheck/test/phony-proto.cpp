@@ -219,19 +219,6 @@ util::sptr<inst::Expression const> WriteExpr::inst(util::sref<SymbolTable const>
     return std::move(NUL_INST_EXPR);
 }
 
-void Function::addStmt(util::sptr<Statement> stmt)
-{
-    _block.addStmt(std::move(stmt));
-}
-
-util::sref<Function> Function::declare(misc::position const& pos
-                                     , std::string const& name
-                                     , std::vector<std::string> const& param_names
-                                     , bool hint_return_void)
-{
-    return _block.declare(pos, name, param_names, hint_return_void);
-}
-
 util::sref<Block> Function::block()
 {
     return util::mkref(_block);

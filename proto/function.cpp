@@ -109,19 +109,6 @@ std::vector<util::sptr<inst::Function const>> Function::deliverFuncs()
     return util::ptrs_append(_block.deliverFuncs(), _draft_cache.deliverFuncs());
 }
 
-void Function::addStmt(util::sptr<Statement> stmt)
-{
-    _block.addStmt(std::move(stmt));
-}
-
-util::sref<Function> Function::declare(misc::position const& pos
-                                     , std::string const& name
-                                     , std::vector<std::string> const& param_names
-                                     , bool contains_void_return)
-{
-    return _block.declare(pos, name, param_names, contains_void_return);
-}
-
 util::sref<Block> Function::block()
 {
     return util::mkref(_block);
