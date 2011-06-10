@@ -4,9 +4,9 @@
 #include "name-mangler.h"
 #include "../util/string.h"
 
-std::string output::formFuncName(util::id func_addr)
+std::string output::formFuncName(util::serial_num func_sn)
 {
-    return "_stk_func_template_" + func_addr.str();
+    return "_stk_func_template_" + util::str(func_sn.n);
 }
 
 std::string output::formType(std::string const& type_name)

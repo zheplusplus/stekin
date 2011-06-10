@@ -4,7 +4,7 @@
 #include <list>
 #include <string>
 
-#include "../util/pointer.h"
+#include "../util/sn.h"
 
 namespace output {
 
@@ -21,20 +21,20 @@ namespace output {
     };
 
     void writeFuncDecl(std::string const& ret_type_name
-                     , util::id func_addr
+                     , util::serial_num func_sn
                      , std::list<StackVarRec> const& params
                      , int func_level
                      , int stack_size_used);
 
-    void writeFuncImpl(std::string const& ret_type_name, util::id func_addr);
+    void writeFuncImpl(std::string const& ret_type_name, util::serial_num func_sn);
 
-    void writeCallBegin(util::id func_addr);
+    void writeCallBegin(util::serial_num func_sn);
     void writeArgSeparator();
     void writeCallEnd();
 
     void writeMainBegin();
     void writeMainEnd();
-    void stknMainFunc(util::id func_addr);
+    void stknMainFunc(util::serial_num func_sn);
 
     void writeFuncReference(int size);
     void funcReferenceNextVariable(int offset, StackVarRec const& init);

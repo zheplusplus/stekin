@@ -88,7 +88,7 @@ util::sref<Type const> Call::type(util::sref<SymbolTable const> st) const
 util::sptr<inst::Expression const> Call::inst(util::sref<SymbolTable const> st) const
 {
     util::sref<FuncInstDraft> draft(_func->inst(pos, st, instForTypes(_args, st)));
-    return util::mkptr(new inst::Call(draft.id(), instForArgs(_args, st)));
+    return util::mkptr(new inst::Call(draft->sn, instForArgs(_args, st)));
 }
 
 util::sref<Type const> Functor::type(util::sref<SymbolTable const> st) const
@@ -99,7 +99,7 @@ util::sref<Type const> Functor::type(util::sref<SymbolTable const> st) const
 util::sptr<inst::Expression const> Functor::inst(util::sref<SymbolTable const> st) const
 {
     util::sref<FuncInstDraft> draft(_mkDraft(st));
-    return util::mkptr(new inst::Call(draft.id(), instForArgs(_args, st)));
+    return util::mkptr(new inst::Call(draft->sn, instForArgs(_args, st)));
 }
 
 util::sref<FuncInstDraft> Functor::_mkDraft(util::sref<SymbolTable const> st) const

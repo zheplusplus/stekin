@@ -4,11 +4,11 @@
 #include <string>
 #include <vector>
 
-#include "../util/pointer.h"
+#include "../util/sn.h"
 
 namespace output {
 
-    std::string formFuncName(util::id func_name);
+    std::string formFuncName(util::serial_num func_sn);
     std::string formType(std::string const& type);
     std::string formFuncReferenceType(int size);
 

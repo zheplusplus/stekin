@@ -6,6 +6,8 @@
 
 #include "fwd-decl.h"
 #include "../output/func-writer.h"
+#include "../util/sn.h"
+#include "../util/pointer.h"
 
 namespace inst {
 
@@ -14,13 +16,13 @@ namespace inst {
                , int l
                , int ss
                , std::list<output::StackVarRec> const& a
-               , util::id cid
+               , util::serial_num c
                , util::sptr<Statement const> b)
             : type_exported_name(en)
             , level(l)
             , stack_size(ss)
             , args(a)
-            , call_id(cid)
+            , call_sn(c)
             , body(std::move(b))
         {}
 
@@ -31,7 +33,7 @@ namespace inst {
         int const level;
         int const stack_size;
         std::list<output::StackVarRec> const args;
-        util::id const call_id;
+        util::serial_num const call_sn;
         util::sptr<Statement const> const body;
     };
 

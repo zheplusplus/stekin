@@ -150,6 +150,6 @@ void FuncInstDraft::instantiate(util::sref<Statement> stmt)
                                                          , _symbols.level
                                                          , _symbols.stackSize()
                                                          , argsToVarRecs(_symbols.getArgs())
-                                                         , util::id(this)
+                                                         , sn
                                                          , std::move(body)));
 }

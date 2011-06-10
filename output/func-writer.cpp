@@ -66,7 +66,7 @@ static std::string formCopyArgs(std::list<StackVarRec> const& params)
 }
 
 void output::writeFuncDecl(std::string const& ret_type_name
-                         , util::id func_addr
+                         , util::serial_num func_sn
                          , std::list<StackVarRec> const& params
                          , int func_level
                          , int stack_size_used)
@@ -87,7 +87,7 @@ void output::writeFuncDecl(std::string const& ret_type_name
         util::replace_all(
             FUNC_DECL
                 , "$FUNC_RET_TYPE", ret_type_name)
-                , "$FUNC_NAME", formFuncName(func_addr))
+                , "$FUNC_NAME", formFuncName(func_sn))
                 , "$ARGS_DECL", formArgsDecl(params))
                 , "$COPY_ARGS", formCopyArgs(params))
                 , "$FUNC_LEVEL", util::str(func_level))
@@ -95,20 +95,20 @@ void output::writeFuncDecl(std::string const& ret_type_name
     ;
 }
 
-void output::writeFuncImpl(std::string const& ret_type_name, util::id func_addr)
+void output::writeFuncImpl(std::string const& ret_type_name, util::serial_num func_sn)
 {
     std::cout <<
         util::replace_all(
         util::replace_all(
             FUNC_PERFORM_IMPL_BEGIN
                 , "$FUNC_RET_TYPE", ret_type_name)
-                , "$FUNC_NAME", formFuncName(func_addr))
+                , "$FUNC_NAME", formFuncName(func_sn))
     ;
 }
 
-void output::writeCallBegin(util::id func_addr)
+void output::writeCallBegin(util::serial_num func_sn)
 {
-    std::cout << "(" << formFuncName(func_addr) << "(_stk_bases";
+    std::cout << "(" << formFuncName(func_sn) << "(_stk_bases";
 }
 
 void output::writeArgSeparator()
@@ -141,9 +141,9 @@ void output::writeMainEnd()
     std::cout << MAIN_END << std::endl;
 }
 
-void output::stknMainFunc(util::id func_addr)
+void output::stknMainFunc(util::serial_num func_sn)
 {
-    std::cout << "    " << formFuncName(func_addr) << "()._stk_perform();" << std::endl;
+    std::cout << "    " << formFuncName(func_sn) << "()._stk_perform();" << std::endl;
 }
 
 void output::writeFuncReference(int size)

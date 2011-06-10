@@ -26,16 +26,16 @@ namespace {
     struct CompileFailure {};
 
     struct Functions {
-        util::id const main_id;
+        util::serial_num const main_sn;
         std::vector<util::sptr<inst::Function const>> funcs;
 
-        Functions(util::id mid, std::vector<util::sptr<inst::Function const>> f)
-            : main_id(mid)
+        Functions(util::serial_num s, std::vector<util::sptr<inst::Function const>> f)
+            : main_sn(s)
             , funcs(std::move(f))
         {}
 
         Functions(Functions&& rhs)
-            : main_id(rhs.main_id)
+            : main_sn(rhs.main_sn)
             , funcs(std::move(rhs.funcs))
         {}
     };
@@ -72,7 +72,7 @@ static Functions semantic(util::sptr<flchk::Filter> global_flow)
     }
     std::vector<util::sptr<inst::Function const>> funcs(proto_global_block.deliverFuncs());
     funcs.push_back(inst_global_func->deliver());
-    return Functions(inst_global_func.id(), std::move(funcs));
+    return Functions(inst_global_func->sn, std::move(funcs));
 }
 
 static void outputAll(Functions funcs)
@@ -84,7 +84,7 @@ static void outputAll(Functions funcs)
                       func->writeDecl();
                   });
     output::writeMainBegin();
-    output::stknMainFunc(funcs.main_id);
+    output::stknMainFunc(funcs.main_sn);
     output::writeMainEnd();
     std::for_each(funcs.funcs.begin()
                 , funcs.funcs.end()

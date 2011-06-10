@@ -5,6 +5,7 @@
 
 #include "node-base.h"
 #include "../util/pointer.h"
+#include "../util/sn.h"
 #include "../misc/platform.h"
 #include "../misc/pos-type.h"
 
@@ -65,14 +66,14 @@ namespace inst {
     struct Call
         : public Expression
     {
-        Call(util::id c, std::vector<util::sptr<Expression const>> a)
-            : call_id(c)
+        Call(util::serial_num c, std::vector<util::sptr<Expression const>> a)
+            : call_sn(c)
             , args(std::move(a))
         {}
 
         void write() const;
 
-        util::id const call_id;
+        util::serial_num const call_sn;
         std::vector<util::sptr<Expression const>> args;
     };
 

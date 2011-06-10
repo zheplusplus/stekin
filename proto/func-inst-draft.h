@@ -9,6 +9,7 @@
 #include "symbol-table.h"
 #include "../instance/function.h"
 #include "../misc/pos-type.h"
+#include "../util/sn.h"
 
 namespace proto {
 
@@ -36,15 +37,19 @@ namespace proto {
         FuncInstDraft(int ext_lvl
                     , std::list<ArgNameTypeRec> const& args
                     , std::map<std::string, Variable const> const& extvars)
-            : _inst_func_or_nul_if_not_inst(NULL)
+            : sn(util::serial_num::next())
+            , _inst_func_or_nul_if_not_inst(NULL)
             , _symbols(ext_lvl, args, extvars)
         {}
 
         FuncInstDraft()
-            : _inst_func_or_nul_if_not_inst(NULL)
+            : sn(util::serial_num::next())
+            , _inst_func_or_nul_if_not_inst(NULL)
         {}
 
         FuncInstDraft(FuncInstDraft const&) = delete;
+    public:
+        util::serial_num const sn;
     private:
         util::sptr<inst::Function> _inst_func_or_nul_if_not_inst;
         std::list<util::sref<Statement>> _candidate_paths;

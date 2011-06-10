@@ -28,7 +28,7 @@ void Reference::write() const
 
 void Call::write() const
 {
-    output::writeCallBegin(call_id);
+    output::writeCallBegin(call_sn);
     std::for_each(args.begin()
                 , args.end()
                 , [&](util::sptr<Expression const> const& expr)

@@ -5,11 +5,11 @@ using namespace inst;
 
 void Function::writeDecl() const
 {
-      output::writeFuncDecl(type_exported_name, call_id, args, level, stack_size);
+      output::writeFuncDecl(type_exported_name, call_sn, args, level, stack_size);
 }
 
 void Function::writeImpl() const
 {
-      output::writeFuncImpl(type_exported_name, call_id);
+      output::writeFuncImpl(type_exported_name, call_sn);
       body->write();
 }

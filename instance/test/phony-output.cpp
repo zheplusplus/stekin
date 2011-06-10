@@ -4,9 +4,14 @@
 
 using namespace output;
 
-void output::writeFuncDecl(std::string const&, util::id, std::list<StackVarRec> const&, int, int) {}
-void output::writeFuncImpl(std::string const&, util::id) {}
-void output::writeCallBegin(util::id) {}
+void output::writeFuncDecl(std::string const&
+                         , util::serial_num
+                         , std::list<StackVarRec> const&
+                         , int
+                         , int)
+{}
+void output::writeFuncImpl(std::string const&, util::serial_num) {}
+void output::writeCallBegin(util::serial_num) {}
 void output::writeArgSeparator() {}
 void output::writeCallEnd() {}
 void output::kwReturn() {}
