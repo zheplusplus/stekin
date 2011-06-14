@@ -57,6 +57,7 @@ namespace error {
     void condNotBool(misc::position const& pos, std::string const& actual_type);
 
     void requestVariableNotCallable(misc::position const& call_pos);
+    void callVariableArgCountWrong(misc::position const& call_pos, int actual, int wanted);
 
 }
 

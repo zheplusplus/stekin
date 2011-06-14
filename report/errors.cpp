@@ -200,3 +200,11 @@ void error::requestVariableNotCallable(misc::position const& call_pos)
     std::cerr << call_pos.str() << std::endl;
     std::cerr << "    variable not callable" << std::endl;
 }
+
+void error::callVariableArgCountWrong(misc::position const& call_pos, int actual, int wanted)
+{
+    has_error = true;
+    std::cerr << call_pos.str() << std::endl;
+    std::cerr << "    call variable with " << actual << " arguments, but " << wanted << " needed"
+              << std::endl;
+}

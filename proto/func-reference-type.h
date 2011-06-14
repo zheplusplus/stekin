@@ -24,7 +24,7 @@ namespace proto {
         std::string name() const;
     public:
         util::sref<FuncInstDraft> call(
-                                misc::position const&
+                                misc::position const& call_pos
                               , int level
                               , int stack_offset
                               , std::vector<util::sref<Type const>> const& arg_types) const;

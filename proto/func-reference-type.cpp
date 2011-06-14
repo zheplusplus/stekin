@@ -9,6 +9,7 @@
 #include "../instance/expr-nodes.h"
 #include "../output/name-mangler.h"
 #include "../output/func-writer.h"
+#include "../report/errors.h"
 #include "../util/string.h"
 #include "../util/map-compare.h"
 
@@ -92,11 +93,15 @@ int FuncReferenceType::_calcSize(std::map<std::string, Variable const> const& cr
 }
 
 util::sref<FuncInstDraft> FuncReferenceType::call(
-                                misc::position const&
+                                misc::position const& call_pos
                               , int level
                               , int stack_offset
                               , std::vector<util::sref<Type const>> const& arg_types) const
 {
+    if (arg_types.size() != _func->param_names.size()) {
+        error::callVariableArgCountWrong(call_pos, arg_types.size(), _func->param_names.size());
+        return FuncInstDraft::badDraft();
+    }
     return _func->inst(level, _adjustVars(stack_offset, level), arg_types);
 }
 
