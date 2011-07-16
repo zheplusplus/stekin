@@ -30,6 +30,7 @@ static std::list<NABinaryOpRec> na_binary_ops;
 static std::list<NAPreUnaryOpRec> na_pre_unary_ops;
 
 static std::list<VariableNotCallableRec> variable_not_callables;
+static std::list<VarCallArgCountWrong> var_call_arg_count_wrong_recs;
 
 static bool has_err = false;
 
@@ -217,6 +218,12 @@ void error::requestVariableNotCallable(misc::position const& call_pos)
     variable_not_callables.push_back(VariableNotCallableRec(call_pos));
 }
 
+void error::callVariableArgCountWrong(misc::position const& call_pos, int actual, int wanted)
+{
+    has_err = true;
+    var_call_arg_count_wrong_recs.push_back(VarCallArgCountWrong(call_pos, actual, wanted));
+}
+
 std::vector<TabAsIndRec> test::getTabAsIndents()
 {
     return std::vector<TabAsIndRec>(tab_as_ind_recs.begin(), tab_as_ind_recs.end());
@@ -323,4 +330,10 @@ std::vector<VariableNotCallableRec> test::getVariableNotCallables()
 {
     return std::vector<VariableNotCallableRec>(variable_not_callables.begin()
                                              , variable_not_callables.end());
+}
+
+std::vector<VarCallArgCountWrong> test::getVarCallArgCountWrong()
+{
+    return std::vector<VarCallArgCountWrong>(var_call_arg_count_wrong_recs.begin()
+                                           , var_call_arg_count_wrong_recs.end());
 }

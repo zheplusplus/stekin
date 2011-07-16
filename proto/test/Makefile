@@ -12,6 +12,7 @@ TEST_DEP=proto \
          test-operation-query.dt \
          test-symbol-table.dt \
          test-func-and-call.dt \
+         test-call-to-var.dt \
          test-stmt-nodes.dt \
          test-expr-nodes.dt
 TEST_OBJ=$(WORKDIR)/*.o \
@@ -23,6 +24,7 @@ $(TESTDIR)/test-proto.out:$(TEST_DEP)
 	        $(TESTDIR)/test-operation-query.o \
 	        $(TESTDIR)/test-symbol-table.o \
 	        $(TESTDIR)/test-func-and-call.o \
+	        $(TESTDIR)/test-call-to-var.o \
 	        $(TESTDIR)/test-expr-nodes.o \
 	        $(TESTDIR)/test-stmt-nodes.o \
 	        $(TEST_LIBS) \

@@ -237,6 +237,18 @@ namespace test {
         {}
     };
 
+    struct VarCallArgCountWrong {
+        misc::position const call_pos;
+        int const actual;
+        int const wanted;
+
+        VarCallArgCountWrong(misc::position const& c, int a, int w)
+            : call_pos(c)
+            , actual(a)
+            , wanted(w)
+        {}
+    };
+
     void clearErr();
 
     std::vector<TabAsIndRec> getTabAsIndents();
@@ -260,6 +272,7 @@ namespace test {
     std::vector<RetTypeUnresolvableRec> getRetTypeUnresolvables();
     std::vector<CondNotBoolRec> getCondNotBools();
     std::vector<VariableNotCallableRec> getVariableNotCallables();
+    std::vector<VarCallArgCountWrong> getVarCallArgCountWrong();
 
 }
 
