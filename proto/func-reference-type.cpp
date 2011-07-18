@@ -114,10 +114,9 @@ std::vector<inst::FuncReference::ArgInfo> FuncReferenceType::makeCallArgs() cons
                 , [&](std::pair<std::string, Variable const> const& reference)
                   {
                       result.push_back(inst::FuncReference::ArgInfo(
-                                                          reference.second.level
-                                                        , reference.second.stack_offset
-                                                        , reference.second.type->exportedName()
-                                                        , offset));
+                                inst::Address(reference.second.level, reference.second.stack_offset)
+                              , reference.second.type->exportedName()
+                              , offset));
                       offset += reference.second.type->size;
                   });
     return std::vector<inst::FuncReference::ArgInfo>(result.begin(), result.end());

@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "node-base.h"
+#include "address.h"
 #include "../util/pointer.h"
 #include "../util/sn.h"
 #include "../misc/platform.h"
@@ -50,17 +51,15 @@ namespace inst {
     struct Reference
         : public Expression
     {
-        Reference(std::string const& en, int l, int off)
+        Reference(std::string const& en, Address const& a)
             : type_exported_name(en)
-            , level(l)
-            , stack_offset(off)
+            , address(a)
         {}
 
         void write() const;
 
         std::string const type_exported_name;
-        int const level;
-        int const stack_offset;
+        Address address;
     };
 
     struct Call
@@ -81,14 +80,12 @@ namespace inst {
         : public Expression
     {
         struct ArgInfo {
-            int const level;
-            int const ref_offset;
+            Address address;
             std::string const exported_name;
             int const self_offset;
 
-            ArgInfo(int l, int roff, std::string const& en, int soff)
-                : level(l)
-                , ref_offset(roff)
+            ArgInfo(Address const& a, std::string const& en, int soff)
+                : address(a)
                 , exported_name(en)
                 , self_offset(soff)
             {}

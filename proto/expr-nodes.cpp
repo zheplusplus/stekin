@@ -49,7 +49,8 @@ util::sref<Type const> Reference::type(util::sref<SymbolTable const> st) const
 util::sptr<inst::Expression const> Reference::inst(util::sref<SymbolTable const> st) const
 {
     Variable var(st->queryVar(pos, name));
-    return util::mkptr(new inst::Reference(var.type->exportedName(), var.level, var.stack_offset));
+    return util::mkptr(new inst::Reference(var.type->exportedName()
+                                         , inst::Address(var.level, var.stack_offset)));
 }
 
 static std::vector<util::sptr<inst::Expression const>> instForArgs(
