@@ -60,7 +60,7 @@ namespace platform {
 
     int const WORD_LENGTH_INBYTE = sizeof(void*);
     int const BOOL_SIZE = 1;
-    int const INT_SIZE = 4;
+    int const INT_SIZE = 8;
     int const FLOAT_SIZE = 8;
 
     typedef type_find<c_short, INT_SIZE>::traits int_traits;
