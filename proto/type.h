@@ -25,17 +25,8 @@ namespace proto {
                             , std::vector<util::sref<Type const>> const& arg_types) const = 0;
     public:
         bool operator!=(Type const& rhs) const;
-        virtual bool operator==(Type const& rhs) const = 0;
-        virtual bool operator<(Type const& rhs) const = 0;
-    public:
-        virtual bool eqAsBuiltIn(Type const& lhs) const;
-        virtual bool eqAsFuncReference(util::sref<Function> lhs_func
-                                     , std::map<std::string, Variable const> const& rhs_cr) const;
-
-        virtual bool ltAsBuiltIn(Type const& lhs) const = 0;
-        virtual bool ltAsFuncReference(util::sref<Function> lhs_func
-                                     , std::map<std::string, Variable const> const& rhs_cr)
-                                    const = 0;
+        bool operator==(Type const& rhs) const;
+        bool operator<(Type const& rhs) const;
     public:
         virtual void checkCondType(misc::position const& pos) const;
     protected:
@@ -48,33 +39,6 @@ namespace proto {
         static util::sref<Type const> const BIT_BOOL;
         static util::sref<Type const> const BIT_INT;
         static util::sref<Type const> const BIT_FLOAT;
-    };
-
-    struct BuiltInPrimitive
-        : public Type
-    {
-        BuiltInPrimitive(std::string const& n, int size)
-            : Type(size)
-            , tname(n)
-        {}
-
-        std::string const tname;
-    public:
-        std::string name() const;
-    public:
-        util::sref<FuncInstDraft> call(misc::position const& call_pos
-                                     , int
-                                     , int
-                                     , std::vector<util::sref<Type const>> const&) const;
-    public:
-        bool operator==(Type const& rhs) const;
-        bool operator<(Type const& rhs) const;
-        bool eqAsBuiltIn(Type const& lhs) const;
-        bool ltAsBuiltIn(Type const& lhs) const;
-        bool ltAsFuncReference(util::sref<Function>
-                             , std::map<std::string, Variable const> const&) const;
-    public:
-        void checkCondType(misc::position const& pos) const;
     };
 
 }

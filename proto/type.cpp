@@ -9,6 +9,38 @@ using namespace proto;
 
 namespace {
 
+    struct BuiltInPrimitive
+        : public Type
+    {
+        BuiltInPrimitive(std::string const& n, int size)
+            : Type(size)
+            , tname(n)
+        {}
+
+        std::string name() const
+        {
+            return tname;
+        }
+
+        util::sref<FuncInstDraft> call(misc::position const& call_pos
+                                     , int
+                                     , int
+                                     , std::vector<util::sref<Type const>> const&) const
+        {
+            error::requestVariableNotCallable(call_pos);
+            return FuncInstDraft::badDraft();
+        }
+
+        void checkCondType(misc::position const& pos) const
+        {
+            if (BIT_BOOL != util::mkref(*this) && BAD_TYPE != util::mkref(*this)) {
+                Type::checkCondType(pos);
+            }
+        }
+
+        std::string const tname;
+    };
+
     struct BadType
         : public BuiltInPrimitive
     {
@@ -92,76 +124,17 @@ bool Type::operator!=(Type const& rhs) const
     return !operator==(rhs);
 }
 
-bool Type::eqAsBuiltIn(Type const&) const
+bool Type::operator==(Type const& rhs) const
 {
-    return false;
+    return this == &rhs;
 }
 
-bool Type::eqAsFuncReference(util::sref<Function>
-                           , std::map<std::string, Variable const> const&) const
+bool Type::operator<(Type const& rhs) const
 {
-    return false;
-}
-
-bool Type::ltAsBuiltIn(Type const&) const
-{
-    return false;
-}
-
-bool Type::ltAsFuncReference(util::sref<Function>
-                           , std::map<std::string, Variable const> const&) const
-{
-    return false;
+    return this < &rhs;
 }
 
 void Type::checkCondType(misc::position const& pos) const
 {
     error::condNotBool(pos, name());
-}
-
-std::string BuiltInPrimitive::name() const
-{
-    return tname;
-}
-
-bool BuiltInPrimitive::operator==(Type const& rhs) const
-{
-    return rhs.eqAsBuiltIn(*this);
-}
-
-bool BuiltInPrimitive::operator<(Type const& rhs) const
-{
-    return rhs.ltAsBuiltIn(*this);
-}
-
-bool BuiltInPrimitive::eqAsBuiltIn(Type const& lhs) const
-{
-    return &lhs == this;
-}
-
-bool BuiltInPrimitive::ltAsBuiltIn(Type const& lhs) const
-{
-    return &lhs < this;
-}
-
-bool BuiltInPrimitive::ltAsFuncReference(util::sref<Function>
-                                       , std::map<std::string, Variable const> const&) const
-{
-    return false;
-}
-
-void BuiltInPrimitive::checkCondType(misc::position const& pos) const
-{
-    if (&BOOL != this && &BAD_TYPE_DEF != this) {
-        Type::checkCondType(pos);
-    }
-}
-
-util::sref<FuncInstDraft> BuiltInPrimitive::call(misc::position const& call_pos
-                                               , int
-                                               , int
-                                               , std::vector<util::sref<Type const>> const&) const
-{
-    error::requestVariableNotCallable(call_pos);
-    return FuncInstDraft::badDraft();
 }

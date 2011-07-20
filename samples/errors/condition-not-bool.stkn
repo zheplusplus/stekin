@@ -8,4 +8,7 @@ func condition_check(x)
         return
     write(false)
 
-condition_check(0)
+condition_check(write(0))
+
+if condition_check
+    return

@@ -28,14 +28,6 @@ namespace proto {
                               , int level
                               , int stack_offset
                               , std::vector<util::sref<Type const>> const& arg_types) const;
-
-        bool operator==(Type const& rhs) const;
-        bool operator<(Type const& rhs) const;
-        bool eqAsFuncReference(util::sref<Function> lhs_func
-                             , std::map<std::string, Variable const> const& rhs_cr) const;
-        bool ltAsFuncReference(util::sref<Function> lhs_func
-                             , std::map<std::string, Variable const> const& rhs_cr) const;
-        bool ltAsBuiltIn(Type const&) const;
     public:
         std::map<std::string, Variable const> const context_references;
         std::map<std::string, Variable const> const closed_references;

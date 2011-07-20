@@ -34,38 +34,6 @@ std::string FuncReferenceType::name() const
          + " parameters ]";
 }
 
-bool FuncReferenceType::operator==(Type const& rhs) const
-{
-    return rhs.eqAsFuncReference(_func, context_references);
-}
-
-bool FuncReferenceType::operator<(Type const& rhs) const
-{
-    return rhs.ltAsFuncReference(_func, context_references);
-}
-
-bool FuncReferenceType::eqAsFuncReference(
-            util::sref<Function> lhs_func
-          , std::map<std::string, Variable const> const& rhs_cr) const
-{
-    return _func.id() == lhs_func.id() && context_references == rhs_cr;
-}
-
-bool FuncReferenceType::ltAsFuncReference(
-            util::sref<Function> lhs_func
-          , std::map<std::string, Variable const> const& rhs_cr) const
-{
-    if (_func.id() == lhs_func.id()) {
-        return util::map_less(context_references, rhs_cr);
-    }
-    return _func.id() < lhs_func.id();
-}
-
-bool FuncReferenceType::ltAsBuiltIn(Type const&) const
-{
-    return true;
-}
-
 std::map<std::string, Variable const> FuncReferenceType::_encloseReference(
                                             misc::position const& pos
                                           , int level
