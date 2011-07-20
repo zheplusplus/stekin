@@ -7,17 +7,22 @@
 #include "func-inst-draft.h"
 #include "variable.h"
 #include "../instance/expr-nodes.h"
-#include "../output/name-mangler.h"
-#include "../output/func-writer.h"
 #include "../report/errors.h"
 #include "../util/string.h"
 #include "../util/map-compare.h"
 
 using namespace proto;
 
-std::string FuncReferenceType::exportedName() const
+util::sptr<inst::Type const> FuncReferenceType::makeInstType() const
 {
-    return output::formFuncReferenceType(size);
+    std::vector<util::sptr<inst::Type const>> enclosed_types;
+    std::for_each(context_references.begin()
+                , context_references.end()
+                , [&](std::pair<std::string, Variable const> const& reference)
+                  {
+                      enclosed_types.push_back(reference.second.type->makeInstType());
+                  });
+    return util::mkptr(new inst::ClosureType(size, std::move(enclosed_types)));
 }
 
 std::string FuncReferenceType::name() const
@@ -105,7 +110,7 @@ util::sref<FuncInstDraft> FuncReferenceType::call(
     return _func->inst(level, _adjustVars(stack_offset, level), arg_types);
 }
 
-std::vector<inst::FuncReference::ArgInfo> FuncReferenceType::makeCallArgs() const
+std::list<inst::FuncReference::ArgInfo> FuncReferenceType::makeCallArgs() const
 {
     std::list<inst::FuncReference::ArgInfo> result;
     int offset = 0;
@@ -115,11 +120,11 @@ std::vector<inst::FuncReference::ArgInfo> FuncReferenceType::makeCallArgs() cons
                   {
                       result.push_back(inst::FuncReference::ArgInfo(
                                 inst::Address(reference.second.level, reference.second.stack_offset)
-                              , reference.second.type->exportedName()
+                              , reference.second.type->makeInstType()
                               , offset));
                       offset += reference.second.type->size;
                   });
-    return std::vector<inst::FuncReference::ArgInfo>(result.begin(), result.end());
+    return std::move(result);
 }
 
 std::map<std::string, Variable const>

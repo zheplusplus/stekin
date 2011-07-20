@@ -22,7 +22,7 @@ void Branch::write() const
 
 void Initialization::write() const
 {
-    output::refThisLevel(offset, type_exported_name);
+    output::refThisLevel(offset, type->exportedName());
     output::signAssign();
     init->write();
     output::endOfStatement();

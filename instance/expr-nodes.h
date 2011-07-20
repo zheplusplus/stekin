@@ -2,9 +2,11 @@
 #define __STEKIN_INSTANCE_EXPRESSION_NODES_H__
 
 #include <vector>
+#include <list>
 
 #include "node-base.h"
 #include "address.h"
+#include "types.h"
 #include "../util/pointer.h"
 #include "../util/sn.h"
 #include "../misc/platform.h"
@@ -51,14 +53,14 @@ namespace inst {
     struct Reference
         : public Expression
     {
-        Reference(std::string const& en, Address const& a)
-            : type_exported_name(en)
+        Reference(util::sptr<Type const> t, Address const& a)
+            : type(std::move(t))
             , address(a)
         {}
 
         void write() const;
 
-        std::string const type_exported_name;
+        util::sptr<Type const> const type;
         Address address;
     };
 
@@ -80,26 +82,34 @@ namespace inst {
         : public Expression
     {
         struct ArgInfo {
-            Address address;
-            std::string const exported_name;
+            Address const address;
+            util::sptr<Type const> type;
             int const self_offset;
 
-            ArgInfo(Address const& a, std::string const& en, int soff)
+            ArgInfo(ArgInfo&& rhs)
+                : address(rhs.address)
+                , type(std::move(rhs.type))
+                , self_offset(rhs.self_offset)
+            {}
+
+            ArgInfo(Address const& a, util::sptr<Type const> t, int soff)
                 : address(a)
-                , exported_name(en)
+                , type(std::move(t))
                 , self_offset(soff)
             {}
+
+            ArgInfo(ArgInfo const&) = delete;
         };
 
-        FuncReference(int s, std::vector<ArgInfo> const& a)
+        FuncReference(int s, std::list<ArgInfo> a)
             : size(s)
-            , args(a)
+            , args(std::move(a))
         {}
 
         void write() const;
 
         int const size;
-        std::vector<ArgInfo> const args;
+        std::list<ArgInfo> const args;
     };
 
     struct BinaryOp

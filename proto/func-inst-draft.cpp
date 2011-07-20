@@ -8,7 +8,6 @@
 #include "variable.h"
 #include "../instance/node-base.h"
 #include "../report/errors.h"
-#include "../output/func-writer.h"
 #include "../util/map-compare.h"
 #include "../util/pointer.h"
 
@@ -122,18 +121,18 @@ bool FuncInstDraft::hasMorePath() const
     return !_candidate_paths.empty();
 }
 
-static std::list<output::StackVarRec> argsToVarRecs(std::list<Variable> const& args)
+static std::list<inst::Function::ParamInfo> varsToParams(std::list<Variable> const& args)
 {
-    std::list<output::StackVarRec> recs;
+    std::list<inst::Function::ParamInfo> params;
     std::for_each(args.begin()
                 , args.end()
                 , [&](Variable const& var)
                   {
-                      recs.push_back(output::StackVarRec(var.type->exportedName()
-                                                       , var.stack_offset
-                                                       , var.level));
+                      params.push_back(inst::Function::ParamInfo(var.type->makeInstType()
+                                                               , inst::Address(var.level
+                                                                             , var.stack_offset)));
                   });
-    return recs;
+    return std::move(params);
 }
 
 util::sptr<inst::Function const> FuncInstDraft::deliver()
@@ -146,10 +145,10 @@ void FuncInstDraft::instantiate(util::sref<Statement> stmt)
     addPath(stmt);
     instNextPath();
     util::sptr<inst::Statement const> body(stmt->inst(util::mkref(*this), util::mkref(_symbols)));
-    _inst_func_or_nul_if_not_inst.reset(new inst::Function(getReturnType()->exportedName()
+    _inst_func_or_nul_if_not_inst.reset(new inst::Function(getReturnType()->makeInstType()
                                                          , _symbols.level
                                                          , _symbols.stackSize()
-                                                         , argsToVarRecs(_symbols.getArgs())
+                                                         , varsToParams(_symbols.getArgs())
                                                          , sn
                                                          , std::move(body)));
 }

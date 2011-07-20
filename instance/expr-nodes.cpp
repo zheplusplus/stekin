@@ -23,7 +23,7 @@ void BoolLiteral::write() const
 
 void Reference::write() const
 {
-    output::refLevel(address.offset, address.level, type_exported_name);
+    output::refLevel(address.offset, address.level, type->exportedName());
 }
 
 void Call::write() const
@@ -47,7 +47,7 @@ void FuncReference::write() const
                 , [&](ArgInfo const& arg)
                   {
                       output::funcReferenceNextVariable(arg.self_offset
-                                                      , output::StackVarRec(arg.exported_name
+                                                      , output::StackVarRec(arg.type->exportedName()
                                                                           , arg.address.offset
                                                                           , arg.address.level));
                   });

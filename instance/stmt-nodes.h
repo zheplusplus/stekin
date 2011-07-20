@@ -2,6 +2,7 @@
 #define __STEKIN_INSTANCE_STATEMENT_NODES_H__
 
 #include "node-base.h"
+#include "types.h"
 #include "../util/pointer.h"
 
 namespace inst {
@@ -39,17 +40,17 @@ namespace inst {
     struct Initialization
         : public Statement
     {
-        Initialization(int o, util::sptr<Expression const> i, std::string const& en)
+        Initialization(int o, util::sptr<Expression const> i, util::sptr<Type const> t)
             : offset(o)
             , init(std::move(i))
-            , type_exported_name(en)
+            , type(std::move(t))
         {}
 
         void write() const;
 
         int const offset;
         util::sptr<Expression const> const init;
-        std::string const type_exported_name;
+        util::sptr<Type const> const type;
     };
 
     struct Return

@@ -5,23 +5,39 @@
 #include <list>
 
 #include "fwd-decl.h"
-#include "../output/func-writer.h"
+#include "types.h"
+#include "address.h"
 #include "../util/sn.h"
 #include "../util/pointer.h"
 
 namespace inst {
 
     struct Function {
-        Function(std::string const& en
+        struct ParamInfo {
+            util::sptr<Type const> type;
+            Address const address;
+
+            ParamInfo(util::sptr<Type const> t, Address a)
+                : type(std::move(t))
+                , address(a)
+            {}
+
+            ParamInfo(ParamInfo&& rhs)
+                : type(std::move(rhs.type))
+                , address(rhs.address)
+            {}
+        };
+
+        Function(util::sptr<Type const> rt
                , int l
                , int ss
-               , std::list<output::StackVarRec> const& a
+               , std::list<ParamInfo> p
                , util::serial_num c
                , util::sptr<Statement const> b)
-            : type_exported_name(en)
+            : return_type(std::move(rt))
             , level(l)
             , stack_size(ss)
-            , args(a)
+            , params(std::move(p))
             , call_sn(c)
             , body(std::move(b))
         {}
@@ -29,10 +45,10 @@ namespace inst {
         void writeDecl() const;
         void writeImpl() const;
 
-        std::string const type_exported_name;
+        util::sptr<Type const> const return_type;
         int const level;
         int const stack_size;
-        std::list<output::StackVarRec> const args;
+        std::list<ParamInfo> const params;
         util::serial_num const call_sn;
         util::sptr<Statement const> const body;
     };

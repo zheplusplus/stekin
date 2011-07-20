@@ -6,6 +6,7 @@
 #include <map>
 
 #include "fwd-decl.h"
+#include "../instance/types.h"
 #include "../util/pointer.h"
 #include "../misc/pos-type.h"
 
@@ -14,7 +15,7 @@ namespace proto {
     struct Type {
         int const size;
     public:
-        virtual std::string exportedName() const = 0;
+        virtual util::sptr<inst::Type const> makeInstType() const = 0;
         virtual std::string name() const = 0;
     public:
         virtual util::sref<FuncInstDraft> call(
@@ -59,7 +60,6 @@ namespace proto {
 
         std::string const tname;
     public:
-        std::string exportedName() const;
         std::string name() const;
     public:
         util::sref<FuncInstDraft> call(misc::position const& call_pos

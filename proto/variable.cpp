@@ -2,7 +2,6 @@
 #include "func-inst-draft.h"
 #include "type.h"
 #include "../instance/node-base.h"
-#include "../output/statement-writer.h"
 
 using namespace proto;
 

@@ -69,7 +69,7 @@ util::sptr<inst::Statement const> VarDef::_inst(util::sref<FuncInstDraft>
     util::sref<Type const> type(init->type(st));
     return util::mkptr(new inst::Initialization(st->defVar(pos, type, name).stack_offset
                                               , init->inst(st)
-                                              , type->exportedName()));
+                                              , type->makeInstType()));
 }
 
 util::sptr<inst::Statement const> Return::_inst(util::sref<FuncInstDraft> func

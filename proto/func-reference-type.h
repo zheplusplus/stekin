@@ -20,7 +20,7 @@ namespace proto {
             , _func(func)
         {}
     public:
-        std::string exportedName() const;
+        util::sptr<inst::Type const> makeInstType() const;
         std::string name() const;
     public:
         util::sref<FuncInstDraft> call(
@@ -40,7 +40,7 @@ namespace proto {
         std::map<std::string, Variable const> const context_references;
         std::map<std::string, Variable const> const closed_references;
     public:
-        std::vector<inst::FuncReference::ArgInfo> makeCallArgs() const;
+        std::list<inst::FuncReference::ArgInfo> makeCallArgs() const;
     private:
         util::sref<Function> const _func;
     private:

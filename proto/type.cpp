@@ -2,17 +2,84 @@
 #include "expr-nodes.h"
 #include "variable.h"
 #include "func-inst-draft.h"
-#include "../output/name-mangler.h"
 #include "../misc/platform.h"
 #include "../report/errors.h"
 
 using namespace proto;
 
-static BuiltInPrimitive const BAD_TYPE_DEF("*BAD STEKIN TYPE*", 0);
-static BuiltInPrimitive const VOID("void", 0);
-static BuiltInPrimitive const BOOL("bool", platform::BOOL_SIZE);
-static BuiltInPrimitive const INT("int", platform::INT_SIZE);
-static BuiltInPrimitive const FLOAT("float", platform::FLOAT_SIZE);
+namespace {
+
+    struct BadType
+        : public BuiltInPrimitive
+    {
+        BadType()
+            : BuiltInPrimitive("*BAD STEKIN TYPE*", 0)
+        {}
+
+        util::sptr<inst::Type const> makeInstType() const
+        {
+            return util::mkptr(new inst::VoidPrimitive);
+        }
+    };
+    BadType BAD_TYPE_DEF;
+
+    struct VoidPrimitive
+        : public BuiltInPrimitive
+    {
+        VoidPrimitive()
+            : BuiltInPrimitive("void", 0)
+        {}
+
+        util::sptr<inst::Type const> makeInstType() const
+        {
+            return util::mkptr(new inst::VoidPrimitive);
+        }
+    };
+    VoidPrimitive VOID;
+
+    struct BoolPrimitive
+        : public BuiltInPrimitive
+    {
+        BoolPrimitive()
+            : BuiltInPrimitive("bool", platform::BOOL_SIZE)
+        {}
+
+        util::sptr<inst::Type const> makeInstType() const
+        {
+            return util::mkptr(new inst::BoolPrimitive);
+        }
+    };
+    BoolPrimitive BOOL;
+
+    struct IntPrimitive
+        : public BuiltInPrimitive
+    {
+        IntPrimitive()
+            : BuiltInPrimitive("int", platform::INT_SIZE)
+        {}
+
+        util::sptr<inst::Type const> makeInstType() const
+        {
+            return util::mkptr(new inst::IntPrimitive);
+        }
+    };
+    IntPrimitive INT;
+
+    struct FloatPrimitive
+        : public BuiltInPrimitive
+    {
+        FloatPrimitive()
+            : BuiltInPrimitive("float", platform::FLOAT_SIZE)
+        {}
+
+        util::sptr<inst::Type const> makeInstType() const
+        {
+            return util::mkptr(new inst::FloatPrimitive);
+        }
+    };
+    FloatPrimitive FLOAT;
+
+}
 
 util::sref<Type const> const Type::BAD_TYPE(util::mkref(BAD_TYPE_DEF));
 util::sref<Type const> const Type::BIT_VOID(util::mkref(VOID));
@@ -50,11 +117,6 @@ bool Type::ltAsFuncReference(util::sref<Function>
 void Type::checkCondType(misc::position const& pos) const
 {
     error::condNotBool(pos, name());
-}
-
-std::string BuiltInPrimitive::exportedName() const
-{
-    return output::formType(tname);
 }
 
 std::string BuiltInPrimitive::name() const
