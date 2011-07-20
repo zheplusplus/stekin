@@ -293,20 +293,9 @@ util::sref<Type const> WriteExpr::type(util::sref<SymbolTable const>) const
 
 void Type::checkCondType(misc::position const&) const {}
 
-bool Type::eqAsBuiltIn(Type const&) const
+util::sptr<inst::Type const> FuncReferenceType::makeInstType() const
 {
-    return false;
-}
-
-bool Type::eqAsFuncReference(util::sref<Function>
-                           , std::map<std::string, Variable const> const&) const
-{
-    return false;
-}
-
-std::string FuncReferenceType::exportedName() const
-{
-    return "";
+    return util::sptr<inst::Type const>(NULL);
 }
 
 std::string FuncReferenceType::name() const
@@ -320,31 +309,4 @@ util::sref<FuncInstDraft> FuncReferenceType::call(misc::position const&
                                                 , std::vector<util::sref<Type const>> const&) const
 {
     return nul_draft;
-}
-
-bool FuncReferenceType::operator==(Type const&) const
-{
-    return false;
-}
-
-bool FuncReferenceType::operator<(Type const&) const
-{
-    return false;
-}
-
-bool FuncReferenceType::eqAsFuncReference(util::sref<Function>
-                                        , std::map<std::string, Variable const> const&) const
-{
-    return false;
-}
-
-bool FuncReferenceType::ltAsFuncReference(util::sref<Function>
-                                        , std::map<std::string, Variable const> const&) const
-{
-    return false;
-}
-
-bool FuncReferenceType::ltAsBuiltIn(Type const&) const
-{
-    return false;
 }

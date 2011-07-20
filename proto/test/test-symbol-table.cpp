@@ -14,9 +14,45 @@ using namespace test;
 
 typedef ProtoTest SymbolTableTest;
 
-static proto::BuiltInPrimitive const WORD("word", platform::WORD_LENGTH_INBYTE);
-static proto::BuiltInPrimitive const DWORD("dword", platform::WORD_LENGTH_INBYTE * 2);
-static proto::BuiltInPrimitive const HALFWORD("halfword", platform::WORD_LENGTH_INBYTE / 2);
+namespace {
+
+    struct TestType
+        : public proto::Type
+    {
+        TestType(std::string const& n, int size)
+            : Type(size)
+            , tname(n)
+        {}
+
+        std::string name() const
+        {
+            return tname;
+        }
+
+        util::sptr<inst::Type const> makeInstType() const
+        {
+            return util::sptr<inst::Type const>(NULL);
+        }
+
+        util::sref<proto::FuncInstDraft> call(
+                misc::position const&
+              , int
+              , int
+              , std::vector<util::sref<proto::Type const>> const&) const
+        {
+            return util::sref<proto::FuncInstDraft>(NULL);
+        }
+
+        void checkCondType(misc::position const&) const {}
+
+        std::string const tname;
+    };
+
+    TestType const WORD("word", platform::WORD_LENGTH_INBYTE);
+    TestType const DWORD("dword", platform::WORD_LENGTH_INBYTE * 2);
+    TestType const HALFWORD("halfword", platform::WORD_LENGTH_INBYTE / 2);
+
+}
 
 TEST_F(SymbolTableTest, OnCorrect)
 {

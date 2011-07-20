@@ -4,8 +4,7 @@
 #include "../../instance/stmt-nodes.h"
 #include "../../instance/function.h"
 #include "../../instance/built-in.h"
-#include "../../output/func-writer.h"
-#include "../../output/name-mangler.h"
+#include "../../instance/types.h"
 #include "../../util/string.h"
 
 using namespace test;
@@ -128,21 +127,36 @@ void WriteExpr::write() const
 
 void Function::writeDecl() const
 {
-    DataTree::actualOne()(FUNC_DECL, util::str(level), args.size());
+    DataTree::actualOne()(FUNC_DECL, util::str(level), params.size());
 }
 
 void Function::writeImpl() const
 {
-    DataTree::actualOne()(FUNC_IMPL, util::str(level), args.size());
+    DataTree::actualOne()(FUNC_IMPL, util::str(level), params.size());
     body->write();
 }
 
-std::string output::formType(std::string const& type)
+std::string VoidPrimitive::exportedName() const
 {
-    return type;
+    return "";
 }
 
-std::string output::formFuncReferenceType(int size)
+std::string IntPrimitive::exportedName() const
 {
-    return util::str(size);
+    return "";
+}
+
+std::string FloatPrimitive::exportedName() const
+{
+    return "";
+}
+
+std::string BoolPrimitive::exportedName() const
+{
+    return "";
+}
+
+std::string ClosureType::exportedName() const
+{
+    return "";
 }
