@@ -1,3 +1,10 @@
+struct _stk_type_void {
+    _stk_type_void& operator=(_stk_type_void const&)
+    {
+        return *this;
+    }
+};
+
 struct _stk_type_bool {
     _stk_type_1_byte boolean;
 
@@ -63,13 +70,6 @@ std::ostream& operator<<(std::ostream& os, _stk_type_bool const& b)
 {
     return os << (0 == b.boolean ? "false" : "true");
 }
-
-struct _stk_type_void {
-    _stk_type_void& operator=(_stk_type_void const&)
-    {
-        return *this;
-    }
-};
 
 std::ostream& operator<<(std::ostream& os, _stk_type_void)
 {

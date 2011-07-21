@@ -51,7 +51,7 @@ namespace proto {
     public:
         util::serial_num const sn;
     private:
-        util::sptr<inst::Function> _inst_func_or_nul_if_not_inst;
+        util::sptr<inst::Function const> _inst_func_or_nul_if_not_inst;
         std::list<util::sref<Statement>> _candidate_paths;
         SymbolTable _symbols;
     };
