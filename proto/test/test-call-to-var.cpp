@@ -9,14 +9,7 @@
 
 using namespace test;
 
-struct CallToVarTest
-    : public ProtoTest
-{
-    void SetUp()
-    {
-        ProtoTest::SetUp();
-    }
-};
+typedef ProtoTest CallToVarTest;
 
 TEST_F(CallToVarTest, VarNotCallable)
 {
