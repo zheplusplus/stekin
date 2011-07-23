@@ -36,7 +36,12 @@ void output::returnNothing() {}
 void output::refThisLevel(int, std::string const&) {}
 void output::refLevel(int, int, std::string const&) {}
 void output::signAssign() {}
-void output::writeInt(int) {}
+
+void output::writeInt(int value)
+{
+    DataTree::actualOne()(INTEGER, util::str(value));
+}
+
 void output::writeFloat(double) {}
 void output::writeBool(bool) {}
 void output::writeOperator(std::string const&) {}
@@ -44,8 +49,17 @@ void output::beginExpr() {}
 void output::endExpr() {}
 void output::branchIf() {}
 void output::branchElse() {}
-void output::blockBegin() {}
-void output::blockEnd() {}
+
+void output::blockBegin()
+{
+    DataTree::actualOne()(BLOCK_BEGIN);
+}
+
+void output::blockEnd()
+{
+    DataTree::actualOne()(BLOCK_END);
+}
+
 void output::endOfStatement() {}
 void output::writeFuncReference(int) {}
 void output::funcReferenceNextVariable(int, StackVarRec const&) {}

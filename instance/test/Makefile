@@ -6,10 +6,15 @@ test:$(TESTDIR)/test-instance.out
 
 include $(WORKDIR)/Makefile
 
-TEST_DEP=instance test-common.dt test-function.dt phony-output.dt
+TEST_DEP=instance \
+         test-common.dt \
+         test-function.dt \
+         test-expr-nodes.dt \
+         phony-output.dt
 TEST_OBJ=$(WORKDIR)/*.o \
          $(TESTDIR)/test-common.o \
          $(TESTDIR)/test-function.o \
+         $(TESTDIR)/test-expr-nodes.o \
          $(TESTDIR)/phony-output.o
 
 $(TESTDIR)/test-instance.out:$(TEST_DEP)

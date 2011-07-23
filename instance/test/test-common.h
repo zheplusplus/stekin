@@ -50,6 +50,11 @@ namespace test {
     extern NodeType const FUNC_DEF;
     extern NodeType const PARAMETER;
 
+    extern NodeType const BLOCK_BEGIN;
+    extern NodeType const BLOCK_END;
+
+    extern NodeType const INTEGER;
+
     struct InstanceTest
         : public testing::Test
     {

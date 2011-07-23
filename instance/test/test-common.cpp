@@ -37,10 +37,15 @@ std::ostream& operator<<(std::ostream& os, InstanceData const& data)
     return os;
 }
 
-extern NodeType const test::FUNC_DECL_BEGIN("func declaration begin");
-extern NodeType const test::FUNC_DECL_END("func declaration end");
-extern NodeType const test::FUNC_DEF("func definition");
-extern NodeType const test::PARAMETER("parameter");
+NodeType const test::FUNC_DECL_BEGIN("func declaration begin");
+NodeType const test::FUNC_DECL_END("func declaration end");
+NodeType const test::FUNC_DEF("func definition");
+NodeType const test::PARAMETER("parameter");
+
+NodeType const test::BLOCK_BEGIN("block begin");
+NodeType const test::BLOCK_END("block end");
+
+NodeType const test::INTEGER("integer");
 
 void InstanceTest::SetUp()
 {
