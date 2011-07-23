@@ -3,6 +3,8 @@
 
 #include <string>
 
+#include "../misc/platform.h"
+
 namespace output {
 
     void kwReturn();
@@ -11,8 +13,8 @@ namespace output {
     void refLevel(int offset, int level, std::string const& type_exported_name);
     void signAssign();
 
-    void writeInt(int i);
-    void writeFloat(double d);
+    void writeInt(platform::int_type i);
+    void writeFloat(platform::float_type d);
     void writeBool(bool b);
     void writeOperator(std::string const& op_img);
 

@@ -66,12 +66,12 @@ void output::endOfStatement()
     std::cout << ";" << std::endl;
 }
 
-void output::writeInt(int i)
+void output::writeInt(platform::int_type i)
 {
     std::cout << "(" << i << ")";
 }
 
-void output::writeFloat(double d)
+void output::writeFloat(platform::float_type d)
 {
     std::cout << "(" << d << ")";
 }

@@ -37,12 +37,12 @@ void output::refThisLevel(int, std::string const&) {}
 void output::refLevel(int, int, std::string const&) {}
 void output::signAssign() {}
 
-void output::writeInt(int value)
+void output::writeInt(platform::int_type value)
 {
     DataTree::actualOne()(INTEGER, util::str(value));
 }
 
-void output::writeFloat(double) {}
+void output::writeFloat(platform::float_type) {}
 void output::writeBool(bool) {}
 void output::writeOperator(std::string const&) {}
 void output::beginExpr() {}
