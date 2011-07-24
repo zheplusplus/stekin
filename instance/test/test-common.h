@@ -54,6 +54,10 @@ namespace test {
     extern NodeType const BLOCK_END;
 
     extern NodeType const INTEGER;
+    extern NodeType const FLOAT;
+    extern NodeType const BOOLEAN;
+
+    extern NodeType const REFERENCE;
 
     struct InstanceTest
         : public testing::Test

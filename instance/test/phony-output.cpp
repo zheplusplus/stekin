@@ -34,7 +34,12 @@ void output::writeCallEnd() {}
 void output::kwReturn() {}
 void output::returnNothing() {}
 void output::refThisLevel(int, std::string const&) {}
-void output::refLevel(int, int, std::string const&) {}
+
+void output::refLevel(int offset, int level, std::string const& type_name)
+{
+    DataTree::actualOne()(REFERENCE, type_name, level, offset);
+}
+
 void output::signAssign() {}
 
 void output::writeInt(platform::int_type value)
@@ -42,8 +47,16 @@ void output::writeInt(platform::int_type value)
     DataTree::actualOne()(INTEGER, util::str(value));
 }
 
-void output::writeFloat(platform::float_type) {}
-void output::writeBool(bool) {}
+void output::writeFloat(platform::float_type value)
+{
+    DataTree::actualOne()(FLOAT, util::str(value));
+}
+
+void output::writeBool(bool value)
+{
+    DataTree::actualOne()(BOOLEAN, util::str(value));
+}
+
 void output::writeOperator(std::string const&) {}
 void output::beginExpr() {}
 void output::endExpr() {}

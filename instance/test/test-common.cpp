@@ -46,6 +46,10 @@ NodeType const test::BLOCK_BEGIN("block begin");
 NodeType const test::BLOCK_END("block end");
 
 NodeType const test::INTEGER("integer");
+NodeType const test::FLOAT("float");
+NodeType const test::BOOLEAN("boolean");
+
+NodeType const test::REFERENCE("reference");
 
 void InstanceTest::SetUp()
 {
