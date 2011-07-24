@@ -3,6 +3,7 @@
 #include "test-common.h"
 #include "../expr-nodes.h"
 #include "../../util/string.h"
+#include "../../util/sn.h"
 #include "../../misc/platform.h"
 
 using namespace test;
@@ -70,5 +71,54 @@ TEST_F(ExprNodesTest, Reference)
         (REFERENCE, "bool", 0, 24)
         (REFERENCE, "16", 1, 0)
         (REFERENCE, "6", 1, 16)
+    ;
+}
+
+TEST_F(ExprNodesTest, Call)
+{
+    std::vector<util::sptr<inst::Expression const>> args;
+    inst::Call c0(util::serial_num::next(), std::move(args));
+
+    args.push_back(util::mkptr(new inst::IntLiteral(20110724)));
+    args.push_back(util::mkptr(new inst::Reference(util::mkptr(new inst::VoidPrimitive)
+                                                 , inst::Address(0, 8))));
+    inst::Call c1(util::serial_num::next(), std::move(args));
+
+    c0.write();
+    c1.write();
+
+    DataTree::expectOne()
+        (CALL_BEGIN)
+        (CALL_END)
+        (CALL_BEGIN)
+            (ARG_SEPARATOR)
+            (INTEGER, "20110724")
+            (ARG_SEPARATOR)
+            (REFERENCE, "void", 0, 8)
+        (CALL_END)
+    ;
+}
+
+TEST_F(ExprNodesTest, FuncReference)
+{
+    std::list<inst::FuncReference::ArgInfo> args;
+    inst::FuncReference r0(0, std::move(args));
+
+    args.push_back(inst::FuncReference::ArgInfo(inst::Address(1, 0)
+                                              , util::mkptr(new inst::IntPrimitive)
+                                              , 0));
+    args.push_back(inst::FuncReference::ArgInfo(inst::Address(1, 8)
+                                              , util::mkptr(new inst::FloatPrimitive)
+                                              , 8));
+    inst::FuncReference r1(16, std::move(args));
+
+    r0.write();
+    r1.write();
+
+    DataTree::expectOne()
+        (FUNC_REFERENCE, "0")
+        (FUNC_REFERENCE, "16")
+            (FUNC_REF_NEXT_VAR, "int", 1, 0, 0)
+            (FUNC_REF_NEXT_VAR, "float", 1, 8, 8)
     ;
 }

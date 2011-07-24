@@ -28,9 +28,31 @@ void output::writeFuncImpl(std::string const& return_type_name, util::serial_num
     DataTree::actualOne()(FUNC_DEF, return_type_name);
 }
 
-void output::writeCallBegin(util::serial_num) {}
-void output::writeArgSeparator() {}
-void output::writeCallEnd() {}
+void output::writeCallBegin(util::serial_num)
+{
+    DataTree::actualOne()(CALL_BEGIN);
+}
+
+void output::writeArgSeparator()
+{
+    DataTree::actualOne()(ARG_SEPARATOR);
+}
+
+void output::writeCallEnd()
+{
+    DataTree::actualOne()(CALL_END);
+}
+
+void output::writeFuncReference(int size)
+{
+    DataTree::actualOne()(FUNC_REFERENCE, util::str(size));
+}
+
+void output::funcReferenceNextVariable(int self_offset, StackVarRec const& rec)
+{
+    DataTree::actualOne()(FUNC_REF_NEXT_VAR, rec.type, rec.level, rec.offset, self_offset);
+}
+
 void output::kwReturn() {}
 void output::returnNothing() {}
 void output::refThisLevel(int, std::string const&) {}
@@ -74,8 +96,6 @@ void output::blockEnd()
 }
 
 void output::endOfStatement() {}
-void output::writeFuncReference(int) {}
-void output::funcReferenceNextVariable(int, StackVarRec const&) {}
 void output::beginWriteStmt() {}
 void output::endWriteStmt() {}
 

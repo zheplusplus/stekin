@@ -13,20 +13,31 @@ namespace test {
     struct InstanceData {
         int const level;
         int const stack_size_or_offset;
+        int const self_offset;
 
         InstanceData(int l, int s_o)
             : level(l)
             , stack_size_or_offset(s_o)
+            , self_offset(-1)
         {}
 
         explicit InstanceData()
             : level(-1)
             , stack_size_or_offset(-1)
+            , self_offset(-1)
+        {}
+
+        InstanceData(int l, int o, int so)
+            : level(l)
+            , stack_size_or_offset(o)
+            , self_offset(so)
         {}
 
         bool operator==(InstanceData const& rhs) const
         {
-            return level == rhs.level && stack_size_or_offset == rhs.stack_size_or_offset;
+            return level == rhs.level
+                && stack_size_or_offset == rhs.stack_size_or_offset
+                && self_offset == rhs.self_offset;
         }
     };
 
@@ -39,6 +50,11 @@ namespace test {
                            , std::string const& name
                            , int level
                            , int stack_size_or_offset);
+        DataTree& operator()(NodeType const& type
+                           , std::string const& name
+                           , int level
+                           , int offset
+                           , int self_offset);
         DataTree& operator()(NodeType const& type, std::string const& name);
 
         DataTree& operator()(NodeType const& type);
@@ -58,6 +74,11 @@ namespace test {
     extern NodeType const BOOLEAN;
 
     extern NodeType const REFERENCE;
+    extern NodeType const CALL_BEGIN;
+    extern NodeType const CALL_END;
+    extern NodeType const ARG_SEPARATOR;
+    extern NodeType const FUNC_REFERENCE;
+    extern NodeType const FUNC_REF_NEXT_VAR;
 
     struct InstanceTest
         : public testing::Test

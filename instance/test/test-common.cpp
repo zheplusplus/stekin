@@ -14,6 +14,16 @@ DataTree& DataTree::operator()(NodeType const& type
     return *this;
 }
 
+DataTree& DataTree::operator()(NodeType const& type
+                             , std::string const& name
+                             , int level
+                             , int stack_size_or_offset
+                             , int self_offset)
+{
+    BaseType::operator()(type, InstanceData(level, stack_size_or_offset, self_offset), name);
+    return *this;
+}
+
 DataTree& DataTree::operator()(NodeType const& type, std::string const& name)
 {
     BaseType::operator()(type, InstanceData(), name);
@@ -34,6 +44,9 @@ std::ostream& operator<<(std::ostream& os, InstanceData const& data)
     if (-1 != data.stack_size_or_offset) {
         os << " stack_size or offset=" << data.stack_size_or_offset;
     }
+    if (-1 != data.self_offset) {
+        os << " self offset=" << data.self_offset;
+    }
     return os;
 }
 
@@ -50,6 +63,11 @@ NodeType const test::FLOAT("float");
 NodeType const test::BOOLEAN("boolean");
 
 NodeType const test::REFERENCE("reference");
+NodeType const test::CALL_BEGIN("call begin");
+NodeType const test::CALL_END("call end");
+NodeType const test::ARG_SEPARATOR("argument separator");
+NodeType const test::FUNC_REFERENCE("func reference");
+NodeType const test::FUNC_REF_NEXT_VAR("func reference next variable");
 
 void InstanceTest::SetUp()
 {
