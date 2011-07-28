@@ -69,6 +69,10 @@ NodeType const test::ARG_SEPARATOR("argument separator");
 NodeType const test::FUNC_REFERENCE("func reference");
 NodeType const test::FUNC_REF_NEXT_VAR("func reference next variable");
 
+NodeType const test::OPERATOR("operator");
+NodeType const test::EXPRESSION_BEGIN("expression begin");
+NodeType const test::EXPRESSION_END("expression end");
+
 void InstanceTest::SetUp()
 {
     clearErr();

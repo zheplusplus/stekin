@@ -79,9 +79,21 @@ void output::writeBool(bool value)
     DataTree::actualOne()(BOOLEAN, util::str(value));
 }
 
-void output::writeOperator(std::string const&) {}
-void output::beginExpr() {}
-void output::endExpr() {}
+void output::writeOperator(std::string const& op)
+{
+    DataTree::actualOne()(OPERATOR, op);
+}
+
+void output::beginExpr()
+{
+    DataTree::actualOne()(EXPRESSION_BEGIN);
+}
+
+void output::endExpr()
+{
+    DataTree::actualOne()(EXPRESSION_END);
+}
+
 void output::branchIf() {}
 void output::branchElse() {}
 

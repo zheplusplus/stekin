@@ -80,6 +80,10 @@ namespace test {
     extern NodeType const FUNC_REFERENCE;
     extern NodeType const FUNC_REF_NEXT_VAR;
 
+    extern NodeType const OPERATOR;
+    extern NodeType const EXPRESSION_BEGIN;
+    extern NodeType const EXPRESSION_END;
+
     struct InstanceTest
         : public testing::Test
     {

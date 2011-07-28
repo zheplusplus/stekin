@@ -122,3 +122,76 @@ TEST_F(ExprNodesTest, FuncReference)
             (FUNC_REF_NEXT_VAR, "float", 1, 8, 8)
     ;
 }
+
+TEST_F(ExprNodesTest, Arithmetics)
+{
+    inst::BinaryOp op0(util::mkptr(new inst::IntLiteral(20110728))
+                     , "%"
+                     , util::mkptr(new inst::IntLiteral(2306)));
+    inst::BinaryOp op1(util::mkptr(new inst::BoolLiteral(true))
+                     , "=="
+                     , util::mkptr(new inst::BoolLiteral(false)));
+    inst::PreUnaryOp op2("+", util::mkptr(new inst::IntLiteral(19880317)));
+    inst::PreUnaryOp op3("-", util::mkptr(new inst::FloatLiteral(23.08)));
+
+    op0.write();
+    op1.write();
+    op2.write();
+    op3.write();
+
+    DataTree::expectOne()
+        (EXPRESSION_BEGIN)
+            (INTEGER, "20110728")
+            (OPERATOR, "%")
+            (INTEGER, "2306")
+        (EXPRESSION_END)
+
+        (EXPRESSION_BEGIN)
+            (BOOLEAN, "true")
+            (OPERATOR, "==")
+            (BOOLEAN, "false")
+        (EXPRESSION_END)
+
+        (EXPRESSION_BEGIN)
+            (OPERATOR, "+")
+            (INTEGER, "19880317")
+        (EXPRESSION_END)
+
+        (EXPRESSION_BEGIN)
+            (OPERATOR, "-")
+            (FLOAT, "23.08")
+        (EXPRESSION_END)
+    ;
+}
+
+TEST_F(ExprNodesTest, Logics)
+{
+    inst::Negation nega(util::mkptr(new inst::BoolLiteral(true)));
+    inst::Conjunction conj(util::mkptr(new inst::BoolLiteral(true))
+                         , util::mkptr(new inst::BoolLiteral(false)));
+    inst::Disjunction disj(util::mkptr(new inst::BoolLiteral(false))
+                         , util::mkptr(new inst::BoolLiteral(false)));
+
+    nega.write();
+    conj.write();
+    disj.write();
+
+    DataTree::expectOne()
+        (EXPRESSION_BEGIN)
+            (OPERATOR, "!")
+            (BOOLEAN, "true")
+        (EXPRESSION_END)
+
+        (EXPRESSION_BEGIN)
+            (BOOLEAN, "true")
+            (OPERATOR, "&&")
+            (BOOLEAN, "false")
+        (EXPRESSION_END)
+
+        (EXPRESSION_BEGIN)
+            (BOOLEAN, "false")
+            (OPERATOR, "||")
+            (BOOLEAN, "false")
+        (EXPRESSION_END)
+    ;
+}
