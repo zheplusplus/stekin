@@ -10,11 +10,13 @@ TEST_DEP=instance \
          test-common.dt \
          test-function.dt \
          test-expr-nodes.dt \
+         test-built-in.dt \
          phony-output.dt
 TEST_OBJ=$(WORKDIR)/*.o \
          $(TESTDIR)/test-common.o \
          $(TESTDIR)/test-function.o \
          $(TESTDIR)/test-expr-nodes.o \
+         $(TESTDIR)/test-built-in.o \
          $(TESTDIR)/phony-output.o
 
 $(TESTDIR)/test-instance.out:$(TEST_DEP)

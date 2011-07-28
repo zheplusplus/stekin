@@ -108,8 +108,16 @@ void output::blockEnd()
 }
 
 void output::endOfStatement() {}
-void output::beginWriteStmt() {}
-void output::endWriteStmt() {}
+
+void output::beginWriteStmt()
+{
+    DataTree::actualOne()(WRITE_BEGIN);
+}
+
+void output::endWriteStmt()
+{
+    DataTree::actualOne()(WRITE_END);
+}
 
 std::string output::formFuncReferenceType(int size)
 {

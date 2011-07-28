@@ -84,6 +84,9 @@ namespace test {
     extern NodeType const EXPRESSION_BEGIN;
     extern NodeType const EXPRESSION_END;
 
+    extern NodeType const WRITE_BEGIN;
+    extern NodeType const WRITE_END;
+
     struct InstanceTest
         : public testing::Test
     {

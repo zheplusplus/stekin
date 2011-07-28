@@ -73,6 +73,9 @@ NodeType const test::OPERATOR("operator");
 NodeType const test::EXPRESSION_BEGIN("expression begin");
 NodeType const test::EXPRESSION_END("expression end");
 
+NodeType const test::WRITE_BEGIN("write begin");
+NodeType const test::WRITE_END("write end");
+
 void InstanceTest::SetUp()
 {
     clearErr();
