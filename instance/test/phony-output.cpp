@@ -53,16 +53,30 @@ void output::funcReferenceNextVariable(int self_offset, StackVarRec const& rec)
     DataTree::actualOne()(FUNC_REF_NEXT_VAR, rec.type, rec.level, rec.offset, self_offset);
 }
 
-void output::kwReturn() {}
-void output::returnNothing() {}
-void output::refThisLevel(int, std::string const&) {}
+void output::kwReturn()
+{
+    DataTree::actualOne()(RETURN);
+}
+
+void output::returnNothing()
+{
+    DataTree::actualOne()(RETURN_NOTHING);
+}
+
+void output::refThisLevel(int offset, std::string const& name)
+{
+    DataTree::actualOne()(REFERENCE_THIS_LEVEL, name, offset);
+}
 
 void output::refLevel(int offset, int level, std::string const& type_name)
 {
     DataTree::actualOne()(REFERENCE, type_name, level, offset);
 }
 
-void output::signAssign() {}
+void output::signAssign()
+{
+    DataTree::actualOne()(ASSIGN);
+}
 
 void output::writeInt(platform::int_type value)
 {
@@ -94,8 +108,15 @@ void output::endExpr()
     DataTree::actualOne()(EXPRESSION_END);
 }
 
-void output::branchIf() {}
-void output::branchElse() {}
+void output::branchIf()
+{
+    DataTree::actualOne()(BRANCH_IF);
+}
+
+void output::branchElse()
+{
+    DataTree::actualOne()(BRANCH_ELSE);
+}
 
 void output::blockBegin()
 {
@@ -107,7 +128,10 @@ void output::blockEnd()
     DataTree::actualOne()(BLOCK_END);
 }
 
-void output::endOfStatement() {}
+void output::endOfStatement()
+{
+    DataTree::actualOne()(END_OF_STATEMENT);
+}
 
 void output::beginWriteStmt()
 {

@@ -36,6 +36,12 @@ DataTree& DataTree::operator()(NodeType const& type)
     return *this;
 }
 
+DataTree& DataTree::operator()(NodeType const& type, std::string const& name, int offset)
+{
+    BaseType::operator()(type, InstanceData(offset), name);
+    return *this;
+}
+
 std::ostream& operator<<(std::ostream& os, InstanceData const& data)
 {
     if (-1 != data.level) {
@@ -57,11 +63,13 @@ NodeType const test::PARAMETER("parameter");
 
 NodeType const test::BLOCK_BEGIN("block begin");
 NodeType const test::BLOCK_END("block end");
+NodeType const test::END_OF_STATEMENT("end of statement");
 
 NodeType const test::INTEGER("integer");
 NodeType const test::FLOAT("float");
 NodeType const test::BOOLEAN("boolean");
 
+NodeType const test::REFERENCE_THIS_LEVEL("reference this level");
 NodeType const test::REFERENCE("reference");
 NodeType const test::CALL_BEGIN("call begin");
 NodeType const test::CALL_END("call end");
@@ -75,6 +83,14 @@ NodeType const test::EXPRESSION_END("expression end");
 
 NodeType const test::WRITE_BEGIN("write begin");
 NodeType const test::WRITE_END("write end");
+
+NodeType const test::BRANCH_IF("branch if");
+NodeType const test::BRANCH_ELSE("branch else");
+
+NodeType const test::RETURN("return");
+NodeType const test::RETURN_NOTHING("return nothing");
+
+NodeType const test::ASSIGN("assign");
 
 void InstanceTest::SetUp()
 {

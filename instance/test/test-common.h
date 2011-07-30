@@ -21,7 +21,7 @@ namespace test {
             , self_offset(-1)
         {}
 
-        explicit InstanceData()
+        InstanceData()
             : level(-1)
             , stack_size_or_offset(-1)
             , self_offset(-1)
@@ -31,6 +31,12 @@ namespace test {
             : level(l)
             , stack_size_or_offset(o)
             , self_offset(so)
+        {}
+
+        explicit InstanceData(int o)
+            : level(-1)
+            , stack_size_or_offset(o)
+            , self_offset(-1)
         {}
 
         bool operator==(InstanceData const& rhs) const
@@ -56,9 +62,8 @@ namespace test {
                            , int offset
                            , int self_offset);
         DataTree& operator()(NodeType const& type, std::string const& name);
-
         DataTree& operator()(NodeType const& type);
-        DataTree& operator()(NodeType const& type, std::string const& str, int func_arg_size);
+        DataTree& operator()(NodeType const& type, std::string const& name, int offset);
     };
 
     extern NodeType const FUNC_DECL_BEGIN;
@@ -68,11 +73,13 @@ namespace test {
 
     extern NodeType const BLOCK_BEGIN;
     extern NodeType const BLOCK_END;
+    extern NodeType const END_OF_STATEMENT;
 
     extern NodeType const INTEGER;
     extern NodeType const FLOAT;
     extern NodeType const BOOLEAN;
 
+    extern NodeType const REFERENCE_THIS_LEVEL;
     extern NodeType const REFERENCE;
     extern NodeType const CALL_BEGIN;
     extern NodeType const CALL_END;
@@ -86,6 +93,14 @@ namespace test {
 
     extern NodeType const WRITE_BEGIN;
     extern NodeType const WRITE_END;
+
+    extern NodeType const BRANCH_IF;
+    extern NodeType const BRANCH_ELSE;
+
+    extern NodeType const RETURN;
+    extern NodeType const RETURN_NOTHING;
+
+    extern NodeType const ASSIGN;
 
     struct InstanceTest
         : public testing::Test
