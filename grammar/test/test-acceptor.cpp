@@ -19,8 +19,8 @@ struct TestAcceptor
 {
     TestAcceptor()
         : grammar::Acceptor(misc::position(0))
-        , stmt_or_nul_if_not_set(NULL)
-        , func_or_nul_if_not_set(NULL)
+        , stmt_or_nul_if_not_set(nullptr)
+        , func_or_nul_if_not_set(nullptr)
         , filter(mkfilter())
     {}
 

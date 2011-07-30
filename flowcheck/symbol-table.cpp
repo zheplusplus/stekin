@@ -15,7 +15,7 @@ util::sref<Function> Overloads::Overload::queryOrNulIfNonexist(int param_count) 
 {
     auto func = _funcs.find(param_count);
     if (_funcs.end() == func) {
-        return util::sref<Function>(NULL);
+        return util::sref<Function>(nullptr);
     }
     return func->second;
 }
@@ -62,7 +62,7 @@ util::sref<Function> Overloads::queryOrNulIfNonexist(std::string const& name, in
     if (_external_overloads_or_nul_on_global.not_nul()) {
         return _external_overloads_or_nul_on_global->queryOrNulIfNonexist(name, param_count);
     }
-    return util::sref<Function>(NULL);
+    return util::sref<Function>(nullptr);
 }
 
 void Overloads::declare(util::sref<Function> func)
@@ -97,7 +97,7 @@ util::sref<Overloads::Overload const>
     if (i != _overloads.end()) {
         return util::mkref(*i);
     }
-    return util::sref<Overload const>(NULL);
+    return util::sref<Overload const>(nullptr);
 }
 
 void SymbolTable::refVars(misc::position const& pos, std::vector<std::string> const& vars)

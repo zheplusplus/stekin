@@ -13,7 +13,7 @@
 using namespace grammar;
 using namespace test;
 
-static util::sptr<flchk::Expression const> nulptr(NULL);
+static util::sptr<flchk::Expression const> nulptr(nullptr);
 
 util::sptr<flchk::Expression const> PreUnaryOp::compile() const
 {
@@ -168,9 +168,9 @@ void ClauseBuilder::addElse(int indent_level, misc::position const& pos)
 
 util::sptr<flchk::Filter> ClauseBuilder::buildAndClear()
 {
-    return util::sptr<flchk::Filter>(NULL);
+    return util::sptr<flchk::Filter>(nullptr);
 }
 
 AcceptorStack::AcceptorStack()
-    : _packer(NULL)
+    : _packer(nullptr)
 {}

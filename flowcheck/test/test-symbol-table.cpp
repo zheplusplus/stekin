@@ -16,8 +16,8 @@ struct SymbolTableTest
     : public FlowcheckTest
 {
     SymbolTableTest()
-        : block(NULL)
-        , symbols(NULL)
+        : block(nullptr)
+        , symbols(nullptr)
     {}
 
     void SetUp()
@@ -193,7 +193,7 @@ TEST_F(SymbolTableTest, FuncDefRef)
     misc::position pos(8);
     misc::position ref_pos(400);
     std::vector<std::string> params;
-    util::sref<flchk::Function> func(NULL);
+    util::sref<flchk::Function> func(nullptr);
 
     params = { "m", "n" };
     flchk::Function fa2(pos, "fa", params, mkBody());

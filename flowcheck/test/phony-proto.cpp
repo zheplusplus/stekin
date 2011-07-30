@@ -14,9 +14,9 @@ using namespace test;
 using namespace proto;
 
 static std::list<util::sptr<Function>> func_entities;
-static util::sptr<inst::Expression const> NUL_INST_EXPR(NULL);
-static util::sptr<inst::Statement const> NUL_INST_STMT(NULL);
-static util::sref<Type const> NUL_TYPE(NULL);
+static util::sptr<inst::Expression const> NUL_INST_EXPR(nullptr);
+static util::sptr<inst::Statement const> NUL_INST_STMT(nullptr);
+static util::sref<Type const> NUL_TYPE(nullptr);
 
 void Block::addTo(util::sref<FuncInstDraft>) {}
 void Block::mediateInst(util::sref<FuncInstDraft>, util::sref<SymbolTable>) {}
@@ -295,7 +295,7 @@ void Type::checkCondType(misc::position const&) const {}
 
 util::sptr<inst::Type const> FuncReferenceType::makeInstType() const
 {
-    return util::sptr<inst::Type const>(NULL);
+    return util::sptr<inst::Type const>(nullptr);
 }
 
 std::string FuncReferenceType::name() const

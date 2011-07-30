@@ -63,7 +63,7 @@ namespace util {
 
         bool nul() const
         {
-            return NULL == _ptr;
+            return nullptr == _ptr;
         }
 
         bool not_nul() const
@@ -87,6 +87,8 @@ namespace util {
         }
     private:
         pointer _ptr;
+
+        explicit sref(int) = delete;
     };
 
     template <typename _RawType>
@@ -135,7 +137,7 @@ namespace util {
 
         bool nul() const
         {
-            return NULL == base_type::get();
+            return nullptr == base_type::get();
         }
 
         bool not_nul() const
@@ -143,6 +145,7 @@ namespace util {
             return !nul();
         }
 
+        explicit sptr(int) = delete;
         pointer get() const = delete;
         explicit operator bool() const = delete;
     };

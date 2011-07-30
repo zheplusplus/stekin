@@ -19,7 +19,7 @@ namespace flchk {
             , name(func_name)
             , param_names(params)
             , _body(std::move(func_body))
-            , _func_proto_or_nul_if_not_compiled(NULL)
+            , _func_proto_or_nul_if_not_compiled(nullptr)
         {}
 
         Function(Function&& rhs)

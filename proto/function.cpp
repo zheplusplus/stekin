@@ -25,7 +25,7 @@ util::sref<FuncInstDraft> Function::_draftInCacheOrNulIfNonexist(
 {
     auto find_result = _draft_cache.find(ext_vars, arg_types);
     if (_draft_cache.end() == find_result) {
-        return util::sref<FuncInstDraft>(NULL);
+        return util::sref<FuncInstDraft>(nullptr);
     }
     util::sref<FuncInstDraft> draft = *(find_result->draft);
     while (!draft->isReturnTypeResolved() && draft->hasMorePath()) {

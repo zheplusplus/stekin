@@ -38,13 +38,13 @@ namespace proto {
                     , std::list<ArgNameTypeRec> const& args
                     , std::map<std::string, Variable const> const& extvars)
             : sn(util::serial_num::next())
-            , _inst_func_or_nul_if_not_inst(NULL)
+            , _inst_func_or_nul_if_not_inst(nullptr)
             , _symbols(ext_lvl, args, extvars)
         {}
 
         FuncInstDraft()
             : sn(util::serial_num::next())
-            , _inst_func_or_nul_if_not_inst(NULL)
+            , _inst_func_or_nul_if_not_inst(nullptr)
         {}
 
         FuncInstDraft(FuncInstDraft const&) = delete;

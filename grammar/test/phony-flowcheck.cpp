@@ -19,22 +19,22 @@ namespace {
 
     util::sptr<proto::Statement> nulProtoStmt()
     {
-        return util::sptr<proto::Statement>(NULL);
+        return util::sptr<proto::Statement>(nullptr);
     }
 
     util::sptr<proto::Expression const> nulProtoExpr()
     {
-        return util::sptr<proto::Expression const>(NULL);
+        return util::sptr<proto::Expression const>(nullptr);
     }
 
     util::sptr<flchk::Expression const> nulFlchkExpr()
     {
-        return util::sptr<flchk::Expression const>(NULL);
+        return util::sptr<flchk::Expression const>(nullptr);
     }
 
     util::sref<SymbolTable> nulSymbols()
     {
-        return util::sref<SymbolTable>(NULL);
+        return util::sref<SymbolTable>(nullptr);
     }
 
     struct BranchConsequence
@@ -95,7 +95,7 @@ util::sref<proto::Function> Function::compile(util::sref<proto::Block>)
                       DataTree::actualOne()(pos, PARAMETER, param);
                   });
     _body->compile(nulblock);
-    return util::sref<proto::Function>(NULL);
+    return util::sref<proto::Function>(nullptr);
 }
 
 void Block::addStmt(util::sptr<Statement const> stmt)

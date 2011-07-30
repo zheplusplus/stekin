@@ -49,7 +49,7 @@ namespace flchk {
         {}
 
         SymbolTable()
-            : _overloads(util::sref<Overloads const>(NULL))
+            : _overloads(util::sref<Overloads const>(nullptr))
         {}
 
         SymbolTable(SymbolTable&& rhs)

@@ -77,7 +77,7 @@ TEST_F(QueryOperationTest, Arithmetics)
                 , ARITH_PRE_UNARY_OP_LIST.end()
                 , [&](std::string const& op)
                   {
-                      util::sref<proto::Operation const> result(NULL);
+                      util::sref<proto::Operation const> result(nullptr);
 
                       result = proto::Operation::queryPreUnary(pos, op, proto::Type::BIT_INT);
                       ASSERT_FALSE(error::hasError()) << "operation img:" << op << " query failed.";
@@ -96,7 +96,7 @@ TEST_F(QueryOperationTest, Arithmetics)
                 , COMP_OP_LIST.end()
                 , [&](std::string const& op)
                   {
-                      util::sref<proto::Operation const> result(NULL);
+                      util::sref<proto::Operation const> result(nullptr);
 
                       result = proto::Operation::queryBinary(
                               pos, op, proto::Type::BIT_INT, proto::Type::BIT_INT);
@@ -140,7 +140,7 @@ TEST_F(QueryOperationTest, BadInputType)
                 , all_bin_op.end()
                 , [&](std::string const& op)
                   {
-                      util::sref<proto::Operation const> result(NULL);
+                      util::sref<proto::Operation const> result(nullptr);
 
                       result = proto::Operation::queryBinary(
                               pos, op, proto::Type::BAD_TYPE, proto::Type::BAD_TYPE);

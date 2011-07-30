@@ -5,7 +5,7 @@
 
 TEST(Pointer, Id)
 {
-    ASSERT_EQ("0", util::id(NULL).str());
+    ASSERT_EQ("0", util::id(nullptr).str());
 
     std::stringstream os1;
     util::id id_os(&os1);
@@ -42,7 +42,7 @@ TEST(Pointer, SRef)
     ASSERT_TRUE(util::mkref(y).not_nul());
     ASSERT_TRUE(util::mkref(ax).not_nul());
     ASSERT_TRUE(util::mkref(ay).not_nul());
-    ASSERT_TRUE(util::sref<int const>(NULL).nul());
+    ASSERT_TRUE(util::sref<int const>(nullptr).nul());
 
     ASSERT_EQ(3, util::mkref(x).cp());
     ASSERT_EQ(2, util::mkref(y).cp());
@@ -52,7 +52,7 @@ TEST(Pointer, SRef)
     os4 << &x;
     ASSERT_EQ(os4.str(), ref.id().str());
 
-    ASSERT_EQ("0", util::sref<int const>(NULL).id().str());
+    ASSERT_EQ("0", util::sref<int const>(nullptr).id().str());
 }
 
 TEST(Pointer, SPtr)

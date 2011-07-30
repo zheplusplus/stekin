@@ -37,7 +37,7 @@ namespace grammar {
         IfAcceptor(misc::position const& pos, util::sptr<Expression const> predicate)
             : Acceptor(pos)
             , _predicate(std::move(predicate))
-            , _last_else_pos_or_nul_if_not_matched(NULL)
+            , _last_else_pos_or_nul_if_not_matched(nullptr)
             , _current_branch(&_consequence)
         {}
     private:

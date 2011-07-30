@@ -45,7 +45,7 @@ namespace proto {
     protected:
         explicit DirectInst(misc::position const& ps)
             : pos(ps)
-            , _result_stmt_or_nul_if_not_inst(NULL)
+            , _result_stmt_or_nul_if_not_inst(nullptr)
         {}
 
         virtual util::sptr<inst::Statement const> _inst(util::sref<FuncInstDraft> func

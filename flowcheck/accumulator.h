@@ -14,7 +14,7 @@ namespace flchk {
         Accumulator()
             : _contains_void_return(false)
             , _error_reported(false)
-            , _term_pos_or_nul_if_not_term(NULL)
+            , _term_pos_or_nul_if_not_term(nullptr)
         {}
 
         Accumulator(Accumulator const&) = delete;

@@ -8,7 +8,7 @@
 
 using namespace test;
 
-util::sref<proto::Block> const test::nulblock(NULL);
+util::sref<proto::Block> const test::nulblock(nullptr);
 
 util::sptr<flchk::Filter> test::mkfilter()
 {

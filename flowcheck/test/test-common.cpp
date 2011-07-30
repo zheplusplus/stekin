@@ -9,8 +9,8 @@
 
 using namespace test;
 
-util::sref<proto::FuncInstDraft> const test::nul_draft(NULL);
-util::sref<proto::SymbolTable> const test::nul_st(NULL);
+util::sref<proto::FuncInstDraft> const test::nul_draft(nullptr);
+util::sref<proto::SymbolTable> const test::nul_st(nullptr);
 
 void test::instBlock(util::sref<proto::Block> block)
 {

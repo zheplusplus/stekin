@@ -28,7 +28,7 @@ namespace {
                               , std::list<ArgNameTypeRec> const& args
                               , std::map<std::string, Variable const> const& extvars)
             : FuncInstDraft(ext_lvl, args, extvars)
-            , _return_type_or_nul_if_not_set(NULL)
+            , _return_type_or_nul_if_not_set(nullptr)
         {}
 
         util::sref<Type const> getReturnType() const

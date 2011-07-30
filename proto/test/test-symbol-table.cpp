@@ -31,7 +31,7 @@ namespace {
 
         util::sptr<inst::Type const> makeInstType() const
         {
-            return util::sptr<inst::Type const>(NULL);
+            return util::sptr<inst::Type const>(nullptr);
         }
 
         util::sref<proto::FuncInstDraft> call(
@@ -40,7 +40,7 @@ namespace {
               , int
               , std::vector<util::sref<proto::Type const>> const&) const
         {
-            return util::sref<proto::FuncInstDraft>(NULL);
+            return util::sref<proto::FuncInstDraft>(nullptr);
         }
 
         void checkCondType(misc::position const&) const {}

@@ -13,8 +13,8 @@ struct FuncNCallTest
     : public ProtoTest
 {
     FuncNCallTest()
-        : global_st(NULL)
-        , block(NULL)
+        : global_st(nullptr)
+        , block(nullptr)
     {}
 
     void SetUp()

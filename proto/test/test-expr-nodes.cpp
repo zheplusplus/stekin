@@ -12,7 +12,7 @@ struct ExprNodesTest
     : public ProtoTest
 {
     ExprNodesTest()
-        : global_st(NULL)
+        : global_st(nullptr)
     {}
 
     void SetUp()
