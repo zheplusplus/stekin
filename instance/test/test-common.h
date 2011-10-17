@@ -3,10 +3,9 @@
 
 #include <gtest/gtest.h>
 
-#include "../node-base.h"
-#include "../../test/common.h"
-#include "../../test/data-node.h"
-#include "../../test/data-trees.h"
+#include <test/common.h>
+#include <test/data-node.h>
+#include <test/data-trees.h>
 
 namespace test {
 
@@ -64,7 +63,12 @@ namespace test {
         DataTree& operator()(NodeType const& type, std::string const& name);
         DataTree& operator()(NodeType const& type);
         DataTree& operator()(NodeType const& type, std::string const& name, int offset);
+        DataTree& operator()(NodeType const& type, int level, std::string const& name);
+        DataTree& operator()(NodeType const& type, int offset);
     };
+
+    extern std::string const PARAM;
+    extern std::string const RES_PARAM;
 
     extern NodeType const FUNC_DECL_BEGIN;
     extern NodeType const FUNC_DECL_END;
@@ -78,21 +82,41 @@ namespace test {
     extern NodeType const INTEGER;
     extern NodeType const FLOAT;
     extern NodeType const BOOLEAN;
+    extern NodeType const EMPTY_LIST;
+    extern NodeType const LIST_BEGIN;
+    extern NodeType const LIST_NEXT_MEMBER;
+    extern NodeType const LIST_END;
 
-    extern NodeType const REFERENCE_THIS_LEVEL;
+    extern NodeType const LIST_APPEND_BEGIN;
+    extern NodeType const LIST_APPEND_END;
+
+    extern NodeType const PIPE_MAP_BEGIN;
+    extern NodeType const PIPE_MAP_END;
+    extern NodeType const PIPE_FILTER_BEGIN;
+    extern NodeType const PIPE_FILTER_END;
+    extern NodeType const PIPE_BEGIN;
+    extern NodeType const PIPE_END;
+    extern NodeType const PIPE_ELEMENT;
+    extern NodeType const PIPE_INDEX;
+
+    extern NodeType const INITIALIZE_THIS_LEVEL;
     extern NodeType const REFERENCE;
     extern NodeType const CALL_BEGIN;
     extern NodeType const CALL_END;
     extern NodeType const ARG_SEPARATOR;
     extern NodeType const FUNC_REFERENCE;
     extern NodeType const FUNC_REF_NEXT_VAR;
+    extern NodeType const FUNC_RES_ENTRY;
+    extern NodeType const ADD_RES_ENTRY;
 
     extern NodeType const OPERATOR;
     extern NodeType const EXPRESSION_BEGIN;
     extern NodeType const EXPRESSION_END;
 
-    extern NodeType const WRITE_BEGIN;
-    extern NodeType const WRITE_END;
+    extern NodeType const WRITER_BEGIN;
+    extern NodeType const WRITER_END;
+    extern NodeType const MEMBER_CALL_BEGIN;
+    extern NodeType const MEMBER_CALL_END;
 
     extern NodeType const BRANCH_IF;
     extern NodeType const BRANCH_ELSE;
@@ -100,12 +124,9 @@ namespace test {
     extern NodeType const RETURN;
     extern NodeType const RETURN_NOTHING;
 
-    extern NodeType const ASSIGN;
-
     struct InstanceTest
         : public testing::Test
     {
-        void SetUp();
         void TearDown();
     };
 

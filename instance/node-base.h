@@ -4,19 +4,18 @@
 namespace inst {
 
     struct Expression {
+        Expression() {}
         virtual ~Expression() {}
 
         virtual void write() const = 0;
-    protected:
-        Expression() {}
+        virtual void writePipeDef(int level) const;
     };
 
     struct Statement {
+        Statement() {}
         virtual ~Statement() {}
 
         virtual void write() const = 0;
-    protected:
-        Statement() {}
     };
 
 }

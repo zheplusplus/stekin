@@ -1,8 +1,8 @@
 #include <iostream>
 #include <string>
 
-#include "util/string.h"
-#include "misc/platform.h"
+#include <util/string.h>
+#include <misc/platform.h>
 
 std::string const HEAD_TEMPLATE(
 "#include <algorithm>\n"

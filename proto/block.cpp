@@ -1,12 +1,13 @@
 #include <algorithm>
 
+#include <instance/block.h>
+#include <util/vector-append.h>
+
 #include "block.h"
 #include "function.h"
 #include "func-inst-draft.h"
 #include "variable.h"
 #include "func-reference-type.h"
-#include "../instance/block.h"
-#include "../util/vector-append.h"
 
 using namespace proto;
 
@@ -31,27 +32,26 @@ void Block::addTo(util::sref<FuncInstDraft> func)
     func->addPath(util::mkref(*this));
 }
 
-util::sptr<inst::Statement const> Block::inst(util::sref<FuncInstDraft> func
-                                            , util::sref<SymbolTable> st)
+util::sptr<inst::Statement const> Block::inst(util::sref<FuncInstDraft> func, misc::trace& trace)
 {
-    mediateInst(func, st);
+    mediateInst(func, trace);
     util::sptr<inst::Block> block(new inst::Block);
     std::for_each(_stmts.begin()
                 , _stmts.end()
                 , [&](util::sptr<Statement> const& stmt)
                   {
-                      block->addStmt(stmt->inst(func, st));
+                      block->addStmt(stmt->inst(func, trace));
                   });
     return std::move(block);
 }
 
-void Block::mediateInst(util::sref<FuncInstDraft> func, util::sref<SymbolTable> st)
+void Block::mediateInst(util::sref<FuncInstDraft> func, misc::trace& trace)
 {
     std::for_each(_stmts.begin()
                 , _stmts.end()
                 , [&](util::sptr<Statement> const& stmt)
                   {
-                      stmt->mediateInst(func, st);
+                      stmt->mediateInst(func, trace);
                   });
 }
 

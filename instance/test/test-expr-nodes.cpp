@@ -1,16 +1,17 @@
 #include <gtest/gtest.h>
 
+#include <util/string.h>
+#include <util/sn.h>
+#include <misc/platform.h>
+
 #include "test-common.h"
 #include "../expr-nodes.h"
-#include "../../util/string.h"
-#include "../../util/sn.h"
-#include "../../misc/platform.h"
 
 using namespace test;
 
 typedef InstanceTest ExprNodesTest;
 
-TEST_F(ExprNodesTest, Literals)
+TEST_F(ExprNodesTest, SimpleLiterals)
 {
     inst::IntLiteral i0(0);
     inst::IntLiteral i1(0x7fffffffffffffff);
@@ -33,6 +34,34 @@ TEST_F(ExprNodesTest, Literals)
         (FLOAT, "-2.72")
         (BOOLEAN, "false")
         (BOOLEAN, "true")
+    ;
+}
+
+TEST_F(ExprNodesTest, ListLiterals)
+{
+    inst::ListLiteral ls0(util::mkptr(new inst::IntPrimitive)
+                        , std::vector<util::sptr<inst::Expression const>>());
+    ls0.write();
+
+    std::vector<util::sptr<inst::Expression const>> members;
+    members.push_back(util::mkptr(new inst::BoolLiteral(false)));
+    members.push_back(util::mkptr(new inst::BoolLiteral(true)));
+    inst::ListLiteral ls1(util::mkptr(new inst::BoolPrimitive), std::move(members));
+    ls1.write();
+
+    inst::EmptyListLiteral ls2;
+    ls2.write();
+
+    DataTree::expectOne()
+        (LIST_BEGIN, "int", 0)
+        (LIST_END)
+        (LIST_BEGIN, "bool", 2)
+            (LIST_NEXT_MEMBER)
+            (BOOLEAN, "false")
+            (LIST_NEXT_MEMBER)
+            (BOOLEAN, "true")
+        (LIST_END)
+        (EMPTY_LIST)
     ;
 }
 

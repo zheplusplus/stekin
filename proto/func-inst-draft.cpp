@@ -2,14 +2,15 @@
 #include <set>
 #include <algorithm>
 
+#include <instance/node-base.h>
+#include <report/errors.h>
+#include <util/pointer.h>
+
 #include "func-inst-draft.h"
 #include "node-base.h"
 #include "type.h"
+#include "list-types.h"
 #include "variable.h"
-#include "../instance/node-base.h"
-#include "../report/errors.h"
-#include "../util/map-compare.h"
-#include "../util/pointer.h"
 
 using namespace proto;
 
@@ -39,7 +40,7 @@ namespace {
             return _return_type_or_nul_if_not_set;
         }
 
-        void setReturnType(misc::position const& pos, util::sref<Type const> return_type)
+        void setReturnType(util::sref<Type const> return_type, misc::trace& trace)
         {
             if (_return_type_or_nul_if_not_set.nul()
                 || Type::BAD_TYPE == _return_type_or_nul_if_not_set)
@@ -47,11 +48,19 @@ namespace {
                 _return_type_or_nul_if_not_set = return_type;
                 return;
             }
-            if (_return_type_or_nul_if_not_set != return_type) {
-                error::conflictReturnType(pos
-                                        , _return_type_or_nul_if_not_set->name()
-                                        , return_type->name());
+            if (_return_type_or_nul_if_not_set == return_type) {
+                return;
             }
+            util::sref<Type const> common_list_type(
+                      ListType::commonListTypeOrNulIfImcompatible(return_type
+                                                                , _return_type_or_nul_if_not_set));
+            if (common_list_type.not_nul()) {
+                _return_type_or_nul_if_not_set = common_list_type;
+                return;
+            }
+            error::conflictReturnType(_return_type_or_nul_if_not_set->name()
+                                    , return_type->name()
+                                    , trace);
         }
 
         bool isReturnTypeResolved() const
@@ -69,10 +78,10 @@ util::sref<Type const> FuncInstDraft::getReturnType() const
     return Type::BIT_VOID;
 }
 
-void FuncInstDraft::setReturnType(misc::position const& pos, util::sref<Type const> return_type)
+void FuncInstDraft::setReturnType(util::sref<Type const> return_type, misc::trace& trace)
 {
     if (Type::BIT_VOID != return_type) {
-        error::conflictReturnType(pos, Type::BIT_VOID->name(), return_type->name());
+        error::conflictReturnType(Type::BIT_VOID->name(), return_type->name(), trace);
     }
 }
 
@@ -106,14 +115,14 @@ void FuncInstDraft::addPath(util::sref<Statement> path)
     _candidate_paths.push_back(path);
 }
 
-void FuncInstDraft::instNextPath()
+void FuncInstDraft::instNextPath(misc::trace& trace)
 {
     if (!hasMorePath()) {
         return;
     }
     util::sref<Statement> next_path = _candidate_paths.front();
     _candidate_paths.pop_front();
-    next_path->mediateInst(util::mkref(*this), util::mkref(_symbols));
+    next_path->mediateInst(util::mkref(*this), trace);
 }
 
 bool FuncInstDraft::hasMorePath() const
@@ -140,15 +149,26 @@ util::sptr<inst::Function const> FuncInstDraft::deliver()
     return std::move(_inst_func_or_nul_if_not_inst);
 }
 
-void FuncInstDraft::instantiate(util::sref<Statement> stmt)
+util::sref<SymbolTable> FuncInstDraft::getSymbols()
+{
+    return util::mkref(_symbols);
+}
+
+int FuncInstDraft::level() const
+{
+    return _symbols.level;
+}
+
+void FuncInstDraft::instantiate(util::sref<Statement> stmt, misc::trace& trace)
 {
     addPath(stmt);
-    instNextPath();
-    util::sptr<inst::Statement const> body(stmt->inst(util::mkref(*this), util::mkref(_symbols)));
+    instNextPath(trace);
+    util::sptr<inst::Statement const> body(stmt->inst(util::mkref(*this), trace));
     _inst_func_or_nul_if_not_inst.reset(new inst::Function(getReturnType()->makeInstType()
                                                          , _symbols.level
                                                          , _symbols.stackSize()
                                                          , varsToParams(_symbols.getArgs())
                                                          , sn
+                                                         , _symbols.getResEntries()
                                                          , std::move(body)));
 }

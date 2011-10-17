@@ -1,8 +1,6 @@
-#include <algorithm>
-#include <sstream>
+#include <util/string.h>
 
 #include "name-mangler.h"
-#include "../util/string.h"
 
 std::string output::formFuncName(util::serial_num func_sn)
 {
@@ -12,6 +10,16 @@ std::string output::formFuncName(util::serial_num func_sn)
 std::string output::formType(std::string const& type_name)
 {
     return "_stk_type_" + type_name;
+}
+
+std::string output::formListType(std::string const& member_type_exported_name)
+{
+    return "_stk_list<" + member_type_exported_name + " >";
+}
+
+std::string output::emptyListType()
+{
+    return "_stk_empty_list_type";
 }
 
 std::string output::formFuncReferenceType(int size)

@@ -18,3 +18,18 @@ func print_10()
 
 x: print_10@0
 y: fib @ 1
+
+[]
+[0]
+[ panty, stocking, garterbelt(chuck) ]
+[ [zergling, hydralisk], [marine, firebat], [zealot, dragoon] ]
+[0] ++ []
+z ++ z ++ z
+
+[].size()
+x.empty()
+xx().first()
+([] ++ []).push_back(0)
+x.xx().first()
+
+[] | if $index = 0 | return $element * $element

@@ -22,13 +22,257 @@ struct _stk_type_bool {
     _stk_type_bool(bool b)
         : boolean(b)
     {}
+
+    _stk_type_bool()
+        : boolean(false)
+    {}
 };
+
+struct _stk_res_entry {
+    virtual ~_stk_res_entry() {}
+    virtual void init(void* dst_mem) = 0;
+};
+
+template <typename _MemberType>
+struct _stk_list
+    : _stk_res_entry
+{
+    _stk_type_int _size;
+    _MemberType* _members;
+
+    explicit _stk_list(int reserved)
+        : _size(0)
+        , _members(new _MemberType[reserved])
+    {}
+
+    _stk_list()
+        : _size(0)
+        , _members(NULL)
+    {}
+
+    _stk_list(_stk_list<_MemberType> const& rhs)
+        : _size(0)
+        , _members(NULL)
+    {
+        copy_members(rhs);
+    }
+
+    _stk_list const& operator=(_stk_list<_MemberType> const& rhs)
+    {
+        copy_members(rhs);
+    }
+
+    void init(void* dst_mem)
+    {
+        new(dst_mem)_stk_list(*this);
+    }
+
+    void copy_members(_stk_list<_MemberType> const& rhs)
+    {
+        _stk_list copy;
+        copy._size = rhs._size;
+        copy._members = new _MemberType[copy._size];
+        for (_stk_type_int i = 0; i < rhs._size; ++i) {
+            copy._members[i] = rhs._members[i];
+        }
+
+        delete[] _members;
+        _size = copy._size;
+        _members = copy._members;
+
+        copy._size = 0;
+        copy._members = NULL;
+    }
+
+    ~_stk_list()
+    {
+        delete[] _members;
+    }
+
+    _stk_type_bool empty() const
+    {
+        return _size == 0;
+    }
+
+    _stk_type_int size() const
+    {
+        return _size;
+    }
+
+    _MemberType first() const
+    {
+        return _members[0];
+    }
+
+    _stk_list push_back(_MemberType const& value) const
+    {
+        _stk_list result;
+        result._size = _size + 1;
+        result._members = new _MemberType[result._size];
+        for (_stk_type_int i = 0; i < _size; ++i) {
+            result._members[i] = _members[i];
+        }
+        result._members[_size] = value;
+        return result;
+    }
+};
+
+template <int _Size, typename _MemberType>
+struct _stk_list_builder {
+    mutable _stk_list<_MemberType> list;
+    mutable _stk_type_int cursor;
+
+    _stk_list_builder()
+        : cursor(0)
+    {
+        list._size = _Size;
+        list._members = new _MemberType[_Size];
+    }
+
+    _stk_list_builder const& push(_MemberType const& m) const
+    {
+        list._members[cursor++] = m;
+        return *this;
+    }
+
+    _stk_list<_MemberType> build() const
+    {
+        return list;
+    }
+};
+
+struct _stk_empty_list_type {
+    template <typename _MemberType>
+    operator _stk_list<_MemberType>()
+    {
+        return _stk_list<_MemberType>();
+    }
+
+    _stk_type_bool empty() const
+    {
+        return true;
+    }
+
+    _stk_type_int size() const
+    {
+        return 0;
+    }
+
+    template <typename _MemberType>
+    _stk_list<_MemberType> push_back(_MemberType const& value) const
+    {
+        _stk_list<_MemberType> result;
+        result._size = 1;
+        result._members = new _MemberType[1];
+        result._members[0] = value;
+        return result;
+    }
+};
+
+template <typename _T>
+_stk_list<_T> _stk_list_append(_stk_list<_T> const& lhs, _stk_list<_T> const& rhs)
+{
+    _stk_list<_T> result;
+    result._size = lhs._size + rhs._size;
+    result._members = new _T[result._size];
+
+    for (_stk_type_int i = 0; i < lhs._size; ++i) {
+        result._members[i] = lhs._members[i];
+    }
+    for (_stk_type_int i = 0; i < rhs._size ; ++i) {
+        result._members[lhs._size + i] = rhs._members[i];
+    }
+
+    return result;
+}
+
+template <typename _T>
+_stk_list<_T> _stk_list_append(_stk_empty_list_type lhs, _stk_list<_T> const& rhs)
+{
+    return rhs;
+}
+
+template <typename _T>
+_stk_list<_T> _stk_list_append(_stk_list<_T> const& lhs, _stk_empty_list_type rhs)
+{
+    return lhs;
+}
+
+_stk_empty_list_type _stk_list_append(_stk_empty_list_type lhs, _stk_empty_list_type rhs)
+{
+    return _stk_empty_list_type();
+}
 
 template <typename _T>
 void push(void* mem, int offset, _T const& value)
 {
     *(_T*)(offset + (_stk_type_1_byte*)(mem)) = value;
 }
+
+template <typename _MemberType>
+void push(void* mem, int offset, _stk_list<_MemberType> const& list)
+{
+    new(offset + (_stk_type_1_byte*)(mem))_stk_list<_MemberType>(list);
+}
+
+template <int _Size>
+struct _stk_res_entries {
+    int entries[_Size];
+    int cursor;
+
+    _stk_res_entries()
+        : cursor(0)
+    {}
+
+    _stk_res_entries(_stk_res_entries const& rhs)
+        : cursor(rhs.cursor)
+    {
+        for (int i = 0; i < cursor; ++i) {
+            entries[i] = rhs.entries[i];
+        }
+    }
+
+    void add(int offset)
+    {
+        entries[cursor] = offset;
+        ++cursor;
+    }
+
+    void dtor(void* mem)
+    {
+        for (int i = 0; i < cursor; ++i) {
+            ((_stk_res_entry*)(entries[i] + (char*)(mem)))->~_stk_res_entry();
+        }
+    }
+};
+
+template <>
+struct _stk_res_entries<0> {
+    _stk_res_entries() {}
+    _stk_res_entries(_stk_res_entries const&) {}
+    void dtor(void*) {}
+};
+
+template <int _Size>
+struct _stk_entries_builder {
+    mutable _stk_res_entries<_Size> res_entries;
+    mutable int cursor;
+
+    _stk_entries_builder()
+        : cursor(0)
+    {}
+
+    _stk_entries_builder const& push(int entry) const
+    {
+        res_entries.set(cursor++, entry);
+        return *this;
+    }
+
+    _stk_res_entries<_Size> build() const
+    {
+        return res_entries;
+    }
+};
 
 template <int _Size>
 struct _stk_composite {
@@ -53,6 +297,8 @@ struct _stk_composite {
         ::push(mem, offset, value);
         return *this;
     }
+
+    ~_stk_composite() {}
 };
 
 template <>
@@ -76,6 +322,21 @@ std::ostream& operator<<(std::ostream& os, _stk_type_void)
     return os;
 }
 
+template <typename _MemberType>
+std::ostream& operator<<(std::ostream& os, _stk_list<_MemberType> const& list)
+{
+    os << "[ ";
+    for (_stk_type_int i = 0; i < list._size; ++i) {
+        os << list._members[i] << ' ';
+    }
+    return os << ']';
+}
+
+std::ostream& operator<<(std::ostream& os, _stk_empty_list_type)
+{
+    return os << "[ ]";
+}
+
 template <int _Size>
 std::ostream& operator<<(std::ostream& os, _stk_composite<_Size> const& composite)
 {
@@ -89,6 +350,11 @@ struct _stk_frame_bases {
     {
         std::copy(ext_bases._stk_ext_bases, ext_bases._stk_ext_bases + _Level, _stk_ext_bases);
         _stk_ext_bases[_Level] = this_base;
+    }
+
+    _stk_frame_bases(_stk_frame_bases const& cp_bases)
+    {
+        std::copy(cp_bases._stk_ext_bases, cp_bases._stk_ext_bases + _Level + 1, _stk_ext_bases);
     }
 
     explicit _stk_frame_bases(void* this_base)

@@ -1,11 +1,12 @@
 #ifndef __STEKIN_PROTO_BLOCK_H__
 #define __STEKIN_PROTO_BLOCK_H__
 
-#include <list>
+#include <vector>
+
+#include <util/pointer.h>
 
 #include "fwd-decl.h"
 #include "node-base.h"
-#include "../util/pointer.h"
 
 namespace proto {
 
@@ -23,14 +24,13 @@ namespace proto {
                                    , bool contains_void_return);
 
         void addTo(util::sref<FuncInstDraft> func);
-        util::sptr<inst::Statement const> inst(util::sref<FuncInstDraft> func
-                                             , util::sref<SymbolTable> st);
-        void mediateInst(util::sref<FuncInstDraft> func, util::sref<SymbolTable> st);
+        util::sptr<inst::Statement const> inst(util::sref<FuncInstDraft> func, misc::trace& trace);
+        void mediateInst(util::sref<FuncInstDraft> func, misc::trace& trace);
 
         std::vector<util::sptr<inst::Function const>> deliverFuncs();
     private:
-        std::list<util::sptr<Statement>> _stmts;
-        std::list<util::sptr<Function>> _funcs;
+        std::vector<util::sptr<Statement>> _stmts;
+        std::vector<util::sptr<Function>> _funcs;
     };
 
 }

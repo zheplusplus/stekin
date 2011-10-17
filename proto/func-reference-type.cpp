@@ -1,15 +1,16 @@
 #include <algorithm>
 
+#include <instance/expr-nodes.h>
+#include <report/errors.h>
+#include <util/string.h>
+
 #include "func-reference-type.h"
 #include "function.h"
 #include "block.h"
 #include "node-base.h"
 #include "func-inst-draft.h"
 #include "variable.h"
-#include "../instance/expr-nodes.h"
-#include "../report/errors.h"
-#include "../util/string.h"
-#include "../util/map-compare.h"
+#include "list-types.h"
 
 using namespace proto;
 
@@ -49,6 +50,9 @@ std::map<std::string, Variable const> FuncReferenceType::_encloseReference(
                                         reference.first
                                       , Variable(pos, reference.second.type, offset, level)));
                       offset += reference.second.type->size;
+                      if (ListType::isListType(reference.second.type)) {
+                          error::featureNotSupportWrapListInClosure(pos);
+                      }
                   });
     return map;
 }
@@ -66,16 +70,16 @@ int FuncReferenceType::_calcSize(std::map<std::string, Variable const> const& cr
 }
 
 util::sref<FuncInstDraft> FuncReferenceType::call(
-                                misc::position const& call_pos
-                              , int level
+                                int level
                               , int stack_offset
-                              , std::vector<util::sref<Type const>> const& arg_types) const
+                              , std::vector<util::sref<Type const>> const& arg_types
+                              , misc::trace& trace) const
 {
     if (arg_types.size() != _func->param_names.size()) {
-        error::callVariableArgCountWrong(call_pos, arg_types.size(), _func->param_names.size());
+        error::callVariableArgCountWrong(trace.top(), arg_types.size(), _func->param_names.size());
         return FuncInstDraft::badDraft();
     }
-    return _func->inst(level, _adjustVars(stack_offset, level), arg_types);
+    return _func->inst(level, _adjustVars(stack_offset, level), arg_types, trace);
 }
 
 std::list<inst::FuncReference::ArgInfo> FuncReferenceType::makeCallArgs() const
@@ -92,7 +96,7 @@ std::list<inst::FuncReference::ArgInfo> FuncReferenceType::makeCallArgs() const
                               , offset));
                       offset += reference.second.type->size;
                   });
-    return std::move(result);
+    return result;
 }
 
 std::map<std::string, Variable const>

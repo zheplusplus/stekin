@@ -4,12 +4,14 @@
 #include <string>
 #include <vector>
 
-#include "../util/sn.h"
+#include <util/sn.h>
 
 namespace output {
 
     std::string formFuncName(util::serial_num func_sn);
     std::string formType(std::string const& type);
+    std::string formListType(std::string const& member_type_exported_name);
+    std::string emptyListType();
     std::string formFuncReferenceType(int size);
 
 }

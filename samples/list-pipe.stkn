@@ -1,0 +1,25 @@
+ls: [5, 1, 6, 7, 2, 9, 4, 3, 8, 0]
+
+write(ls | return $element * $element)
+write(ls | return $element % 2 = 0)
+write(ls | if $element % 2 = 0)
+
+func head(list, n)
+    return list | if $index < n
+
+func after(list, n)
+    return list | if $index >= n
+
+write(head(ls, 4))
+write(after(ls, 4))
+
+func sort(list)
+    if list.empty()
+        return []
+    first: list.first()
+    tail: after(list, 1)
+    return sort(tail | if $element <= first).push_back(first) ++ sort(tail | if $element > first)
+
+write(sort(ls))
+
+write(ls | return $element * $element % 7 | if $element < 4)

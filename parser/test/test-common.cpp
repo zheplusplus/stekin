@@ -1,5 +1,6 @@
+#include <test/common.h>
+
 #include "test-common.h"
-#include "../../test/common.h"
 
 using namespace test;
 
@@ -42,7 +43,17 @@ std::ostream& operator<<(std::ostream& os, ParserData const& data)
 NodeType const test::BOOLEAN("boolean");
 NodeType const test::INTEGER("integer");
 NodeType const test::FLOATING("floating");
-NodeType const test::IDENTIFIER("Identifier");
+NodeType const test::IDENTIFIER("identifier");
+NodeType const test::LIST_BEGIN("list begin");
+NodeType const test::LIST_END("list end");
+NodeType const test::LIST_ELEMENT("list element");
+NodeType const test::LIST_INDEX("list index");
+
+NodeType const test::LIST_PIPELINE("list pipeline");
+NodeType const test::PIPE_BEGIN("pipe map");
+NodeType const test::PIPE_END("pipe filter");
+NodeType const test::PIPE_MAP("pipe map");
+NodeType const test::PIPE_FILTER("pipe filter");
 
 NodeType const test::BINARY_OP_BEGIN("binary operation begin");
 NodeType const test::BINARY_OP_END("binary operation end");

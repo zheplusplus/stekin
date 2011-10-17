@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "../report/warnings.h"
+#include <report/warnings.h>
 
 namespace test {
 

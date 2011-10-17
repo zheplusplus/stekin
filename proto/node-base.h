@@ -3,18 +3,27 @@
 
 #include <vector>
 
+#include <instance/fwd-decl.h>
+#include <util/pointer.h>
+#include <misc/pos-type.h>
+
 #include "fwd-decl.h"
-#include "../instance/fwd-decl.h"
-#include "../util/pointer.h"
-#include "../misc/pos-type.h"
 
 namespace proto {
 
     struct Expression {
         virtual ~Expression() {}
 
-        virtual util::sref<Type const> type(util::sref<SymbolTable const>) const = 0;
-        virtual util::sptr<inst::Expression const> inst(util::sref<SymbolTable const> st) const = 0;
+        virtual util::sref<Type const> type(util::sref<SymbolTable const> st
+                                          , misc::trace& trace) const = 0;
+        virtual util::sptr<inst::Expression const> inst(util::sref<SymbolTable const> st
+                                                      , misc::trace& trace) const = 0;
+        virtual util::sref<Type const> typeAsPipe(util::sref<SymbolTable const> st
+                                                , util::sref<ListContext const> lc
+                                                , misc::trace& trace) const;
+        virtual util::sptr<inst::Expression const> instAsPipe(util::sref<SymbolTable const> st
+                                                            , util::sref<ListContext const> lc
+                                                            , misc::trace& trace) const;
 
         misc::position const pos;
     protected:
@@ -28,8 +37,8 @@ namespace proto {
 
         virtual void addTo(util::sref<FuncInstDraft> func) = 0;
         virtual util::sptr<inst::Statement const> inst(util::sref<FuncInstDraft> func
-                                                     , util::sref<SymbolTable> st) = 0;
-        virtual void mediateInst(util::sref<FuncInstDraft> func, util::sref<SymbolTable> st) = 0;
+                                                     , misc::trace& trace) = 0;
+        virtual void mediateInst(util::sref<FuncInstDraft> func, misc::trace& trace) = 0;
         virtual std::vector<util::sptr<inst::Function const>> deliverFuncs() = 0;
     protected:
         Statement() {}

@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
 
+#include <test/common.h>
+#include <test/phony-errors.h>
+
 #include "../yy-misc.h"
-#include "../../test/phony-errors.h"
-#include "../../flowcheck/node-base.h"
-#include "../../test/common.h"
 
 using namespace test;
 

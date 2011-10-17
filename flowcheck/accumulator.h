@@ -4,9 +4,10 @@
 #include <string>
 #include <vector>
 
+#include <util/pointer.h>
+#include <misc/pos-type.h>
+
 #include "block.h"
-#include "../util/pointer.h"
-#include "../misc/pos-type.h"
 
 namespace flchk {
 

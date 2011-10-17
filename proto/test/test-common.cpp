@@ -1,9 +1,10 @@
+#include <test/common.h>
+#include <test/phony-errors.h>
+#include <instance/node-base.h>
+
 #include "test-common.h"
 #include "../stmt-nodes.h"
 #include "../block.h"
-#include "../../test/common.h"
-#include "../../test/phony-errors.h"
-#include "../../instance/node-base.h"
 
 using namespace test;
 
@@ -79,6 +80,16 @@ NodeType const test::RETURN_NOTHING("return nothing");
 NodeType const test::BOOLEAN("boolean");
 NodeType const test::INTEGER("integer");
 NodeType const test::FLOATING("floating");
+NodeType const test::EMPTY_LIST("empty list");
+NodeType const test::LIST_BEGIN("list begin");
+NodeType const test::LIST_END("list end");
+
+NodeType const test::LIST_ELEMENT("list element");
+NodeType const test::LIST_INDEX("list index");
+NodeType const test::LIST_PIPELINE("list pipeline");
+NodeType const test::PIPE_MAP("pipe map");
+NodeType const test::PIPE_FILTER("pipe filter");
+
 NodeType const test::REFERENCE("reference");
 NodeType const test::BINARY_OP("binary operation");
 NodeType const test::PRE_UNARY_OP("prefix unary operation");
@@ -87,7 +98,9 @@ NodeType const test::FUNC_REFERENCE("func reference");
 NodeType const test::CONJUNCTION("conjunction");
 NodeType const test::DISJUNCTION("disjunction");
 NodeType const test::NEGATION("negation");
-NodeType const test::WRITE("write");
+
+NodeType const test::WRITER("writer");
+NodeType const test::MEMBER_CALL("member call");
 
 NodeType const test::FUNC_DECL("function declaration");
 NodeType const test::FUNC_IMPL("function implement");

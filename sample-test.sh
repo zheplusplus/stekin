@@ -29,3 +29,7 @@ verify find-root
 verify fixed-point
 verify vector-multi
 verify big-literals
+verify ifte
+verify basic-list
+verify return-list
+verify list-pipe

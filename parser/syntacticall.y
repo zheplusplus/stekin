@@ -10,8 +10,11 @@
     parser::Identifier* ident_type;
     parser::ParamNames* param_names_type;
     parser::ArgList* args_type;
+    parser::Pipeline* pipeline_type;
+    parser::Pipeline::PipeBase* pipe_base_type;
 
     grammar::Expression* expr_node;
+    grammar::Call* call_node;
 }
 
 %type <indent_type> indent
@@ -21,11 +24,16 @@
 %type <ident_type> ident
 
 %type <param_names_type> param_list
-%type <param_names_type> additional_param
+%type <param_names_type> additional_params
 
-%type <args_type> actual_param_list
-%type <args_type> additional_actual_param
+%type <args_type> arg_list
+%type <args_type> additional_args
 
+%type <pipeline_type> pipeline
+%type <pipe_base_type> pipe_token
+
+%type <expr_node> expr_root
+%type <expr_node> list_pipe
 %type <expr_node> cond
 %type <expr_node> conj_cond
 %type <expr_node> nega_cond
@@ -35,7 +43,9 @@
 %type <expr_node> unary_factor
 %type <expr_node> factor
 %type <expr_node> ref
-%type <expr_node> call
+%type <expr_node> list_literal
+%type <expr_node> member_access
+%type <call_node> call
 
 %type <op_type> add_op
 %type <op_type> mul_op
@@ -45,11 +55,12 @@
 %token INDENT EOL
 %token KW_FUNC KW_IF KW_IFNOT KW_ELSE KW_RETURN
 %token KW_TRUE KW_FALSE
-%token LE GE NE AND OR
+%token LIST_APPEND LE GE NE AND OR
 %token COMMA COLON
 %token BOOL_TRUE BOOL_FALSE
 %token INT_LITERAL DOUBLE_LITERAL
 %token IDENT
+%token LIST_ELEMENT LIST_INDEX
 
 %%
 
@@ -107,24 +118,24 @@ clue:
 ;
 
 var_def:
-    indent ident ':' cond eol
+    indent ident ':' expr_root eol
     {
-        parser::builder.addVarDef($1, $2->id, std::move(util::mkptr($4)));
+        parser::builder.addVarDef($1, $2->id, util::mkptr($4));
         delete $2;
     }
 ;
 
 arithmetics:
-    indent cond eol
+    indent expr_root eol
     {
-        parser::builder.addArith($1, std::move(util::mkptr($2)));
+        parser::builder.addArith($1, util::mkptr($2));
     }
 ;
 
 func_return:
-    indent KW_RETURN cond eol
+    indent KW_RETURN expr_root eol
     {
-        parser::builder.addReturn($1, std::move(util::mkptr($3)));
+        parser::builder.addReturn($1, util::mkptr($3));
     }
     |
     indent KW_RETURN eol
@@ -143,7 +154,7 @@ func_clue:
 ;
 
 param_list:
-    additional_param ident
+    additional_params ident
     {
         $$ = $1->add($2->id);
         delete $2;
@@ -154,7 +165,7 @@ param_list:
     }
 ;
 
-additional_param:
+additional_params:
     param_list ','
     {
         $$ = $1;
@@ -166,16 +177,16 @@ additional_param:
 ;
 
 if_clue:
-    indent KW_IF cond eol
+    indent KW_IF expr_root eol
     {
-        parser::builder.addIf($1, std::move(util::mkptr($3)));
+        parser::builder.addIf($1, util::mkptr($3));
     }
 ;
 
 ifnot_clue:
-    indent KW_IFNOT cond eol
+    indent KW_IFNOT expr_root eol
     {
-        parser::builder.addIfnot($1, std::move(util::mkptr($3)));
+        parser::builder.addIfnot($1, util::mkptr($3));
     }
 ;
 
@@ -207,12 +218,53 @@ ident:
     }
 ;
 
+expr_root:
+    list_pipe
+    {
+        $$ = $1;
+    }
+
+list_pipe:
+    cond pipeline
+    {
+        $$ = new grammar::ListPipeline(parser::here(), util::mkptr($1), $2->deliverCompile());
+        delete $2;
+    }
+    |
+    cond
+    {
+        $$ = $1;
+    }
+;
+
+pipeline:
+    pipeline '|' pipe_token
+    {
+        $$ = $1->add(util::mkptr($3));
+    }
+    |
+    '|' pipe_token
+    {
+        $$ = (new parser::Pipeline)->add(util::mkptr($2));
+    }
+;
+
+pipe_token:
+    KW_RETURN cond
+    {
+        $$ = new parser::Pipeline::PipeMap(util::mkptr($2));
+    }
+    |
+    KW_IF cond
+    {
+        $$ = new parser::Pipeline::PipeFilter(util::mkptr($2));
+    }
+;
+
 cond:
     cond OR conj_cond
     {
-        $$ = new grammar::Disjunction($1->pos
-                                    , std::move(util::mkptr($1))
-                                    , std::move(util::mkptr($3)));
+        $$ = new grammar::Disjunction($1->pos, util::mkptr($1), util::mkptr($3));
     }
     |
     conj_cond
@@ -224,9 +276,7 @@ cond:
 conj_cond:
     conj_cond AND nega_cond
     {
-        $$ = new grammar::Conjunction($1->pos
-                                    , std::move(util::mkptr($1))
-                                    , std::move(util::mkptr($3)));
+        $$ = new grammar::Conjunction($1->pos, util::mkptr($1), util::mkptr($3));
     }
     |
     nega_cond
@@ -238,7 +288,7 @@ conj_cond:
 nega_cond:
     '!' comp
     {
-        $$ = new grammar::Negation($2->pos, std::move(util::mkptr($2)));
+        $$ = new grammar::Negation($2->pos, util::mkptr($2));
     }
     |
     comp
@@ -250,10 +300,7 @@ nega_cond:
 comp:
     comp cmp_op expr
     {
-        $$ = new grammar::BinaryOp($1->pos
-                                 , std::move(util::mkptr($1))
-                                 , $2->img
-                                 , std::move(util::mkptr($3)));
+        $$ = new grammar::BinaryOp($1->pos, util::mkptr($1), $2->img, util::mkptr($3));
         delete $2;
     }
     |
@@ -264,12 +311,14 @@ comp:
 ;
 
 expr:
+    expr LIST_APPEND term
+    {
+        $$ = new grammar::ListAppend($1->pos, util::mkptr($1), util::mkptr($3));
+    }
+    |
     expr add_op term
     {
-        $$ = new grammar::BinaryOp($1->pos
-                                 , std::move(util::mkptr($1))
-                                 , $2->img
-                                 , std::move(util::mkptr($3)));
+        $$ = new grammar::BinaryOp($1->pos, util::mkptr($1), $2->img, util::mkptr($3));
         delete $2;
     }
     |
@@ -282,10 +331,7 @@ expr:
 term:
     term mul_op unary_factor
     {
-        $$ = new grammar::BinaryOp($1->pos
-                                 , std::move(util::mkptr($1))
-                                 , $2->img
-                                 , std::move(util::mkptr($3)));
+        $$ = new grammar::BinaryOp($1->pos, util::mkptr($1), $2->img, util::mkptr($3));
         delete $2;
     }
     |
@@ -298,7 +344,7 @@ term:
 unary_factor:
     pm_sign factor
     {
-        $$ = new grammar::PreUnaryOp($2->pos, $1->img, std::move(util::mkptr($2)));
+        $$ = new grammar::PreUnaryOp($2->pos, $1->img, util::mkptr($2));
         delete $1;
     }
     |
@@ -309,11 +355,6 @@ unary_factor:
 ;
 
 factor:
-    ref
-    {
-        $$ = $1;
-    }
-    |
     BOOL_TRUE
     {
         $$ = new grammar::BoolLiteral(parser::here(), true);
@@ -334,7 +375,34 @@ factor:
         $$ = new grammar::FloatLiteral(parser::here(), yytext);
     }
     |
-    '(' cond ')'
+    member_access
+    {
+        $$ = $1;
+    }
+    |
+    LIST_ELEMENT
+    {
+        $$ = new grammar::ListElement(parser::here());
+    }
+    |
+    LIST_INDEX
+    {
+        $$ = new grammar::ListIndex(parser::here());
+    }
+;
+
+member_access:
+    ref
+    {
+        $$ = $1;
+    }
+    |
+    list_literal
+    {
+        $$ = $1;
+    }
+    |
+    '(' expr_root ')'
     {
         $$ = $2;
     }
@@ -342,6 +410,11 @@ factor:
     call
     {
         $$ = $1;
+    }
+    |
+    member_access '.' call
+    {
+        $$ = new grammar::MemberCall($1->pos, util::mkptr($1), util::mkptr($3));
     }
 ;
 
@@ -418,8 +491,16 @@ pm_sign:
     }
 ;
 
+list_literal:
+    '[' arg_list ']'
+    {
+        $$ = new grammar::ListLiteral(parser::here(), $2->deliver());
+        delete $2;
+    }
+;
+
 call:
-    ident '(' actual_param_list ')'
+    ident '(' arg_list ')'
     {
         $$ = new grammar::Call($1->pos, $1->id, $3->deliver());
         delete $1;
@@ -427,8 +508,8 @@ call:
     }
 ;
 
-actual_param_list:
-    additional_actual_param cond
+arg_list:
+    additional_args expr_root
     {
         $$ = $1->add($2);
     }
@@ -438,8 +519,8 @@ actual_param_list:
     }
 ;
 
-additional_actual_param:
-    additional_actual_param cond ','
+additional_args:
+    additional_args expr_root ','
     {
         $$ = $1->add($2);
     }

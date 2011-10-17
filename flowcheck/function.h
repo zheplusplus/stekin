@@ -4,9 +4,10 @@
 #include <string>
 #include <vector>
 
+#include <util/pointer.h>
+#include <misc/pos-type.h>
+
 #include "block.h"
-#include "../util/pointer.h"
-#include "../misc/pos-type.h"
 
 namespace flchk {
 
@@ -22,14 +23,6 @@ namespace flchk {
             , _func_proto_or_nul_if_not_compiled(nullptr)
         {}
 
-        Function(Function&& rhs)
-            : pos(rhs.pos)
-            , name(rhs.name)
-            , param_names(rhs.param_names)
-            , _body(std::move(rhs._body))
-            , _func_proto_or_nul_if_not_compiled(rhs._func_proto_or_nul_if_not_compiled)
-        {}
-
         util::sref<proto::Function> compile(util::sref<proto::Block> block);
         std::vector<std::string> freeVariables() const;
 
@@ -37,7 +30,7 @@ namespace flchk {
         std::string const name;
         std::vector<std::string> const param_names;
     private:
-        util::sptr<Filter> _body;
+        util::sptr<Filter> const _body;
         util::sref<proto::Function> _func_proto_or_nul_if_not_compiled;
     };
 

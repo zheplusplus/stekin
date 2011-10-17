@@ -1,16 +1,17 @@
 #include <gtest/gtest.h>
 
+#include <flowcheck/node-base.h>
+#include <flowcheck/filter.h>
+#include <flowcheck/function.h>
+#include <proto/node-base.h>
+#include <test/common.h>
+#include <test/phony-errors.h>
+
 #include "test-common.h"
 #include "../clause-builder.h"
 #include "../function.h"
 #include "../stmt-nodes.h"
 #include "../expr-nodes.h"
-#include "../../flowcheck/node-base.h"
-#include "../../flowcheck/filter.h"
-#include "../../flowcheck/function.h"
-#include "../../proto/node-base.h"
-#include "../../test/common.h"
-#include "../../test/phony-errors.h"
 
 using namespace test;
 

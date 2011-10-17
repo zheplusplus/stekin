@@ -4,10 +4,11 @@
 #include <string>
 #include <vector>
 
+#include <flowcheck/fwd-decl.h>
+#include <util/pointer.h>
+#include <misc/pos-type.h>
+
 #include "block.h"
-#include "../flowcheck/fwd-decl.h"
-#include "../util/pointer.h"
-#include "../misc/pos-type.h"
 
 namespace grammar {
 

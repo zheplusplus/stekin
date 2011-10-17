@@ -5,34 +5,38 @@
 #include <vector>
 #include <map>
 
+#include <instance/types.h>
+#include <util/pointer.h>
+#include <misc/pos-type.h>
+
 #include "fwd-decl.h"
-#include "../instance/types.h"
-#include "../util/pointer.h"
-#include "../misc/pos-type.h"
 
 namespace proto {
 
     struct Type {
+        explicit Type(int s)
+            : size(s)
+        {}
+    public:
         int const size;
     public:
         virtual util::sptr<inst::Type const> makeInstType() const = 0;
         virtual std::string name() const = 0;
     public:
-        virtual util::sref<FuncInstDraft> call(
-                              misc::position const& call_pos
-                            , int level
-                            , int stack_offset
-                            , std::vector<util::sref<Type const>> const& arg_types) const = 0;
+        virtual util::sref<FuncInstDraft> call(int level
+                                             , int stack_offset
+                                             , std::vector<util::sref<Type const>> const& arg_types
+                                             , misc::trace& trace) const;
+        virtual void checkCondType(misc::position const& pos) const;
+        virtual std::vector<int> resEntries(int stack_offset) const;
+        virtual util::sref<Type const> memberCallType(
+                                            std::string const& call_name
+                                          , std::vector<util::sref<Type const>> const& arg_types
+                                          , misc::trace& trace) const;
     public:
         bool operator!=(Type const& rhs) const;
         bool operator==(Type const& rhs) const;
         bool operator<(Type const& rhs) const;
-    public:
-        virtual void checkCondType(misc::position const& pos) const;
-    protected:
-        explicit Type(int s)
-            : size(s)
-        {}
     public:
         static util::sref<Type const> const BAD_TYPE;
         static util::sref<Type const> const BIT_VOID;

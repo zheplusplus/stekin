@@ -3,7 +3,7 @@
 
 #include <ostream>
 
-#include "../misc/pos-type.h"
+#include <misc/pos-type.h>
 
 namespace test {
 

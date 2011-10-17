@@ -4,7 +4,10 @@
 #include <string>
 #include <vector>
 
-#include "../util/pointer.h"
+#include <output/func-writer.h>
+#include <util/pointer.h>
+
+#include "address.h"
 
 namespace inst {
 
@@ -12,6 +15,8 @@ namespace inst {
         virtual ~Type() {}
     public:
         virtual std::string exportedName() const = 0;
+        virtual void writeResEntry(int offset) const;
+        virtual util::sptr<output::StackVarRec const> makeParameter(Address const& addr) const;
     };
 
     struct VoidPrimitive
@@ -38,6 +43,26 @@ namespace inst {
         std::string exportedName() const;
     };
 
+    struct EmptyListType
+        : public Type
+    {
+        std::string exportedName() const;
+    };
+
+    struct ListType
+        : public Type
+    {
+        explicit ListType(util::sptr<Type const> mt)
+            : member_type(std::move(mt))
+        {}
+
+        std::string exportedName() const;
+        void writeResEntry(int offset) const;
+        util::sptr<output::StackVarRec const> makeParameter(Address const& addr) const;
+
+        util::sptr<Type const> const member_type;
+    };
+
     struct ClosureType
         : public Type
     {
@@ -48,8 +73,8 @@ namespace inst {
 
         std::string exportedName() const;
 
-        int size;
-        std::vector<util::sptr<Type const>> enclosed_types;
+        int const size;
+        std::vector<util::sptr<Type const>> const enclosed_types;
     };
 
 }

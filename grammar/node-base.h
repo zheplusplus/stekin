@@ -1,9 +1,9 @@
 #ifndef __STEKIN_GRAMMAR_NODE_BASE_H__
 #define __STEKIN_GRAMMAR_NODE_BASE_H__
 
-#include "../flowcheck/fwd-decl.h"
-#include "../util/pointer.h"
-#include "../misc/pos-type.h"
+#include <flowcheck/fwd-decl.h>
+#include <util/pointer.h>
+#include <misc/pos-type.h>
 
 namespace grammar {
 

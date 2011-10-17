@@ -1,14 +1,14 @@
 #include <string>
 #include <gtest/gtest.h>
 
+#include <misc/platform.h>
+#include <misc/pos-type.h>
+#include <test/phony-errors.h>
+
 #include "test-common.h"
 #include "../symbol-table.h"
 #include "../variable.h"
 #include "../type.h"
-#include "../../misc/platform.h"
-#include "../../misc/pos-type.h"
-#include "../../test/common.h"
-#include "../../test/phony-errors.h"
 
 using namespace test;
 
@@ -35,10 +35,10 @@ namespace {
         }
 
         util::sref<proto::FuncInstDraft> call(
-                misc::position const&
+                int
               , int
-              , int
-              , std::vector<util::sref<proto::Type const>> const&) const
+              , std::vector<util::sref<proto::Type const>> const&
+              , misc::trace&) const
         {
             return util::sref<proto::FuncInstDraft>(nullptr);
         }
@@ -94,11 +94,11 @@ TEST_F(SymbolTableTest, OnCorrect)
     ASSERT_EQ(platform::WORD_LENGTH_INBYTE * word_used, var_another_dw.stack_offset);
     word_used += 2;
 
-    proto::Variable var_boolean_one(st.defVar(misc::position(6), proto::Type::BIT_BOOL, "bool_one"));
+    proto::Variable var_boolean_1(st.defVar(misc::position(6), proto::Type::BIT_BOOL, "bool_one"));
     ASSERT_FALSE(error::hasError());
-    ASSERT_EQ(st.queryVar(misc::position(100006), "bool_one"), var_boolean_one);
-    ASSERT_EQ(0, var_boolean_one.level);
-    ASSERT_EQ(platform::WORD_LENGTH_INBYTE * word_used, var_boolean_one.stack_offset);
+    ASSERT_EQ(st.queryVar(misc::position(100006), "bool_one"), var_boolean_1);
+    ASSERT_EQ(0, var_boolean_1.level);
+    ASSERT_EQ(platform::WORD_LENGTH_INBYTE * word_used, var_boolean_1.stack_offset);
 
     proto::Variable var_boolean_2(st.defVar(misc::position(7), proto::Type::BIT_BOOL, "boolean_2"));
     ASSERT_FALSE(error::hasError());

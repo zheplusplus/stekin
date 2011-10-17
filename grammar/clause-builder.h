@@ -5,10 +5,11 @@
 #include <vector>
 #include <string>
 
+#include <util/pointer.h>
+#include <misc/pos-type.h>
+
 #include "acceptor.h"
 #include "fwd-decl.h"
-#include "../util/pointer.h"
-#include "../misc/pos-type.h"
 
 namespace grammar {
 
@@ -32,7 +33,7 @@ namespace grammar {
             : public Acceptor
         {
             AcceptorOfPack()
-                : Acceptor(misc::position(-1))
+                : Acceptor(misc::position())
             {}
 
             void acceptStmt(util::sptr<Statement const> stmt);

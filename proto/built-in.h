@@ -5,16 +5,17 @@
 
 namespace proto {
 
-    struct WriteExpr
+    struct WriterExpr
         : public Expression
     {
-        WriteExpr()
-            : Expression(misc::position(0))
-            , ref(misc::position(0), "value to write")
+        WriterExpr()
+            : Expression(misc::position())
+            , ref(misc::position(), "value to write")
         {}
 
-        util::sref<Type const> type(util::sref<SymbolTable const>) const;
-        util::sptr<inst::Expression const> inst(util::sref<SymbolTable const> st) const;
+        util::sref<Type const> type(util::sref<SymbolTable const>, misc::trace& trace) const;
+        util::sptr<inst::Expression const> inst(util::sref<SymbolTable const> st
+                                              , misc::trace& trace) const;
 
         Reference ref;
     };

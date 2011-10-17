@@ -7,8 +7,9 @@
 #include <algorithm>
 #include <gtest/gtest.h>
 
+#include <util/pointer.h>
+
 #include "data-node.h"
-#include "../util/pointer.h"
 
 namespace test {
 

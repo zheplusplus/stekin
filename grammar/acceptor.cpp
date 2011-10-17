@@ -1,8 +1,9 @@
+#include <flowcheck/node-base.h>
+#include <report/errors.h>
+
 #include "acceptor.h"
 #include "stmt-nodes.h"
 #include "function.h"
-#include "../flowcheck/node-base.h"
-#include "../report/errors.h"
 
 using namespace grammar;
 
@@ -24,14 +25,14 @@ void IfAcceptor::acceptStmt(util::sptr<Statement const> stmt)
 void IfAcceptor::deliverTo(util::sref<Acceptor> acc)
 {
     if (_elseMatched()) {
-        acc->acceptStmt(std::move(util::mkptr(new Branch(pos
-                                                       , std::move(_predicate)
-                                                       , std::move(_consequence)
-                                                       , std::move(_alternative)))));
+        acc->acceptStmt(util::mkptr(new Branch(pos
+                                             , std::move(_predicate)
+                                             , std::move(_consequence)
+                                             , std::move(_alternative))));
     } else {
-        acc->acceptStmt(std::move(util::mkptr(new BranchConsqOnly(pos
-                                                                , std::move(_predicate)
-                                                                , std::move(_consequence)))));
+        acc->acceptStmt(util::mkptr(new BranchConsqOnly(pos
+                                                      , std::move(_predicate)
+                                                      , std::move(_consequence))));
     }
 }
 
@@ -62,9 +63,9 @@ void IfnotAcceptor::acceptStmt(util::sptr<Statement const> stmt)
 
 void IfnotAcceptor::deliverTo(util::sref<Acceptor> acc)
 {
-    acc->acceptStmt(std::move(util::mkptr(new BranchAlterOnly(pos
-                                                            , std::move(_predicate)
-                                                            , std::move(_alternative)))));
+    acc->acceptStmt(util::mkptr(new BranchAlterOnly(pos
+                                                  , std::move(_predicate)
+                                                  , std::move(_alternative))));
 }
 
 void FunctionAcceptor::acceptFunc(util::sptr<Function const> func)
@@ -79,5 +80,5 @@ void FunctionAcceptor::acceptStmt(util::sptr<Statement const> stmt)
 
 void FunctionAcceptor::deliverTo(util::sref<Acceptor> acc)
 {
-    acc->acceptFunc(std::move(util::mkptr(new Function(pos, name, param_names, std::move(_body)))));
+    acc->acceptFunc(util::mkptr(new Function(pos, name, param_names, std::move(_body))));
 }

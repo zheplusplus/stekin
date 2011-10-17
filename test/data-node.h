@@ -4,8 +4,8 @@
 #include <string>
 #include <ostream>
 
-#include "../misc/pos-type.h"
-#include "../util/pointer.h"
+#include <misc/pos-type.h>
+#include <util/pointer.h>
 
 namespace test {
 

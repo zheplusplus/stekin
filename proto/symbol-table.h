@@ -5,9 +5,10 @@
 #include <map>
 #include <list>
 
+#include <misc/pos-type.h>
+#include <util/pointer.h>
+
 #include "fwd-decl.h"
-#include "../misc/pos-type.h"
-#include "../util/pointer.h"
 
 namespace proto {
 
@@ -48,9 +49,11 @@ namespace proto {
     public:
         int stackSize() const;
         std::list<Variable> getArgs() const;
+        std::vector<int> getResEntries() const;
     private:
         int _ss_used;
         std::list<Variable> _args;
+        std::vector<int> _res_entries;
         std::map<std::string, Variable const> _local_defs;
         std::map<std::string, Variable const> const _external_defs;
 

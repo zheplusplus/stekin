@@ -1,11 +1,12 @@
 #include <algorithm>
 
+#include <flowcheck/filter.h>
+#include <flowcheck/node-base.h>
+#include <flowcheck/function.h>
+
 #include "block.h"
 #include "node-base.h"
 #include "function.h"
-#include "../flowcheck/filter.h"
-#include "../flowcheck/node-base.h"
-#include "../flowcheck/function.h"
 
 using namespace grammar;
 

@@ -11,10 +11,12 @@ TEST_OBJ=$(WORKDIR)/*.o $(TESTDIR)/phony-flowcheck.o $(TESTDIR)/test-common.o
 
 $(TESTDIR)/test-grammar.out:$(TEST_DEP) \
                             test-stmt-nodes.dt \
+                            test-expr-nodes.dt \
                             test-acceptor.dt \
                             test-clause-builder.dt
 	$(LINK) $(TEST_OBJ) \
 	        $(TESTDIR)/test-stmt-nodes.o \
+	        $(TESTDIR)/test-expr-nodes.o \
 	        $(TESTDIR)/test-acceptor.o \
 	        $(TESTDIR)/test-clause-builder.o \
 	        $(TEST_LIBS) \

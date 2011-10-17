@@ -1,15 +1,16 @@
 #include <vector>
 #include <gtest/gtest.h>
 
+#include <proto/function.h>
+#include <test/phony-errors.h>
+#include <test/phony-warnings.h>
+#include <test/common.h>
+
 #include "test-common.h"
 #include "../expr-nodes.h"
 #include "../global-filter.h"
 #include "../symbol-def-filter.h"
 #include "../function.h"
-#include "../../proto/function.h"
-#include "../../test/phony-errors.h"
-#include "../../test/phony-warnings.h"
-#include "../../test/common.h"
 
 using namespace test;
 

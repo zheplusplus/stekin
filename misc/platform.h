@@ -58,10 +58,15 @@ namespace platform {
         typedef char type;
     };
 
+    class vft {
+        virtual ~vft() = 0;
+    };
+
     int const WORD_LENGTH_INBYTE = sizeof(void*);
     int const BOOL_SIZE = 1;
     int const INT_SIZE = 8;
     int const FLOAT_SIZE = 8;
+    int const VIRTUAL_FUNC_TABLE_SIZE = sizeof(vft);
 
     typedef type_find<c_short, INT_SIZE>::traits int_traits;
     typedef type_find<c_double, FLOAT_SIZE>::traits float_traits;

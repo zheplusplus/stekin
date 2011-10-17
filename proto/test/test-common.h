@@ -1,12 +1,13 @@
 #ifndef __STEKIN_PROTO_TEST_TEST_COMMON_H__
 #define __STEKIN_PROTO_TEST_TEST_COMMON_H__
 
+#include <misc/pos-type.h>
+#include <test/common.h>
+#include <test/data-node.h>
+#include <test/data-trees.h>
+
 #include "../type.h"
 #include "../variable.h"
-#include "../../misc/pos-type.h"
-#include "../../test/common.h"
-#include "../../test/data-node.h"
-#include "../../test/data-trees.h"
 
 namespace test {
 
@@ -70,6 +71,16 @@ namespace test {
     extern NodeType const BOOLEAN;
     extern NodeType const INTEGER;
     extern NodeType const FLOATING;
+    extern NodeType const EMPTY_LIST;
+    extern NodeType const LIST_BEGIN;
+    extern NodeType const LIST_END;
+
+    extern NodeType const LIST_ELEMENT;
+    extern NodeType const LIST_INDEX;
+    extern NodeType const LIST_PIPELINE;
+    extern NodeType const PIPE_MAP;
+    extern NodeType const PIPE_FILTER;
+
     extern NodeType const REFERENCE;
     extern NodeType const BINARY_OP;
     extern NodeType const PRE_UNARY_OP;
@@ -78,7 +89,9 @@ namespace test {
     extern NodeType const CONJUNCTION;
     extern NodeType const DISJUNCTION;
     extern NodeType const NEGATION;
-    extern NodeType const WRITE;
+
+    extern NodeType const WRITER;
+    extern NodeType const MEMBER_CALL;
 
     extern NodeType const FUNC_DECL;
     extern NodeType const FUNC_IMPL;

@@ -4,11 +4,12 @@
 #include <string>
 #include <list>
 
-#include "fwd-decl.h"
+#include <util/sn.h>
+#include <util/pointer.h>
+
+#include "node-base.h"
 #include "types.h"
 #include "address.h"
-#include "../util/sn.h"
-#include "../util/pointer.h"
 
 namespace inst {
 
@@ -33,12 +34,14 @@ namespace inst {
                , int ss
                , std::list<ParamInfo> p
                , util::serial_num c
+               , std::vector<int> const& re
                , util::sptr<Statement const> b)
             : return_type(std::move(rt))
             , level(l)
             , stack_size(ss)
             , params(std::move(p))
             , call_sn(c)
+            , res_entries(re)
             , body(std::move(b))
         {}
 
@@ -50,6 +53,7 @@ namespace inst {
         int const stack_size;
         std::list<ParamInfo> const params;
         util::serial_num const call_sn;
+        std::vector<int> const res_entries;
         util::sptr<Statement const> const body;
     };
 

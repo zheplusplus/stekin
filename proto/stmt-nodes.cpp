@@ -1,12 +1,13 @@
 #include <algorithm>
 
+#include <instance/stmt-nodes.h>
+#include <util/vector-append.h>
+
 #include "stmt-nodes.h"
 #include "func-inst-draft.h"
 #include "symbol-table.h"
 #include "type.h"
 #include "variable.h"
-#include "../instance/stmt-nodes.h"
-#include "../util/vector-append.h"
 
 using namespace proto;
 
@@ -16,16 +17,16 @@ void Branch::addTo(util::sref<FuncInstDraft> func)
     _alternative_stmt->addTo(func);
 }
 
-util::sptr<inst::Statement const> Branch::inst(util::sref<FuncInstDraft> func
-                                             , util::sref<SymbolTable> st)
+util::sptr<inst::Statement const> Branch::inst(util::sref<FuncInstDraft> func, misc::trace& trace)
 {
-    predicate->type(st)->checkCondType(pos);
-    return util::mkptr(new inst::Branch(predicate->inst(st)
-                                      , _consequence_stmt->inst(func, st)
-                                      , _alternative_stmt->inst(func, st)));
+    predicate->type(func->getSymbols(), trace)->checkCondType(pos);
+    return util::mkptr(new inst::Branch(func->level()
+                                      , predicate->inst(func->getSymbols(), trace)
+                                      , _consequence_stmt->inst(func, trace)
+                                      , _alternative_stmt->inst(func, trace)));
 }
 
-void Branch::mediateInst(util::sref<FuncInstDraft> func, util::sref<SymbolTable>)
+void Branch::mediateInst(util::sref<FuncInstDraft> func, misc::trace&)
 {
     _consequence_stmt->addTo(func);
     _alternative_stmt->addTo(func);
@@ -39,16 +40,16 @@ std::vector<util::sptr<inst::Function const>> Branch::deliverFuncs()
 void DirectInst::addTo(util::sref<FuncInstDraft>) {}
 
 util::sptr<inst::Statement const> DirectInst::inst(util::sref<FuncInstDraft> func
-                                                 , util::sref<SymbolTable> st)
+                                                 , misc::trace& trace)
 {
-    mediateInst(func, st);
+    mediateInst(func, trace);
     return std::move(_result_stmt_or_nul_if_not_inst);
 }
 
-void DirectInst::mediateInst(util::sref<FuncInstDraft> func, util::sref<SymbolTable> st)
+void DirectInst::mediateInst(util::sref<FuncInstDraft> func, misc::trace& trace)
 {
     if (_result_stmt_or_nul_if_not_inst.nul()) {
-        _result_stmt_or_nul_if_not_inst = _inst(func, st);
+        _result_stmt_or_nul_if_not_inst = _inst(func, trace);
     }
 }
 
@@ -57,31 +58,34 @@ std::vector<util::sptr<inst::Function const>> DirectInst::deliverFuncs()
     return std::vector<util::sptr<inst::Function const>>();
 }
 
-util::sptr<inst::Statement const> Arithmetics::_inst(util::sref<FuncInstDraft>
-                                                   , util::sref<SymbolTable> st) const
+util::sptr<inst::Statement const> Arithmetics::_inst(util::sref<FuncInstDraft> func
+                                                   , misc::trace& trace) const
 {
-    return util::mkptr(new inst::Arithmetics(expr->inst(st)));
+    return util::mkptr(new inst::Arithmetics(func->level(), expr->inst(func->getSymbols(), trace)));
 }
 
-util::sptr<inst::Statement const> VarDef::_inst(util::sref<FuncInstDraft>
-                                              , util::sref<SymbolTable> st) const
+util::sptr<inst::Statement const> VarDef::_inst(util::sref<FuncInstDraft> func
+                                              , misc::trace& trace) const
 {
-    util::sref<Type const> type(init->type(st));
-    return util::mkptr(new inst::Initialization(st->defVar(pos, type, name).stack_offset
-                                              , init->inst(st)
+    util::sref<Type const> type(init->type(func->getSymbols(), trace));
+    util::sptr<inst::Expression const> value(init->inst(func->getSymbols(), trace));
+    int offset = func->getSymbols()->defVar(pos, type, name).stack_offset;
+    return util::mkptr(new inst::Initialization(func->level()
+                                              , offset
+                                              , std::move(value)
                                               , type->makeInstType()));
 }
 
 util::sptr<inst::Statement const> Return::_inst(util::sref<FuncInstDraft> func
-                                              , util::sref<SymbolTable> st) const
+                                              , misc::trace& trace) const
 {
-    func->setReturnType(pos, ret_val->type(st));
-    return util::mkptr(new inst::Return(ret_val->inst(st)));
+    func->setReturnType(ret_val->type(func->getSymbols(), trace), trace);
+    return util::mkptr(new inst::Return(func->level(), ret_val->inst(func->getSymbols(), trace)));
 }
 
 util::sptr<inst::Statement const> ReturnNothing::_inst(util::sref<FuncInstDraft> func
-                                                     , util::sref<SymbolTable>) const
+                                                     , misc::trace& trace) const
 {
-    func->setReturnType(pos, Type::BIT_VOID);
+    func->setReturnType(Type::BIT_VOID, trace);
     return util::mkptr(new inst::ReturnNothing);
 }

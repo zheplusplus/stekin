@@ -1,8 +1,9 @@
+#include <flowcheck/node-base.h>
+#include <flowcheck/symbol-def-filter.h>
+#include <flowcheck/function.h>
+
 #include "stmt-nodes.h"
 #include "function.h"
-#include "../flowcheck/node-base.h"
-#include "../flowcheck/symbol-def-filter.h"
-#include "../flowcheck/function.h"
 
 using namespace grammar;
 
@@ -13,7 +14,7 @@ static util::sptr<flchk::Filter> mkSymDefFilter(util::sref<flchk::Filter> ext_fi
 
 void Arithmetics::compile(util::sref<flchk::Filter> filter) const
 {
-    filter->addArith(pos, std::move(expr->compile()));
+    filter->addArith(pos, expr->compile());
 }
 
 void Branch::compile(util::sref<flchk::Filter> filter) const

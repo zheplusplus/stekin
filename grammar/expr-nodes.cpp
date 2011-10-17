@@ -1,9 +1,10 @@
 #include <algorithm>
 
+#include <flowcheck/filter.h>
+#include <flowcheck/function.h>
+#include <flowcheck/expr-nodes.h>
+
 #include "expr-nodes.h"
-#include "../flowcheck/filter.h"
-#include "../flowcheck/function.h"
-#include "../flowcheck/expr-nodes.h"
 
 using namespace grammar;
 
@@ -52,17 +53,53 @@ util::sptr<flchk::Expression const> FloatLiteral::compile() const
     return util::mkptr(new flchk::FloatLiteral(pos, value));
 }
 
-util::sptr<flchk::Expression const> Call::compile() const
+static std::vector<util::sptr<flchk::Expression const>> compileList(
+                            std::vector<util::sptr<Expression const>> const& values)
 {
-    std::vector<util::sptr<flchk::Expression const>> arguments;
-    arguments.reserve(args.size());
-    std::for_each(args.begin()
-                , args.end()
+    std::vector<util::sptr<flchk::Expression const>> result;
+    result.reserve(values.size());
+    std::for_each(values.begin()
+                , values.end()
                 , [&](util::sptr<Expression const> const& expr)
                   {
-                      arguments.push_back(expr->compile());
+                      result.push_back(expr->compile());
                   });
-    return util::mkptr(new flchk::Call(pos, name, std::move(arguments)));
+    return std::move(result);
+}
+
+util::sptr<flchk::Expression const> ListLiteral::compile() const
+{
+    return util::mkptr(new flchk::ListLiteral(pos, compileList(value)));
+}
+
+util::sptr<flchk::Expression const> ListElement::compile() const
+{
+    return util::mkptr(new flchk::ListElement(pos));
+}
+
+util::sptr<flchk::Expression const> ListIndex::compile() const
+{
+    return util::mkptr(new flchk::ListIndex(pos));
+}
+
+util::sptr<flchk::Expression const> ListAppend::compile() const
+{
+    return util::mkptr(new flchk::ListAppend(pos, lhs->compile(), rhs->compile()));
+}
+
+util::sptr<flchk::Expression const> Call::compile() const
+{
+    return cplMemberCall();
+}
+
+util::sptr<flchk::Call const> Call::cplMemberCall() const
+{
+    return util::mkptr(new flchk::Call(pos, name, compileList(args)));
+}
+
+util::sptr<flchk::Expression const> MemberCall::compile() const
+{
+    return util::mkptr(new flchk::MemberCall(pos, object->compile(), call->cplMemberCall()));
 }
 
 util::sptr<flchk::Expression const> FuncReference::compile() const

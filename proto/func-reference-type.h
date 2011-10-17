@@ -1,9 +1,11 @@
 #ifndef __STEKIN_PROTO_FUNCTION_REFERENCE_TYPE_H__
 #define __STEKIN_PROTO_FUNCTION_REFERENCE_TYPE_H__
 
+#include <instance/expr-nodes.h>
+#include <misc/pos-type.h>
+
 #include "type.h"
-#include "../instance/expr-nodes.h"
-#include "../misc/pos-type.h"
+#include "variable.h"
 
 namespace proto {
 
@@ -23,11 +25,10 @@ namespace proto {
         util::sptr<inst::Type const> makeInstType() const;
         std::string name() const;
     public:
-        util::sref<FuncInstDraft> call(
-                                misc::position const& call_pos
-                              , int level
-                              , int stack_offset
-                              , std::vector<util::sref<Type const>> const& arg_types) const;
+        util::sref<FuncInstDraft> call(int level
+                                     , int stack_offset
+                                     , std::vector<util::sref<Type const>> const& arg_types
+                                     , misc::trace& trace) const;
     public:
         std::map<std::string, Variable const> const context_references;
         std::map<std::string, Variable const> const closed_references;

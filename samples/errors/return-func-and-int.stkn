@@ -3,4 +3,10 @@ func conflict_return(x)
         return 0
     return conflict_return@1
 
-write(conflict_return(false))
+write(mediate_reverse(conflict_return, false))
+
+func mediate(a, b)
+    return b(a)
+
+func mediate_reverse(a, b)
+    return mediate(b, a)

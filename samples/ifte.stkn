@@ -1,0 +1,4 @@
+write(ifte(false, 0, 1))
+write(ifte(true, 0, 1))
+write(ifte(0 = 1, false, true))
+write(ifte(true, false, true))

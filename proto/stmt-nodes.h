@@ -2,7 +2,6 @@
 #define __STEKIN_PROTO_STATEMENT_NODES_H__
 
 #include "node-base.h"
-#include "../instance/fwd-decl.h"
 
 namespace proto {
 
@@ -20,9 +19,8 @@ namespace proto {
         {}
 
         void addTo(util::sref<FuncInstDraft> func);
-        util::sptr<inst::Statement const> inst(util::sref<FuncInstDraft> func
-                                             , util::sref<SymbolTable> st);
-        void mediateInst(util::sref<FuncInstDraft> func, util::sref<SymbolTable>);
+        util::sptr<inst::Statement const> inst(util::sref<FuncInstDraft> func, misc::trace& trace);
+        void mediateInst(util::sref<FuncInstDraft> func, misc::trace&);
         std::vector<util::sptr<inst::Function const>> deliverFuncs();
     public:
         misc::position const pos;
@@ -36,9 +34,8 @@ namespace proto {
         : public Statement
     {
         void addTo(util::sref<FuncInstDraft>);
-        util::sptr<inst::Statement const> inst(util::sref<FuncInstDraft> func
-                                             , util::sref<SymbolTable> st);
-        void mediateInst(util::sref<FuncInstDraft> func, util::sref<SymbolTable> st);
+        util::sptr<inst::Statement const> inst(util::sref<FuncInstDraft> func, misc::trace& trace);
+        void mediateInst(util::sref<FuncInstDraft> func, misc::trace& trace);
         std::vector<util::sptr<inst::Function const>> deliverFuncs();
 
         misc::position const pos;
@@ -49,7 +46,7 @@ namespace proto {
         {}
 
         virtual util::sptr<inst::Statement const> _inst(util::sref<FuncInstDraft> func
-                                                      , util::sref<SymbolTable> st) const = 0;
+                                                      , misc::trace& trace) const = 0;
     private:
         util::sptr<inst::Statement const> _result_stmt_or_nul_if_not_inst;
     };
@@ -65,7 +62,7 @@ namespace proto {
         util::sptr<Expression const> const expr;
     protected:
         util::sptr<inst::Statement const> _inst(util::sref<FuncInstDraft> func
-                                              , util::sref<SymbolTable> st) const;
+                                              , misc::trace& trace) const;
     };
 
     struct VarDef
@@ -81,7 +78,7 @@ namespace proto {
         util::sptr<Expression const> const init;
     protected:
         util::sptr<inst::Statement const> _inst(util::sref<FuncInstDraft> func
-                                              , util::sref<SymbolTable> st) const;
+                                              , misc::trace& trace) const;
     };
 
     struct Return
@@ -95,7 +92,7 @@ namespace proto {
         util::sptr<Expression const> const ret_val;
     protected:
         util::sptr<inst::Statement const> _inst(util::sref<FuncInstDraft> func
-                                              , util::sref<SymbolTable> st) const;
+                                              , misc::trace& trace) const;
     };
 
     struct ReturnNothing
@@ -106,7 +103,7 @@ namespace proto {
         {}
     protected:
         util::sptr<inst::Statement const> _inst(util::sref<FuncInstDraft> func
-                                              , util::sref<SymbolTable>) const;
+                                              , misc::trace& trace) const;
     };
 
 }

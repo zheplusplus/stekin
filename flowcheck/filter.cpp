@@ -1,7 +1,8 @@
+#include <proto/node-base.h>
+
 #include "filter.h"
 #include "node-base.h"
 #include "function.h"
-#include "../proto/node-base.h"
 
 using namespace flchk;
 

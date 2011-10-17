@@ -1,9 +1,9 @@
+#include <report/errors.h>
+
 #include "symbol-def-filter.h"
 #include "expr-nodes.h"
 #include "symbol-table.h"
 #include "function.h"
-#include "../proto/node-base.h"
-#include "../report/errors.h"
 
 using namespace flchk;
 

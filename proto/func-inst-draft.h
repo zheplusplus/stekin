@@ -5,27 +5,30 @@
 #include <list>
 #include <string>
 
+#include <instance/function.h>
+#include <misc/pos-type.h>
+#include <util/sn.h>
+
 #include "fwd-decl.h"
 #include "symbol-table.h"
-#include "../instance/function.h"
-#include "../misc/pos-type.h"
-#include "../util/sn.h"
 
 namespace proto {
 
     struct FuncInstDraft {
         virtual ~FuncInstDraft() {}
     public:
-        virtual void setReturnType(misc::position const& pos, util::sref<Type const> return_type);
+        virtual void setReturnType(util::sref<Type const> return_type, misc::trace& trace);
         virtual util::sref<Type const> getReturnType() const;
         virtual bool isReturnTypeResolved() const;
 
         void addPath(util::sref<Statement> path);
-        void instNextPath();
+        void instNextPath(misc::trace& trace);
         bool hasMorePath() const;
 
-        void instantiate(util::sref<Statement> stmt);
+        void instantiate(util::sref<Statement> stmt, misc::trace& trace);
         util::sptr<inst::Function const> deliver();
+        util::sref<SymbolTable> getSymbols();
+        int level() const;
     public:
         static util::sptr<FuncInstDraft> create(int ext_lvl
                                               , std::list<ArgNameTypeRec> const& args

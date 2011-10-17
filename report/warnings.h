@@ -1,8 +1,8 @@
 #ifndef __STEKIN_REPORT_WARNINGS_H__
 #define __STEKIN_REPORT_WARNINGS_H__
 
-#include "../util/pointer.h"
-#include "../misc/pos-type.h"
+#include <util/pointer.h>
+#include <misc/pos-type.h>
 
 namespace warning {
 

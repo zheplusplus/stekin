@@ -3,8 +3,8 @@
 
 #include <string>
 
-#include "../grammar/clause-builder.h"
-#include "../misc/pos-type.h"
+#include <grammar/clause-builder.h>
+#include <misc/pos-type.h>
 
 void yyerror(std::string const& msg);
 int yyparse();

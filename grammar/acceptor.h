@@ -1,10 +1,11 @@
 #ifndef __STEKIN_GRAMMAR_ACCEPTOR_H__
 #define __STEKIN_GRAMMAR_ACCEPTOR_H__
 
+#include <util/pointer.h>
+#include <misc/pos-type.h>
+
 #include "node-base.h"
 #include "function.h"
-#include "../util/pointer.h"
-#include "../misc/pos-type.h"
 
 namespace grammar {
 

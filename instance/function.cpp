@@ -1,21 +1,21 @@
 #include <algorithm>
 
+#include <output/func-writer.h>
+
 #include "function.h"
 #include "node-base.h"
-#include "../output/func-writer.h"
 
 using namespace inst;
 
-static std::list<output::StackVarRec> toStackVars(std::list<Function::ParamInfo> const& params)
+static std::vector<util::sptr<output::StackVarRec const>>
+                toStackVars(std::list<Function::ParamInfo> const& params)
 {
-    std::list<output::StackVarRec> recs;
+    std::vector<util::sptr<output::StackVarRec const>> recs;
     std::for_each(params.begin()
                 , params.end()
                 , [&](Function::ParamInfo const& param)
                   {
-                      recs.push_back(output::StackVarRec(param.type->exportedName()
-                                                       , param.address.offset
-                                                       , param.address.level));
+                      recs.push_back(param.type->makeParameter(param.address));
                   });
     return std::move(recs);
 }
@@ -26,7 +26,8 @@ void Function::writeDecl() const
                           , call_sn
                           , toStackVars(params)
                           , level
-                          , stack_size);
+                          , stack_size
+                          , res_entries.size());
 }
 
 void Function::writeImpl() const

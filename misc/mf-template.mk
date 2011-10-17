@@ -7,7 +7,8 @@ else
 endif
 
 CC=g++ -c -std=c++0x
-RESOLVE_DEP=g++ -MM
+INCLUDE=-I.
+RESOLVE_DEP=g++ -MM $(INCLUDE)
 LINK=g++ $(DYN_LINK)
 AR=ar rcs
 
@@ -24,14 +25,17 @@ SAMPLEDIR=samples
 ERRSAMPLEDIR=$(SAMPLEDIR)/errors
 CHEKC_MEMONRY=valgrind --log-file=tmp.log.memcheck --leak-check=full
 
+COMPILE=$(CC) $(CFLAGS) $(INCLUDE)
+COMPILE_GENERATED=$(CC) $(INCLUDE)
+
 %.d:$(WORKDIR)/%.cpp
 	echo -n "$(WORKDIR)/" > $(MKTMP)
 	$(RESOLVE_DEP) $< >> $(MKTMP)
-	echo "	$(CC) $< $(CFLAGS) -o $(WORKDIR)/$*.o" >> $(MKTMP)
+	echo "	$(COMPILE) $< -o $(WORKDIR)/$*.o" >> $(MKTMP)
 	make -f $(MKTMP)
 
 %.dt:$(TESTDIR)/%.cpp
 	echo -n "$(TESTDIR)/" > $(MKTMP)
 	$(RESOLVE_DEP) $< >> $(MKTMP)
-	echo "	$(CC) $< $(CFLAGS) -o $(TESTDIR)/$*.o" >> $(MKTMP)
+	echo "	$(COMPILE) $< -o $(TESTDIR)/$*.o" >> $(MKTMP)
 	make -f $(MKTMP)

@@ -1,18 +1,20 @@
 #ifndef __STEKIN_FLOWCHECK_TEST_TEST_COMMON_H__
 #define __STEKIN_FLOWCHECK_TEST_TEST_COMMON_H__
 
-#include "../../proto/node-base.h"
-#include "../../proto/block.h"
-#include "../../proto/func-reference-type.h"
-#include "../../proto/variable.h"
-#include "../../misc/pos-type.h"
-#include "../../test/data-node.h"
-#include "../../test/data-trees.h"
+#include <proto/node-base.h>
+#include <proto/block.h>
+#include <proto/func-reference-type.h>
+#include <proto/variable.h>
+#include <misc/pos-type.h>
+#include <test/data-node.h>
+#include <test/data-trees.h>
 
 namespace test {
 
     extern util::sref<proto::FuncInstDraft> const nul_draft;
     extern util::sref<proto::SymbolTable> const nul_st;
+    extern misc::trace nultrace;
+
     void instBlock(util::sref<proto::Block> block);
 
     struct FlowcheckData {
@@ -26,6 +28,12 @@ namespace test {
             , func_hint_ret_void(hint_ret_void)
         {}
 
+        FlowcheckData(misc::position const& ps, int list_size)
+            : pos(ps)
+            , func_arg_size(list_size)
+            , func_hint_ret_void(false)
+        {}
+
         explicit FlowcheckData(misc::position const ps)
             : pos(ps)
             , func_arg_size(-1)
@@ -33,8 +41,7 @@ namespace test {
         {}
 
         FlowcheckData()
-            : pos(-1)
-            , func_arg_size(-1)
+            : func_arg_size(-1)
             , func_hint_ret_void(false)
         {}
 
@@ -61,17 +68,25 @@ namespace test {
                            , bool func_hint_return_void);
         DataTree& operator()(NodeType const& type);
         DataTree& operator()(misc::position const& pos, NodeType const& type);
+        DataTree& operator()(misc::position const& pos, NodeType const& type, int list_size);
     };
 
     extern NodeType const BOOLEAN;
     extern NodeType const INTEGER;
     extern NodeType const FLOATING;
+    extern NodeType const LIST;
     extern NodeType const BINARY_OP;
     extern NodeType const PRE_UNARY_OP;
     extern NodeType const CALL;
     extern NodeType const FUNC_REFERENCE;
     extern NodeType const FUNCTOR;
     extern NodeType const REFERENCE;
+    extern NodeType const LIST_ELEMENT;
+    extern NodeType const LIST_INDEX;
+
+    extern NodeType const LIST_PIPELINE;
+    extern NodeType const PIPE_MAP;
+    extern NodeType const PIPE_FILTER;
 
     extern NodeType const VAR_DEF;
 

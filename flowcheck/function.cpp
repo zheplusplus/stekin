@@ -1,12 +1,13 @@
 #include <algorithm>
 
+#include <proto/node-base.h>
+#include <proto/function.h>
+#include <proto/variable.h>
+
 #include "function.h"
 #include "node-base.h"
 #include "filter.h"
 #include "symbol-table.h"
-#include "../proto/node-base.h"
-#include "../proto/function.h"
-#include "../proto/variable.h"
 
 using namespace flchk;
 

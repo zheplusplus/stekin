@@ -16,6 +16,7 @@ TEST_F(FunctionTest, WriteDecl)
                                      , 0
                                      , std::list<inst::Function::ParamInfo>()
                                      , util::serial_num::next()
+                                     , std::vector<int>()
                                      , util::mkptr(new inst::Block));
     func_no_param.writeDecl();
 
@@ -29,14 +30,17 @@ TEST_F(FunctionTest, WriteDecl)
                                     , 0
                                     , std::move(params)
                                     , util::serial_num::next()
+                                    , std::vector<int>()
                                     , util::mkptr(new inst::Block));
     func_2_param.writeDecl();
 
     DataTree::expectOne()
         (FUNC_DECL_BEGIN, "void", 1, 0)
+        (FUNC_RES_ENTRY, 0)
         (FUNC_DECL_END)
 
         (FUNC_DECL_BEGIN, "float", 1, 0)
+        (FUNC_RES_ENTRY, 0)
             (PARAMETER, "int", 0, 0)
             (PARAMETER, "bool", 0, 8)
         (FUNC_DECL_END)
@@ -50,6 +54,7 @@ TEST_F(FunctionTest, WriteImpl)
                                      , 0
                                      , std::list<inst::Function::ParamInfo>()
                                      , util::serial_num::next()
+                                     , std::vector<int>()
                                      , util::mkptr(new inst::Block));
     func_no_param.writeImpl();
 
@@ -63,6 +68,7 @@ TEST_F(FunctionTest, WriteImpl)
                                     , 0
                                     , std::move(params)
                                     , util::serial_num::next()
+                                    , std::vector<int>()
                                     , util::mkptr(new inst::Block));
     func_2_param.writeImpl();
 

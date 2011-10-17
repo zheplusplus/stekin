@@ -4,9 +4,10 @@
 #include <string>
 #include <vector>
 
+#include <util/pointer.h>
+
 #include "node-base.h"
 #include "fwd-decl.h"
-#include "../util/pointer.h"
 
 namespace flchk {
 
@@ -158,10 +159,10 @@ namespace flchk {
                                            , std::string const& op_img
                                            , bool rhs) const;
 
-        util::sptr<Expression const> asRHS(misc::position const& op_pos
+        util::sptr<Expression const> asRhs(misc::position const& op_pos
                                          , std::string const& op_img
                                          , util::sptr<Expression const> lhs) const;
-        util::sptr<Expression const> asRHS(misc::position const& op_pos
+        util::sptr<Expression const> asRhs(misc::position const& op_pos
                                          , std::string const& op_img) const;
 
         bool const value;
@@ -199,10 +200,10 @@ namespace flchk {
                                            , std::string const& op_img
                                            , bool) const;
 
-        util::sptr<Expression const> asRHS(misc::position const& op_pos
+        util::sptr<Expression const> asRhs(misc::position const& op_pos
                                          , std::string const& op_img
                                          , util::sptr<Expression const> lhs) const;
-        util::sptr<Expression const> asRHS(misc::position const& op_pos
+        util::sptr<Expression const> asRhs(misc::position const& op_pos
                                          , std::string const& op_img) const;
 
         mpz_class const value;
@@ -238,13 +239,75 @@ namespace flchk {
                                            , std::string const& op_img
                                            , bool) const;
 
-        util::sptr<Expression const> asRHS(misc::position const& op_pos
+        util::sptr<Expression const> asRhs(misc::position const& op_pos
                                          , std::string const& op_img
                                          , util::sptr<Expression const> lhs) const;
-        util::sptr<Expression const> asRHS(misc::position const& op_pos
+        util::sptr<Expression const> asRhs(misc::position const& op_pos
                                          , std::string const& op_img) const;
 
         mpf_class const value;
+    };
+
+    struct ListLiteral
+        : public Expression
+    {
+        ListLiteral(misc::position const& pos, std::vector<util::sptr<Expression const>> v)
+            : Expression(pos)
+            , value(std::move(v))
+        {}
+
+        util::sptr<proto::Expression const> compile(util::sref<proto::Block> block
+                                                  , util::sref<SymbolTable> st) const;
+        std::string typeName() const;
+        util::sptr<Expression const> fold() const;
+
+        std::vector<util::sptr<Expression const>> const value;
+    };
+
+    struct ListElement
+        : public Expression
+    {
+        explicit ListElement(misc::position const& pos)
+            : Expression(pos)
+        {}
+
+        util::sptr<proto::Expression const> compile(util::sref<proto::Block>
+                                                  , util::sref<SymbolTable>) const;
+        std::string typeName() const;
+        util::sptr<Expression const> fold() const;
+    };
+
+    struct ListIndex
+        : public Expression
+    {
+        explicit ListIndex(misc::position const& pos)
+            : Expression(pos)
+        {}
+
+        util::sptr<proto::Expression const> compile(util::sref<proto::Block>
+                                                  , util::sref<SymbolTable>) const;
+        std::string typeName() const;
+        util::sptr<Expression const> fold() const;
+    };
+
+    struct ListAppend
+        : public Expression
+    {
+        ListAppend(misc::position const& pos
+                 , util::sptr<Expression const> l
+                 , util::sptr<Expression const> r)
+            : Expression(pos)
+            , lhs(std::move(l))
+            , rhs(std::move(r))
+        {}
+
+        util::sptr<proto::Expression const> compile(util::sref<proto::Block> block
+                                                  , util::sref<SymbolTable> st) const;
+        std::string typeName() const;
+        util::sptr<Expression const> fold() const;
+
+        util::sptr<Expression const> const lhs;
+        util::sptr<Expression const> const rhs;
     };
 
     struct Call
@@ -262,9 +325,30 @@ namespace flchk {
                                                   , util::sref<SymbolTable> st) const;
         std::string typeName() const;
         util::sptr<Expression const> fold() const;
+        util::sptr<Call const> foldCall() const;
 
         std::string const name;
         std::vector<util::sptr<Expression const>> const args;
+    };
+
+    struct MemberCall
+        : public Expression
+    {
+        MemberCall(misc::position const& pos
+                 , util::sptr<Expression const> o
+                 , util::sptr<Call const> c)
+            : Expression(pos)
+            , object(std::move(o))
+            , call(std::move(c))
+        {}
+
+        util::sptr<proto::Expression const> compile(util::sref<proto::Block> block
+                                                  , util::sref<SymbolTable> st) const;
+        std::string typeName() const;
+        util::sptr<Expression const> fold() const;
+
+        util::sptr<Expression const> const object;
+        util::sptr<Call const> const call;
     };
 
     struct FuncReference

@@ -3,9 +3,10 @@
 
 #include <string>
 
+#include <util/pointer.h>
+#include <misc/pos-type.h>
+
 #include "fwd-decl.h"
-#include "../util/pointer.h"
-#include "../misc/pos-type.h"
 
 namespace proto {
 

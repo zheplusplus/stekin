@@ -1,13 +1,14 @@
 #include <algorithm>
 
+#include <proto/variable.h>
+#include <proto/expr-nodes.h>
+#include <util/vector-append.h>
+#include <report/errors.h>
+
 #include "symbol-table.h"
 #include "function.h"
 #include "expr-nodes.h"
 #include "global-filter.h"
-#include "../proto/variable.h"
-#include "../proto/expr-nodes.h"
-#include "../util/vector-append.h"
-#include "../report/errors.h"
 
 using namespace flchk;
 
@@ -227,7 +228,7 @@ void SymbolTable::_markReference(misc::position const& pos, std::string const& n
     }
 }
 
-Function SymbolTable::_fake_function(misc::position(0)
+Function SymbolTable::_fake_function(misc::position()
                                    , ""
                                    , std::vector<std::string>()
                                    , util::mkptr(new GlobalFilter));

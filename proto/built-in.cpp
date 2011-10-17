@@ -1,17 +1,19 @@
+#include <instance/built-in.h>
+
 #include "built-in.h"
 #include "variable.h"
 #include "func-inst-draft.h"
 #include "type.h"
-#include "../instance/built-in.h"
 
 using namespace proto;
 
-util::sref<Type const> WriteExpr::type(util::sref<SymbolTable const>) const
+util::sref<Type const> WriterExpr::type(util::sref<SymbolTable const>, misc::trace&) const
 {
     return Type::BIT_VOID;
 }
 
-util::sptr<inst::Expression const> WriteExpr::inst(util::sref<SymbolTable const> st) const
+util::sptr<inst::Expression const> WriterExpr::inst(util::sref<SymbolTable const> st
+                                                  , misc::trace& trace) const
 {
-    return util::mkptr(new inst::WriteExpr(ref.inst(st)));
+    return util::mkptr(new inst::WriterExpr(ref.inst(st, trace)));
 }

@@ -1,13 +1,13 @@
 #include <gtest/gtest.h>
 
+#include <test/phony-errors.h>
+
 #include "test-common.h"
 #include "../expr-nodes.h"
 #include "../block.h"
 #include "../function.h"
 #include "../func-reference-type.h"
 #include "../symbol-table.h"
-#include "../../test/common.h"
-#include "../../test/phony-errors.h"
 
 using namespace test;
 
@@ -31,6 +31,8 @@ TEST_F(StmtNodesTest, BranchConditionTypeCheck)
 {
     misc::position pos(1);
     misc::position pos_d(100);
+    misc::trace trace;
+    trace.add(pos);
     global_st->defVar(pos_d, proto::Type::BIT_INT, "kokopelli");
     util::sptr<proto::Block> block(new proto::Block);
 
@@ -43,7 +45,7 @@ TEST_F(StmtNodesTest, BranchConditionTypeCheck)
               , util::mkptr(new proto::Block))
     ;
     proto::Call call(pos_d, func, std::vector<util::sptr<proto::Expression const>>());
-    call.inst(*global_st);
+    call.inst(*global_st, trace);
 
     ASSERT_EQ(1, getCondNotBools().size());
     ASSERT_EQ(pos, getCondNotBools()[0].pos);

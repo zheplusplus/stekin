@@ -141,6 +141,56 @@ namespace grammar {
         std::string const value;
     };
 
+    struct ListLiteral
+        : public Expression
+    {
+        ListLiteral(misc::position const& pos, std::vector<util::sptr<Expression const>> v)
+            : Expression(pos)
+            , value(std::move(v))
+        {}
+
+        util::sptr<flchk::Expression const> compile() const;
+
+        std::vector<util::sptr<Expression const>> const value;
+    };
+
+    struct ListElement
+        : public Expression
+    {
+        explicit ListElement(misc::position const& pos)
+            : Expression(pos)
+        {}
+
+        util::sptr<flchk::Expression const> compile() const;
+    };
+
+    struct ListIndex
+        : public Expression
+    {
+        explicit ListIndex(misc::position const& pos)
+            : Expression(pos)
+        {}
+
+        util::sptr<flchk::Expression const> compile() const;
+    };
+
+    struct ListAppend
+        : public Expression
+    {
+        ListAppend(misc::position const& pos
+                 , util::sptr<Expression const> l
+                 , util::sptr<Expression const> r)
+            : Expression(pos)
+            , lhs(std::move(l))
+            , rhs(std::move(r))
+        {}
+
+        util::sptr<flchk::Expression const> compile() const;
+
+        util::sptr<Expression const> const lhs;
+        util::sptr<Expression const> const rhs;
+    };
+
     struct Call
         : public Expression
     {
@@ -153,9 +203,27 @@ namespace grammar {
         {}
 
         util::sptr<flchk::Expression const> compile() const;
+        util::sptr<flchk::Call const> cplMemberCall() const;
 
         std::string const name;
         std::vector<util::sptr<Expression const>> const args;
+    };
+
+    struct MemberCall
+        : public Expression
+    {
+        MemberCall(misc::position const& pos
+                 , util::sptr<Expression const> o
+                 , util::sptr<Call const> c)
+            : Expression(pos)
+            , object(std::move(o))
+            , call(std::move(c))
+        {}
+
+        util::sptr<flchk::Expression const> compile() const;
+
+        util::sptr<Expression const> const object;
+        util::sptr<Call const> const call;
     };
 
     struct FuncReference

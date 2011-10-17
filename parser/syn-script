@@ -18,5 +18,5 @@ BEGIN {
 END {
   print "$(WORKDIR)/syntacticall.y"
   print "	$(YACC) -o $(WORKDIR)/syn.cpp $(WORKDIR)/syntacticall.y"
-  print "	$(CC) $(WORKDIR)/syn.cpp -o $(WORKDIR)/syn.o"
+  print "	$(COMPILE_GENERATED) $(WORKDIR)/syn.cpp -o $(WORKDIR)/syn.o"
 }

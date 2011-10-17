@@ -1,7 +1,8 @@
 #include <iostream>
 
+#include <backtracpp/sig-handler.h>
+
 #include "trace.h"
-#include "../backtracpp/sig-handler.h"
 
 void inspect::prepare_for_trace()
 {

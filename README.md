@@ -35,7 +35,7 @@ What is needed and how to build it?
 
 ### 编译源代码需要
 
-* GCC 4.5.x (C++ 2011 标准中的 Lambda, `std::unique_ptr`, Move Semantic 支持)
+* GCC 4.6.x (C++ 2011 标准中的 Lambda, `std::unique_ptr`, Move Semantic, nullptr 支持)
 * gawk 3.1.x (AWK)
 * flex 2.5.x (词法分析)
 * bison 2.4.x (语法分析)
@@ -55,72 +55,21 @@ What is needed and how to build it?
 在 Stekin 源代码目录下执行 `make runtest` 进行测试.
 
 ### 编译后端代码
-Stekin 没有独立的后端, 它将生成 C++ 代码, 然后使用 g++ 编译这些代码生成可执行程序, 所以需要 GCC 4.3+ 进行后端编译, 此处的配置在源码目录的 stkn.sh 中
-
-Compared with other languages, what's the differences?
-------------------------------------------------------
-
-Stekin 是编译型语言, 其语法形式是抄袭完全动态的 Python 语言的, 此外还抄袭一些函数式程序设计语言
-
-### 缩进
-
-* Stekin 要求的缩进比 Python 更加强, 缩进必须是 4 空格的整数倍, 而不可以是制表符, 或者 1-3 个空格
-* 缩进不可以参差不齐, 子句必须统一缩进
-* 缩进还要紧邻, 如函数体的缩进只可以比函数头的缩进多一级
-
-### 类型推导
-
-* 变量定义无需指定类型 (Stekin 将从初值进行推导)
-* 函数定义无须指定参数与返回值类型 (Stekin 将从实参和 `return` 语句推导)
-
-### 不可修改
-* 变量定义后不可以改变值或类型
-* `=` 符号的作用是比较两侧操作数相等, 而不是赋值
-
-### 嵌套函数定义
-Stekin 允许函数嵌套定义, 并且内层定义的函数可以直接引用外层函数中定义的局部变量.
-
-### `ifnot` 分支
-对于条件成立时什么也不用做而条件不成立的时候需要忙活的分支, 如果不希望在条件前面打上碍眼的感叹号, 可以尝试这种分支语句.
-
-Use it to compile
------------------
 
 编译完成后会生成 stk-core.out 文件, 它从标准输入读取 Stekin 源代码, 并输出后端代码 ''片段'' 定向到标准输出.
 
-源码目录下有脚本 stkn.sh 来更方便地编译 Stekin 源代码, 使用方法:
+Stekin 没有独立的后端, 它将生成 C++ 代码, 然后使用 g++ 编译这些代码生成可执行程序, 所以需要 GCC 4.4+ 进行后端编译, 此处的配置在源码目录的 stkn.sh 中
 
-`$ sh stkn.sh 源代码文件 目标可执行文件`
+使用 `bash stkn.sh 输入文件名 目标文件名` 可以快捷完成编译, 如
 
-samples 目录下有很多样例可以参考. 其中 samples/errors 目录下的样例包含一些典型的错误, 而 samples/warnings 目录下的样例包含典型的警告.
+`bash stkn.sh samples/list-pipe.stkn ./a.out && ./a.out`
 
-很抱歉, 语言规范还没有.
+可以编译 `samples/list-pipe.stkn` 生成 `./a.out` 并执行它.
 
-New Features
-------------
-允许引用外部函数中的局部变量作为闭包使用
+Stekin the language itself
+--------------------------
 
-从 SICP 上将一些 Lisp 示例代码翻译为 Stekin 代码, 详见
-
-* samples/pair.stkn
-* samples/sqrt.stkn
-* samples/find-root.stkn
-* samples/fixed-point.stkn
-
-What will be added / changed next?
-----------------------------------
-功能
-
-* 降低对闭包对象的复制次数, 尽可能以引用方式传递闭包
-
-设计
-
-* 将 `instance` 模块去掉, 并为后端增加一级 `assembly` 模块, 节点为类汇编指令的结构
-
-测试
-
-* 降低测试构造语法树的复杂度
-* 引入 backtracpp 作为子项目, 简化调试
+请参阅 samples/README.md
 
 Contributing
 ------------
@@ -131,4 +80,4 @@ Contributing
 3. Commit your changes (`git commit -a -m "I have add some kick-ass features, or I have fixed some ball-ache bugs."`)
 4. Push to the branch (`git push origin stekin_my_own`)
 5. Create an *Issue* with a link to your branch
-6. Enjoy tsundere by Kagami Sama and wait
+6. Enjoy some music by Mr. Kenji Kawai and wait

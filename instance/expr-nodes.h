@@ -4,13 +4,14 @@
 #include <vector>
 #include <list>
 
+#include <util/pointer.h>
+#include <util/sn.h>
+#include <misc/platform.h>
+#include <misc/pos-type.h>
+
 #include "node-base.h"
 #include "address.h"
 #include "types.h"
-#include "../util/pointer.h"
-#include "../util/sn.h"
-#include "../misc/platform.h"
-#include "../misc/pos-type.h"
 
 namespace inst {
 
@@ -50,6 +51,39 @@ namespace inst {
         bool const value;
     };
 
+    struct EmptyListLiteral
+        : public Expression
+    {
+        void write() const;
+    };
+
+    struct ListLiteral
+        : public Expression
+    {
+        ListLiteral(util::sptr<Type const> mt, std::vector<util::sptr<Expression const>> v)
+            : member_type(std::move(mt))
+            , value(std::move(v))
+        {}
+
+        void write() const;
+        void writePipeDef(int level) const;
+
+        util::sptr<Type const> const member_type;
+        std::vector<util::sptr<Expression const>> const value;
+    };
+
+    struct ListElement
+        : public Expression
+    {
+        void write() const;
+    };
+
+    struct ListIndex
+        : public Expression
+    {
+        void write() const;
+    };
+
     struct Reference
         : public Expression
     {
@@ -73,8 +107,28 @@ namespace inst {
         {}
 
         void write() const;
+        void writePipeDef(int level) const;
 
         util::serial_num const call_sn;
+        std::vector<util::sptr<Expression const>> args;
+    };
+
+    struct MemberCall
+        : public Expression
+    {
+        MemberCall(util::sptr<Expression const> o
+                 , std::string const& n
+                 , std::vector<util::sptr<Expression const>> a)
+            : object(std::move(o))
+            , name(n)
+            , args(std::move(a))
+        {}
+
+        void write() const;
+        void writePipeDef(int level) const;
+
+        util::sptr<Expression const> object;
+        std::string const name;
         std::vector<util::sptr<Expression const>> args;
     };
 
@@ -112,6 +166,21 @@ namespace inst {
         std::list<ArgInfo> const args;
     };
 
+    struct ListAppend
+        : public Expression
+    {
+        ListAppend(util::sptr<Expression const> l, util::sptr<Expression const> r)
+            : lhs(std::move(l))
+            , rhs(std::move(r))
+        {}
+
+        void write() const;
+        void writePipeDef(int level) const;
+
+        util::sptr<Expression const> const lhs;
+        util::sptr<Expression const> const rhs;
+    };
+
     struct BinaryOp
         : public Expression
     {
@@ -124,6 +193,7 @@ namespace inst {
         {}
 
         void write() const;
+        void writePipeDef(int level) const;
 
         util::sptr<Expression const> const lhs;
         std::string const op;
@@ -139,6 +209,7 @@ namespace inst {
         {}
 
         void write() const;
+        void writePipeDef(int level) const;
 
         std::string const op;
         util::sptr<Expression const> const rhs;
@@ -153,6 +224,7 @@ namespace inst {
         {}
 
         void write() const;
+        void writePipeDef(int level) const;
 
         util::sptr<Expression const> const lhs;
         util::sptr<Expression const> const rhs;
@@ -167,6 +239,7 @@ namespace inst {
         {}
 
         void write() const;
+        void writePipeDef(int level) const;
 
         util::sptr<Expression const> const lhs;
         util::sptr<Expression const> const rhs;
@@ -180,6 +253,7 @@ namespace inst {
         {}
 
         void write() const;
+        void writePipeDef(int level) const;
 
         util::sptr<Expression const> const rhs;
     };

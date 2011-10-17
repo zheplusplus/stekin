@@ -4,7 +4,7 @@
 #include <list>
 #include <string>
 
-#include "../misc/pos-type.h"
+#include <misc/pos-type.h>
 
 namespace error {
 
@@ -48,16 +48,24 @@ namespace error {
                          , std::string const& op_img
                          , std::string const& rhst_name);
 
-    void conflictReturnType(misc::position const& this_pos
-                          , std::string const& prev_ret_type_name
-                          , std::string const& this_ret_type_name);
+    void conflictReturnType(std::string const& prev_ret_type_name
+                          , std::string const& this_ret_type_name
+                          , misc::trace const& trace);
 
-    void returnTypeUnresolvable(std::string const& name, int arg_count);
+    void returnTypeUnresolvable(std::string const& name, int arg_count, misc::trace const& trace);
 
     void condNotBool(misc::position const& pos, std::string const& actual_type);
 
     void requestVariableNotCallable(misc::position const& call_pos);
     void callVariableArgCountWrong(misc::position const& call_pos, int actual, int wanted);
+    void listMemberTypesNotSame(misc::position const& pos);
+    void memberCallNotFound(misc::position const& pos
+                          , std::string const& type_name
+                          , std::string const& call_name);
+    void pipeReferenceNotInListContext(misc::position const& pos);
+    void pipeNotApplyOnList(misc::position const& pos);
+
+    void featureNotSupportWrapListInClosure(misc::position const& pos);
 
 }
 

@@ -1,8 +1,9 @@
+#include <proto/node-base.h>
+
 #include "func-body-filter.h"
 #include "node-base.h"
 #include "expr-nodes.h"
 #include "function.h"
-#include "../proto/node-base.h"
 
 using namespace flchk;
 

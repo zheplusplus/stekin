@@ -1,7 +1,6 @@
 #include "variable.h"
 #include "func-inst-draft.h"
 #include "type.h"
-#include "../instance/node-base.h"
 
 using namespace proto;
 
@@ -26,11 +25,10 @@ bool Variable::operator!=(Variable const& rhs) const
     return !operator==(rhs);
 }
 
-util::sref<proto::FuncInstDraft> Variable::call(
-                                misc::position const& call_pos
-                              , std::vector<util::sref<Type const>> const& arg_types) const
+util::sref<proto::FuncInstDraft> Variable::call(std::vector<util::sref<Type const>> const& arg_types
+                                              , misc::trace& trace) const
 {
-    return type->call(call_pos, level, stack_offset, arg_types);
+    return type->call(level, stack_offset, arg_types, trace);
 }
 
 Variable Variable::adjustLocation(int offset_diff, int lvl) const

@@ -74,6 +74,10 @@ false {
     return IDENT;
 }
 
+[+][+] {
+    return LIST_APPEND;
+}
+
 [<]= {
     return LE;
 }
@@ -94,7 +98,15 @@ false {
     return OR;
 }
 
-[-+*/%=<>!()\[\],:@] {
+[$]element {
+    return LIST_ELEMENT;
+}
+
+[$]index {
+    return LIST_INDEX;
+}
+
+[-+*/%=<>!()\[\],:@.\|] {
     return *yytext;
 }
 

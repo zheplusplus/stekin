@@ -1,15 +1,16 @@
 #include <algorithm>
 #include <map>
 
+#include <proto/variable.h>
+#include <proto/expr-nodes.h>
+#include <proto/func-inst-draft.h>
+#include <util/string.h>
+#include <report/errors.h>
+
 #include "expr-nodes.h"
 #include "function.h"
 #include "symbol-table.h"
 #include "filter.h"
-#include "../proto/variable.h"
-#include "../proto/expr-nodes.h"
-#include "../proto/func-inst-draft.h"
-#include "../util/string.h"
-#include "../report/errors.h"
 
 using namespace flchk;
 
@@ -39,10 +40,10 @@ namespace {
     struct BinaryOpImplement
         : LiteralBinaryOp
     {
-        template <typename _LHS, typename _RHS>
+        template <typename _Lhs, typename _Rhs>
         util::sptr<Expression const> operateImpl(misc::position const& pos
-                                               , _LHS const& lhs
-                                               , _RHS const& rhs) const
+                                               , _Lhs const& lhs
+                                               , _Rhs const& rhs) const
         {
             return _OpFunc()(pos, lhs, rhs);
         }
@@ -77,10 +78,10 @@ namespace {
     };
 
     struct LTBinary {
-        template <typename _LHS, typename _RHS>
+        template <typename _Lhs, typename _Rhs>
         util::sptr<Expression const> operator()(misc::position const& pos
-                                              , _LHS const& lhs
-                                              , _RHS const& rhs) const
+                                              , _Lhs const& lhs
+                                              , _Rhs const& rhs) const
         {
             return util::mkptr(new BoolLiteral(pos, lhs < rhs));
         }
@@ -88,10 +89,10 @@ namespace {
     BinaryOpImplement<LTBinary> lt_binary_obj;
 
     struct LEBinary {
-        template <typename _LHS, typename _RHS>
+        template <typename _Lhs, typename _Rhs>
         util::sptr<Expression const> operator()(misc::position const& pos
-                                              , _LHS const& lhs
-                                              , _RHS const& rhs) const
+                                              , _Lhs const& lhs
+                                              , _Rhs const& rhs) const
         {
             return util::mkptr(new BoolLiteral(pos, lhs <= rhs));
         }
@@ -99,10 +100,10 @@ namespace {
     BinaryOpImplement<LEBinary> le_binary_obj;
 
     struct GEBinary {
-        template <typename _LHS, typename _RHS>
+        template <typename _Lhs, typename _Rhs>
         util::sptr<Expression const> operator()(misc::position const& pos
-                                              , _LHS const& lhs
-                                              , _RHS const& rhs) const
+                                              , _Lhs const& lhs
+                                              , _Rhs const& rhs) const
         {
             return util::mkptr(new BoolLiteral(pos, lhs >= rhs));
         }
@@ -110,10 +111,10 @@ namespace {
     BinaryOpImplement<GEBinary> ge_binary_obj;
 
     struct GTBinary {
-        template <typename _LHS, typename _RHS>
+        template <typename _Lhs, typename _Rhs>
         util::sptr<Expression const> operator()(misc::position const& pos
-                                              , _LHS const& lhs
-                                              , _RHS const& rhs) const
+                                              , _Lhs const& lhs
+                                              , _Rhs const& rhs) const
         {
             return util::mkptr(new BoolLiteral(pos, lhs > rhs));
         }
@@ -121,10 +122,10 @@ namespace {
     BinaryOpImplement<GTBinary> gt_binary_obj;
 
     struct EQBinary {
-        template <typename _LHS, typename _RHS>
+        template <typename _Lhs, typename _Rhs>
         util::sptr<Expression const> operator()(misc::position const& pos
-                                              , _LHS const& lhs
-                                              , _RHS const& rhs) const
+                                              , _Lhs const& lhs
+                                              , _Rhs const& rhs) const
         {
             return util::mkptr(new BoolLiteral(pos, lhs == rhs));
         }
@@ -132,10 +133,10 @@ namespace {
     BinaryOpImplement<EQBinary> eq_binary_obj;
 
     struct NEBinary {
-        template <typename _LHS, typename _RHS>
+        template <typename _Lhs, typename _Rhs>
         util::sptr<Expression const> operator()(misc::position const& pos
-                                              , _LHS const& lhs
-                                              , _RHS const& rhs) const
+                                              , _Lhs const& lhs
+                                              , _Rhs const& rhs) const
         {
             return util::mkptr(new BoolLiteral(pos, lhs != rhs));
         }
@@ -150,10 +151,10 @@ namespace {
             return util::mkptr(new IntLiteral(pos, lhs + rhs));
         }
 
-        template <typename _LHS, typename _RHS>
+        template <typename _Lhs, typename _Rhs>
         util::sptr<Expression const> operator()(misc::position const& pos
-                                              , _LHS const& lhs
-                                              , _RHS const& rhs) const
+                                              , _Lhs const& lhs
+                                              , _Rhs const& rhs) const
         {
             return util::mkptr(new FloatLiteral(pos, lhs + rhs));
         }
@@ -168,10 +169,10 @@ namespace {
             return util::mkptr(new IntLiteral(pos, lhs - rhs));
         }
 
-        template <typename _LHS, typename _RHS>
+        template <typename _Lhs, typename _Rhs>
         util::sptr<Expression const> operator()(misc::position const& pos
-                                              , _LHS const& lhs
-                                              , _RHS const& rhs) const
+                                              , _Lhs const& lhs
+                                              , _Rhs const& rhs) const
         {
             return util::mkptr(new FloatLiteral(pos, lhs - rhs));
         }
@@ -186,10 +187,10 @@ namespace {
             return util::mkptr(new IntLiteral(pos, lhs * rhs));
         }
 
-        template <typename _LHS, typename _RHS>
+        template <typename _Lhs, typename _Rhs>
         util::sptr<Expression const> operator()(misc::position const& pos
-                                              , _LHS const& lhs
-                                              , _RHS const& rhs) const
+                                              , _Lhs const& lhs
+                                              , _Rhs const& rhs) const
         {
             return util::mkptr(new FloatLiteral(pos, lhs * rhs));
         }
@@ -219,10 +220,10 @@ namespace {
             return util::mkptr(new FloatLiteral(pos, lhs / rhs));
         }
 
-        template <typename _LHS, typename _RHS>
+        template <typename _Lhs, typename _Rhs>
         util::sptr<Expression const> operator()(misc::position const& pos
-                                              , _LHS const& lhs
-                                              , _RHS const& rhs) const
+                                              , _Lhs const& lhs
+                                              , _Rhs const& rhs) const
         {
             return util::mkptr(new FloatLiteral(pos, lhs / rhs));
         }
@@ -241,10 +242,10 @@ namespace {
             return util::mkptr(new IntLiteral(pos, lhs % rhs));
         }
 
-        template <typename _LHS, typename _RHS>
+        template <typename _Lhs, typename _Rhs>
         util::sptr<Expression const> operator()(misc::position const& pos
-                                              , _LHS const&
-                                              , _RHS const&) const
+                                              , _Lhs const&
+                                              , _Rhs const&) const
         {
             error::binaryOpNotAvai(pos, "%", "int or float", "int or float");
             return makeFakeExpr(pos);
@@ -304,7 +305,7 @@ std::string PreUnaryOp::typeName() const
 
 util::sptr<Expression const> PreUnaryOp::fold() const
 {
-    return rhs->fold()->asRHS(pos, op_img);
+    return rhs->fold()->asRhs(pos, op_img);
 }
 
 util::sptr<proto::Expression const> BinaryOp::compile(util::sref<proto::Block> block
@@ -337,7 +338,7 @@ std::string BinaryOp::typeName() const
 
 util::sptr<Expression const> BinaryOp::fold() const
 {
-    return rhs->fold()->asRHS(pos, op_img, lhs->fold());
+    return rhs->fold()->asRhs(pos, op_img, lhs->fold());
 }
 
 util::sptr<proto::Expression const> Conjunction::compile(util::sref<proto::Block> block
@@ -499,14 +500,14 @@ util::sptr<Expression const> BoolLiteral::operate(misc::position const& op_pos
     return util::mkptr(new BoolLiteral(op_pos, value != rhs));
 }
 
-util::sptr<Expression const> BoolLiteral::asRHS(misc::position const& op_pos
+util::sptr<Expression const> BoolLiteral::asRhs(misc::position const& op_pos
                                               , std::string const& op_img
                                               , util::sptr<Expression const> lhs) const
 {
     return lhs->operate(op_pos, op_img, value);
 }
 
-util::sptr<Expression const> BoolLiteral::asRHS(misc::position const& op_pos
+util::sptr<Expression const> BoolLiteral::asRhs(misc::position const& op_pos
                                               , std::string const& op_img) const
 {
     error::preUnaryOpNotAvai(op_pos, op_img, "bool");
@@ -562,14 +563,14 @@ util::sptr<Expression const> IntLiteral::operate(misc::position const& op_pos
     return makeFakeExpr(op_pos);
 }
 
-util::sptr<Expression const> IntLiteral::asRHS(misc::position const& op_pos
+util::sptr<Expression const> IntLiteral::asRhs(misc::position const& op_pos
                                              , std::string const& op_img
                                              , util::sptr<Expression const> lhs) const
 {
     return lhs->operate(op_pos, op_img, value);
 }
 
-util::sptr<Expression const> IntLiteral::asRHS(misc::position const& op_pos
+util::sptr<Expression const> IntLiteral::asRhs(misc::position const& op_pos
                                              , std::string const& op_img) const
 {
     if ("-" == op_img) {
@@ -627,20 +628,114 @@ util::sptr<Expression const> FloatLiteral::operate(misc::position const& op_pos
     return makeFakeExpr(op_pos);
 }
 
-util::sptr<Expression const> FloatLiteral::asRHS(misc::position const& op_pos
+util::sptr<Expression const> FloatLiteral::asRhs(misc::position const& op_pos
                                                , std::string const& op_img
                                                , util::sptr<Expression const> lhs) const
 {
     return lhs->operate(op_pos, op_img, value);
 }
 
-util::sptr<Expression const> FloatLiteral::asRHS(misc::position const& op_pos
+util::sptr<Expression const> FloatLiteral::asRhs(misc::position const& op_pos
                                                , std::string const& op_img) const
 {
     if ("-" == op_img) {
         return util::mkptr(new FloatLiteral(op_pos, -value));
     }
     return util::mkptr(new FloatLiteral(op_pos, value));
+}
+
+static std::vector<util::sptr<proto::Expression const>> compileList(
+                        std::vector<util::sptr<Expression const>> const& list
+                      , util::sref<proto::Block> block
+                      , util::sref<SymbolTable> st)
+{
+    std::vector<util::sptr<proto::Expression const>> compiled_list;
+    std::for_each(list.begin()
+                , list.end()
+                , [&](util::sptr<Expression const> const& value)
+                  {
+                      compiled_list.push_back(value->compile(block, st));
+                  });
+    return std::move(compiled_list);
+}
+
+util::sptr<proto::Expression const> ListLiteral::compile(util::sref<proto::Block> block
+                                                       , util::sref<SymbolTable> st) const
+{
+    return util::mkptr(new proto::ListLiteral(pos, compileList(value, block, st)));
+}
+
+std::string ListLiteral::typeName() const
+{
+    return "list";
+}
+
+static std::vector<util::sptr<Expression const>> foldList(
+                        std::vector<util::sptr<Expression const>> const& list)
+{
+    std::vector<util::sptr<Expression const>> folded_list;
+    std::for_each(list.begin()
+                , list.end()
+                , [&](util::sptr<Expression const> const& value)
+                  {
+                      folded_list.push_back(value->fold());
+                  });
+    return std::move(folded_list);
+}
+
+util::sptr<Expression const> ListLiteral::fold() const
+{
+    return util::mkptr(new ListLiteral(pos, foldList(value)));
+}
+
+util::sptr<proto::Expression const> ListElement::compile(util::sref<proto::Block>
+                                                       , util::sref<SymbolTable>) const
+{
+    return util::mkptr(new proto::ListElement(pos));
+}
+
+std::string ListElement::typeName() const
+{
+    return "list element";
+}
+
+util::sptr<Expression const> ListElement::fold() const
+{
+    return util::mkptr(new ListElement(pos));
+}
+
+util::sptr<proto::Expression const> ListIndex::compile(util::sref<proto::Block>
+                                                     , util::sref<SymbolTable>) const
+{
+    return util::mkptr(new proto::ListIndex(pos));
+}
+
+std::string ListIndex::typeName() const
+{
+    return "list index";
+}
+
+util::sptr<Expression const> ListIndex::fold() const
+{
+    return util::mkptr(new ListIndex(pos));
+}
+
+util::sptr<proto::Expression const> ListAppend::compile(util::sref<proto::Block> block
+                                                      , util::sref<SymbolTable> st) const
+{
+    return util::mkptr(new proto::ListAppend(pos
+                                           , lhs->compile(block, st)
+                                           , rhs->compile(block, st)));
+}
+
+std::string ListAppend::typeName() const
+{
+    return '(' + lhs->typeName() + "++" + rhs->typeName() + ')';
+}
+
+util::sptr<Expression const> ListAppend::fold() const
+{
+    return util::mkptr(new ListAppend(pos, lhs->fold(), rhs->fold()));
 }
 
 util::sptr<proto::Expression const> Call::compile(util::sref<proto::Block> block
@@ -666,15 +761,31 @@ std::string Call::typeName() const
 
 util::sptr<Expression const> Call::fold() const
 {
-    std::vector<util::sptr<Expression const>> args_fold;
-    args_fold.reserve(args.size());
-    std::for_each(args.begin()
-                , args.end()
-                , [&](util::sptr<Expression const> const& expr)
-                  {
-                      args_fold.push_back(expr->fold());
-                  });
-    return util::mkptr(new Call(pos, name, std::move(args_fold)));
+    return foldCall();
+}
+
+util::sptr<Call const> Call::foldCall() const
+{
+    return util::mkptr(new Call(pos, name, foldList(args)));
+}
+
+util::sptr<proto::Expression const> MemberCall::compile(util::sref<proto::Block> block
+                                                      , util::sref<SymbolTable> st) const
+{
+    return util::mkptr(new proto::MemberCall(pos
+                                           , object->compile(block, st)
+                                           , call->name
+                                           , compileList(call->args, block, st)));
+}
+
+std::string MemberCall::typeName() const
+{
+    return "(member (" + object->typeName() + "))." + call->typeName();
+}
+
+util::sptr<Expression const> MemberCall::fold() const
+{
+    return util::mkptr(new MemberCall(pos, object->fold(), call->foldCall()));
 }
 
 util::sptr<proto::Expression const> FuncReference::compile(util::sref<proto::Block> block

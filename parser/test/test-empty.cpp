@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 
+#include <test/phony-errors.h>
+
 #include "../yy-misc.h"
-#include "../../test/phony-errors.h"
-#include "../../flowcheck/node-base.h"
 
 TEST(Syntax, Empty)
 {

@@ -1,27 +1,28 @@
 #include <algorithm>
 
+#include <instance/stmt-nodes.h>
+#include <util/vector-append.h>
+#include <report/errors.h>
+
 #include "function.h"
 #include "symbol-table.h"
 #include "expr-nodes.h"
 #include "stmt-nodes.h"
 #include "variable.h"
-#include "../instance/stmt-nodes.h"
-#include "../util/map-compare.h"
-#include "../util/vector-append.h"
-#include "../report/errors.h"
 
 using namespace proto;
 
-util::sref<FuncInstDraft> Function::inst(misc::position const& pos
-                                       , util::sref<SymbolTable const> ext_st
-                                       , std::vector<util::sref<Type const>> const& arg_types)
+util::sref<FuncInstDraft> Function::inst(util::sref<SymbolTable const> ext_st
+                                       , std::vector<util::sref<Type const>> const& arg_types
+                                       , misc::trace& trace)
 {
-    return inst(ext_st->level, bindExternalVars(pos, ext_st), arg_types);
+    return inst(ext_st->level, bindExternalVars(trace.top(), ext_st), arg_types, trace);
 }
 
 util::sref<FuncInstDraft> Function::_draftInCacheOrNulIfNonexist(
                         std::map<std::string, Variable const> const& ext_vars
-                      , std::vector<util::sref<Type const>> const& arg_types) const
+                      , std::vector<util::sref<Type const>> const& arg_types
+                      , misc::trace& trace) const
 {
     auto find_result = _draft_cache.find(ext_vars, arg_types);
     if (_draft_cache.end() == find_result) {
@@ -29,11 +30,11 @@ util::sref<FuncInstDraft> Function::_draftInCacheOrNulIfNonexist(
     }
     util::sref<FuncInstDraft> draft = *(find_result->draft);
     while (!draft->isReturnTypeResolved() && draft->hasMorePath()) {
-        draft->instNextPath();
+        draft->instNextPath(trace);
     }
     if (!draft->isReturnTypeResolved()) {
-        error::returnTypeUnresolvable(name, arg_types.size());
-        draft->setReturnType(misc::position(0), Type::BAD_TYPE);
+        error::returnTypeUnresolvable(name, arg_types.size(), trace);
+        draft->setReturnType(Type::BAD_TYPE, trace);
     }
     return draft;
 }
@@ -50,9 +51,10 @@ std::list<ArgNameTypeRec> makeArgInfo(std::vector<std::string> const& param_name
 
 util::sref<FuncInstDraft> Function::inst(int level
                                        , std::map<std::string, Variable const> const& ext_vars
-                                       , std::vector<util::sref<Type const>> const& arg_types)
+                                       , std::vector<util::sref<Type const>> const& arg_types
+                                       , misc::trace& trace)
 {
-    util::sref<FuncInstDraft> draft = _draftInCacheOrNulIfNonexist(ext_vars, arg_types);
+    util::sref<FuncInstDraft> draft = _draftInCacheOrNulIfNonexist(ext_vars, arg_types, trace);
     if (draft.not_nul()) {
         return draft;
     }
@@ -63,7 +65,7 @@ util::sref<FuncInstDraft> Function::inst(int level
                                                             , hint_void_return));
     util::sref<FuncInstDraft> draft_ref(*new_draft);
     _draft_cache.append(DraftInfo(ext_vars, arg_types, std::move(new_draft)));
-    draft_ref->instantiate(block());
+    draft_ref->instantiate(block(), trace);
     return draft_ref;
 }
 
@@ -143,7 +145,7 @@ std::vector<util::sptr<inst::Function const>> Function::DraftCache::deliverFuncs
                 , BaseType::end()
                 , [&](DraftInfo& info)
                   {
-                      result.push_back(std::move(info.draft->deliver()));
+                      result.push_back(info.draft->deliver());
                   });
     return std::move(result);
 }

@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "../report/errors.h"
+#include <report/errors.h>
 
 namespace test {
 
@@ -196,26 +196,28 @@ namespace test {
     };
 
     struct RetTypeConflictRec {
-        misc::position const this_pos;
         std::string const prev_type_name;
         std::string const this_type_name;
+        misc::trace const trace;
 
-        RetTypeConflictRec(misc::position const& tpos
-                         , std::string const& prev_ret_type_name
-                         , std::string const& this_ret_type_name)
-            : this_pos(tpos)
-            , prev_type_name(prev_ret_type_name)
+        RetTypeConflictRec(std::string const& prev_ret_type_name
+                         , std::string const& this_ret_type_name
+                         , misc::trace const& t)
+            : prev_type_name(prev_ret_type_name)
             , this_type_name(this_ret_type_name)
+            , trace(t)
         {}
     };
 
     struct RetTypeUnresolvableRec {
         std::string const name;
         int const arg_count;
+        misc::trace const trace;
 
-        RetTypeUnresolvableRec(std::string const& n, int ac)
+        RetTypeUnresolvableRec(std::string const& n, int ac, misc::trace const& t)
             : name(n)
             , arg_count(ac)
+            , trace(t)
         {}
     };
 
@@ -249,6 +251,42 @@ namespace test {
         {}
     };
 
+    struct ListMemberTypesNotSame {
+        misc::position const pos;
+
+        explicit ListMemberTypesNotSame(misc::position const& ps)
+            : pos(ps)
+        {}
+    };
+
+    struct MemberCallNotFound {
+        misc::position const pos;
+        std::string const type_name;
+        std::string const call_name;
+
+        MemberCallNotFound(misc::position const& ps, std::string const& tn, std::string const& cn)
+            : pos(ps)
+            , type_name(tn)
+            , call_name(cn)
+        {}
+    };
+
+    struct PipeRefNotInListContext {
+        misc::position const pos;
+
+        explicit PipeRefNotInListContext(misc::position const& ps)
+            : pos(ps)
+        {}
+    };
+
+    struct PipeNotApplyOnList {
+        misc::position const pos;
+
+        explicit PipeNotApplyOnList(misc::position const& ps)
+            : pos(ps)
+        {}
+    };
+
     void clearErr();
 
     std::vector<TabAsIndRec> getTabAsIndents();
@@ -273,6 +311,10 @@ namespace test {
     std::vector<CondNotBoolRec> getCondNotBools();
     std::vector<VariableNotCallableRec> getVariableNotCallables();
     std::vector<VarCallArgCountWrong> getVarCallArgCountWrong();
+    std::vector<ListMemberTypesNotSame> getListMemberTypesNotSame();
+    std::vector<MemberCallNotFound> getMemberCallNotFound();
+    std::vector<PipeRefNotInListContext> getPipeRefNotInListContext();
+    std::vector<PipeNotApplyOnList> getPipeNotApplyOnList();
 
 }
 

@@ -1,14 +1,14 @@
 #include <algorithm>
 
+#include <grammar/expr-nodes.h>
+#include <grammar/list-pipe.h>
+#include <grammar/clause-builder.h>
+#include <flowcheck/list-pipe.h>
+#include <flowcheck/function.h>
+#include <flowcheck/filter.h>
+#include <util/string.h>
+
 #include "test-common.h"
-#include "../../test/data-trees.h"
-#include "../../grammar/expr-nodes.h"
-#include "../../grammar/clause-builder.h"
-#include "../../flowcheck/node-base.h"
-#include "../../flowcheck/function.h"
-#include "../../flowcheck/filter.h"
-#include "../../proto/node-base.h"
-#include "../../util/string.h"
 
 using namespace grammar;
 using namespace test;
@@ -85,6 +85,41 @@ util::sptr<flchk::Expression const> FloatLiteral::compile() const
     return std::move(nulptr);
 }
 
+util::sptr<flchk::Expression const> ListLiteral::compile() const
+{
+    DataTree::actualOne()(pos, LIST_BEGIN);
+    std::for_each(value.begin()
+                , value.end()
+                , [&](util::sptr<Expression const> const& v)
+                  {
+                      v->compile();
+                  });
+    DataTree::actualOne()(pos, LIST_END);
+    return std::move(nulptr);
+}
+
+util::sptr<flchk::Expression const> ListElement::compile() const
+{
+    DataTree::actualOne()(pos, LIST_ELEMENT);
+    return std::move(nulptr);
+}
+
+util::sptr<flchk::Expression const> ListIndex::compile() const
+{
+    DataTree::actualOne()(pos, LIST_INDEX);
+    return std::move(nulptr);
+}
+
+util::sptr<flchk::Expression const> ListAppend::compile() const
+{
+    DataTree::actualOne()(pos, BINARY_OP_BEGIN, "++")(pos, OPERAND);
+    lhs->compile();
+    DataTree::actualOne()(pos, OPERAND);
+    rhs->compile();
+    DataTree::actualOne()(pos, BINARY_OP_END);
+    return std::move(nulptr);
+}
+
 util::sptr<flchk::Expression const> Call::compile() const
 {
     DataTree::actualOne()(pos, FUNC_CALL_BEGIN, name);
@@ -96,6 +131,45 @@ util::sptr<flchk::Expression const> Call::compile() const
                       expr->compile();
                   });
     DataTree::actualOne()(pos, FUNC_CALL_END);
+    return std::move(nulptr);
+}
+
+util::sptr<flchk::Expression const> MemberCall::compile() const
+{
+    DataTree::actualOne()(pos, BINARY_OP_BEGIN, ".")(pos, OPERAND);
+    object->compile();
+    DataTree::actualOne()(pos, OPERAND);
+    call->compile();
+    DataTree::actualOne()(pos, BINARY_OP_END);
+    return std::move(nulptr);
+}
+
+util::sptr<flchk::PipeBase const> PipeMap::compile() const
+{
+    DataTree::actualOne()(expr->pos, PIPE_MAP);
+    expr->compile();
+    return util::sptr<flchk::PipeBase const>(nullptr);
+}
+
+util::sptr<flchk::PipeBase const> PipeFilter::compile() const
+{
+    DataTree::actualOne()(expr->pos, PIPE_FILTER);
+    expr->compile();
+    return util::sptr<flchk::PipeBase const>(nullptr);
+}
+
+util::sptr<flchk::Expression const> ListPipeline::compile() const
+{
+    DataTree::actualOne()(pos, LIST_PIPELINE, util::str(int(pipeline.size())));
+    list->compile();
+    std::for_each(pipeline.begin()
+                , pipeline.end()
+                , [&](util::sptr<PipeBase const> const& pipe)
+                  {
+                      DataTree::actualOne()(pos, PIPE_BEGIN);
+                      pipe->compile();
+                      DataTree::actualOne()(pos, PIPE_END);
+                  });
     return std::move(nulptr);
 }
 

@@ -18,5 +18,5 @@ BEGIN {
 END {
   print "$(WORKDIR)/lexica.l"
   print "	$(LEX) -o $(WORKDIR)/lex.cpp $(WORKDIR)/lexica.l"
-  print "	$(CC) $(WORKDIR)/lex.cpp -o $(WORKDIR)/lex.o"
+  print "	$(COMPILE_GENERATED) $(WORKDIR)/lex.cpp -o $(WORKDIR)/lex.o"
 }

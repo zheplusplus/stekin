@@ -5,7 +5,6 @@
 using namespace test;
 
 static std::list<TabAsIndRec> tab_as_ind_recs;
-
 static std::list<BadIndentRec> bad_indent_recs;
 static std::list<InvCharRec> inv_char_recs;
 
@@ -31,6 +30,11 @@ static std::list<NAPreUnaryOpRec> na_pre_unary_ops;
 
 static std::list<VariableNotCallableRec> variable_not_callables;
 static std::list<VarCallArgCountWrong> var_call_arg_count_wrong_recs;
+static std::list<ListMemberTypesNotSame> list_member_types_not_same_recs;
+static std::list<MemberCallNotFound> member_call_not_found_recs;
+
+static std::list<PipeRefNotInListContext> pipe_ref_not_in_list_context;
+static std::list<PipeNotApplyOnList> pipe_not_apply_on_list;
 
 static bool has_err = false;
 
@@ -62,6 +66,12 @@ void test::clearErr()
     cond_not_bool_recs.clear();
 
     variable_not_callables.clear();
+    var_call_arg_count_wrong_recs.clear();
+    list_member_types_not_same_recs.clear();
+    member_call_not_found_recs.clear();
+
+    pipe_ref_not_in_list_context.clear();
+    pipe_not_apply_on_list.clear();
 }
 
 void yyerror(std::string const&)
@@ -192,18 +202,18 @@ void error::preUnaryOpNotAvai(misc::position const& pos
     na_pre_unary_ops.push_back(NAPreUnaryOpRec(pos, op_img, rhst));
 }
 
-void error::conflictReturnType(misc::position const& this_pos
-                             , std::string const& prev_type_name
-                             , std::string const& this_type_name)
+void error::conflictReturnType(std::string const& prev_type_name
+                             , std::string const& this_type_name
+                             , misc::trace const& trace)
 {
     has_err = true;
-    ret_type_conflict_recs.push_back(RetTypeConflictRec(this_pos, prev_type_name, this_type_name));
+    ret_type_conflict_recs.push_back(RetTypeConflictRec(prev_type_name, this_type_name, trace));
 }
 
-void error::returnTypeUnresolvable(std::string const& name, int arg_count)
+void error::returnTypeUnresolvable(std::string const& name, int arg_count, misc::trace const& trace)
 {
     has_err = true;
-    ret_type_unresolvable_recs.push_back(RetTypeUnresolvableRec(name, arg_count));
+    ret_type_unresolvable_recs.push_back(RetTypeUnresolvableRec(name, arg_count, trace));
 }
 
 void error::condNotBool(misc::position const& pos, std::string const& actual_type)
@@ -222,6 +232,32 @@ void error::callVariableArgCountWrong(misc::position const& call_pos, int actual
 {
     has_err = true;
     var_call_arg_count_wrong_recs.push_back(VarCallArgCountWrong(call_pos, actual, wanted));
+}
+
+void error::listMemberTypesNotSame(misc::position const& call_pos)
+{
+    has_err = true;
+    list_member_types_not_same_recs.push_back(ListMemberTypesNotSame(call_pos));
+}
+
+void error::memberCallNotFound(misc::position const& pos
+                             , std::string const& type_name
+                             , std::string const& call_name)
+{
+    has_err = true;
+    member_call_not_found_recs.push_back(MemberCallNotFound(pos, type_name, call_name));
+}
+
+void error::pipeReferenceNotInListContext(misc::position const& pos)
+{
+    has_err = true;
+    pipe_ref_not_in_list_context.push_back(PipeRefNotInListContext(pos));
+}
+
+void error::pipeNotApplyOnList(misc::position const& pos)
+{
+    has_err = true;
+    pipe_not_apply_on_list.push_back(PipeNotApplyOnList(pos));
 }
 
 std::vector<TabAsIndRec> test::getTabAsIndents()
@@ -337,3 +373,29 @@ std::vector<VarCallArgCountWrong> test::getVarCallArgCountWrong()
     return std::vector<VarCallArgCountWrong>(var_call_arg_count_wrong_recs.begin()
                                            , var_call_arg_count_wrong_recs.end());
 }
+
+std::vector<ListMemberTypesNotSame> test::getListMemberTypesNotSame()
+{
+    return std::vector<ListMemberTypesNotSame>(list_member_types_not_same_recs.begin()
+                                             , list_member_types_not_same_recs.end());
+}
+
+std::vector<MemberCallNotFound> test::getMemberCallNotFound()
+{
+    return std::vector<MemberCallNotFound>(member_call_not_found_recs.begin()
+                                         , member_call_not_found_recs.end());
+}
+
+std::vector<PipeRefNotInListContext> test::getPipeRefNotInListContext()
+{
+    return std::vector<PipeRefNotInListContext>(pipe_ref_not_in_list_context.begin()
+                                              , pipe_ref_not_in_list_context.end());
+}
+
+std::vector<PipeNotApplyOnList> test::getPipeNotApplyOnList()
+{
+    return std::vector<PipeNotApplyOnList>(pipe_not_apply_on_list.begin()
+                                         , pipe_not_apply_on_list.end());
+}
+
+void error::featureNotSupportWrapListInClosure(misc::position const&) {}

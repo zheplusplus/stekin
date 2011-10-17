@@ -4,9 +4,10 @@
 #include <string>
 #include <list>
 
+#include <util/pointer.h>
+
 #include "node-base.h"
 #include "block.h"
-#include "../util/pointer.h"
 
 namespace grammar {
 

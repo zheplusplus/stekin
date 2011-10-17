@@ -1,11 +1,14 @@
+#include <algorithm>
+
+#include <output/built-in-writer.h>
+
 #include "built-in.h"
-#include "../output/statement-writer.h"
 
 using namespace inst;
 
-void WriteExpr::write() const
+void WriterExpr::write() const
 {
-    output::beginWriteStmt();
+    output::beginWriterStmt();
     expr->write();
-    output::endWriteStmt();
+    output::endWriterStmt();
 }

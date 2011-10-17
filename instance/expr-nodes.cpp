@@ -1,8 +1,9 @@
 #include <algorithm>
 
+#include <output/func-writer.h>
+#include <output/expr-writer.h>
+
 #include "expr-nodes.h"
-#include "../output/func-writer.h"
-#include "../output/statement-writer.h"
 
 using namespace inst;
 
@@ -19,6 +20,34 @@ void FloatLiteral::write() const
 void BoolLiteral::write() const
 {
     output::writeBool(value);
+}
+
+void EmptyListLiteral::write() const
+{
+    output::emptyList();
+}
+
+void ListLiteral::write() const
+{
+    output::listBegin(value.size(), member_type->exportedName());
+    std::for_each(value.begin()
+                , value.end()
+                , [&](util::sptr<Expression const> const& member)
+                  {
+                      output::listNextMember();
+                      member->write();
+                  });
+    output::listEnd();
+}
+
+void ListElement::write() const
+{
+    output::pipeElement();
+}
+
+void ListIndex::write() const
+{
+    output::pipeIndex();
 }
 
 void Reference::write() const
@@ -39,6 +68,25 @@ void Call::write() const
     output::writeCallEnd();
 }
 
+void MemberCall::write() const
+{
+    object->write();
+    output::memberCallBegin(name);
+    if (args.empty()) {
+        output::memberCallEnd();
+        return;
+    }
+    (*args.begin())->write();
+    std::for_each(++args.begin()
+                , args.end()
+                , [&](util::sptr<Expression const> const& arg)
+                  {
+                      output::writeArgSeparator();
+                      arg->write();
+                  });
+    output::memberCallEnd();
+}
+
 void FuncReference::write() const
 {
     output::writeFuncReference(size);
@@ -47,10 +95,17 @@ void FuncReference::write() const
                 , [&](ArgInfo const& arg)
                   {
                       output::funcReferenceNextVariable(arg.self_offset
-                                                      , output::StackVarRec(arg.type->exportedName()
-                                                                          , arg.address.offset
-                                                                          , arg.address.level));
+                                                      , arg.type->makeParameter(arg.address));
                   });
+}
+
+void ListAppend::write() const
+{
+    output::listAppendBegin();
+    lhs->write();
+    output::writeArgSeparator();
+    rhs->write();
+    output::listAppendEnd();
 }
 
 void BinaryOp::write() const
@@ -94,4 +149,64 @@ void Negation::write() const
     output::writeOperator("!");
     rhs->write();
     output::endExpr();
+}
+
+static void writePipeDefInList(std::vector<util::sptr<Expression const>> const& list, int level)
+{
+    std::for_each(list.begin()
+                , list.end()
+                , [&](util::sptr<Expression const> const& element)
+                  {
+                      element->writePipeDef(level);
+                  });
+}
+
+void ListLiteral::writePipeDef(int level) const
+{
+    writePipeDefInList(value, level);
+}
+
+void Call::writePipeDef(int level) const
+{
+    writePipeDefInList(args, level);
+}
+
+void MemberCall::writePipeDef(int level) const
+{
+    object->writePipeDef(level);
+    writePipeDefInList(args, level);
+}
+
+void ListAppend::writePipeDef(int level) const
+{
+    lhs->writePipeDef(level);
+    rhs->writePipeDef(level);
+}
+
+void BinaryOp::writePipeDef(int level) const
+{
+    lhs->writePipeDef(level);
+    rhs->writePipeDef(level);
+}
+
+void PreUnaryOp::writePipeDef(int level) const
+{
+    rhs->writePipeDef(level);
+}
+
+void Conjunction::writePipeDef(int level) const
+{
+    lhs->writePipeDef(level);
+    rhs->writePipeDef(level);
+}
+
+void Disjunction::writePipeDef(int level) const
+{
+    lhs->writePipeDef(level);
+    rhs->writePipeDef(level);
+}
+
+void Negation::writePipeDef(int level) const
+{
+    rhs->writePipeDef(level);
 }

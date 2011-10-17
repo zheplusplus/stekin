@@ -36,13 +36,14 @@ namespace util {
     std::vector<sref<_RawType>> refs_append(std::vector<sref<_RawType>> former
                                           , std::vector<sref<_RawType>> latter)
     {
-        std::for_each(latter.begin()
-                    , latter.end()
-                    , [&](sref<_RawType> const& p)
-                      {
-                          former.push_back(p);
-                      });
-        return former;
+        former.insert(former.end(), latter.begin(), latter.end());
+        return std::move(former);
+    }
+
+    template <typename _Type>
+    void vec_extend(std::vector<_Type>& former, std::vector<_Type> latter)
+    {
+        former.insert(former.end(), latter.begin(), latter.end());
     }
 
 }

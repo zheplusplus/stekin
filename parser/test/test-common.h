@@ -1,9 +1,9 @@
 #ifndef __STEKIN_PARSER_TEST_TEST_COMMON_H__
 #define __STEKIN_PARSER_TEST_TEST_COMMON_H__
 
-#include "../../misc/pos-type.h"
-#include "../../test/data-node.h"
-#include "../../test/data-trees.h"
+#include <misc/pos-type.h>
+#include <test/data-node.h>
+#include <test/data-trees.h>
 
 namespace test {
 
@@ -47,6 +47,16 @@ namespace test {
     extern NodeType const INTEGER;
     extern NodeType const FLOATING;
     extern NodeType const IDENTIFIER;
+    extern NodeType const LIST_BEGIN;
+    extern NodeType const LIST_END;
+    extern NodeType const LIST_ELEMENT;
+    extern NodeType const LIST_INDEX;
+
+    extern NodeType const LIST_PIPELINE;
+    extern NodeType const PIPE_BEGIN;
+    extern NodeType const PIPE_END;
+    extern NodeType const PIPE_MAP;
+    extern NodeType const PIPE_FILTER;
 
     extern NodeType const BINARY_OP_BEGIN;
     extern NodeType const BINARY_OP_END;

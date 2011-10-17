@@ -3,9 +3,10 @@
 
 #include <list>
 
+#include <util/pointer.h>
+
 #include "fwd-decl.h"
 #include "node-base.h"
-#include "../util/pointer.h"
 
 namespace inst {
 

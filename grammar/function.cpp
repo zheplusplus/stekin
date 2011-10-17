@@ -1,8 +1,9 @@
+#include <flowcheck/func-body-filter.h>
+#include <flowcheck/node-base.h>
+#include <flowcheck/function.h>
+
 #include "function.h"
 #include "node-base.h"
-#include "../flowcheck/func-body-filter.h"
-#include "../flowcheck/node-base.h"
-#include "../flowcheck/function.h"
 
 using namespace grammar;
 

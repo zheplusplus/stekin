@@ -1,9 +1,10 @@
+#include <flowcheck/global-filter.h>
+#include <flowcheck/node-base.h>
+#include <flowcheck/function.h>
+#include <report/errors.h>
+
 #include "clause-builder.h"
 #include "stmt-nodes.h"
-#include "../flowcheck/global-filter.h"
-#include "../flowcheck/node-base.h"
-#include "../flowcheck/function.h"
-#include "../report/errors.h"
 
 using namespace grammar;
 
@@ -13,7 +14,7 @@ namespace {
         : public Acceptor
     {
         DummyAcceptor()
-            : Acceptor(misc::position(-1))
+            : Acceptor(misc::position())
         {}
 
         void acceptStmt(util::sptr<Statement const>) {}

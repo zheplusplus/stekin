@@ -3,9 +3,10 @@
 
 #include <list>
 
+#include <flowcheck/fwd-decl.h>
+#include <util/pointer.h>
+
 #include "fwd-decl.h"
-#include "../flowcheck/fwd-decl.h"
-#include "../util/pointer.h"
 
 namespace grammar {
 

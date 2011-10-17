@@ -1,9 +1,10 @@
+#include <misc/platform.h>
+#include <report/errors.h>
+
 #include "type.h"
 #include "expr-nodes.h"
 #include "variable.h"
 #include "func-inst-draft.h"
-#include "../misc/platform.h"
-#include "../report/errors.h"
 
 using namespace proto;
 
@@ -20,15 +21,6 @@ namespace {
         std::string name() const
         {
             return tname;
-        }
-
-        util::sref<FuncInstDraft> call(misc::position const& call_pos
-                                     , int
-                                     , int
-                                     , std::vector<util::sref<Type const>> const&) const
-        {
-            error::requestVariableNotCallable(call_pos);
-            return FuncInstDraft::badDraft();
         }
 
         void checkCondType(misc::position const& pos) const
@@ -134,7 +126,29 @@ bool Type::operator<(Type const& rhs) const
     return this < &rhs;
 }
 
+util::sref<FuncInstDraft> Type::call(int
+                                   , int
+                                   , std::vector<util::sref<Type const>> const&
+                                   , misc::trace& trace) const
+{
+    error::requestVariableNotCallable(trace.top());
+    return FuncInstDraft::badDraft();
+}
+
 void Type::checkCondType(misc::position const& pos) const
 {
     error::condNotBool(pos, name());
+}
+
+std::vector<int> Type::resEntries(int) const
+{
+    return std::vector<int>();
+}
+
+util::sref<Type const> Type::memberCallType(std::string const& call_name
+                                          , std::vector<util::sref<Type const>> const&
+                                          , misc::trace& trace) const
+{
+    error::memberCallNotFound(trace.top(), name(), call_name);
+    return BAD_TYPE;
 }

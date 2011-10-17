@@ -1,16 +1,16 @@
 #include <gtest/gtest.h>
 
+#include <flowcheck/node-base.h>
+#include <flowcheck/filter.h>
+#include <flowcheck/function.h>
+#include <test/common.h>
+#include <test/phony-errors.h>
+
 #include "test-common.h"
 #include "../acceptor.h"
 #include "../function.h"
 #include "../stmt-nodes.h"
 #include "../expr-nodes.h"
-#include "../../flowcheck/node-base.h"
-#include "../../flowcheck/filter.h"
-#include "../../flowcheck/function.h"
-#include "../../proto/node-base.h"
-#include "../../test/common.h"
-#include "../../test/phony-errors.h"
 
 using namespace test;
 
@@ -18,7 +18,7 @@ struct TestAcceptor
     : public grammar::Acceptor
 {
     TestAcceptor()
-        : grammar::Acceptor(misc::position(0))
+        : grammar::Acceptor(misc::position())
         , stmt_or_nul_if_not_set(nullptr)
         , func_or_nul_if_not_set(nullptr)
         , filter(mkfilter())

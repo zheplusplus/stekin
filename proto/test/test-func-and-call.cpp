@@ -1,11 +1,12 @@
 #include <gtest/gtest.h>
 
+#include <util/string.h>
+#include <test/phony-errors.h>
+
 #include "test-common.h"
 #include "../function.h"
 #include "../symbol-table.h"
 #include "../expr-nodes.h"
-#include "../../util/string.h"
-#include "../../test/phony-errors.h"
 
 using namespace test;
 
@@ -31,12 +32,14 @@ struct FuncNCallTest
 TEST_F(FuncNCallTest, EmptyBodyFunc)
 {
     misc::position pos(1);
+    misc::trace trace;
+    trace.add(pos);
     util::sref<proto::Function> func(
             block->declare(pos, "empty_body", std::vector<std::string>(), true));
     ASSERT_FALSE(error::hasError());
 
     proto::Call call(pos, func, std::vector<util::sptr<proto::Expression const>>());
-    call.inst(*global_st)->write();
+    call.inst(*global_st, trace)->write();
     ASSERT_FALSE(error::hasError());
 
     DataTree::expectOne()
@@ -47,6 +50,8 @@ TEST_F(FuncNCallTest, EmptyBodyFunc)
 TEST_F(FuncNCallTest, NoBranchRecursionFunc)
 {
     misc::position pos(2);
+    misc::trace trace;
+    trace.add(pos);
     util::sref<proto::Function> func(
             block->declare(pos, "first", std::vector<std::string>(), true));
     ASSERT_FALSE(error::hasError());
@@ -55,7 +60,7 @@ TEST_F(FuncNCallTest, NoBranchRecursionFunc)
         .ret(pos)
     ;
     proto::Call call_first(pos, func, std::vector<util::sptr<proto::Expression const>>());
-    call_first.inst(*global_st)->write();
+    call_first.inst(*global_st, trace)->write();
     ASSERT_FALSE(error::hasError());
 
     func = block->declare(pos, "second", std::vector<std::string>(), false);
@@ -63,7 +68,7 @@ TEST_F(FuncNCallTest, NoBranchRecursionFunc)
         .ret(pos, util::mkptr(new proto::IntLiteral(pos, mpz_class(20110127))))
     ;
     proto::Call call_second(pos, func, std::vector<util::sptr<proto::Expression const>>());
-    call_second.inst(*global_st)->write();
+    call_second.inst(*global_st, trace)->write();
     ASSERT_FALSE(error::hasError());
 
     func = block->declare(pos, "second", std::vector<std::string>({ "x" }), false);
@@ -73,19 +78,22 @@ TEST_F(FuncNCallTest, NoBranchRecursionFunc)
     std::vector<util::sptr<proto::Expression const>> args;
     args.push_back(util::mkptr(new proto::BoolLiteral(pos, false)));
     proto::Call call_second_x(pos, func, std::move(args));
-    call_second_x.inst(*global_st)->write();
+    call_second_x.inst(*global_st, trace)->write();
     ASSERT_FALSE(error::hasError());
 
     DataTree::expectOne()
         (CALL, "0")
         (CALL, "0")
         (CALL, "1")
+            (BOOLEAN, "false")
     ;
 }
 
 TEST_F(FuncNCallTest, FuncWithBranchRecursion)
 {
     misc::position pos(3);
+    misc::trace trace;
+    trace.add(pos);
     util::sptr<proto::Block> sub0(new proto::Block);
     util::sptr<proto::Block> sub1(new proto::Block);
     util::sref<proto::Function> test_func(
@@ -104,46 +112,96 @@ TEST_F(FuncNCallTest, FuncWithBranchRecursion)
 
     args.push_back(util::mkptr(new proto::BoolLiteral(pos, false)));
     proto::Call call(pos, test_func, std::move(args));
-    call.inst(*global_st)->write();
+    call.inst(*global_st, trace)->write();
     ASSERT_FALSE(error::hasError());
 
     DataTree::expectOne()
         (CALL, "1")
+            (BOOLEAN, "false")
     ;
 }
 
-TEST_F(FuncNCallTest, CouldNotResolve)
+TEST_F(FuncNCallTest, CannotResolve)
 {
     misc::position pos(4);
+    misc::trace trace;
     util::sptr<proto::Block> sub0(new proto::Block);
     util::sptr<proto::Block> sub1(new proto::Block);
     util::sref<proto::Function> test_func(
             block->declare(pos, "test_func", std::vector<std::string>(), false));
 
+    misc::position bad_call_pos(200);
     BlockFiller(test_func->block())
-        .ret(pos, util::mkptr(new proto::Call(pos
+        .ret(pos, util::mkptr(new proto::Call(bad_call_pos
                                             , test_func
                                             , std::vector<util::sptr<proto::Expression const>>())))
     ;
     ASSERT_FALSE(error::hasError());
 
     proto::Call call(pos, test_func, std::vector<util::sptr<proto::Expression const>>());
-    call.inst(*global_st);
+    call.inst(*global_st, trace);
     EXPECT_TRUE(error::hasError());
     ASSERT_EQ(1, getRetTypeUnresolvables().size());
     ASSERT_EQ("test_func", getRetTypeUnresolvables()[0].name);
     ASSERT_EQ(0, getRetTypeUnresolvables()[0].arg_count);
+
+    misc::trace error_trace;
+    error_trace.add(pos).add(bad_call_pos);
+    ASSERT_EQ(error_trace.str(""), getRetTypeUnresolvables()[0].trace.str(""));
+}
+
+TEST_F(FuncNCallTest, ConflictReturnType)
+{
+    misc::position pos(7);
+    misc::trace trace;
+
+    util::sptr<proto::Block> sub0(new proto::Block);
+    util::sptr<proto::Block> sub1(new proto::Block);
+    util::sref<proto::Function> test_func(
+            block->declare(pos, "kyubee", std::vector<std::string>({ "x" }), false));
+
+    misc::position ret_pos_a(300);
+    misc::position ret_pos_b(301);
+    std::vector<util::sptr<proto::Expression const>> args;
+    BlockFiller(*sub0)
+        .ret(ret_pos_a, util::mkptr(new proto::Reference(ret_pos_a, "x")))
+    ;
+    BlockFiller(test_func->block())
+        .branch(pos, util::mkptr(new proto::Reference(pos, "x")), std::move(sub0), std::move(sub1))
+        .ret(ret_pos_b, util::mkptr(new proto::IntLiteral(ret_pos_b, 13)))
+    ;
+    ASSERT_FALSE(error::hasError());
+
+    args.push_back(util::mkptr(new proto::BoolLiteral(pos, false)));
+    misc::position bad_call_pos(302);
+    proto::Call call(bad_call_pos, test_func, std::move(args));
+    call.inst(*global_st, trace)->write();
+    EXPECT_TRUE(error::hasError());
+    ASSERT_EQ(1, getRetTypeConflicts().size());
+    EXPECT_EQ("int", getRetTypeConflicts()[0].prev_type_name);
+    EXPECT_EQ("bool", getRetTypeConflicts()[0].this_type_name);
+
+    misc::trace error_trace;
+    error_trace.add(bad_call_pos);
+    EXPECT_EQ(error_trace.str(""), getRetTypeConflicts()[0].trace.str(""));
+
+    DataTree::expectOne()
+        (CALL, "1")
+            (BOOLEAN, "false")
+    ;
 }
 
 TEST_F(FuncNCallTest, WriteEmptyFunc)
 {
-    misc::position pos(5);
+    misc::position pos(6);
+    misc::trace trace;
+    trace.add(pos);
     util::sref<proto::Function> func(
             block->declare(pos, "empty_body", std::vector<std::string>(), true));
     ASSERT_FALSE(error::hasError());
 
     proto::Call call(pos, func, std::vector<util::sptr<proto::Expression const>>());
-    call.inst(*global_st);
+    call.inst(*global_st, trace);
 
     std::vector<util::sptr<inst::Function const>> funcs(block->deliverFuncs());
     ASSERT_FALSE(error::hasError());
@@ -162,7 +220,9 @@ TEST_F(FuncNCallTest, WriteEmptyFunc)
 
 TEST_F(FuncNCallTest, WriteNestedCallInBranches)
 {
-    misc::position pos(6);
+    misc::position pos(7);
+    misc::trace trace;
+    trace.add(pos);
     util::sptr<proto::Block> sub0(new proto::Block);
     util::sptr<proto::Block> sub1(new proto::Block);
 
@@ -191,7 +251,7 @@ TEST_F(FuncNCallTest, WriteNestedCallInBranches)
     std::vector<util::sptr<proto::Expression const>> args;
     args.push_back(util::mkptr(new proto::BoolLiteral(pos, false)));
     proto::Call call(pos, func, std::move(args));
-    call.inst(*global_st);
+    call.inst(*global_st, trace);
 
     std::vector<util::sptr<inst::Function const>> funcs(block->deliverFuncs());
     ASSERT_FALSE(error::hasError());
@@ -209,6 +269,7 @@ TEST_F(FuncNCallTest, WriteNestedCallInBranches)
             (BLOCK_BEGIN)
             (RETURN)
                 (CALL, "1")
+                    (BOOLEAN, "true")
             (BLOCK_END)
         (FUNC_IMPL, "1", 1)
             (BLOCK_BEGIN)
@@ -228,7 +289,9 @@ TEST_F(FuncNCallTest, WriteNestedCallInBranches)
 
 TEST_F(FuncNCallTest, WriteNestedCallOutsideBranches)
 {
-    misc::position pos(7);
+    misc::position pos(8);
+    misc::trace trace;
+    trace.add(pos);
     util::sptr<proto::Block> sub0(new proto::Block);
     util::sptr<proto::Block> sub1(new proto::Block);
 
@@ -257,7 +320,7 @@ TEST_F(FuncNCallTest, WriteNestedCallOutsideBranches)
     std::vector<util::sptr<proto::Expression const>> args;
     args.push_back(util::mkptr(new proto::BoolLiteral(pos, false)));
     proto::Call call(pos, func, std::move(args));
-    call.inst(*global_st);
+    call.inst(*global_st, trace);
 
     std::vector<util::sptr<inst::Function const>> funcs(block->deliverFuncs());
     ASSERT_FALSE(error::hasError());
@@ -275,6 +338,7 @@ TEST_F(FuncNCallTest, WriteNestedCallOutsideBranches)
             (BLOCK_BEGIN)
             (RETURN)
                 (CALL, "1")
+                    (BOOLEAN, "true")
             (BLOCK_END)
         (FUNC_IMPL, "1", 1)
             (BLOCK_BEGIN)

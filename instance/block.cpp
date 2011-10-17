@@ -1,8 +1,9 @@
 #include <algorithm>
 
+#include <output/stmt-writer.h>
+
 #include "node-base.h"
 #include "block.h"
-#include "../output/statement-writer.h"
 
 using namespace inst;
 

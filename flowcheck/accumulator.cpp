@@ -1,10 +1,11 @@
+#include <proto/node-base.h>
+#include <report/errors.h>
+#include <report/warnings.h>
+
 #include "accumulator.h"
 #include "stmt-nodes.h"
 #include "function.h"
 #include "filter.h"
-#include "../proto/node-base.h"
-#include "../report/errors.h"
-#include "../report/warnings.h"
 
 using namespace flchk;
 

@@ -3,23 +3,23 @@
 #include <algorithm>
 #include <vector>
 
-#include "parser/yy-misc.h"
-#include "grammar/clause-builder.h"
-#include "flowcheck/filter.h"
-#include "flowcheck/node-base.h"
-#include "flowcheck/function.h"
-#include "proto/node-base.h"
-#include "proto/function.h"
-#include "proto/symbol-table.h"
-#include "proto/func-inst-draft.h"
-#include "proto/variable.h"
-#include "proto/type.h"
-#include "proto/func-reference-type.h"
-#include "instance/node-base.h"
-#include "output/func-writer.h"
-#include "util/pointer.h"
-#include "report/errors.h"
-#include "inspect/trace.h"
+#include <parser/yy-misc.h>
+#include <grammar/clause-builder.h>
+#include <flowcheck/filter.h>
+#include <flowcheck/node-base.h>
+#include <flowcheck/function.h>
+#include <proto/node-base.h>
+#include <proto/function.h>
+#include <proto/symbol-table.h>
+#include <proto/func-inst-draft.h>
+#include <proto/variable.h>
+#include <proto/type.h>
+#include <proto/func-reference-type.h>
+#include <instance/node-base.h>
+#include <output/func-writer.h>
+#include <util/pointer.h>
+#include <report/errors.h>
+#include <inspect/trace.h>
 
 namespace {
 
@@ -66,7 +66,8 @@ static Functions semantic(util::sptr<flchk::Filter> global_flow)
 
     proto::SymbolTable st;
     util::sptr<proto::FuncInstDraft> inst_global_func(proto::FuncInstDraft::createGlobal());
-    inst_global_func->instantiate(util::mkref(proto_global_block));
+    misc::trace trace;
+    inst_global_func->instantiate(util::mkref(proto_global_block), trace);
     if (error::hasError()) {
         throw CompileFailure();
     }

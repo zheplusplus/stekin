@@ -1,16 +1,16 @@
 #ifndef __STEKIN_GRAMMAR_TEST_TEST_COMMON_H__
 #define __STEKIN_GRAMMAR_TEST_TEST_COMMON_H__
 
-#include "../node-base.h"
-#include "../../flowcheck/node-base.h"
-#include "../../misc/pos-type.h"
-#include "../../test/data-node.h"
-#include "../../test/data-trees.h"
+#include <flowcheck/node-base.h>
+#include <misc/pos-type.h>
+#include <test/data-node.h>
+#include <test/data-trees.h>
 
 namespace test {
 
     extern util::sref<proto::Block> const nulblock;
     util::sptr<flchk::Filter> mkfilter();
+    util::sref<flchk::SymbolTable> nulSymbols();
 
     struct GrammarData {
         misc::position const pos;
@@ -51,6 +51,7 @@ namespace test {
                            , int func_arg_size);
         DataTree& operator()(NodeType const& type);
         DataTree& operator()(misc::position const& pos, NodeType const& type);
+        DataTree& operator()(misc::position const& pos, NodeType const& type, int list_size);
     };
 
     extern std::string const VAR_DEF_FILTERED;
@@ -60,9 +61,15 @@ namespace test {
     extern NodeType const INTEGER;
     extern NodeType const FLOATING;
     extern NodeType const REFERENCE;
+    extern NodeType const LIST;
+    extern NodeType const LIST_ELEMENT;
+    extern NodeType const LIST_INDEX;
 
     extern NodeType const BINARY_OP;
     extern NodeType const PRE_UNARY_OP;
+    extern NodeType const LIST_PIPELINE;
+    extern NodeType const PIPE_MAP;
+    extern NodeType const PIPE_FILTER;
 
     extern NodeType const CALL;
     extern NodeType const FUNC_REFERENCE;

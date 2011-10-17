@@ -1,14 +1,14 @@
 #include <gtest/gtest.h>
 
+#include <proto/function.h>
+#include <test/common.h>
+#include <test/phony-errors.h>
+
 #include "test-common.h"
 #include "../symbol-table.h"
 #include "../function.h"
 #include "../func-body-filter.h"
 #include "../node-base.h"
-#include "../../proto/function.h"
-#include "../../instance/node-base.h"
-#include "../../test/common.h"
-#include "../../test/phony-errors.h"
 
 using namespace test;
 
@@ -63,9 +63,9 @@ TEST_F(SymbolTableTest, RefLocalVar)
     symbols->defVar(pos, "seele");
     symbols->defVar(pos, "lilith");
 
-    symbols->compileRef(pos, "nerv", *block)->inst(nul_st);
-    symbols->compileRef(pos, "seele", *block)->inst(nul_st);
-    symbols->compileRef(pos, "lilith", *block)->inst(nul_st);
+    symbols->compileRef(pos, "nerv", *block)->inst(nul_st, nultrace);
+    symbols->compileRef(pos, "seele", *block)->inst(nul_st, nultrace);
+    symbols->compileRef(pos, "lilith", *block)->inst(nul_st, nultrace);
     ASSERT_FALSE(error::hasError());
 
     flchk::SymbolTable inner_symbols(refSym());
@@ -74,10 +74,10 @@ TEST_F(SymbolTableTest, RefLocalVar)
     inner_symbols.defVar(pos, "adam");
     inner_symbols.defVar(pos, "eve");
 
-    inner_symbols.compileRef(pos, "nerv", *block)->inst(nul_st);
-    inner_symbols.compileRef(pos, "seele", *block)->inst(nul_st);
-    inner_symbols.compileRef(pos, "adam", *block)->inst(nul_st);
-    inner_symbols.compileRef(pos, "eve", *block)->inst(nul_st);
+    inner_symbols.compileRef(pos, "nerv", *block)->inst(nul_st, nultrace);
+    inner_symbols.compileRef(pos, "seele", *block)->inst(nul_st, nultrace);
+    inner_symbols.compileRef(pos, "adam", *block)->inst(nul_st, nultrace);
+    inner_symbols.compileRef(pos, "eve", *block)->inst(nul_st, nultrace);
     ASSERT_FALSE(error::hasError());
 
     EXPECT_TRUE(symbols->freeVariables().empty());
@@ -97,20 +97,20 @@ TEST_F(SymbolTableTest, RefLocalVar)
 TEST_F(SymbolTableTest, RefExternal)
 {
     misc::position pos(3);
-    symbols->compileRef(pos, "soryu", *block)->inst(nul_st);
-    symbols->compileRef(pos, "ikari", *block)->inst(nul_st);
-    symbols->compileRef(pos, "horaki", *block)->inst(nul_st);
+    symbols->compileRef(pos, "soryu", *block)->inst(nul_st, nultrace);
+    symbols->compileRef(pos, "ikari", *block)->inst(nul_st, nultrace);
+    symbols->compileRef(pos, "horaki", *block)->inst(nul_st, nultrace);
     ASSERT_FALSE(error::hasError());
     flchk::SymbolTable inner_symbols(refSym());
-    inner_symbols.compileRef(pos, "soryu", *block)->inst(nul_st);
-    inner_symbols.compileRef(pos, "ikari", *block)->inst(nul_st);
-    inner_symbols.compileRef(pos, "horaki", *block)->inst(nul_st);
+    inner_symbols.compileRef(pos, "soryu", *block)->inst(nul_st, nultrace);
+    inner_symbols.compileRef(pos, "ikari", *block)->inst(nul_st, nultrace);
+    inner_symbols.compileRef(pos, "horaki", *block)->inst(nul_st, nultrace);
     ASSERT_FALSE(error::hasError());
     util::sref<flchk::SymbolTable const> inner_sym_ref(util::mkref(inner_symbols));
     flchk::SymbolTable innest_symbols(inner_sym_ref);
-    innest_symbols.compileRef(pos, "soryu", *block)->inst(nul_st);
-    innest_symbols.compileRef(pos, "ikari", *block)->inst(nul_st);
-    innest_symbols.compileRef(pos, "horaki", *block)->inst(nul_st);
+    innest_symbols.compileRef(pos, "soryu", *block)->inst(nul_st, nultrace);
+    innest_symbols.compileRef(pos, "ikari", *block)->inst(nul_st, nultrace);
+    innest_symbols.compileRef(pos, "horaki", *block)->inst(nul_st, nultrace);
     ASSERT_FALSE(error::hasError());
 
     ASSERT_EQ(3, symbols->freeVariables().size());

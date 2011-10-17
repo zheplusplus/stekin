@@ -1,11 +1,12 @@
-#ifndef __STEKIN_PROTO_VARIABLE_H__ 
-#define __STEKIN_PROTO_VARIABLE_H__ 
+#ifndef __STEKIN_PROTO_VARIABLE_H__
+#define __STEKIN_PROTO_VARIABLE_H__
 
 #include <vector>
 
+#include <misc/pos-type.h>
+#include <util/pointer.h>
+
 #include "fwd-decl.h"
-#include "../misc/pos-type.h"
-#include "../util/pointer.h"
 
 namespace proto {
 
@@ -22,8 +23,8 @@ namespace proto {
             , level(lvl)
         {}
 
-        util::sref<FuncInstDraft> call(misc::position const& call_pos
-                                     , std::vector<util::sref<Type const>> const& arg_types) const;
+        util::sref<FuncInstDraft> call(std::vector<util::sref<Type const>> const& arg_types
+                                     , misc::trace& trace) const;
 
         Variable adjustLocation(int offset_diff, int lvl) const;
 

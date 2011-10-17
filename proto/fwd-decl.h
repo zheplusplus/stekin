@@ -4,6 +4,7 @@
 namespace proto {
 
     struct Expression;
+    struct PipeBase;
     struct Statement;
     struct Function;
     struct FuncInstDraft;
@@ -13,6 +14,7 @@ namespace proto {
     struct Operation;
     struct Variable;
     struct SymbolTable;
+    struct ListContext;
 
 }
 

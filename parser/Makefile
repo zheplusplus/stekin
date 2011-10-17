@@ -3,7 +3,7 @@ AWK=gawk
 
 include misc/mf-template.mk
 
-parser:yy-misc.d lexical syntactically
+parser:yy-misc.d syntax-types.d lexical syntactically
 
 syntactically:
 	$(RESOLVE_DEP) $(WORKDIR)/syn-include.h | $(AWK) -f $(WORKDIR)/syn-script > $(MKTMP)

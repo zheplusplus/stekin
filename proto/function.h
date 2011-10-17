@@ -5,21 +5,23 @@
 #include <list>
 #include <map>
 
+#include <misc/pos-type.h>
+
 #include "fwd-decl.h"
 #include "block.h"
 #include "func-inst-draft.h"
 #include "func-reference-type.h"
-#include "../misc/pos-type.h"
 
 namespace proto {
 
     struct Function {
-        util::sref<FuncInstDraft> inst(misc::position const& pos
-                                     , util::sref<SymbolTable const> ext_st
-                                     , std::vector<util::sref<Type const>> const& arg_types);
+        util::sref<FuncInstDraft> inst(util::sref<SymbolTable const> ext_st
+                                     , std::vector<util::sref<Type const>> const& arg_types
+                                     , misc::trace& trace);
         util::sref<FuncInstDraft> inst(int level
                                      , std::map<std::string, Variable const> const& ext_vars
-                                     , std::vector<util::sref<Type const>> const& arg_types);
+                                     , std::vector<util::sref<Type const>> const& arg_types
+                                     , misc::trace& trace);
 
         Function(misc::position const& ps
                , std::string const& func_name
@@ -88,7 +90,8 @@ namespace proto {
     private:
         util::sref<FuncInstDraft> _draftInCacheOrNulIfNonexist(
                                 std::map<std::string, Variable const> const& ext_vars
-                              , std::vector<util::sref<Type const>> const& arg_types) const;
+                              , std::vector<util::sref<Type const>> const& arg_types
+                              , misc::trace& trace) const;
     private:
         DraftCache _draft_cache;
         std::vector<util::sptr<FuncReferenceType const>> _reference_types;

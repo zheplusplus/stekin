@@ -4,10 +4,10 @@
 #include <string>
 #include <vector>
 
-#include "../grammar/fwd-decl.h"
-#include "../report/errors.h"
-#include "../util/pointer.h"
-#include "../misc/pos-type.h"
+#include <grammar/fwd-decl.h>
+#include <report/errors.h>
+#include <util/pointer.h>
+#include <misc/pos-type.h>
 
 namespace parser {
 
@@ -30,33 +30,55 @@ namespace parser {
     };
 
     struct ParamNames {
-        ParamNames* add(std::string const& name)
-        {
-            _names.push_back(name);
-            return this;
-        }
-
-        std::vector<std::string> get() const
-        {
-            return _names;
-        }
+        ParamNames* add(std::string const& name);
+        std::vector<std::string> get() const;
     private:
         std::vector<std::string> _names;
     };
 
     struct ArgList {
-        ArgList* add(grammar::Expression const* expr)
-        {
-            _params.push_back(std::move(util::mkptr(expr)));
-            return this;
-        }
-
-        std::vector<util::sptr<grammar::Expression const>> deliver()
-        {
-            return std::move(_params);
-        }
+        ArgList* add(grammar::Expression const* expr);
+        std::vector<util::sptr<grammar::Expression const>> deliver();
     private:
         std::vector<util::sptr<grammar::Expression const>> _params;
+    };
+
+    struct Pipeline {
+        struct PipeBase {
+            virtual ~PipeBase() {}
+            virtual util::sptr<grammar::PipeBase const> deliverCompile() = 0;
+
+            explicit PipeBase(util::sptr<grammar::Expression const> e)
+                : _expr(std::move(e))
+            {}
+        protected:
+            util::sptr<grammar::Expression const> _expr;
+        };
+
+        struct PipeMap
+            : public PipeBase
+        {
+            explicit PipeMap(util::sptr<grammar::Expression const> expr)
+                : PipeBase(std::move(expr))
+            {}
+
+            util::sptr<grammar::PipeBase const> deliverCompile();
+        };
+
+        struct PipeFilter
+            : public PipeBase
+        {
+            explicit PipeFilter(util::sptr<grammar::Expression const> expr)
+                : PipeBase(std::move(expr))
+            {}
+
+            util::sptr<grammar::PipeBase const> deliverCompile();
+        };
+
+        Pipeline* add(util::sptr<PipeBase> pipe);
+        std::vector<util::sptr<grammar::PipeBase const>> deliverCompile() const;
+    private:
+        std::vector<util::sptr<PipeBase>> _pipeline;
     };
 
 }

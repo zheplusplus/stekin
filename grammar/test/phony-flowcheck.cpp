@@ -1,16 +1,18 @@
 #include <algorithm>
 
+#include <flowcheck/func-body-filter.h>
+#include <flowcheck/global-filter.h>
+#include <flowcheck/symbol-def-filter.h>
+#include <flowcheck/accumulator.h>
+#include <flowcheck/block.h>
+#include <flowcheck/expr-nodes.h>
+#include <flowcheck/list-pipe.h>
+#include <flowcheck/stmt-nodes.h>
+#include <flowcheck/function.h>
+#include <proto/list-pipe.h>
+#include <util/string.h>
+
 #include "test-common.h"
-#include "../../flowcheck/func-body-filter.h"
-#include "../../flowcheck/global-filter.h"
-#include "../../flowcheck/symbol-def-filter.h"
-#include "../../flowcheck/accumulator.h"
-#include "../../flowcheck/block.h"
-#include "../../flowcheck/expr-nodes.h"
-#include "../../flowcheck/stmt-nodes.h"
-#include "../../flowcheck/function.h"
-#include "../../proto/node-base.h"
-#include "../../util/string.h"
 
 using namespace test;
 using namespace flchk;
@@ -30,11 +32,6 @@ namespace {
     util::sptr<flchk::Expression const> nulFlchkExpr()
     {
         return util::sptr<flchk::Expression const>(nullptr);
-    }
-
-    util::sref<SymbolTable> nulSymbols()
-    {
-        return util::sref<SymbolTable>(nullptr);
     }
 
     struct BranchConsequence
@@ -282,7 +279,20 @@ util::sref<SymbolTable> SymbolDefFilter::getSymbols()
     return nulSymbols();
 }
 
-GlobalFilter::GlobalFilter() = default;
+GlobalFilter::GlobalFilter()
+    : _writer_func(nulSymbols())
+    , _selector_func(nulSymbols())
+{}
+
+util::sptr<Filter> WriterFunction::_mkBody(util::sref<SymbolTable> s)
+{
+    return util::mkptr(new SymbolDefFilter(s));
+}
+
+util::sptr<Filter> SelectorFunction::_mkBody(util::sref<SymbolTable> s)
+{
+    return util::mkptr(new SymbolDefFilter(s));
+}
 
 util::sptr<proto::Statement> Arithmetics::compile(util::sref<proto::Block>
                                                 , util::sref<SymbolTable>) const 
@@ -390,16 +400,61 @@ util::sptr<proto::Expression const> FloatLiteral::compile(util::sref<proto::Bloc
     return nulProtoExpr();
 }
 
+static void compileList(std::vector<util::sptr<Expression const>> const& values)
+{
+    std::for_each(values.begin()
+                , values.end()
+                , [&](util::sptr<Expression const> const& v)
+                  {
+                      v->compile(nulblock, nulSymbols());
+                  });
+}
+
+util::sptr<proto::Expression const> ListLiteral::compile(util::sref<proto::Block>
+                                                       , util::sref<SymbolTable>) const
+{
+    DataTree::actualOne()(pos, LIST, value.size());
+    compileList(value);
+    return nulProtoExpr();
+}
+
+util::sptr<proto::Expression const> ListElement::compile(util::sref<proto::Block>
+                                                       , util::sref<SymbolTable>) const
+{
+    DataTree::actualOne()(pos, LIST_ELEMENT);
+    return nulProtoExpr();
+}
+
+util::sptr<proto::Expression const> ListIndex::compile(util::sref<proto::Block>
+                                                     , util::sref<SymbolTable>) const
+{
+    DataTree::actualOne()(pos, LIST_INDEX);
+    return nulProtoExpr();
+}
+
+util::sptr<proto::Expression const> ListAppend::compile(util::sref<proto::Block>
+                                                      , util::sref<SymbolTable>) const
+{
+    DataTree::actualOne()(pos, BINARY_OP, "++");
+    lhs->compile(nulblock, nulSymbols());
+    rhs->compile(nulblock, nulSymbols());
+    return nulProtoExpr();
+}
+
 util::sptr<proto::Expression const> Call::compile(util::sref<proto::Block>
                                                 , util::sref<SymbolTable>) const
 {
     DataTree::actualOne()(pos, CALL, name, args.size());
-    std::for_each(args.begin()
-                , args.end()
-                , [&](util::sptr<Expression const> const& arg)
-                  {
-                      arg->compile(nulblock, nulSymbols());
-                  });
+    compileList(args);
+    return nulProtoExpr();
+}
+
+util::sptr<proto::Expression const> MemberCall::compile(util::sref<proto::Block>
+                                                      , util::sref<SymbolTable>) const
+{
+    DataTree::actualOne()(pos, BINARY_OP, ".");
+    object->compile(nulblock, nulSymbols());
+    call->compile(nulblock, nulSymbols());
     return nulProtoExpr();
 }
 
@@ -408,6 +463,36 @@ util::sptr<proto::Expression const> FuncReference::compile(util::sref<proto::Blo
 {
     DataTree::actualOne()(pos, FUNC_REFERENCE, name, param_count);
     return nulProtoExpr();
+}
+
+util::sptr<proto::Expression const> ListPipeline::compile(util::sref<proto::Block>
+                                                        , util::sref<SymbolTable>) const
+{
+    DataTree::actualOne()(pos, LIST_PIPELINE, pipeline.size());
+    list->compile(nulblock, nulSymbols());
+    std::for_each(pipeline.begin()
+                , pipeline.end()
+                , [&](util::sptr<PipeBase const> const& pipe)
+                  {
+                      pipe->compile(nulblock, nulSymbols());
+                  });
+    return nulProtoExpr();
+}
+
+util::sptr<proto::PipeBase const> PipeMap::compile(util::sref<proto::Block>
+                                                 , util::sref<SymbolTable>) const
+{
+    DataTree::actualOne()(expr->pos, PIPE_MAP);
+    expr->compile(nulblock, nulSymbols());
+    return util::sptr<proto::PipeBase const>(nullptr);
+}
+
+util::sptr<proto::PipeBase const> PipeFilter::compile(util::sref<proto::Block>
+                                                    , util::sref<SymbolTable>) const
+{
+    DataTree::actualOne()(expr->pos, PIPE_FILTER);
+    expr->compile(nulblock, nulSymbols());
+    return util::sptr<proto::PipeBase const>(nullptr);
 }
 
 bool Expression::isLiteral() const
@@ -441,14 +526,14 @@ util::sptr<Expression const> Expression::operate(misc::position const&
     return nulFlchkExpr();
 }
 
-util::sptr<Expression const> Expression::asRHS(misc::position const&
+util::sptr<Expression const> Expression::asRhs(misc::position const&
                                              , std::string const&
                                              , util::sptr<Expression const>) const
 {
     return nulFlchkExpr();
 }
 
-util::sptr<Expression const> Expression::asRHS(misc::position const&, std::string const&) const
+util::sptr<Expression const> Expression::asRhs(misc::position const&, std::string const&) const
 {
     return nulFlchkExpr();
 }
@@ -604,14 +689,14 @@ util::sptr<Expression const> BoolLiteral::operate(misc::position const&
     return nulFlchkExpr();
 }
 
-util::sptr<Expression const> BoolLiteral::asRHS(misc::position const&
+util::sptr<Expression const> BoolLiteral::asRhs(misc::position const&
                                               , std::string const&
                                               , util::sptr<Expression const>) const
 {
     return nulFlchkExpr();
 }
 
-util::sptr<Expression const> BoolLiteral::asRHS(misc::position const&, std::string const&) const
+util::sptr<Expression const> BoolLiteral::asRhs(misc::position const&, std::string const&) const
 {
     return nulFlchkExpr();
 }
@@ -657,14 +742,14 @@ util::sptr<Expression const> IntLiteral::operate(misc::position const&
     return nulFlchkExpr();
 }
 
-util::sptr<Expression const> IntLiteral::asRHS(misc::position const&
+util::sptr<Expression const> IntLiteral::asRhs(misc::position const&
                                              , std::string const&
                                              , util::sptr<Expression const>) const
 {
     return nulFlchkExpr();
 }
 
-util::sptr<Expression const> IntLiteral::asRHS(misc::position const&, std::string const&) const
+util::sptr<Expression const> IntLiteral::asRhs(misc::position const&, std::string const&) const
 {
     return nulFlchkExpr();
 }
@@ -710,14 +795,54 @@ util::sptr<Expression const> FloatLiteral::operate(misc::position const&
     return nulFlchkExpr();
 }
 
-util::sptr<Expression const> FloatLiteral::asRHS(misc::position const&
+util::sptr<Expression const> FloatLiteral::asRhs(misc::position const&
                                                , std::string const&
                                                , util::sptr<Expression const>) const
 {
     return nulFlchkExpr();
 }
 
-util::sptr<Expression const> FloatLiteral::asRHS(misc::position const&, std::string const&) const
+util::sptr<Expression const> FloatLiteral::asRhs(misc::position const&, std::string const&) const
+{
+    return nulFlchkExpr();
+}
+
+std::string ListLiteral::typeName() const
+{
+    return "";
+}
+
+util::sptr<Expression const> ListLiteral::fold() const
+{
+    return nulFlchkExpr();
+}
+
+std::string ListElement::typeName() const
+{
+    return "";
+}
+
+util::sptr<Expression const> ListElement::fold() const
+{
+    return nulFlchkExpr();
+}
+
+std::string ListIndex::typeName() const
+{
+    return "";
+}
+
+util::sptr<Expression const> ListIndex::fold() const
+{
+    return nulFlchkExpr();
+}
+
+std::string ListAppend::typeName() const
+{
+    return "";
+}
+
+util::sptr<Expression const> ListAppend::fold() const
 {
     return nulFlchkExpr();
 }
@@ -732,6 +857,16 @@ util::sptr<Expression const> Call::fold() const
     return nulFlchkExpr();
 }
 
+std::string MemberCall::typeName() const
+{
+    return "";
+}
+
+util::sptr<Expression const> MemberCall::fold() const
+{
+    return nulFlchkExpr();
+}
+
 std::string FuncReference::typeName() const
 {
     return "";
@@ -740,4 +875,24 @@ std::string FuncReference::typeName() const
 util::sptr<Expression const> FuncReference::fold() const
 {
     return nulFlchkExpr();
+}
+
+std::string ListPipeline::typeName() const
+{
+    return "";
+}
+
+util::sptr<Expression const> ListPipeline::fold() const
+{
+    return nulFlchkExpr();
+}
+
+util::sptr<PipeBase const> PipeMap::fold() const
+{
+    return util::sptr<PipeBase const>(nullptr);
+}
+
+util::sptr<PipeBase const> PipeFilter::fold() const
+{
+    return util::sptr<PipeBase const>(nullptr);
 }
