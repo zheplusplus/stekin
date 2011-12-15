@@ -73,7 +73,7 @@ void output::pipeMapEnd()
     DataTree::actualOne()(PIPE_MAP_END);
 }
 
-void output::pipeFilterBegin(util::id pipe_id, int level, std::string const& member_type)
+void output::pipeFilterBegin(util::id, int level, std::string const& member_type)
 {
     DataTree::actualOne()(PIPE_FILTER_BEGIN, level, member_type);
 }
