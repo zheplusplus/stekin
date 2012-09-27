@@ -9,7 +9,7 @@ using namespace proto;
 
 util::sref<Type const> WriterExpr::type(util::sref<SymbolTable const>, misc::trace&) const
 {
-    return Type::BIT_VOID;
+    return Type::s_void();
 }
 
 util::sptr<inst::Expression const> WriterExpr::inst(util::sref<SymbolTable const> st

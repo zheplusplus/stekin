@@ -33,7 +33,7 @@ TEST_F(StmtNodesTest, BranchConditionTypeCheck)
     misc::position pos_d(100);
     misc::trace trace;
     trace.add(pos);
-    global_st->defVar(pos_d, proto::Type::BIT_INT, "kokopelli");
+    global_st->defVar(pos_d, proto::Type::s_int(), "kokopelli");
     util::sptr<proto::Block> block(new proto::Block);
 
     util::sref<proto::Function> func(block->declare(pos_d, "f", std::vector<std::string>(), true));
@@ -49,5 +49,5 @@ TEST_F(StmtNodesTest, BranchConditionTypeCheck)
 
     ASSERT_EQ(1, getCondNotBools().size());
     ASSERT_EQ(pos, getCondNotBools()[0].pos);
-    ASSERT_EQ(proto::Type::BIT_INT->name(), getCondNotBools()[0].type_name);
+    ASSERT_EQ(proto::Type::s_int()->name(), getCondNotBools()[0].type_name);
 }

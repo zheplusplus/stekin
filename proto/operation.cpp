@@ -7,41 +7,41 @@
 
 using namespace proto;
 
-static Operation const BIT_INT_ADD(Type::BIT_INT, "+");
-static Operation const BIT_INT_SUB(Type::BIT_INT, "-");
-static Operation const BIT_INT_MUL(Type::BIT_INT, "*");
-static Operation const BIT_INT_DIV(Type::BIT_INT, "/");
-static Operation const BIT_INT_MOD(Type::BIT_INT, "%");
+static Operation const BIT_INT_ADD(Type::s_int(), "+");
+static Operation const BIT_INT_SUB(Type::s_int(), "-");
+static Operation const BIT_INT_MUL(Type::s_int(), "*");
+static Operation const BIT_INT_DIV(Type::s_int(), "/");
+static Operation const BIT_INT_MOD(Type::s_int(), "%");
 
-static Operation const BIT_FLOAT_ADD(Type::BIT_FLOAT, "+");
-static Operation const BIT_FLOAT_SUB(Type::BIT_FLOAT, "-");
-static Operation const BIT_FLOAT_MUL(Type::BIT_FLOAT, "*");
-static Operation const BIT_FLOAT_DIV(Type::BIT_FLOAT, "/");
+static Operation const BIT_FLOAT_ADD(Type::s_float(), "+");
+static Operation const BIT_FLOAT_SUB(Type::s_float(), "-");
+static Operation const BIT_FLOAT_MUL(Type::s_float(), "*");
+static Operation const BIT_FLOAT_DIV(Type::s_float(), "/");
 
-static Operation const BIT_BOOL_EQ(Type::BIT_BOOL, "==");
-static Operation const BIT_BOOL_NE(Type::BIT_BOOL, "!=");
+static Operation const BIT_BOOL_EQ(Type::s_bool(), "==");
+static Operation const BIT_BOOL_NE(Type::s_bool(), "!=");
 
-static Operation const BIT_INT_EQ(Type::BIT_BOOL, "==");
-static Operation const BIT_INT_LE(Type::BIT_BOOL, "<=");
-static Operation const BIT_INT_LT(Type::BIT_BOOL, "<");
-static Operation const BIT_INT_GE(Type::BIT_BOOL, ">=");
-static Operation const BIT_INT_GT(Type::BIT_BOOL, ">");
-static Operation const BIT_INT_NE(Type::BIT_BOOL, "!=");
+static Operation const BIT_INT_EQ(Type::s_bool(), "==");
+static Operation const BIT_INT_LE(Type::s_bool(), "<=");
+static Operation const BIT_INT_LT(Type::s_bool(), "<");
+static Operation const BIT_INT_GE(Type::s_bool(), ">=");
+static Operation const BIT_INT_GT(Type::s_bool(), ">");
+static Operation const BIT_INT_NE(Type::s_bool(), "!=");
 
-static Operation const BIT_FLOAT_EQ(Type::BIT_BOOL, "==");
-static Operation const BIT_FLOAT_LE(Type::BIT_BOOL, "<=");
-static Operation const BIT_FLOAT_LT(Type::BIT_BOOL, "<");
-static Operation const BIT_FLOAT_GE(Type::BIT_BOOL, ">=");
-static Operation const BIT_FLOAT_GT(Type::BIT_BOOL, ">");
-static Operation const BIT_FLOAT_NE(Type::BIT_BOOL, "!=");
+static Operation const BIT_FLOAT_EQ(Type::s_bool(), "==");
+static Operation const BIT_FLOAT_LE(Type::s_bool(), "<=");
+static Operation const BIT_FLOAT_LT(Type::s_bool(), "<");
+static Operation const BIT_FLOAT_GE(Type::s_bool(), ">=");
+static Operation const BIT_FLOAT_GT(Type::s_bool(), ">");
+static Operation const BIT_FLOAT_NE(Type::s_bool(), "!=");
 
-static Operation const BIT_POSI_INT(Type::BIT_INT, "+");
-static Operation const BIT_POSI_FLOAT(Type::BIT_FLOAT, "+");
+static Operation const BIT_POSI_INT(Type::s_int(), "+");
+static Operation const BIT_POSI_FLOAT(Type::s_float(), "+");
 
-static Operation const BIT_NEGA_INT(Type::BIT_INT, "-");
-static Operation const BIT_NEGA_FLOAT(Type::BIT_FLOAT, "-");
+static Operation const BIT_NEGA_INT(Type::s_int(), "-");
+static Operation const BIT_NEGA_FLOAT(Type::s_float(), "-");
 
-static Operation const BAD_OPERATION(Type::BAD_TYPE, "");
+static Operation const BAD_OPERATION(Type::bad(), "");
 
 namespace {
 
@@ -58,7 +58,7 @@ namespace {
                                         , util::sref<Type const> lhs
                                         , util::sref<Type const> rhs) const
         {
-            if (Type::BAD_TYPE == lhs || Type::BAD_TYPE == rhs) {
+            if (Type::bad() == lhs || Type::bad() == rhs) {
                 return util::mkref(BAD_OPERATION);
             }
 
@@ -92,57 +92,57 @@ namespace {
         BinaryOpMap()
         {
             (*this)
-                ._add("+", Type::BIT_INT, Type::BIT_INT, util::mkref(BIT_INT_ADD))
-                ._add("-", Type::BIT_INT, Type::BIT_INT, util::mkref(BIT_INT_SUB))
-                ._add("*", Type::BIT_INT, Type::BIT_INT, util::mkref(BIT_INT_MUL))
-                ._add("/", Type::BIT_INT, Type::BIT_INT, util::mkref(BIT_INT_DIV))
-                ._add("%", Type::BIT_INT, Type::BIT_INT, util::mkref(BIT_INT_MOD))
+                ._add("+", Type::s_int(), Type::s_int(), util::mkref(BIT_INT_ADD))
+                ._add("-", Type::s_int(), Type::s_int(), util::mkref(BIT_INT_SUB))
+                ._add("*", Type::s_int(), Type::s_int(), util::mkref(BIT_INT_MUL))
+                ._add("/", Type::s_int(), Type::s_int(), util::mkref(BIT_INT_DIV))
+                ._add("%", Type::s_int(), Type::s_int(), util::mkref(BIT_INT_MOD))
 
-                ._add("+", Type::BIT_FLOAT, Type::BIT_FLOAT, util::mkref(BIT_FLOAT_ADD))
-                ._add("-", Type::BIT_FLOAT, Type::BIT_FLOAT, util::mkref(BIT_FLOAT_SUB))
-                ._add("*", Type::BIT_FLOAT, Type::BIT_FLOAT, util::mkref(BIT_FLOAT_MUL))
-                ._add("/", Type::BIT_FLOAT, Type::BIT_FLOAT, util::mkref(BIT_FLOAT_DIV))
+                ._add("+", Type::s_float(), Type::s_float(), util::mkref(BIT_FLOAT_ADD))
+                ._add("-", Type::s_float(), Type::s_float(), util::mkref(BIT_FLOAT_SUB))
+                ._add("*", Type::s_float(), Type::s_float(), util::mkref(BIT_FLOAT_MUL))
+                ._add("/", Type::s_float(), Type::s_float(), util::mkref(BIT_FLOAT_DIV))
 
-                ._add("=", Type::BIT_BOOL, Type::BIT_BOOL, util::mkref(BIT_BOOL_EQ))
-                ._add("!=", Type::BIT_BOOL, Type::BIT_BOOL, util::mkref(BIT_BOOL_NE))
+                ._add("=", Type::s_bool(), Type::s_bool(), util::mkref(BIT_BOOL_EQ))
+                ._add("!=", Type::s_bool(), Type::s_bool(), util::mkref(BIT_BOOL_NE))
 
-                ._add("+", Type::BIT_INT, Type::BIT_FLOAT, util::mkref(BIT_FLOAT_ADD))
-                ._add("-", Type::BIT_INT, Type::BIT_FLOAT, util::mkref(BIT_FLOAT_SUB))
-                ._add("*", Type::BIT_INT, Type::BIT_FLOAT, util::mkref(BIT_FLOAT_MUL))
-                ._add("/", Type::BIT_INT, Type::BIT_FLOAT, util::mkref(BIT_FLOAT_DIV))
+                ._add("+", Type::s_int(), Type::s_float(), util::mkref(BIT_FLOAT_ADD))
+                ._add("-", Type::s_int(), Type::s_float(), util::mkref(BIT_FLOAT_SUB))
+                ._add("*", Type::s_int(), Type::s_float(), util::mkref(BIT_FLOAT_MUL))
+                ._add("/", Type::s_int(), Type::s_float(), util::mkref(BIT_FLOAT_DIV))
 
-                ._add("+", Type::BIT_FLOAT, Type::BIT_INT, util::mkref(BIT_FLOAT_ADD))
-                ._add("-", Type::BIT_FLOAT, Type::BIT_INT, util::mkref(BIT_FLOAT_SUB))
-                ._add("*", Type::BIT_FLOAT, Type::BIT_INT, util::mkref(BIT_FLOAT_MUL))
-                ._add("/", Type::BIT_FLOAT, Type::BIT_INT, util::mkref(BIT_FLOAT_DIV))
+                ._add("+", Type::s_float(), Type::s_int(), util::mkref(BIT_FLOAT_ADD))
+                ._add("-", Type::s_float(), Type::s_int(), util::mkref(BIT_FLOAT_SUB))
+                ._add("*", Type::s_float(), Type::s_int(), util::mkref(BIT_FLOAT_MUL))
+                ._add("/", Type::s_float(), Type::s_int(), util::mkref(BIT_FLOAT_DIV))
 
-                ._add("=", Type::BIT_INT, Type::BIT_INT, util::mkref(BIT_INT_EQ))
-                ._add("<=", Type::BIT_INT, Type::BIT_INT, util::mkref(BIT_INT_LE))
-                ._add("<", Type::BIT_INT, Type::BIT_INT, util::mkref(BIT_INT_LT))
-                ._add(">=", Type::BIT_INT, Type::BIT_INT, util::mkref(BIT_INT_GE))
-                ._add(">", Type::BIT_INT, Type::BIT_INT, util::mkref(BIT_INT_GT))
-                ._add("!=", Type::BIT_INT, Type::BIT_INT, util::mkref(BIT_INT_NE))
+                ._add("=", Type::s_int(), Type::s_int(), util::mkref(BIT_INT_EQ))
+                ._add("<=", Type::s_int(), Type::s_int(), util::mkref(BIT_INT_LE))
+                ._add("<", Type::s_int(), Type::s_int(), util::mkref(BIT_INT_LT))
+                ._add(">=", Type::s_int(), Type::s_int(), util::mkref(BIT_INT_GE))
+                ._add(">", Type::s_int(), Type::s_int(), util::mkref(BIT_INT_GT))
+                ._add("!=", Type::s_int(), Type::s_int(), util::mkref(BIT_INT_NE))
 
-                ._add("=", Type::BIT_FLOAT, Type::BIT_FLOAT, util::mkref(BIT_FLOAT_EQ))
-                ._add("<=", Type::BIT_FLOAT, Type::BIT_FLOAT, util::mkref(BIT_FLOAT_LE))
-                ._add("<", Type::BIT_FLOAT, Type::BIT_FLOAT, util::mkref(BIT_FLOAT_LT))
-                ._add(">=", Type::BIT_FLOAT, Type::BIT_FLOAT, util::mkref(BIT_FLOAT_GE))
-                ._add(">", Type::BIT_FLOAT, Type::BIT_FLOAT, util::mkref(BIT_FLOAT_GT))
-                ._add("!=", Type::BIT_FLOAT, Type::BIT_FLOAT, util::mkref(BIT_FLOAT_NE))
+                ._add("=", Type::s_float(), Type::s_float(), util::mkref(BIT_FLOAT_EQ))
+                ._add("<=", Type::s_float(), Type::s_float(), util::mkref(BIT_FLOAT_LE))
+                ._add("<", Type::s_float(), Type::s_float(), util::mkref(BIT_FLOAT_LT))
+                ._add(">=", Type::s_float(), Type::s_float(), util::mkref(BIT_FLOAT_GE))
+                ._add(">", Type::s_float(), Type::s_float(), util::mkref(BIT_FLOAT_GT))
+                ._add("!=", Type::s_float(), Type::s_float(), util::mkref(BIT_FLOAT_NE))
 
-                ._add("=", Type::BIT_INT, Type::BIT_FLOAT, util::mkref(BIT_FLOAT_EQ))
-                ._add("<=", Type::BIT_INT, Type::BIT_FLOAT, util::mkref(BIT_FLOAT_LE))
-                ._add("<", Type::BIT_INT, Type::BIT_FLOAT, util::mkref(BIT_FLOAT_LT))
-                ._add(">=", Type::BIT_INT, Type::BIT_FLOAT, util::mkref(BIT_FLOAT_GE))
-                ._add(">", Type::BIT_INT, Type::BIT_FLOAT, util::mkref(BIT_FLOAT_GT))
-                ._add("!=", Type::BIT_INT, Type::BIT_FLOAT, util::mkref(BIT_FLOAT_NE))
+                ._add("=", Type::s_int(), Type::s_float(), util::mkref(BIT_FLOAT_EQ))
+                ._add("<=", Type::s_int(), Type::s_float(), util::mkref(BIT_FLOAT_LE))
+                ._add("<", Type::s_int(), Type::s_float(), util::mkref(BIT_FLOAT_LT))
+                ._add(">=", Type::s_int(), Type::s_float(), util::mkref(BIT_FLOAT_GE))
+                ._add(">", Type::s_int(), Type::s_float(), util::mkref(BIT_FLOAT_GT))
+                ._add("!=", Type::s_int(), Type::s_float(), util::mkref(BIT_FLOAT_NE))
 
-                ._add("=", Type::BIT_FLOAT, Type::BIT_INT, util::mkref(BIT_FLOAT_EQ))
-                ._add("<=", Type::BIT_FLOAT, Type::BIT_INT, util::mkref(BIT_FLOAT_LE))
-                ._add("<", Type::BIT_FLOAT, Type::BIT_INT, util::mkref(BIT_FLOAT_LT))
-                ._add(">=", Type::BIT_FLOAT, Type::BIT_INT, util::mkref(BIT_FLOAT_GE))
-                ._add(">", Type::BIT_FLOAT, Type::BIT_INT, util::mkref(BIT_FLOAT_GT))
-                ._add("!=", Type::BIT_FLOAT, Type::BIT_INT, util::mkref(BIT_FLOAT_NE))
+                ._add("=", Type::s_float(), Type::s_int(), util::mkref(BIT_FLOAT_EQ))
+                ._add("<=", Type::s_float(), Type::s_int(), util::mkref(BIT_FLOAT_LE))
+                ._add("<", Type::s_float(), Type::s_int(), util::mkref(BIT_FLOAT_LT))
+                ._add(">=", Type::s_float(), Type::s_int(), util::mkref(BIT_FLOAT_GE))
+                ._add(">", Type::s_float(), Type::s_int(), util::mkref(BIT_FLOAT_GT))
+                ._add("!=", Type::s_float(), Type::s_int(), util::mkref(BIT_FLOAT_NE))
             ;
         }
 
@@ -161,7 +161,7 @@ namespace {
 
         util::sref<Operation const> query(std::string const& op, util::sref<Type const> rhs) const
         {
-            if (Type::BAD_TYPE == rhs) {
+            if (Type::bad() == rhs) {
                 return util::mkref(BAD_OPERATION);
             }
 
@@ -189,11 +189,11 @@ namespace {
         PreUnaryOpMap()
         {
             (*this)
-                ._add("+", Type::BIT_INT, util::mkref(BIT_POSI_INT))
-                ._add("-", Type::BIT_INT, util::mkref(BIT_NEGA_INT))
+                ._add("+", Type::s_int(), util::mkref(BIT_POSI_INT))
+                ._add("-", Type::s_int(), util::mkref(BIT_NEGA_INT))
 
-                ._add("+", Type::BIT_FLOAT, util::mkref(BIT_POSI_FLOAT))
-                ._add("-", Type::BIT_FLOAT, util::mkref(BIT_NEGA_FLOAT))
+                ._add("+", Type::s_float(), util::mkref(BIT_POSI_FLOAT))
+                ._add("-", Type::s_float(), util::mkref(BIT_NEGA_FLOAT))
             ;
         }
 

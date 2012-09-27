@@ -18,7 +18,7 @@ using namespace proto;
 
 util::sref<Type const> BoolLiteral::type(util::sref<SymbolTable const>, misc::trace&) const
 {
-    return Type::BIT_BOOL;
+    return Type::s_bool();
 }
 
 util::sptr<inst::Expression const> BoolLiteral::inst(util::sref<SymbolTable const>
@@ -29,7 +29,7 @@ util::sptr<inst::Expression const> BoolLiteral::inst(util::sref<SymbolTable cons
 
 util::sref<Type const> IntLiteral::type(util::sref<SymbolTable const>, misc::trace&) const
 {
-    return Type::BIT_INT;
+    return Type::s_int();
 }
 
 util::sptr<inst::Expression const> IntLiteral::inst(util::sref<SymbolTable const>
@@ -40,7 +40,7 @@ util::sptr<inst::Expression const> IntLiteral::inst(util::sref<SymbolTable const
 
 util::sref<Type const> FloatLiteral::type(util::sref<SymbolTable const>, misc::trace&) const
 {
-    return Type::BIT_FLOAT;
+    return Type::s_float();
 }
 
 util::sptr<inst::Expression const> FloatLiteral::inst(util::sref<SymbolTable const>
@@ -182,7 +182,7 @@ util::sref<Type const> ListLiteral::_memberTypeAsPipe(util::sref<SymbolTable con
 util::sref<Type const> ListElement::type(util::sref<SymbolTable const>, misc::trace&) const
 {
     error::pipeReferenceNotInListContext(pos);
-    return Type::BIT_INT;
+    return Type::s_int();
 }
 
 util::sptr<inst::Expression const> ListElement::inst(util::sref<SymbolTable const>
@@ -209,7 +209,7 @@ util::sptr<inst::Expression const> ListElement::instAsPipe(util::sref<SymbolTabl
 util::sref<Type const> ListIndex::type(util::sref<SymbolTable const>, misc::trace&) const
 {
     error::pipeReferenceNotInListContext(pos);
-    return Type::BIT_INT;
+    return Type::s_int();
 }
 
 util::sptr<inst::Expression const> ListIndex::inst(util::sref<SymbolTable const>
@@ -223,7 +223,7 @@ util::sref<Type const> ListIndex::typeAsPipe(util::sref<SymbolTable const>
                                            , util::sref<ListContext const>
                                            , misc::trace&) const
 {
-    return Type::BIT_INT;
+    return Type::s_int();
 }
 
 util::sptr<inst::Expression const> ListIndex::instAsPipe(util::sref<SymbolTable const>
@@ -373,12 +373,12 @@ static util::sref<Type const> listAppendType(misc::position const& pos
 {
     if (!(ListType::isListType(lhs_type) && ListType::isListType(rhs_type))) {
         error::binaryOpNotAvai(pos, "++", lhs_type->name(), rhs_type->name());
-        return Type::BAD_TYPE;
+        return Type::bad();
     }
     util::sref<Type const> result(ListType::commonListTypeOrNulIfImcompatible(lhs_type, rhs_type));
     if (result.nul()) {
         error::binaryOpNotAvai(pos, "++", lhs_type->name(), rhs_type->name());
-        return Type::BAD_TYPE;
+        return Type::bad();
     }
     return result;
 }
@@ -470,7 +470,7 @@ util::sptr<inst::Expression const> PreUnaryOp::instAsPipe(util::sref<SymbolTable
 
 util::sref<Type const> Conjunction::type(util::sref<SymbolTable const>, misc::trace&) const
 {
-    return Type::BIT_BOOL;
+    return Type::s_bool();
 }
 
 util::sptr<inst::Expression const> Conjunction::inst(util::sref<SymbolTable const> st
@@ -493,7 +493,7 @@ util::sptr<inst::Expression const> Conjunction::instAsPipe(util::sref<SymbolTabl
 
 util::sref<Type const> Disjunction::type(util::sref<SymbolTable const>, misc::trace&) const
 {
-    return Type::BIT_BOOL;
+    return Type::s_bool();
 }
 
 util::sptr<inst::Expression const> Disjunction::inst(util::sref<SymbolTable const> st
@@ -516,7 +516,7 @@ util::sptr<inst::Expression const> Disjunction::instAsPipe(util::sref<SymbolTabl
 
 util::sref<Type const> Negation::type(util::sref<SymbolTable const>, misc::trace&) const
 {
-    return Type::BIT_BOOL;
+    return Type::s_bool();
 }
 
 util::sptr<inst::Expression const> Negation::inst(util::sref<SymbolTable const> st

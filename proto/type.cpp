@@ -25,7 +25,7 @@ namespace {
 
         void checkCondType(misc::position const& pos) const
         {
-            if (BIT_BOOL != util::mkref(*this) && BAD_TYPE != util::mkref(*this)) {
+            if (s_bool() != util::mkref(*this) && bad() != util::mkref(*this)) {
                 Type::checkCondType(pos);
             }
         }
@@ -105,11 +105,30 @@ namespace {
 
 }
 
-util::sref<Type const> const Type::BAD_TYPE(util::mkref(BAD_TYPE_DEF));
-util::sref<Type const> const Type::BIT_VOID(util::mkref(VOID));
-util::sref<Type const> const Type::BIT_BOOL(util::mkref(BOOL));
-util::sref<Type const> const Type::BIT_INT(util::mkref(INT));
-util::sref<Type const> const Type::BIT_FLOAT(util::mkref(FLOAT));
+util::sref<Type const> Type::bad()
+{
+    return util::mkref(BAD_TYPE_DEF);
+}
+
+util::sref<Type const> Type::s_void()
+{
+    return util::mkref(VOID);
+}
+
+util::sref<Type const> Type::s_bool()
+{
+    return util::mkref(BOOL);
+}
+
+util::sref<Type const> Type::s_int()
+{
+    return util::mkref(INT);
+}
+
+util::sref<Type const> Type::s_float()
+{
+    return util::mkref(FLOAT);
+}
 
 bool Type::operator!=(Type const& rhs) const
 {
@@ -150,5 +169,5 @@ util::sref<Type const> Type::memberCallType(std::string const& call_name
                                           , misc::trace& trace) const
 {
     error::memberCallNotFound(trace.top(), name(), call_name);
-    return BAD_TYPE;
+    return bad();
 }

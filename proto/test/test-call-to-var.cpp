@@ -18,7 +18,7 @@ TEST_F(CallToVarTest, VarNotCallable)
     misc::position call_pos(100);
     misc::trace trace;
     trace.add(pos);
-    proto::Variable var(pos, proto::Type::BIT_VOID, 0, 0);
+    proto::Variable var(pos, proto::Type::s_void(), 0, 0);
     var.call(std::vector<util::sref<proto::Type const>>(), trace.add(call_pos));
     ASSERT_TRUE(error::hasError());
 
@@ -47,7 +47,7 @@ TEST_F(CallToVarTest, ArgCountWrong)
 
     misc::trace trace_err;
     trace_err.add(pos);
-    var.call(std::vector<util::sref<proto::Type const>>({ proto::Type::BIT_INT })
+    var.call(std::vector<util::sref<proto::Type const>>({ proto::Type::s_int() })
            , trace_err.add(call_pos_err));
     std::vector<VarCallArgCountWrong> recs = getVarCallArgCountWrong();
     ASSERT_EQ(1, recs.size());

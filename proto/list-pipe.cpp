@@ -76,7 +76,7 @@ util::sref<Type const> ListPipeline::type(util::sref<SymbolTable const> st
     ListContext context(ListType::memberTypeOrNulIfNotList(list->type(st, trace)));
     if (context.member_type.nul()) {
         error::pipeNotApplyOnList(pos);
-        return Type::BAD_TYPE;
+        return Type::bad();
     }
     return ListType::getListType(
                     typeTransfer(pipeline, context.member_type, st, util::mkref(context), trace));
@@ -103,7 +103,7 @@ util::sref<Type const> ListPipeline::typeAsPipe(util::sref<SymbolTable const> st
     ListContext context(ListType::memberTypeOrNulIfNotList(list->typeAsPipe(st, lc, trace)));
     if (context.member_type.nul()) {
         error::pipeNotApplyOnList(pos);
-        return Type::BAD_TYPE;
+        return Type::bad();
     }
     return ListType::getListType(
                     typeTransfer(pipeline, context.member_type, st, util::mkref(context), trace));

@@ -10,7 +10,7 @@
 
 using namespace proto;
 
-static Variable const BAD_REF(misc::position(), Type::BIT_VOID, 0, 0);
+static Variable const BAD_REF(misc::position(), Type::s_void(), 0, 0);
 
 SymbolTable::SymbolTable(int ext_lvl
                        , std::list<ArgNameTypeRec> const& args

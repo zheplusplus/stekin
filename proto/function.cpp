@@ -34,7 +34,7 @@ util::sref<FuncInstDraft> Function::_draftInCacheOrNulIfNonexist(
     }
     if (!draft->isReturnTypeResolved()) {
         error::returnTypeUnresolvable(name, arg_types.size(), trace);
-        draft->setReturnType(Type::BAD_TYPE, trace);
+        draft->setReturnType(Type::bad(), trace);
     }
     return draft;
 }

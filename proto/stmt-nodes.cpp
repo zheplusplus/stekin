@@ -86,6 +86,6 @@ util::sptr<inst::Statement const> Return::_inst(util::sref<FuncInstDraft> func
 util::sptr<inst::Statement const> ReturnNothing::_inst(util::sref<FuncInstDraft> func
                                                      , misc::trace& trace) const
 {
-    func->setReturnType(Type::BIT_VOID, trace);
+    func->setReturnType(Type::s_void(), trace);
     return util::mkptr(new inst::ReturnNothing);
 }

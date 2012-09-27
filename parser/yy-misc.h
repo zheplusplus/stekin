@@ -13,7 +13,6 @@ extern "C" int yywrap(void);
 
 extern char* yytext;
 extern int yylineno;
-extern int yyleng;
 
 namespace parser {
 

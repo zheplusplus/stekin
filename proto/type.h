@@ -38,11 +38,11 @@ namespace proto {
         bool operator==(Type const& rhs) const;
         bool operator<(Type const& rhs) const;
     public:
-        static util::sref<Type const> const BAD_TYPE;
-        static util::sref<Type const> const BIT_VOID;
-        static util::sref<Type const> const BIT_BOOL;
-        static util::sref<Type const> const BIT_INT;
-        static util::sref<Type const> const BIT_FLOAT;
+        static util::sref<Type const> bad();
+        static util::sref<Type const> s_void();
+        static util::sref<Type const> s_bool();
+        static util::sref<Type const> s_int();
+        static util::sref<Type const> s_float();
     };
 
 }

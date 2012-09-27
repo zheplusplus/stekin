@@ -35,7 +35,7 @@ namespace {
         util::sref<Type const> getReturnType() const
         {
             if (_return_type_or_nul_if_not_set.nul()) {
-                return Type::BAD_TYPE;
+                return Type::bad();
             }
             return _return_type_or_nul_if_not_set;
         }
@@ -43,7 +43,7 @@ namespace {
         void setReturnType(util::sref<Type const> return_type, misc::trace& trace)
         {
             if (_return_type_or_nul_if_not_set.nul()
-                || Type::BAD_TYPE == _return_type_or_nul_if_not_set)
+                || Type::bad() == _return_type_or_nul_if_not_set)
             {
                 _return_type_or_nul_if_not_set = return_type;
                 return;
@@ -75,13 +75,13 @@ namespace {
 
 util::sref<Type const> FuncInstDraft::getReturnType() const
 {
-    return Type::BIT_VOID;
+    return Type::s_void();
 }
 
 void FuncInstDraft::setReturnType(util::sref<Type const> return_type, misc::trace& trace)
 {
-    if (Type::BIT_VOID != return_type) {
-        error::conflictReturnType(Type::BIT_VOID->name(), return_type->name(), trace);
+    if (Type::s_void() != return_type) {
+        error::conflictReturnType(Type::s_void()->name(), return_type->name(), trace);
     }
 }
 

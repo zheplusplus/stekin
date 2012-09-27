@@ -68,7 +68,7 @@ TEST_F(ListPipeTest, MapType)
     misc::position pos(3);
     misc::trace trace;
     trace.add(pos);
-    util::sptr<proto::ListContext const> context(new proto::ListContext(proto::Type::BIT_FLOAT));
+    util::sptr<proto::ListContext const> context(new proto::ListContext(proto::Type::s_float()));
 
     std::vector<util::sptr<proto::Expression const>> ls;
     ls.push_back(util::mkptr(new proto::IntLiteral(pos, mpz_class(0))));
@@ -76,8 +76,8 @@ TEST_F(ListPipeTest, MapType)
     std::vector<util::sptr<proto::PipeBase const>> pipes0;
     pipes0.push_back(util::mkptr(new proto::PipeMap(util::mkptr(new proto::ListElement(pos)))));
     proto::ListPipeline pl0(pos, std::move(list), std::move(pipes0));
-    ASSERT_EQ(proto::ListType::getListType(proto::Type::BIT_INT), pl0.type(*global_st, trace));
-    ASSERT_EQ(proto::ListType::getListType(proto::Type::BIT_INT)
+    ASSERT_EQ(proto::ListType::getListType(proto::Type::s_int()), pl0.type(*global_st, trace));
+    ASSERT_EQ(proto::ListType::getListType(proto::Type::s_int())
             , pl0.typeAsPipe(*global_st, *context, trace));
     ASSERT_FALSE(error::hasError());
 
@@ -91,7 +91,7 @@ TEST_F(ListPipeTest, MapType)
                               , util::mkptr(new proto::ListElement(pos))));
     pipes1.push_back(util::mkptr(new proto::PipeMap(std::move(compare))));
     proto::ListPipeline pl1(pos, std::move(list), std::move(pipes1));
-    ASSERT_EQ(proto::ListType::getListType(proto::Type::BIT_BOOL)
+    ASSERT_EQ(proto::ListType::getListType(proto::Type::s_bool())
             , pl1.typeAsPipe(*global_st, *context, trace));
     ASSERT_FALSE(error::hasError());
 }
@@ -101,7 +101,7 @@ TEST_F(ListPipeTest, FilterType)
     misc::position pos(4);
     misc::trace trace;
     trace.add(pos);
-    util::sptr<proto::ListContext const> context(new proto::ListContext(proto::Type::BIT_FLOAT));
+    util::sptr<proto::ListContext const> context(new proto::ListContext(proto::Type::s_float()));
 
     std::vector<util::sptr<proto::Expression const>> ls;
     ls.push_back(util::mkptr(new proto::IntLiteral(pos, mpz_class(0))));
@@ -114,8 +114,8 @@ TEST_F(ListPipeTest, FilterType)
                               , util::mkptr(new proto::ListElement(pos))));
     pipes0.push_back(util::mkptr(new proto::PipeFilter(std::move(cmp0))));
     proto::ListPipeline pl0(pos, std::move(list), std::move(pipes0));
-    ASSERT_EQ(proto::ListType::getListType(proto::Type::BIT_INT), pl0.type(*global_st, trace));
-    ASSERT_EQ(proto::ListType::getListType(proto::Type::BIT_INT)
+    ASSERT_EQ(proto::ListType::getListType(proto::Type::s_int()), pl0.type(*global_st, trace));
+    ASSERT_EQ(proto::ListType::getListType(proto::Type::s_int())
             , pl0.typeAsPipe(*global_st, *context, trace));
     ASSERT_FALSE(error::hasError());
 
@@ -129,7 +129,7 @@ TEST_F(ListPipeTest, FilterType)
                               , util::mkptr(new proto::ListElement(pos))));
     pipes1.push_back(util::mkptr(new proto::PipeFilter(std::move(cmp1))));
     proto::ListPipeline pl1(pos, std::move(list), std::move(pipes1));
-    ASSERT_EQ(proto::ListType::getListType(proto::Type::BIT_FLOAT)
+    ASSERT_EQ(proto::ListType::getListType(proto::Type::s_float())
             , pl1.typeAsPipe(*global_st, *context, trace));
     ASSERT_FALSE(error::hasError());
 }

@@ -13,54 +13,54 @@ typedef ProtoTest TypesTest;
 
 TEST_F(TypesTest, Primitives)
 {
-    EXPECT_EQ(proto::Type::BIT_VOID, proto::Type::BIT_VOID);
-    EXPECT_EQ(proto::Type::BIT_BOOL, proto::Type::BIT_BOOL);
-    EXPECT_EQ(proto::Type::BIT_INT, proto::Type::BIT_INT);
-    EXPECT_EQ(proto::Type::BIT_FLOAT, proto::Type::BIT_FLOAT);
+    EXPECT_EQ(proto::Type::s_void(), proto::Type::s_void());
+    EXPECT_EQ(proto::Type::s_bool(), proto::Type::s_bool());
+    EXPECT_EQ(proto::Type::s_int(), proto::Type::s_int());
+    EXPECT_EQ(proto::Type::s_float(), proto::Type::s_float());
 
-    EXPECT_NE(proto::Type::BIT_VOID, proto::Type::BIT_FLOAT);
-    EXPECT_NE(proto::Type::BIT_VOID, proto::Type::BIT_INT);
-    EXPECT_NE(proto::Type::BIT_BOOL, proto::Type::BIT_INT);
-    EXPECT_NE(proto::Type::BIT_BOOL, proto::Type::BIT_FLOAT);
+    EXPECT_NE(proto::Type::s_void(), proto::Type::s_float());
+    EXPECT_NE(proto::Type::s_void(), proto::Type::s_int());
+    EXPECT_NE(proto::Type::s_bool(), proto::Type::s_int());
+    EXPECT_NE(proto::Type::s_bool(), proto::Type::s_float());
 }
 
 TEST_F(TypesTest, ListTypes)
 {
-    EXPECT_EQ(proto::ListType::getListType(proto::Type::BIT_VOID)
-            , proto::ListType::getListType(proto::Type::BIT_VOID));
-    EXPECT_EQ(proto::ListType::getListType(proto::Type::BIT_BOOL)
-            , proto::ListType::getListType(proto::Type::BIT_BOOL));
-    EXPECT_EQ(proto::ListType::getListType(proto::Type::BIT_INT)
-            , proto::ListType::getListType(proto::Type::BIT_INT));
-    EXPECT_EQ(proto::ListType::getListType(proto::Type::BIT_FLOAT)
-            , proto::ListType::getListType(proto::Type::BIT_FLOAT));
+    EXPECT_EQ(proto::ListType::getListType(proto::Type::s_void())
+            , proto::ListType::getListType(proto::Type::s_void()));
+    EXPECT_EQ(proto::ListType::getListType(proto::Type::s_bool())
+            , proto::ListType::getListType(proto::Type::s_bool()));
+    EXPECT_EQ(proto::ListType::getListType(proto::Type::s_int())
+            , proto::ListType::getListType(proto::Type::s_int()));
+    EXPECT_EQ(proto::ListType::getListType(proto::Type::s_float())
+            , proto::ListType::getListType(proto::Type::s_float()));
 
-    EXPECT_NE(proto::ListType::getListType(proto::Type::BIT_VOID)
-            , proto::ListType::getListType(proto::Type::BIT_FLOAT));
-    EXPECT_NE(proto::ListType::getListType(proto::Type::BIT_VOID)
-            , proto::ListType::getListType(proto::Type::BIT_INT));
-    EXPECT_NE(proto::ListType::getListType(proto::Type::BIT_BOOL)
-            , proto::ListType::getListType(proto::Type::BIT_INT));
-    EXPECT_NE(proto::ListType::getListType(proto::Type::BIT_BOOL)
-            , proto::ListType::getListType(proto::Type::BIT_FLOAT));
+    EXPECT_NE(proto::ListType::getListType(proto::Type::s_void())
+            , proto::ListType::getListType(proto::Type::s_float()));
+    EXPECT_NE(proto::ListType::getListType(proto::Type::s_void())
+            , proto::ListType::getListType(proto::Type::s_int()));
+    EXPECT_NE(proto::ListType::getListType(proto::Type::s_bool())
+            , proto::ListType::getListType(proto::Type::s_int()));
+    EXPECT_NE(proto::ListType::getListType(proto::Type::s_bool())
+            , proto::ListType::getListType(proto::Type::s_float()));
 
-    EXPECT_EQ(proto::ListType::getListType(proto::ListType::getListType(proto::Type::BIT_VOID))
-            , proto::ListType::getListType(proto::ListType::getListType(proto::Type::BIT_VOID)));
-    EXPECT_EQ(proto::ListType::getListType(proto::ListType::getListType(proto::Type::BIT_BOOL))
-            , proto::ListType::getListType(proto::ListType::getListType(proto::Type::BIT_BOOL)));
-    EXPECT_EQ(proto::ListType::getListType(proto::ListType::getListType(proto::Type::BIT_INT))
-            , proto::ListType::getListType(proto::ListType::getListType(proto::Type::BIT_INT)));
-    EXPECT_EQ(proto::ListType::getListType(proto::ListType::getListType(proto::Type::BIT_FLOAT))
-            , proto::ListType::getListType(proto::ListType::getListType(proto::Type::BIT_FLOAT)));
+    EXPECT_EQ(proto::ListType::getListType(proto::ListType::getListType(proto::Type::s_void()))
+            , proto::ListType::getListType(proto::ListType::getListType(proto::Type::s_void())));
+    EXPECT_EQ(proto::ListType::getListType(proto::ListType::getListType(proto::Type::s_bool()))
+            , proto::ListType::getListType(proto::ListType::getListType(proto::Type::s_bool())));
+    EXPECT_EQ(proto::ListType::getListType(proto::ListType::getListType(proto::Type::s_int()))
+            , proto::ListType::getListType(proto::ListType::getListType(proto::Type::s_int())));
+    EXPECT_EQ(proto::ListType::getListType(proto::ListType::getListType(proto::Type::s_float()))
+            , proto::ListType::getListType(proto::ListType::getListType(proto::Type::s_float())));
 
-    EXPECT_NE(proto::ListType::getListType(proto::ListType::getListType(proto::Type::BIT_VOID))
-            , proto::ListType::getListType(proto::ListType::getListType(proto::Type::BIT_FLOAT)));
-    EXPECT_NE(proto::ListType::getListType(proto::ListType::getListType(proto::Type::BIT_VOID))
-            , proto::ListType::getListType(proto::ListType::getListType(proto::Type::BIT_INT)));
-    EXPECT_NE(proto::ListType::getListType(proto::ListType::getListType(proto::Type::BIT_BOOL))
-            , proto::ListType::getListType(proto::ListType::getListType(proto::Type::BIT_INT)));
-    EXPECT_NE(proto::ListType::getListType(proto::ListType::getListType(proto::Type::BIT_BOOL))
-            , proto::ListType::getListType(proto::ListType::getListType(proto::Type::BIT_FLOAT)));
+    EXPECT_NE(proto::ListType::getListType(proto::ListType::getListType(proto::Type::s_void()))
+            , proto::ListType::getListType(proto::ListType::getListType(proto::Type::s_float())));
+    EXPECT_NE(proto::ListType::getListType(proto::ListType::getListType(proto::Type::s_void()))
+            , proto::ListType::getListType(proto::ListType::getListType(proto::Type::s_int())));
+    EXPECT_NE(proto::ListType::getListType(proto::ListType::getListType(proto::Type::s_bool()))
+            , proto::ListType::getListType(proto::ListType::getListType(proto::Type::s_int())));
+    EXPECT_NE(proto::ListType::getListType(proto::ListType::getListType(proto::Type::s_bool()))
+            , proto::ListType::getListType(proto::ListType::getListType(proto::Type::s_float())));
 }
 
 TEST_F(TypesTest, EmptyListType)
@@ -74,35 +74,35 @@ TEST_F(TypesTest, ListTypeCompatibility)
             , proto::ListType::commonListTypeOrNulIfImcompatible(
                                         proto::ListType::getEmptyListType()
                                       , proto::ListType::getEmptyListType()));
-    EXPECT_EQ(proto::ListType::getListType(proto::Type::BIT_VOID)
+    EXPECT_EQ(proto::ListType::getListType(proto::Type::s_void())
             , proto::ListType::commonListTypeOrNulIfImcompatible(
-                                        proto::ListType::getListType(proto::Type::BIT_VOID)
+                                        proto::ListType::getListType(proto::Type::s_void())
                                       , proto::ListType::getEmptyListType()));
-    EXPECT_EQ(proto::ListType::getListType(proto::Type::BIT_INT)
+    EXPECT_EQ(proto::ListType::getListType(proto::Type::s_int())
             , proto::ListType::commonListTypeOrNulIfImcompatible(
                                         proto::ListType::getEmptyListType()
-                                      , proto::ListType::getListType(proto::Type::BIT_INT)));
-    EXPECT_EQ(proto::ListType::getListType(proto::Type::BIT_INT)
+                                      , proto::ListType::getListType(proto::Type::s_int())));
+    EXPECT_EQ(proto::ListType::getListType(proto::Type::s_int())
             , proto::ListType::commonListTypeOrNulIfImcompatible(
-                                        proto::ListType::getListType(proto::Type::BIT_INT)
-                                      , proto::ListType::getListType(proto::Type::BIT_INT)));
+                                        proto::ListType::getListType(proto::Type::s_int())
+                                      , proto::ListType::getListType(proto::Type::s_int())));
     EXPECT_TRUE(proto::ListType::commonListTypeOrNulIfImcompatible(
-                                        proto::ListType::getListType(proto::Type::BIT_BOOL)
-                                      , proto::ListType::getListType(proto::Type::BIT_INT))
+                                        proto::ListType::getListType(proto::Type::s_bool())
+                                      , proto::ListType::getListType(proto::Type::s_int()))
                 .nul());
 }
 
 TEST_F(TypesTest, IsListType)
 {
     EXPECT_TRUE(proto::ListType::isListType(proto::ListType::getEmptyListType()));
-    EXPECT_TRUE(proto::ListType::isListType(proto::ListType::getListType(proto::Type::BIT_VOID)));
-    EXPECT_TRUE(proto::ListType::isListType(proto::ListType::getListType(proto::Type::BIT_INT)));
-    EXPECT_TRUE(proto::ListType::isListType(proto::ListType::getListType(proto::Type::BIT_FLOAT)));
-    EXPECT_TRUE(proto::ListType::isListType(proto::ListType::getListType(proto::Type::BIT_BOOL)));
+    EXPECT_TRUE(proto::ListType::isListType(proto::ListType::getListType(proto::Type::s_void())));
+    EXPECT_TRUE(proto::ListType::isListType(proto::ListType::getListType(proto::Type::s_int())));
+    EXPECT_TRUE(proto::ListType::isListType(proto::ListType::getListType(proto::Type::s_float())));
+    EXPECT_TRUE(proto::ListType::isListType(proto::ListType::getListType(proto::Type::s_bool())));
     EXPECT_TRUE(proto::ListType::isListType(proto::ListType::getListType(
-                                             proto::ListType::getListType(proto::Type::BIT_BOOL))));
-    EXPECT_FALSE(proto::ListType::isListType(proto::Type::BIT_VOID));
-    EXPECT_FALSE(proto::ListType::isListType(proto::Type::BIT_INT));
-    EXPECT_FALSE(proto::ListType::isListType(proto::Type::BIT_FLOAT));
-    EXPECT_FALSE(proto::ListType::isListType(proto::Type::BIT_BOOL));
+                                             proto::ListType::getListType(proto::Type::s_bool()))));
+    EXPECT_FALSE(proto::ListType::isListType(proto::Type::s_void()));
+    EXPECT_FALSE(proto::ListType::isListType(proto::Type::s_int()));
+    EXPECT_FALSE(proto::ListType::isListType(proto::Type::s_float()));
+    EXPECT_FALSE(proto::ListType::isListType(proto::Type::s_bool()));
 }

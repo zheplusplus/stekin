@@ -61,8 +61,8 @@ TEST_F(ExprNodesTest, Reference)
     misc::position pos(2);
     misc::trace trace;
     trace.add(pos);
-    global_st->defVar(pos, proto::Type::BIT_BOOL, "ushiro");
-    global_st->defVar(pos, proto::Type::BIT_INT, "moji");
+    global_st->defVar(pos, proto::Type::s_bool(), "ushiro");
+    global_st->defVar(pos, proto::Type::s_int(), "moji");
     ASSERT_FALSE(error::hasError());
 
     proto::Reference ref0(pos, "ushiro");
@@ -82,8 +82,8 @@ TEST_F(ExprNodesTest, Operations)
     misc::position pos(3);
     misc::trace trace;
     trace.add(pos);
-    global_st->defVar(pos, proto::Type::BIT_INT, "littleBird");
-    global_st->defVar(pos, proto::Type::BIT_FLOAT, "uninstall");
+    global_st->defVar(pos, proto::Type::s_int(), "littleBird");
+    global_st->defVar(pos, proto::Type::s_float(), "uninstall");
     ASSERT_FALSE(error::hasError());
 
     proto::BinaryOp bin(pos
@@ -110,7 +110,7 @@ TEST_F(ExprNodesTest, Logic)
     misc::position pos(4);
     misc::trace trace;
     trace.add(pos);
-    global_st->defVar(pos, proto::Type::BIT_BOOL, "vermillion");
+    global_st->defVar(pos, proto::Type::s_bool(), "vermillion");
     proto::Conjunction conj(pos
                           , util::mkptr(new proto::BoolLiteral(pos, true))
                           , util::mkptr(new proto::Reference(pos, "vermillion")));
@@ -141,7 +141,7 @@ TEST_F(ExprNodesTest, ConjunctionConditionTypeCheck)
     misc::position pos(5);
     misc::trace trace;
     trace.add(pos);
-    global_st->defVar(pos, proto::Type::BIT_INT, "chizu");
+    global_st->defVar(pos, proto::Type::s_int(), "chizu");
     proto::Conjunction(pos
                      , util::mkptr(new proto::BoolLiteral(pos, true))
                      , util::mkptr(new proto::Reference(pos, "chizu")))
@@ -154,9 +154,9 @@ TEST_F(ExprNodesTest, ConjunctionConditionTypeCheck)
     EXPECT_TRUE(error::hasError());
     ASSERT_EQ(2, getCondNotBools().size());
     ASSERT_EQ(pos, getCondNotBools()[0].pos);
-    ASSERT_EQ(proto::Type::BIT_INT->name(), getCondNotBools()[0].type_name);
+    ASSERT_EQ(proto::Type::s_int()->name(), getCondNotBools()[0].type_name);
     ASSERT_EQ(pos, getCondNotBools()[1].pos);
-    ASSERT_EQ(proto::Type::BIT_INT->name(), getCondNotBools()[1].type_name);
+    ASSERT_EQ(proto::Type::s_int()->name(), getCondNotBools()[1].type_name);
 }
 
 TEST_F(ExprNodesTest, DisjunctionConditionTypeCheck)
@@ -164,7 +164,7 @@ TEST_F(ExprNodesTest, DisjunctionConditionTypeCheck)
     misc::position pos(6);
     misc::trace trace;
     trace.add(pos);
-    global_st->defVar(pos, proto::Type::BIT_FLOAT, "kako");
+    global_st->defVar(pos, proto::Type::s_float(), "kako");
     proto::Disjunction(pos
                      , util::mkptr(new proto::Reference(pos, "kako"))
                      , util::mkptr(new proto::BoolLiteral(pos, true)))
@@ -177,9 +177,9 @@ TEST_F(ExprNodesTest, DisjunctionConditionTypeCheck)
     EXPECT_TRUE(error::hasError());
     ASSERT_EQ(2, getCondNotBools().size());
     ASSERT_EQ(pos, getCondNotBools()[0].pos);
-    ASSERT_EQ(proto::Type::BIT_FLOAT->name(), getCondNotBools()[0].type_name);
+    ASSERT_EQ(proto::Type::s_float()->name(), getCondNotBools()[0].type_name);
     ASSERT_EQ(pos, getCondNotBools()[1].pos);
-    ASSERT_EQ(proto::Type::BIT_FLOAT->name(), getCondNotBools()[1].type_name);
+    ASSERT_EQ(proto::Type::s_float()->name(), getCondNotBools()[1].type_name);
 }
 
 TEST_F(ExprNodesTest, NegationConditionTypeCheck)
@@ -187,13 +187,13 @@ TEST_F(ExprNodesTest, NegationConditionTypeCheck)
     misc::position pos(7);
     misc::trace trace;
     trace.add(pos);
-    global_st->defVar(pos, proto::Type::BIT_VOID, "kirie");
+    global_st->defVar(pos, proto::Type::s_void(), "kirie");
     proto::Negation(pos, util::mkptr(new proto::Reference(pos, "kirie"))).inst(*global_st, trace);
 
     EXPECT_TRUE(error::hasError());
     ASSERT_EQ(1, getCondNotBools().size());
     ASSERT_EQ(pos, getCondNotBools()[0].pos);
-    ASSERT_EQ(proto::Type::BIT_VOID->name(), getCondNotBools()[0].type_name);
+    ASSERT_EQ(proto::Type::s_void()->name(), getCondNotBools()[0].type_name);
 }
 
 TEST_F(ExprNodesTest, ListLiterals)
@@ -202,9 +202,9 @@ TEST_F(ExprNodesTest, ListLiterals)
     misc::position err_pos(800);
     misc::trace trace;
     trace.add(err_pos);
-    global_st->defVar(pos, proto::Type::BIT_INT, "sekine");
-    global_st->defVar(pos, proto::Type::BIT_INT, "yui");
-    global_st->defVar(pos, proto::Type::BIT_BOOL, "shina");
+    global_st->defVar(pos, proto::Type::s_int(), "sekine");
+    global_st->defVar(pos, proto::Type::s_int(), "yui");
+    global_st->defVar(pos, proto::Type::s_bool(), "shina");
 
     std::vector<util::sptr<proto::Expression const>> members;
 
@@ -213,13 +213,13 @@ TEST_F(ExprNodesTest, ListLiterals)
     proto::ListLiteral ls_a(pos, std::move(members));
     ls_a.inst(*global_st, trace)->write();
     EXPECT_FALSE(error::hasError());
-    EXPECT_EQ(ls_a.type(*global_st, trace), proto::ListType::getListType(proto::Type::BIT_INT));
+    EXPECT_EQ(ls_a.type(*global_st, trace), proto::ListType::getListType(proto::Type::s_int()));
 
     members.push_back(util::mkptr(new proto::Reference(pos, "shina")));
     proto::ListLiteral ls_b(pos, std::move(members));
     ls_b.inst(*global_st, trace)->write();
     EXPECT_FALSE(error::hasError());
-    EXPECT_EQ(ls_b.type(*global_st, trace), proto::ListType::getListType(proto::Type::BIT_BOOL));
+    EXPECT_EQ(ls_b.type(*global_st, trace), proto::ListType::getListType(proto::Type::s_bool()));
 
     members.push_back(util::mkptr(new proto::Reference(err_pos, "sekine")));
     members.push_back(util::mkptr(new proto::Reference(err_pos, "shina")));
@@ -261,14 +261,14 @@ TEST_F(ExprNodesTest, ListAppending)
     misc::position pos(10);
     misc::trace trace;
 
-    global_st->defVar(pos, proto::ListType::getListType(proto::Type::BIT_INT), "chiaki");
+    global_st->defVar(pos, proto::ListType::getListType(proto::Type::s_int()), "chiaki");
 
     proto::ListAppend la(pos
                        , util::mkptr(new proto::Reference(pos, "chiaki"))
                        , util::mkptr(new proto::ListLiteral(
                                         pos, std::vector<util::sptr<proto::Expression const>>())));
     la.inst(*global_st, trace)->write();
-    EXPECT_EQ(la.type(*global_st, trace), proto::ListType::getListType(proto::Type::BIT_INT));
+    EXPECT_EQ(la.type(*global_st, trace), proto::ListType::getListType(proto::Type::s_int()));
     EXPECT_FALSE(error::hasError());
 
     DataTree::expectOne()

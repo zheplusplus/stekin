@@ -35,13 +35,13 @@ namespace {
                 return ListType::getListType(arg_types[0]);
             }
             if ("empty" == call_name && 0 == arg_types.size()) {
-                return BIT_BOOL;
+                return s_bool();
             }
             if ("size" == call_name && 0 == arg_types.size()) {
-                return BIT_INT;
+                return s_int();
             }
             error::memberCallNotFound(trace.top(), name(), call_name);
-            return BAD_TYPE;
+            return bad();
         }
     };
 
@@ -139,16 +139,16 @@ util::sref<Type const> ListType::memberCallType(std::string const& call_name
         return util::mkref(*this);
     }
     if ("empty" == call_name && 0 == arg_types.size()) {
-        return BIT_BOOL;
+        return s_bool();
     }
     if ("size" == call_name && 0 == arg_types.size()) {
-        return BIT_INT;
+        return s_int();
     }
     if ("first" == call_name && 0 == arg_types.size()) {
         return member_type;
     }
     error::memberCallNotFound(trace.top(), name(), call_name);
-    return BAD_TYPE;
+    return bad();
 }
 
 ListType::ListType(util::sref<Type const> mt)

@@ -94,13 +94,13 @@ TEST_F(SymbolTableTest, OnCorrect)
     ASSERT_EQ(platform::WORD_LENGTH_INBYTE * word_used, var_another_dw.stack_offset);
     word_used += 2;
 
-    proto::Variable var_boolean_1(st.defVar(misc::position(6), proto::Type::BIT_BOOL, "bool_one"));
+    proto::Variable var_boolean_1(st.defVar(misc::position(6), proto::Type::s_bool(), "bool_one"));
     ASSERT_FALSE(error::hasError());
     ASSERT_EQ(st.queryVar(misc::position(100006), "bool_one"), var_boolean_1);
     ASSERT_EQ(0, var_boolean_1.level);
     ASSERT_EQ(platform::WORD_LENGTH_INBYTE * word_used, var_boolean_1.stack_offset);
 
-    proto::Variable var_boolean_2(st.defVar(misc::position(7), proto::Type::BIT_BOOL, "boolean_2"));
+    proto::Variable var_boolean_2(st.defVar(misc::position(7), proto::Type::s_bool(), "boolean_2"));
     ASSERT_FALSE(error::hasError());
     ASSERT_EQ(st.queryVar(misc::position(100007), "boolean_2"), var_boolean_2);
     ASSERT_EQ(0, var_boolean_2.level);
@@ -116,7 +116,7 @@ TEST_F(SymbolTableTest, OnCorrect)
 
     for (int i = 0; i < platform::WORD_LENGTH_INBYTE * 2; ++i) {
         std::string var_name(std::string("b_") + char('a' + i));
-        proto::Variable var_byte(st.defVar(misc::position(8 + i), proto::Type::BIT_BOOL, var_name));
+        proto::Variable var_byte(st.defVar(misc::position(8 + i), proto::Type::s_bool(), var_name));
         ASSERT_FALSE(error::hasError());
         ASSERT_EQ(st.queryVar(misc::position(100008 + i), var_name), var_byte);
         ASSERT_EQ(0, var_byte.level);
@@ -138,13 +138,13 @@ TEST_F(SymbolTableTest, OnCorrect)
           , var_b_half.stack_offset);
     ++word_used;
 
-    proto::Variable var_boolean_a(st.defVar(misc::position(1002), proto::Type::BIT_BOOL, "bool_a"));
+    proto::Variable var_boolean_a(st.defVar(misc::position(1002), proto::Type::s_bool(), "bool_a"));
     ASSERT_FALSE(error::hasError());
     ASSERT_EQ(st.queryVar(misc::position(101002), "bool_a"), var_boolean_a);
     ASSERT_EQ(0, var_boolean_a.level);
     ASSERT_EQ(platform::WORD_LENGTH_INBYTE * word_used, var_boolean_a.stack_offset);
 
-    proto::Variable var_boolean_b(st.defVar(misc::position(1003), proto::Type::BIT_BOOL, "bool_b"));
+    proto::Variable var_boolean_b(st.defVar(misc::position(1003), proto::Type::s_bool(), "bool_b"));
     ASSERT_FALSE(error::hasError());
     ASSERT_EQ(st.queryVar(misc::position(101003), "bool_b"), var_boolean_b);
     ASSERT_EQ(0, var_boolean_b.level);
@@ -166,7 +166,7 @@ TEST_F(SymbolTableTest, OnCorrect)
     for (int i = 0; i < platform::WORD_LENGTH_INBYTE / 2; ++i) {
         std::string var_name(std::string("bb_") + char('a' + i));
         proto::Variable var_boolean(st.defVar(misc::position(1005 + i)
-                                            , proto::Type::BIT_BOOL
+                                            , proto::Type::s_bool()
                                             , var_name));
         ASSERT_FALSE(error::hasError());
         ASSERT_EQ(st.queryVar(misc::position(101005 + i), var_name), var_boolean);
