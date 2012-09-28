@@ -13,7 +13,7 @@ LINK=g++ $(DYN_LINK)
 AR=ar rcs
 
 CFLAGS=-Wall -Wextra -Wold-style-cast -Werror $(OPT_FLAGS)
-MKTMP=tmp.mk
+MKTMP := $(shell mktemp)
 
 LIB_DIR=libs
 EXTERN_LIBS=-lgmp -lgmpxx -ltrace -lbacktracpp

@@ -6,7 +6,7 @@ WORKDIR=.
 
 include misc/mf-template.mk
 
-all:main.d head-writer.d lib checkout-subs
+all:stekin.d head-writer.d lib checkout-subs
 	make -f report/Makefile MODE=$(MODE)
 	make -f parser/Makefile MODE=$(MODE)
 	make -f grammar/Makefile MODE=$(MODE)
@@ -15,7 +15,7 @@ all:main.d head-writer.d lib checkout-subs
 	make -f instance/Makefile MODE=$(MODE)
 	make -f output/Makefile MODE=$(MODE)
 	make -f inspect/Makefile MODE=$(MODE)
-	$(LINK) main.o \
+	$(LINK) stekin.o \
 	        report/*.o \
 	        parser/*.o \
 	        grammar/*.o \
@@ -60,8 +60,6 @@ clean:
 	make -f instance/Makefile clean
 	make -f output/Makefile clean
 	make -f inspect/Makefile clean
-	rm -f $(MKTMP)
-	rm -f $(UTILDIR)/*.o
 	rm -f tmp.*
 	rm -f *.o
 	rm -f *.out
