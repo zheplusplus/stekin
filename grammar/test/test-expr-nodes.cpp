@@ -21,16 +21,18 @@ TEST_F(ExprNodesTest, Literal)
 
     list_members.push_back(util::mkptr(new grammar::ListLiteral(pos, std::move(list_members))));
 
+    list_members.push_back(util::mkptr(new grammar::StringLiteral(pos, "aki no sora")));
     list_members.push_back(util::mkptr(new grammar::FloatLiteral(pos, "21.02")));
     grammar::ListLiteral ls(pos, std::move(list_members));
 
     ls.compile()->compile(nulblock, nulSymbols());
 
     DataTree::expectOne()
-        (pos, LIST, 2)
+        (pos, LIST, 3)
             (pos, LIST, 2)
                 (pos, INTEGER, "20110813")
                 (pos, BOOLEAN, "false")
+            (pos, STRING, "aki no sora")
             (pos, FLOATING, "21.02")
     ;
 }

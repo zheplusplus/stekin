@@ -10,6 +10,7 @@ namespace output {
     void writeInt(platform::int_type i);
     void writeFloat(platform::float_type d);
     void writeBool(bool b);
+    void writeString(char const* value, int length);
 
     void refLevel(int offset, int level, std::string const& type_exported_name);
     void writeOperator(std::string const& op_img);

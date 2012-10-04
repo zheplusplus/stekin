@@ -179,6 +179,37 @@ TEST_F(QueryOperationTest, BadInputType)
     ASSERT_FALSE(error::hasError());
 }
 
+TEST_F(QueryOperationTest, Strings)
+{
+    misc::position pos(4);
+    std::vector<util::sref<proto::Type const>> const TYPE_LIST({
+        proto::Type::s_bool(),
+        proto::Type::s_int(),
+        proto::Type::s_float(),
+        proto::Type::s_string(),
+    });
+    std::for_each(TYPE_LIST.begin()
+                , TYPE_LIST.end()
+                , [&](util::sref<proto::Type const> t)
+                  {
+                      util::sref<proto::Operation const> result = proto::Operation::queryBinary(
+                              pos, "+", proto::Type::s_string(), t);
+                      ASSERT_FALSE(error::hasError()) << "string add type:" << t->name()
+                                                      << " query failed.";
+                      ASSERT_EQ(proto::Type::s_string(), result->ret_type);
+                  });
+    std::for_each(TYPE_LIST.begin()
+                , TYPE_LIST.end()
+                , [&](util::sref<proto::Type const> t)
+                  {
+                      util::sref<proto::Operation const> result = proto::Operation::queryBinary(
+                              pos, "+", t, proto::Type::s_string());
+                      ASSERT_FALSE(error::hasError()) << "type add string:" << t->name()
+                                                      << " query failed.";
+                      ASSERT_EQ(proto::Type::s_string(), result->ret_type);
+                  });
+}
+
 TEST_F(QueryOperationTest, BadOperation)
 {
     proto::Operation::queryBinary(misc::position(10)

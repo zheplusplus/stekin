@@ -43,6 +43,19 @@ namespace inst {
         std::string exportedName() const;
     };
 
+    struct ResourceType
+        : public Type
+    {
+        void writeResEntry(int offset) const;
+        util::sptr<output::StackVarRec const> makeParameter(Address const& addr) const;
+    };
+
+    struct StringPrimitive
+        : public ResourceType
+    {
+        std::string exportedName() const;
+    };
+
     struct EmptyListType
         : public Type
     {
@@ -50,15 +63,13 @@ namespace inst {
     };
 
     struct ListType
-        : public Type
+        : public ResourceType
     {
         explicit ListType(util::sptr<Type const> mt)
             : member_type(std::move(mt))
         {}
 
         std::string exportedName() const;
-        void writeResEntry(int offset) const;
-        util::sptr<output::StackVarRec const> makeParameter(Address const& addr) const;
 
         util::sptr<Type const> const member_type;
     };

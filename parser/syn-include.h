@@ -9,6 +9,7 @@
 #include <grammar/expr-nodes.h>
 #include <grammar/list-pipe.h>
 #include <util/pointer.h>
+#include <util/str-comprehension.h>
 #include <report/errors.h>
 
 #include "syntax-types.h"

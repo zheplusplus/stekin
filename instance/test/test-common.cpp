@@ -80,6 +80,7 @@ NodeType const test::END_OF_STATEMENT("end of statement");
 NodeType const test::INTEGER("integer");
 NodeType const test::FLOAT("float");
 NodeType const test::BOOLEAN("boolean");
+NodeType const test::STRING("string");
 NodeType const test::EMPTY_LIST("empty list");
 NodeType const test::LIST_BEGIN("list begin");
 NodeType const test::LIST_NEXT_MEMBER("list next member");

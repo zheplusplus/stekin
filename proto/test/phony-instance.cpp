@@ -76,6 +76,11 @@ void BoolLiteral::write() const
     DataTree::actualOne()(BOOLEAN, util::str(value));
 }
 
+void StringLiteral::write() const
+{
+    DataTree::actualOne()(STRING, value);
+}
+
 void EmptyListLiteral::write() const
 {
     DataTree::actualOne()(EMPTY_LIST);
@@ -225,6 +230,11 @@ std::string FloatPrimitive::exportedName() const
 }
 
 std::string BoolPrimitive::exportedName() const
+{
+    return "";
+}
+
+std::string StringPrimitive::exportedName() const
 {
     return "";
 }

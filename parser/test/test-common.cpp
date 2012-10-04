@@ -43,6 +43,7 @@ std::ostream& operator<<(std::ostream& os, ParserData const& data)
 NodeType const test::BOOLEAN("boolean");
 NodeType const test::INTEGER("integer");
 NodeType const test::FLOATING("floating");
+NodeType const test::STRING("string");
 NodeType const test::IDENTIFIER("identifier");
 NodeType const test::LIST_BEGIN("list begin");
 NodeType const test::LIST_END("list end");

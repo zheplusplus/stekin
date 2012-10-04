@@ -103,6 +103,27 @@ namespace {
     };
     FloatPrimitive FLOAT;
 
+    struct StringPrimitive
+        : public BuiltInPrimitive
+    {
+        StringPrimitive()
+            : BuiltInPrimitive("string", platform::WORD_LENGTH_INBYTE + platform::INT_SIZE)
+        {}
+
+        util::sptr<inst::Type const> makeInstType() const
+        {
+            return util::mkptr(new inst::StringPrimitive);
+        }
+
+        std::vector<int> resEntries(int stack_offset) const
+        {
+            std::vector<int> entry;
+            entry.push_back(stack_offset);
+            return entry;
+        }
+    };
+    StringPrimitive STRING;
+
 }
 
 util::sref<Type const> Type::bad()
@@ -128,6 +149,11 @@ util::sref<Type const> Type::s_int()
 util::sref<Type const> Type::s_float()
 {
     return util::mkref(FLOAT);
+}
+
+util::sref<Type const> Type::s_string()
+{
+    return util::mkref(STRING);
 }
 
 bool Type::operator!=(Type const& rhs) const

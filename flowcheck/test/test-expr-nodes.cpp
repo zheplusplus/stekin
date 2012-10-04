@@ -49,6 +49,10 @@ TEST_F(ExprNodesTest, SimpleLiterals)
     EXPECT_TRUE(bool1.isLiteral());
     EXPECT_FALSE(bool1.boolValue());
 
+    flchk::StringLiteral str(pos, "");
+    str.compile(*block, util::mkref(st))->inst(nul_st, nultrace);
+    EXPECT_FALSE(str.isLiteral());
+    EXPECT_FALSE(str.boolValue());
     EXPECT_FALSE(error::hasError());
 
     DataTree::expectOne()
@@ -58,6 +62,7 @@ TEST_F(ExprNodesTest, SimpleLiterals)
         (pos, INTEGER, "441499")
         (pos, FLOATING, "0.195")
         (pos, BOOLEAN, "false")
+        (pos, STRING, "")
     ;
 }
 

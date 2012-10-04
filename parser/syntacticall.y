@@ -58,7 +58,7 @@
 %token LIST_APPEND LE GE NE AND OR
 %token COMMA COLON
 %token BOOL_TRUE BOOL_FALSE
-%token INT_LITERAL DOUBLE_LITERAL
+%token INT_LITERAL DOUBLE_LITERAL STRING_LITERAL
 %token IDENT
 %token LIST_ELEMENT LIST_INDEX
 
@@ -373,6 +373,12 @@ factor:
     DOUBLE_LITERAL
     {
         $$ = new grammar::FloatLiteral(parser::here(), yytext);
+    }
+    |
+    STRING_LITERAL
+    {
+        $$ = new grammar::StringLiteral(parser::here()
+                                      , util::comprehend(yytext, 1, -1));
     }
     |
     member_access

@@ -51,6 +51,18 @@ namespace inst {
         bool const value;
     };
 
+    struct StringLiteral
+        : public Expression
+    {
+        explicit StringLiteral(std::string v)
+            : value(v)
+        {}
+
+        void write() const;
+
+        std::string const value;
+    };
+
     struct EmptyListLiteral
         : public Expression
     {

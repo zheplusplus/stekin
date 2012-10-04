@@ -141,6 +141,19 @@ namespace grammar {
         std::string const value;
     };
 
+    struct StringLiteral
+        : public Expression
+    {
+        StringLiteral(misc::position const& pos, std::string const& v)
+            : Expression(pos)
+            , value(v)
+        {}
+
+        util::sptr<flchk::Expression const> compile() const;
+
+        std::string const value;
+    };
+
     struct ListLiteral
         : public Expression
     {

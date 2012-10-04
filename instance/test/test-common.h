@@ -82,6 +82,7 @@ namespace test {
     extern NodeType const INTEGER;
     extern NodeType const FLOAT;
     extern NodeType const BOOLEAN;
+    extern NodeType const STRING;
     extern NodeType const EMPTY_LIST;
     extern NodeType const LIST_BEGIN;
     extern NodeType const LIST_NEXT_MEMBER;

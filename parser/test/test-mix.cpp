@@ -245,6 +245,17 @@ TEST(Syntax, Mix)
                         (misc::position(35), LIST_ELEMENT)
                     (misc::position(35), BINARY_OP_END)
             (misc::position(35), PIPE_END)
+
+        (misc::position(37), 0, VAR_DEF, "s")
+            (misc::position(37), BINARY_OP_BEGIN, "+")
+            (misc::position(37), OPERAND)
+                (misc::position(37), STRING, "sizukani tiriyuku")
+            (misc::position(37), OPERAND)
+                (misc::position(37), STRING, "the quick brown fox jumps over a lazy dog.")
+            (misc::position(37), BINARY_OP_END)
+
+        (misc::position(38), 0, VAR_DEF, "sk")
+            (misc::position(38), STRING, "a quote\" and something \\else in\t the\n string")
     ;
     DataTree::verify();
 }

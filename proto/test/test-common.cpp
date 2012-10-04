@@ -80,6 +80,7 @@ NodeType const test::RETURN_NOTHING("return nothing");
 NodeType const test::BOOLEAN("boolean");
 NodeType const test::INTEGER("integer");
 NodeType const test::FLOATING("floating");
+NodeType const test::STRING("string");
 NodeType const test::EMPTY_LIST("empty list");
 NodeType const test::LIST_BEGIN("list begin");
 NodeType const test::LIST_END("list end");

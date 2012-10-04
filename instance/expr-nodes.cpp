@@ -22,6 +22,11 @@ void BoolLiteral::write() const
     output::writeBool(value);
 }
 
+void StringLiteral::write() const
+{
+    output::writeString(value.c_str(), value.size());
+}
+
 void EmptyListLiteral::write() const
 {
     output::emptyList();

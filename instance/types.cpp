@@ -32,6 +32,21 @@ std::string BoolPrimitive::exportedName() const
     return output::formType("bool");
 }
 
+util::sptr<output::StackVarRec const> ResourceType::makeParameter(Address const& addr) const
+{
+    return util::mkptr(new output::ResourceParam(exportedName(), addr.offset, addr.level));
+}
+
+void ResourceType::writeResEntry(int offset) const
+{
+    output::addResEntry(offset);
+}
+
+std::string StringPrimitive::exportedName() const
+{
+    return output::formType("string");
+}
+
 std::string EmptyListType::exportedName() const
 {
     return output::emptyListType();
@@ -42,17 +57,7 @@ std::string ListType::exportedName() const
     return output::formListType(member_type->exportedName());
 }
 
-util::sptr<output::StackVarRec const> ListType::makeParameter(Address const& addr) const
-{
-    return util::mkptr(new output::ResourceParam(exportedName(), addr.offset, addr.level));
-}
-
 std::string ClosureType::exportedName() const
 {
     return output::formFuncReferenceType(size);
-}
-
-void ListType::writeResEntry(int offset) const
-{
-    output::addResEntry(offset);
 }

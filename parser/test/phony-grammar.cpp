@@ -85,6 +85,12 @@ util::sptr<flchk::Expression const> FloatLiteral::compile() const
     return std::move(nulptr);
 }
 
+util::sptr<flchk::Expression const> StringLiteral::compile() const
+{
+    DataTree::actualOne()(pos, STRING, value);
+    return std::move(nulptr);
+}
+
 util::sptr<flchk::Expression const> ListLiteral::compile() const
 {
     DataTree::actualOne()(pos, LIST_BEGIN);

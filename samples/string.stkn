@@ -1,0 +1,4 @@
+func ret_string()
+    return "stekin"
+stekin: ret_string()
+write(stekin)

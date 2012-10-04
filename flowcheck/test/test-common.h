@@ -74,6 +74,7 @@ namespace test {
     extern NodeType const BOOLEAN;
     extern NodeType const INTEGER;
     extern NodeType const FLOATING;
+    extern NodeType const STRING;
     extern NodeType const LIST;
     extern NodeType const BINARY_OP;
     extern NodeType const PRE_UNARY_OP;

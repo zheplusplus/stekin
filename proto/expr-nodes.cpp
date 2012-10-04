@@ -49,6 +49,17 @@ util::sptr<inst::Expression const> FloatLiteral::inst(util::sref<SymbolTable con
     return util::mkptr(new inst::FloatLiteral(value.get_d()));
 }
 
+util::sref<Type const> StringLiteral::type(util::sref<SymbolTable const>, misc::trace&) const
+{
+    return Type::s_string();
+}
+
+util::sptr<inst::Expression const> StringLiteral::inst(util::sref<SymbolTable const>
+                                                     , misc::trace&) const
+{
+    return util::mkptr(new inst::StringLiteral(value));
+}
+
 static std::vector<util::sptr<inst::Expression const>> instForExprs(
                                             std::vector<util::sptr<Expression const>> const& exprs
                                           , util::sref<SymbolTable const> st

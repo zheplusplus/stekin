@@ -248,6 +248,22 @@ namespace flchk {
         mpf_class const value;
     };
 
+    struct StringLiteral
+        : public Expression
+    {
+        StringLiteral(misc::position const& pos, std::string const& image)
+            : Expression(pos)
+            , value(image)
+        {}
+
+        util::sptr<proto::Expression const> compile(util::sref<proto::Block>
+                                                  , util::sref<SymbolTable>) const;
+        std::string typeName() const;
+        util::sptr<Expression const> fold() const;
+
+        std::string const value;
+    };
+
     struct ListLiteral
         : public Expression
     {

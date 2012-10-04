@@ -142,6 +142,13 @@ util::sptr<inst::Expression const> FloatLiteral::inst(util::sref<SymbolTable con
     return std::move(NUL_INST_EXPR);
 }
 
+util::sptr<inst::Expression const> StringLiteral::inst(util::sref<SymbolTable const>
+                                                     , misc::trace&) const
+{
+    DataTree::actualOne()(pos, STRING, value);
+    return std::move(NUL_INST_EXPR);
+}
+
 static void instList(std::vector<util::sptr<Expression const>> const& list)
 {
     std::for_each(list.begin()
@@ -327,6 +334,11 @@ util::sref<Type const> IntLiteral::type(util::sref<SymbolTable const>, misc::tra
 }
 
 util::sref<Type const> FloatLiteral::type(util::sref<SymbolTable const>, misc::trace&) const
+{
+    return NUL_TYPE;
+}
+
+util::sref<Type const> StringLiteral::type(util::sref<SymbolTable const>, misc::trace&) const
 {
     return NUL_TYPE;
 }

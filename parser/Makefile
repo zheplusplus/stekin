@@ -1,5 +1,5 @@
 WORKDIR=parser
-AWK=gawk
+AWK=awk
 
 include misc/mf-template.mk
 

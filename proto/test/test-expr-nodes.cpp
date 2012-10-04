@@ -37,6 +37,7 @@ TEST_F(ExprNodesTest, Literals)
     proto::IntLiteral int1(pos, 1048576);
     proto::FloatLiteral float0(pos, 0.4321);
     proto::FloatLiteral float1(pos, 1234.56);
+    proto::StringLiteral str(pos, "eternal rite");
 
     bool0.inst(*global_st, trace)->write();
     bool1.inst(*global_st, trace)->write();
@@ -44,6 +45,7 @@ TEST_F(ExprNodesTest, Literals)
     int1.inst(*global_st, trace)->write();
     float0.inst(*global_st, trace)->write();
     float1.inst(*global_st, trace)->write();
+    str.inst(*global_st, trace)->write();
     ASSERT_FALSE(error::hasError());
 
     DataTree::expectOne()
@@ -53,6 +55,7 @@ TEST_F(ExprNodesTest, Literals)
         (INTEGER, "1048576")
         (FLOATING, "0.4321")
         (FLOATING, "1234.56")
+        (STRING, "eternal rite")
     ;
 }
 
@@ -77,7 +80,30 @@ TEST_F(ExprNodesTest, Reference)
     ;
 }
 
-TEST_F(ExprNodesTest, Operations)
+TEST_F(ExprNodesTest, StringOperations)
+{
+    misc::position pos(12);
+    misc::trace trace;
+    trace.add(pos);
+    global_st->defVar(pos, proto::Type::s_string(), "yoi_kaze_uta");
+    ASSERT_FALSE(error::hasError());
+
+    proto::BinaryOp bin(pos
+                      , util::mkptr(new proto::IntLiteral(pos, mpz_class("20110122")))
+                      , "+"
+                      , util::mkptr(new proto::Reference(pos, "yoi_kaze_uta")));
+
+    bin.inst(*global_st, trace)->write();
+    ASSERT_FALSE(error::hasError());
+
+    DataTree::expectOne()
+        (BINARY_OP, "+")
+            (INTEGER, "20110122")
+            (REFERENCE)
+    ;
+}
+
+TEST_F(ExprNodesTest, NumericOperations)
 {
     misc::position pos(3);
     misc::trace trace;

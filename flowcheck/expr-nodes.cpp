@@ -644,6 +644,22 @@ util::sptr<Expression const> FloatLiteral::asRhs(misc::position const& op_pos
     return util::mkptr(new FloatLiteral(op_pos, value));
 }
 
+util::sptr<proto::Expression const> StringLiteral::compile(util::sref<proto::Block>
+                                                         , util::sref<SymbolTable>) const
+{
+    return util::mkptr(new proto::StringLiteral(pos, value));
+}
+
+std::string StringLiteral::typeName() const
+{
+    return "(string(" + value + "))";
+}
+
+util::sptr<Expression const> StringLiteral::fold() const
+{
+    return util::mkptr(new StringLiteral(pos, value));
+}
+
 static std::vector<util::sptr<proto::Expression const>> compileList(
                         std::vector<util::sptr<Expression const>> const& list
                       , util::sref<proto::Block> block

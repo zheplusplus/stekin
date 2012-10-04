@@ -1,5 +1,7 @@
 #include <iostream>
 
+#include <util/str-comprehension.h>
+
 #include "expr-writer.h"
 #include "name-mangler.h"
 
@@ -16,6 +18,11 @@ void output::writeFloat(platform::float_type d)
 void output::writeBool(bool b)
 {
     std::cout << "_stk_type_bool(" << b << ")";
+}
+
+void output::writeString(char const* value, int length)
+{
+    std::cout << "_stk_type_string(" + util::cstr_repr(value, length) << "," << length << ")";
 }
 
 void output::refLevel(int offset, int level, std::string const& type_exported_name)

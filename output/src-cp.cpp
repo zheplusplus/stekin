@@ -28,10 +28,48 @@ struct _stk_type_bool {
     {}
 };
 
+template <typename _T>
+void push(void* mem, int offset, _T const& value)
+{
+    *(_T*)(offset + (_stk_type_1_byte*)(mem)) = value;
+}
+
 struct _stk_res_entry {
     virtual ~_stk_res_entry() {}
-    virtual void init(void* dst_mem) = 0;
 };
+
+struct _stk_type_string
+    : _stk_res_entry
+{
+    char* value;
+    int length;
+
+    _stk_type_string(_stk_type_string const& rhs)
+        : value(new char[rhs.length + 1])
+        , length(rhs.length)
+    {
+        std::copy(rhs.value, rhs.value + length, value);
+        value[length] = 0;
+    }
+
+    _stk_type_string(char const* v, int len)
+        : value(new char[len + 1])
+        , length(len)
+    {
+        std::copy(v, v + length, value);
+        value[length] = 0;
+    }
+
+    ~_stk_type_string()
+    {
+        delete[] value;
+    }
+};
+
+void push(void* mem, int offset, _stk_type_string const& str)
+{
+    new(offset + (_stk_type_1_byte*)(mem))_stk_type_string(str);
+}
 
 template <typename _MemberType>
 struct _stk_list
@@ -60,11 +98,6 @@ struct _stk_list
     _stk_list const& operator=(_stk_list<_MemberType> const& rhs)
     {
         copy_members(rhs);
-    }
-
-    void init(void* dst_mem)
-    {
-        new(dst_mem)_stk_list(*this);
     }
 
     void copy_members(_stk_list<_MemberType> const& rhs)
@@ -203,12 +236,6 @@ _stk_empty_list_type _stk_list_append(_stk_empty_list_type lhs, _stk_empty_list_
     return _stk_empty_list_type();
 }
 
-template <typename _T>
-void push(void* mem, int offset, _T const& value)
-{
-    *(_T*)(offset + (_stk_type_1_byte*)(mem)) = value;
-}
-
 template <typename _MemberType>
 void push(void* mem, int offset, _stk_list<_MemberType> const& list)
 {
@@ -322,6 +349,11 @@ std::ostream& operator<<(std::ostream& os, _stk_type_void)
     return os;
 }
 
+std::ostream& operator<<(std::ostream& os, _stk_type_string const& s)
+{
+    return os << s.value;
+}
+
 template <typename _MemberType>
 std::ostream& operator<<(std::ostream& os, _stk_list<_MemberType> const& list)
 {
@@ -377,4 +409,3 @@ struct _stk_frame_bases {
 
     void* _stk_ext_bases[_Level + 1];
 };
-

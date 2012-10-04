@@ -35,6 +35,8 @@ static Operation const BIT_FLOAT_GE(Type::s_bool(), ">=");
 static Operation const BIT_FLOAT_GT(Type::s_bool(), ">");
 static Operation const BIT_FLOAT_NE(Type::s_bool(), "!=");
 
+static Operation const BIT_STRING_ADD(Type::s_string(), "+");
+
 static Operation const BIT_POSI_INT(Type::s_int(), "+");
 static Operation const BIT_POSI_FLOAT(Type::s_float(), "+");
 
@@ -143,6 +145,14 @@ namespace {
                 ._add(">=", Type::s_float(), Type::s_int(), util::mkref(BIT_FLOAT_GE))
                 ._add(">", Type::s_float(), Type::s_int(), util::mkref(BIT_FLOAT_GT))
                 ._add("!=", Type::s_float(), Type::s_int(), util::mkref(BIT_FLOAT_NE))
+
+                ._add("+", Type::s_string(), Type::s_bool(), util::mkref(BIT_STRING_ADD))
+                ._add("+", Type::s_string(), Type::s_int(), util::mkref(BIT_STRING_ADD))
+                ._add("+", Type::s_string(), Type::s_float(), util::mkref(BIT_STRING_ADD))
+                ._add("+", Type::s_string(), Type::s_string(), util::mkref(BIT_STRING_ADD))
+                ._add("+", Type::s_bool(), Type::s_string(), util::mkref(BIT_STRING_ADD))
+                ._add("+", Type::s_int(), Type::s_string(), util::mkref(BIT_STRING_ADD))
+                ._add("+", Type::s_float(), Type::s_string(), util::mkref(BIT_STRING_ADD))
             ;
         }
 

@@ -74,6 +74,10 @@ false {
     return IDENT;
 }
 
+\"(\\.|[^\\"])*\" {
+    return STRING_LITERAL;
+}
+
 [+][+] {
     return LIST_APPEND;
 }

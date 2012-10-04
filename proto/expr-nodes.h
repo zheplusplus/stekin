@@ -55,6 +55,20 @@ namespace proto {
         mpf_class const value;
     };
 
+    struct StringLiteral
+        : public Expression
+    {
+        StringLiteral(misc::position const& pos, std::string const& v)
+            : Expression(pos)
+            , value(v)
+        {}
+
+        util::sref<Type const> type(util::sref<SymbolTable const>, misc::trace&) const;
+        util::sptr<inst::Expression const> inst(util::sref<SymbolTable const>, misc::trace&) const;
+
+        std::string const value;
+    };
+
     struct ListLiteral
         : public Expression
     {

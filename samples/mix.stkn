@@ -33,3 +33,6 @@ xx().first()
 x.xx().first()
 
 [] | if $index = 0 | return $element * $element
+
+s: "sizukani tiriyuku" + "the quick brown fox jumps over a lazy dog."
+sk: "a quote\" and something \\else in\t the\n string"

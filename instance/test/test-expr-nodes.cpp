@@ -19,6 +19,7 @@ TEST_F(ExprNodesTest, SimpleLiterals)
     inst::FloatLiteral f1(-2.72);
     inst::BoolLiteral b0(false);
     inst::BoolLiteral b1(true);
+    inst::StringLiteral str("nostalgia");
 
     i0.write();
     i1.write();
@@ -26,6 +27,7 @@ TEST_F(ExprNodesTest, SimpleLiterals)
     f1.write();
     b0.write();
     b1.write();
+    str.write();
 
     DataTree::expectOne()
         (INTEGER, "0")
@@ -34,6 +36,7 @@ TEST_F(ExprNodesTest, SimpleLiterals)
         (FLOAT, "-2.72")
         (BOOLEAN, "false")
         (BOOLEAN, "true")
+        (STRING, "nostalgia", 9)
     ;
 }
 

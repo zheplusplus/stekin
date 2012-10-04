@@ -67,6 +67,7 @@ std::string const test::FUNC_DEF_FILTERED(" func def filtered");
 NodeType const test::BOOLEAN("boolean");
 NodeType const test::INTEGER("integer");
 NodeType const test::FLOATING("floating");
+NodeType const test::STRING("string");
 NodeType const test::REFERENCE("reference");
 NodeType const test::LIST("list");
 NodeType const test::LIST_ELEMENT("list element");

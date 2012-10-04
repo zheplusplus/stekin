@@ -2,7 +2,7 @@ WORKDIR=util
 
 include misc/mf-template.mk
 
-util:string.d pointer.d sn.d
+util:pointer.d str-comprehension.d string.d sn.d
 	$(AR) $(LIB_DIR)/libstkn.a $(WORKDIR)/*.o
 
 clean:

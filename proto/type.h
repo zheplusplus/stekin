@@ -43,6 +43,7 @@ namespace proto {
         static util::sref<Type const> s_bool();
         static util::sref<Type const> s_int();
         static util::sref<Type const> s_float();
+        static util::sref<Type const> s_string();
     };
 
 }

@@ -400,6 +400,13 @@ util::sptr<proto::Expression const> FloatLiteral::compile(util::sref<proto::Bloc
     return nulProtoExpr();
 }
 
+util::sptr<proto::Expression const> StringLiteral::compile(util::sref<proto::Block>
+                                                        , util::sref<SymbolTable>) const
+{
+    DataTree::actualOne()(pos, STRING, value);
+    return nulProtoExpr();
+}
+
 static void compileList(std::vector<util::sptr<Expression const>> const& values)
 {
     std::for_each(values.begin()
@@ -803,6 +810,16 @@ util::sptr<Expression const> FloatLiteral::asRhs(misc::position const&
 }
 
 util::sptr<Expression const> FloatLiteral::asRhs(misc::position const&, std::string const&) const
+{
+    return nulFlchkExpr();
+}
+
+std::string StringLiteral::typeName() const
+{
+    return "";
+}
+
+util::sptr<Expression const> StringLiteral::fold() const
 {
     return nulFlchkExpr();
 }

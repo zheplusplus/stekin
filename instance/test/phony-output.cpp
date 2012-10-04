@@ -143,6 +143,11 @@ void output::writeBool(bool value)
     DataTree::actualOne()(BOOLEAN, util::str(value));
 }
 
+void output::writeString(char const* value, int length)
+{
+    DataTree::actualOne()(STRING, std::string(value), length);
+}
+
 void output::writeOperator(std::string const& op)
 {
     DataTree::actualOne()(OPERATOR, op);

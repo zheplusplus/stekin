@@ -66,6 +66,7 @@ std::ostream& operator<<(std::ostream& os, FlowcheckData const& data)
 NodeType const test::BOOLEAN("boolean");
 NodeType const test::INTEGER("integer");
 NodeType const test::FLOATING("floating");
+NodeType const test::STRING("string");
 NodeType const test::LIST("list");
 NodeType const test::BINARY_OP("binary operation");
 NodeType const test::PRE_UNARY_OP("prefix unary operation");

@@ -53,6 +53,11 @@ util::sptr<flchk::Expression const> FloatLiteral::compile() const
     return util::mkptr(new flchk::FloatLiteral(pos, value));
 }
 
+util::sptr<flchk::Expression const> StringLiteral::compile() const
+{
+    return util::mkptr(new flchk::StringLiteral(pos, value));
+}
+
 static std::vector<util::sptr<flchk::Expression const>> compileList(
                             std::vector<util::sptr<Expression const>> const& values)
 {
