@@ -52,6 +52,15 @@ struct _stk_type_string
         value[length] = 0;
     }
 
+    _stk_type_string(_stk_type_string const& a, _stk_type_string const& b)
+        : value(new char[a.length + b.length + 1])
+        , length(a.length + b.length)
+    {
+        std::copy(a.value, a.value + a.length, value);
+        std::copy(b.value, b.value + b.length, value + a.length);
+        value[length] = 0;
+    }
+
     _stk_type_string(char const* v, int len)
         : value(new char[len + 1])
         , length(len)
@@ -69,6 +78,45 @@ struct _stk_type_string
 void push(void* mem, int offset, _stk_type_string const& str)
 {
     new(offset + (_stk_type_1_byte*)(mem))_stk_type_string(str);
+}
+
+_stk_type_string _stk_to_string(_stk_type_void)
+{
+    return _stk_type_string("", 0);
+}
+
+_stk_type_string _stk_to_string(_stk_type_bool v)
+{
+    return _stk_type_string(v ? "true" : "false", v ? 4 : 5);
+}
+
+_stk_type_string _stk_to_string(_stk_type_int v)
+{
+    char buffer[32];
+    return _stk_type_string(buffer, sprintf(buffer, "%lld", v));
+}
+
+_stk_type_string _stk_to_string(_stk_type_float v)
+{
+    char buffer[32];
+    return _stk_type_string(buffer, sprintf(buffer, "%lf", v));
+}
+
+_stk_type_string operator+(_stk_type_string const& a, _stk_type_string const& b)
+{
+    return _stk_type_string(a, b);
+}
+
+template <typename _T>
+_stk_type_string operator+(_stk_type_string const& a, _T const& b)
+{
+    return _stk_type_string(a, _stk_to_string(b));
+}
+
+template <typename _T>
+_stk_type_string operator+(_T const& a, _stk_type_string const& b)
+{
+    return _stk_type_string(_stk_to_string(a), b);
 }
 
 template <typename _MemberType>

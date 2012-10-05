@@ -67,8 +67,8 @@ namespace {
         {
             push(map, '\\', std::string("\\\\"));
             push(map, '"', std::string("\\\""));
-            push(map, '\t', std::string("\\\t"));
-            push(map, '\n', std::string("\\\n"));
+            push(map, '\t', std::string("\\t"));
+            push(map, '\n', std::string("\\n"));
         }
 
         std::string get(char ch)

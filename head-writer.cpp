@@ -7,6 +7,7 @@
 std::string const HEAD_TEMPLATE(
 "#include <algorithm>\n"
 "#include <iostream>\n"
+"#include <cstdio>\n"
 "\n"
 "typedef $INT_TYPE_NAME _stk_type_int;\n"
 "typedef $FLOAT_TYPE_NAME _stk_type_float;\n"

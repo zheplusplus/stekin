@@ -255,14 +255,14 @@ std::string EmptyListType::exportedName() const
 }
 
 void Type::writeResEntry(int) const {}
-void ListType::writeResEntry(int) const {}
+void ResourceType::writeResEntry(int) const {}
 
 util::sptr<output::StackVarRec const> Type::makeParameter(Address const&) const
 {
     return util::sptr<output::StackVarRec const>(nullptr);
 }
 
-util::sptr<output::StackVarRec const> ListType::makeParameter(Address const&) const
+util::sptr<output::StackVarRec const> ResourceType::makeParameter(Address const&) const
 {
     return util::sptr<output::StackVarRec const>(nullptr);
 }
