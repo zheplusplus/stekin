@@ -256,6 +256,9 @@ TEST(Syntax, Mix)
 
         (misc::position(38), 0, VAR_DEF, "sk")
             (misc::position(38), STRING, "a quote\" and something \\else in\t the\n string")
+
+        (misc::position(39), 0, VAR_DEF, "st")
+            (misc::position(39), STRING, "nomico\"misato" "nomico'misato")
     ;
     DataTree::verify();
 }

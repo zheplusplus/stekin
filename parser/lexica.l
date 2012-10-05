@@ -78,6 +78,10 @@ false {
     return STRING_LITERAL;
 }
 
+\'(\\.|[^\\'])*\' {
+    return STRING_LITERAL;
+}
+
 [+][+] {
     return LIST_APPEND;
 }

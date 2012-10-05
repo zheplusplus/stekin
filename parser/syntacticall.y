@@ -8,6 +8,7 @@
 
     parser::OpImage* op_type;
     parser::Identifier* ident_type;
+    parser::Strings* strings_type;
     parser::ParamNames* param_names_type;
     parser::ArgList* args_type;
     parser::Pipeline* pipeline_type;
@@ -22,6 +23,8 @@
 %type <line_num_type> eol
 
 %type <ident_type> ident
+
+%type <strings_type> strings
 
 %type <param_names_type> param_list
 %type <param_names_type> additional_params
@@ -375,10 +378,10 @@ factor:
         $$ = new grammar::FloatLiteral(parser::here(), yytext);
     }
     |
-    STRING_LITERAL
+    strings
     {
-        $$ = new grammar::StringLiteral(parser::here()
-                                      , util::comprehend(yytext, 1, -1));
+        $$ = new grammar::StringLiteral($1->pos, $1->deliver());
+        delete $1;
     }
     |
     member_access
@@ -394,6 +397,18 @@ factor:
     LIST_INDEX
     {
         $$ = new grammar::ListIndex(parser::here());
+    }
+;
+
+strings:
+    STRING_LITERAL
+    {
+        $$ = new parser::Strings(parser::here(), util::comprehend(yytext, 1, -1));
+    }
+    |
+    strings STRING_LITERAL
+    {
+        $$ = $1->append(util::comprehend(yytext, 1, -1));
     }
 ;
 

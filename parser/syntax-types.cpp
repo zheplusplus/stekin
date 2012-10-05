@@ -6,6 +6,17 @@
 
 using namespace parser;
 
+Strings* Strings::append(std::string const& value)
+{
+    _value += value;
+    return this;
+}
+
+std::string Strings::deliver()
+{
+    return std::move(_value);
+}
+
 ParamNames* ParamNames::add(std::string const& name)
 {
     _names.push_back(name);

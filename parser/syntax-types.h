@@ -29,6 +29,20 @@ namespace parser {
         {}
     };
 
+    struct Strings {
+        misc::position const pos;
+
+        Strings(misc::position const& p, std::string const& init_val)
+            : pos(p)
+            , _value(init_val)
+        {}
+
+        Strings* append(std::string const& value);
+        std::string deliver();
+    private:
+        std::string _value;
+    };
+
     struct ParamNames {
         ParamNames* add(std::string const& name);
         std::vector<std::string> get() const;

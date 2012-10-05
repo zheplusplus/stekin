@@ -1,5 +1,5 @@
 func ret_string()
-    return "stekin"
+    return "ste" "kin"
 stekin: ret_string()
 write(stekin)
 
